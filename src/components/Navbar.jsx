@@ -53,7 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const Navbar = () => {
   const pages = ['Listings', 'Swap', 'Auction'];
   return (
-    <AppBar position="static" sx={{bgcolor:'#3D3D3D', boxShadow: 'none'}}>
+    <AppBar position="static" sx={{bgcolor:'#3D3D3D', boxShadow: 'none', height:'80px'}}>
         <Container maxWidth="xl" sx={{
           paddingTop: '0px',
           '& .MuiToolbar-root':{
@@ -65,7 +65,7 @@ export const Navbar = () => {
               justifyContent: 'center'
           },
         }}>
-            <Toolbar sx={{maxWidth:'1280px', flexGrow: 1, display: { md: 'flex'}, justifyContent: {xs: 'space-between'}}}>
+            <Toolbar sx={{maxWidth:'1280px', display: { md: 'flex'}, justifyContent: {xs: 'space-between'}}}>
                 <Box sx={{display:'flex'}}>
                   <img src={logo} alt="logo icon" style={{width: '3%', height:'auto', minWidth:'48px',marginRight: '16px'}}/>
                   <Typography sx={{fontSize:'32px', fontWeight:'bold'}}>octo</Typography>
@@ -79,7 +79,7 @@ export const Navbar = () => {
                     inputProps={{ 'aria-label': 'search' }}
                   />
                 </Search>
-                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'} }}>
+                <Box sx={{ display: { xs: 'none', md: 'flex'} }}>
                     {pages.map((page, index) => (
                         <Button
                             key={index}

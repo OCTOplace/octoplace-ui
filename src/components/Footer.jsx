@@ -8,14 +8,14 @@ export const Footer = () => {
             maxWidth: '1280px',
             width: '100%',
             display:'flex',
-            margin: '16px auto',
+            margin: '16px auto 0px auto',
             justifyContent: 'space-between'
         }
     }
     return (
         <Fragment>
             <Box
-                sx={style.box}
+                sx={{...style.box}}
             >
                 <Box sx={{display:'flex', justifyContent:'space-around'}}>  
                     <Typography sx={{mr: 2, fontWeight:'bold'}}>Subscribe</Typography>
@@ -74,7 +74,7 @@ export const Footer = () => {
             </Box>
             <Divider sx={{...style.box, bgcolor: '#f4f4f4', m:'24px auto'}} />
             <Box
-                sx={style.box}
+                sx={{...style.box, paddingBottom: '16px'}}
             >
                 <Box sx={{display:'flex', justifyContent:'space-around'}}>  
                     <Typography sx={{mr: 1, fontSize: '12px'}}>&#169; 2022</Typography>
