@@ -72,9 +72,9 @@ export const Footer = () => {
                     <CheckBoxOutlineBlankIcon />
                 </Box>
             </Box>
-            <Divider sx={{...style.box, bgcolor: '#f4f4f4', m:'24px auto'}} />
+            <Divider sx={{...style.box, bgcolor: '#f4f4f4', m:'16px auto'}} />
             <Box
-                sx={{...style.box, paddingBottom: '16px'}}
+                sx={{...style.box, paddingBottom: '8px'}}
             >
                 <Box sx={{display:'flex', justifyContent:'space-around'}}>  
                     <Typography sx={{mr: 1, fontSize: '12px'}}>&#169; 2022</Typography>
