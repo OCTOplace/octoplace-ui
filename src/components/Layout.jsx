@@ -1,21 +1,15 @@
+import { Box } from '@mui/material';
+import { Footer } from './Footer';
 import { Navbar } from "./Navbar";
 
 export const Layout = ({ children }) => {
-  const classes = {
-    pages: {
-        backgroundColor: "#000",
-        width: "100%",
-      },
-      content: {
-        justifyContent: "center",
-        minHeight: "100vh",
-        width: "100%",
-      }
-  };
   return (
-    <div className={classes.pages}>
+    <Box sx={{height: '100vh', minHeight: '720px', position: 'relative', bgcolor: '#3d3d3d'}}>
       <Navbar />
-      <div className={classes.content}>{children}</div>
-    </div>
+      <div>{children}</div>
+      <Box sx={{position: 'absolute', bottom: 0, width: '100%', color:'#f4f4f4', mb: 2}}>
+        <Footer />
+      </Box>
+    </Box>
   );
 };

@@ -53,19 +53,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const Navbar = () => {
   const pages = ['Listings', 'Swap', 'Auction'];
   return (
-    <AppBar position="static" sx={{bgcolor:'#3D3D3D'}}>
+    <AppBar position="static" sx={{bgcolor:'#3D3D3D', boxShadow: 'none'}}>
         <Container maxWidth="xl" sx={{
-          paddingTop: '10px',
+          paddingTop: '0px',
           '& .MuiToolbar-root':{
               paddingLeft: {xs: '0px', md:'32px', lg:'80px'},
               paddingRight: {xs: '0px', md:'32px', lg:'80px'},
-              margin: '16px auto'
+              margin: '8px auto'
           },
           '& .MuiBox-root':{
               justifyContent: 'center'
           },
         }}>
-            <Toolbar sx={{maxWidth:'980px', flexGrow: 1, display: { md: 'flex'}, justifyContent: {xs: 'space-between'}}}>
+            <Toolbar sx={{maxWidth:'1280px', flexGrow: 1, display: { md: 'flex'}, justifyContent: {xs: 'space-between'}}}>
                 <Box sx={{display:'flex'}}>
                   <img src={logo} alt="logo icon" style={{width: '3%', height:'auto', minWidth:'48px',marginRight: '16px'}}/>
                   <Typography sx={{fontSize:'32px', fontWeight:'bold'}}>octo</Typography>
