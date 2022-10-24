@@ -23,7 +23,7 @@ export const SingleSwapComplete = () => {
 
     const displayCard = () => {
         return (
-            <Box sx={{bgcolor:'#262626', height:'278px', width:'248px', borderRadius:'12px', p:'20px'}}>
+            <Box sx={{bgcolor:'#262626', height:'278px', width:'248px', borderRadius:'12px', p:2}}>
                 <Box sx={{bgcolor:'#6c6c6c', height:'208px',borderRadius:'12px'}}>
 
                 </Box>
@@ -35,19 +35,19 @@ export const SingleSwapComplete = () => {
     }
 
     return (
-        <Box sx={{maxWidth:'1280px', m:'16px auto', height:'100%', color:'#f4f4f4', marginTop:'32px'}}>
+        <Box sx={{maxWidth:'1280px', m:'16px auto', height:'100%', color:'#f4f4f4'}}>
             <Typography sx={{fontSize:'20px', mt:6, fontWeight:'bold', mb:3, textAlign:'center'}}>
                 SWAP COMPLETE
             </Typography>
-            <Grid container sx={{mt:{xs: 3, md:6}}}>
+            <Grid container sx={{mt:{xs: 3, md:6, p:0}}}>
                 <Grid item xs={12} md={2}>
                 </Grid>
                 <Grid item xs={12} md={3}>
                     {displayCard()}
                 </Grid>
-                <Grid item xs={12} md={2} sx={{alignSelf:' center', textAlign:'center'}}>
+                <Grid item xs={12} md={2} sx={{alignSelf:'center'}}>
                     <div style={{
-                        width: '53px', height: '53px', background: '#F4F4F4', borderRadius: '26px'
+                        width: '53px', height: '53px', background: '#F4F4F4', borderRadius: '26px', textAlign:'center',marginLeft:'auto', marginRight:'auto'
                     }}>
                         <CachedIcon sx={{color:'#3d3d3d', mt:1}} fontSize='large'/>
                     </div>

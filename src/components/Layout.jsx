@@ -5,9 +5,9 @@ import { Navbar } from "./Navbar";
 export const Layout = ({ children }) => {
   return (
     <Box sx={{height: '100%', width:'100%'}}>
-      <Box sx={{width:'100vw', height:'100vh', bgcolor: '#3d3d3d', display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{width:'100vw', minHeight: '100vh', bgcolor: '#3d3d3d'}}>
         <Navbar />
-        <Box sx={{flexGrow:1, overflow:'auto'}}>
+        <Box sx={{minHeight: '70vh', height:'100%'}}>
           {children}
         </Box>
         <Box sx={{width: '100%', color:'#f4f4f4'}}>

@@ -37,28 +37,28 @@ export const SingleSwapOffer = () => {
 
     const displayCard = () => {
         return (
-            <Box sx={{bgcolor:'#262626', height:'278px', width:'100%', borderRadius:'12px', p:2}}>
-                <Grid container spacing={1}>
-                    <Grid item xs={5}>
+            <Box sx={{bgcolor:'#262626', height:'312px', width:'100%', borderRadius:'12px'}}>
+                <Grid container sx={{'& .MuiGrid-item': {p:0}}}>
+                    <Grid item xs={4} sx={{m:2}}>
                         <Box sx={{bgcolor:'#6c6c6c', height:'156px', width:'156px', borderRadius:'12px'}}>
 
                         </Box>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={5} sx={{mt: 2}}>
                         <Typography sx={{fontWeight:'bold'}}>Project Title</Typography>
                         <Typography variant='subtitle1'>#8126</Typography>
                     </Grid>
-                    <Grid item xs={3} sx={{alignSelf:'end'}}>
+                    <Grid item xs={2} sx={{alignSelf:'end', mb:2}}>
                         <Typography>
                             Quantity &nbsp;
                             <span style={{backgroundColor:'#f4f4f4', borderRadius:'12px', color:'#3d3d3d', padding: '4px 8px'}}>1</span>
                         </Typography>
                     </Grid>
                 </Grid>
-                <Typography sx={{mt:4, fontSize:'16px', pl:1, fontWeight:'700'}}>
+                <Typography sx={{mt:3, fontSize:'16px', pl:2, fontWeight:'700'}}>
                     OWNER ID
                 </Typography>
-                <Typography sx={{mt: 2, bgcolor:'#3d3d3d', color:'#f4f4f4', borderRadius:'12px', lineHeight: '36px', pl:2}}>
+                <Typography sx={{m: '16px 16px', bgcolor:'#3d3d3d', color:'#f4f4f4', borderRadius:'12px', lineHeight: '36px', pl: 2}}>
                     your wallet 810r1jf01fj 1k10i018289d
                 </Typography>
             </Box>
@@ -73,13 +73,13 @@ export const SingleSwapOffer = () => {
             <Typography sx={{fontSize:'20px', mt:4, fontWeight:'bold', mb:2}}>
                 SWAP OFFER #8192
             </Typography>
-            <Grid container spacing={2} sx={{mt:{xs: 3, md:6}}}>
+            <Grid container sx={{mt:{xs: 3, md:6, p:0}}}>
                 <Grid item xs={12} md={5}>
                     {displayCard()}
                 </Grid>
-                <Grid item xs={12} md={2} sx={{alignSelf:' center', textAlign:'center', textAlign:'-webkit-center'}}>
+                <Grid item xs={12} md={2} sx={{alignSelf:'center'}}>
                     <div style={{
-                        width: '53px', height: '53px', background: '#F4F4F4', borderRadius: '26px'
+                        width: '53px', height: '53px', background: '#F4F4F4', borderRadius: '26px', textAlign:'center',marginLeft:'auto', marginRight:'auto'
                     }}>
                         <CachedIcon sx={{color:'#3d3d3d', mt:1}} fontSize='large'/>
                     </div>

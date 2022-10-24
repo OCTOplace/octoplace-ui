@@ -53,7 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const Navbar = () => {
   const pages = ['Listings', 'Swap', 'Auction'];
   return (
-    <AppBar position="static" sx={{bgcolor:'#3D3D3D', boxShadow: 'none', height:'80px'}}>
+    <AppBar position="static" sx={{bgcolor:'#3D3D3D', boxShadow: 'none', height:'80px', pt:1}}>
         <Container maxWidth="xl" sx={{
           paddingTop: '0px',
           '& .MuiToolbar-root':{
