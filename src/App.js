@@ -9,7 +9,7 @@ import { SwapComplete } from './pages/SwapComplete';
 import { MyListingSwapOffer } from './pages/MyListingSwapOffer';
 import { SingleSwapOffer } from './pages/SingleSwapOffer';
 import { MyListingSwapOffer2 } from './pages/MyListingSwapOffer2';
-
+import "./app.scss"
 function App() {
   return (
     <Router>
