@@ -1,0 +1,133 @@
+.logo-text {
+  font-size: 2em;
+  font-weight: 500;
+}
+
+.active-listing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100% !important;
+}
+
+.navbar-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center !important;
+}
+.navbar {
+  .MuiInputBase-input {
+    color: white !important;
+  }
+}
+.nav-link {
+  color: white !important;
+  margin-right: 48px;
+  font-weight: 700 !important;
+}
+.disabled {
+  color: grey !important;
+}
+.search-nav {
+  border-radius: 15% !important;
+  border: 1px solid white;
+}
+
+@media screen and (max-width: 1199px) {
+  .nav-link {
+    margin-right: 16px;
+  }
+}
+
+.connect-btn {
+  border-radius: 25px !important;
+}
+
+.home-container {
+  margin-top: 84px !important;
+  .paper-menu {
+    height: 60vh;
+    border-radius: 15px;
+    background-color: #aaaaaa;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    :hover {
+      opacity: 0.6;
+    }
+    h3 {
+      font-size: 3em;
+      color: rgb(58, 58, 58);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+  }
+}
+.navbar{
+    background-color: #3d3d3d !important;
+}
+.navbar-brand {
+    cursor: pointer;
+}
+.footer-row{
+    margin-top: 15px !important;
+    .icon{
+        color:white !important;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .community-box1{
+        justify-content: center !important;
+        margin-top: 30px;
+    }
+    .community-box2{
+        justify-content: center !important;
+    }
+    .home-container{
+        .paper-menu{
+            h3{
+                font-size: 2em;
+            }
+        }
+    }
+}
+
+
+@media screen and (max-width: 767px) {
+    
+    .home-container{
+        .paper-menu{
+            margin-bottom: 16px;
+        }
+    }
+}
+
+.wallet-dlg{
+    .MuiPaper-root{
+        background-color: #3d3d3d;
+        color: white;
+    }
+    .spacer{
+        flex: 1 auto;
+    }
+    .icon{
+        color:white
+    }
+    
+    .title{
+        text-transform: uppercase;
+    }
+    .wallet-menu{
+        .MuiListItemText-root{
+            text-transform: uppercase;
+            font-weight: 700 !important;
+        }
+        .wallet-logo{
+            width: 40px;
+        }
+    }
+}

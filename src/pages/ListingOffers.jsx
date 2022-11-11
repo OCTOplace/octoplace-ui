@@ -121,7 +121,7 @@ export const ListingOffers = () => {
             <>
                 <Box sx={{width:'100%', maxWidth: '580px', height:'100%', bgcolor:'#6C6C6C', borderRadius:'12px', maxHeight:'660px', ml:'auto', mr:'auto'}}>
                     <Box sx={{p:2}}>
-                        <img src={Icon} style={{width:'100%', height:'100%', maxHeight: '320px', objectFit:'cover'}}/>
+                        <img alt="kjbhv" src={Icon} style={{width:'100%', height:'100%', maxHeight: '320px', objectFit:'cover'}}/>
                     </Box>
                     <Box sx={{display:'flex', justifyContent:'space-between', pl:2, pr:2}}>
                         <div style={{display:'flex'}}>
@@ -180,7 +180,7 @@ export const ListingOffers = () => {
                                         <Typography>{item.serial}</Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <img src={item.imageSrc} style={{width:'100px', maxHeight:'100px', objectFit:'cover', borderRadius:'12px'}}/>
+                                        <img alt="nsbjhvx" src={item.imageSrc} style={{width:'100px', maxHeight:'100px', objectFit:'cover', borderRadius:'12px'}}/>
                                     </Grid>
                                     <Grid item xs={4}>
                                         <Typography sx={{alignSelf:'center'}}>{item.name}</Typography>

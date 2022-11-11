@@ -43,7 +43,7 @@ export const MyListingSwapOffer2 = () => {
                                 <>
                                      <Grid item xs={4} sx={{m:2}}>
                                         <Box sx={{bgcolor:'#6c6c6c', height:'156px', width:'156px', borderRadius:'12px'}}>
-                                            <img src={item.imageSrc} style={{height:'156px', width:'156px', borderRadius:'12px'}}/>
+                                            <img alt="ljkhj" src={item.imageSrc} style={{height:'156px', width:'156px', borderRadius:'12px'}}/>
                                         </Box>
                                     </Grid>
                                     <Grid item xs={6} sx={{mt: 2}}>
