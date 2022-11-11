@@ -26,7 +26,7 @@ export const MyListingSwapOffer = () => {
                 <Grid container sx={{'& .MuiGrid-item': {p:0}}}>
                     <Grid item xs={4} sx={{m:2}}>
                         <Box sx={{bgcolor:'#6c6c6c', height:'156px', width:'156px', borderRadius:'12px'}}>
-                            <img src={'https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png'} style={{height:'156px', width:'156px', borderRadius:'12px'}}/>
+                            <img alt="khjwg" src={'https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png'} style={{height:'156px', width:'156px', borderRadius:'12px'}}/>
                         </Box>
                     </Grid>
                     <Grid item xs={5} sx={{mt: 2}}>

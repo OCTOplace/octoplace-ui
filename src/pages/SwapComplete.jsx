@@ -20,18 +20,18 @@ export const SwapComplete = () => {
         },
     }));
 
-    const displayCard = () => {
-        return (
-            <Box sx={{bgcolor:'#262626', height:'278px', width:'248px', borderRadius:'12px', p:2}}>
-                <Box sx={{bgcolor:'#6c6c6c', height:'208px',borderRadius:'12px'}}>
+    // const displayCard = () => {
+    //     return (
+    //         <Box sx={{bgcolor:'#262626', height:'278px', width:'248px', borderRadius:'12px', p:2}}>
+    //             <Box sx={{bgcolor:'#6c6c6c', height:'208px',borderRadius:'12px'}}>
 
-                </Box>
-                <Typography sx={{mt:4, fontSize:'16px', pl:1, fontWeight:'700'}}>
-                    OWNER ID
-                </Typography>
-            </Box>
-        )
-    }
+    //             </Box>
+    //             <Typography sx={{mt:4, fontSize:'16px', pl:1, fontWeight:'700'}}>
+    //                 OWNER ID
+    //             </Typography>
+    //         </Box>
+    //     )
+    // }
 
     return (
         <Box sx={{maxWidth:'1280px', m:'16px auto', height:'100%', color:'#f4f4f4'}}>

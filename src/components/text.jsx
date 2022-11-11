@@ -2,9 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
-import { InputAdornment } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { lime } from "@mui/material/colors";
 const styles = (theme) => ({
   container: {
     display: "flex",

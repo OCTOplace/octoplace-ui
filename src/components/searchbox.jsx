@@ -23,7 +23,9 @@ const styles = theme => ({
   cssOutlinedInput: {
     '&$cssFocused $notchedOutline': {
       borderColor: `${theme.palette.primary.main} !important`,
-    }
+    },
+    height: "60px",
+    
   },
 
   cssFocused: {},
@@ -33,6 +35,7 @@ const styles = theme => ({
     borderColor: 'white !important',
     color: "white !important",
     borderRadius: "25px !important",
+    height: "60px",
   },
 
 });

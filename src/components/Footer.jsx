@@ -2,27 +2,13 @@ import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { Fragment } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import TextBox from "../components/text";
 export const Footer = () => {
-  const style = {
-    box: {
-      maxWidth: "1280px",
-      width: "100%",
-      display: "flex",
-      margin: "16px auto 0px auto",
-      justifyContent: "space-between",
-      color: "white",
-      position: "sticky",
-      bottom: 10,
-    },
-  };
   return (
     <Fragment>
-      <Box sx={{ position: "sticky, bottom:0" }}>
+      <nav style={{ backgroundColor:"#3d3d3d", paddingTop:'30px'}}>
         <Container>
           <Row className="footer-row">
             <Col lg={6} sm={12} md={12}>
@@ -62,6 +48,7 @@ export const Footer = () => {
             </Col>
             <Col lg={6} sm={12} md={12}>
               <Box
+              className="community-box1"
                 display="flex"
                 flexDirection="row"
                 justifyContent="flex-end"
@@ -73,6 +60,7 @@ export const Footer = () => {
                 </Typography>
               </Box>
               <Box
+              className="community-box2"
                 display="flex"
                 flexDirection="row"
                 justifyContent="flex-end"
@@ -100,13 +88,14 @@ export const Footer = () => {
                 }}
               />
             </Col>
-            <Col lg={6} sm={12} md={12}>
+            <Col lg={12} sm={12} md={12}>
+              <Box flexDirection="row" display="flex">
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "flex-start",
                   color: "white",
-                  mt: "12px",mb:'12px'
+                  mt: "12px",mb:'12px', width:"100%"
                 }}
               >
                 <Typography sx={{ mr: 1, fontSize: "12px" }}>
@@ -116,10 +105,8 @@ export const Footer = () => {
                   SkeletonArts.Studio
                 </Typography>
               </Box>
-            </Col>
-            <Col lg={6} sm={12} md={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end", color: "white",
-                  mt: "12px",mb:'12px' }}>
+                  mt: "12px",mb:'12px', width:"100%" }}>
                 <Typography sx={{ mr: 3, fontSize: "12px" }}>
                   Provicy Policy
                 </Typography>
@@ -127,10 +114,12 @@ export const Footer = () => {
                   Terms of Service
                 </Typography>
               </Box>
+              </Box>
             </Col>
+            
           </Row>
         </Container>
-      </Box>
+      </nav>
     </Fragment>
   );
 };
