@@ -1,6 +1,6 @@
 
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home"
 import { Listings } from './pages/Listings';
