@@ -18,7 +18,6 @@ export const AppNavbar = () => {
   const {deactivate} = useWeb3React();
   const acctDetails = useSelector((state) => state.account);
   useEffect(() => {
-    console.log(acctDetails);
   }, [acctDetails]);
   const navigate = useNavigate();
 

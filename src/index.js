@@ -13,14 +13,16 @@ import { Provider } from 'react-redux'
 import { store } from './redux/store'
 
 
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 
 function getLibrary(provider) {
   const library = new Web3Provider(provider);
   library.pollingInterval = 12000;
   return library;
 }
+
+
 
 root.render(
   <React.StrictMode>

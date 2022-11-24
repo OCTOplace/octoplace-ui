@@ -1,16 +1,18 @@
 import { Paper } from "@mui/material";
 import { Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 export const Home = () => {
+   const navigate = useNavigate();
   return (
     <Container>
       <Row className="home-container">
         <Col lg={6} md={6} sm={12}>
-          <Paper className="paper-menu">
+          <Paper onClick={() => navigate('listing')} className="paper-menu">
             <h3>Active &nbsp;Listings</h3>
           </Paper>
         </Col>
         <Col lg={6} md={6} sm={12}>
-          <Paper className="paper-menu">
+          <Paper onClick={() => navigate('my-nft')} className="paper-menu">
             <h3>My NFT</h3>
           </Paper>
         </Col>

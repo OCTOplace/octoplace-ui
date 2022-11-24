@@ -79,7 +79,7 @@ export const Listings = () => {
           <TabsUnstyled defaultValue={0}>
             <Box sx={{ display: "flex", marginBottom:"24px", mt: "48px" }}>
               <TabsList>
-                <Tab>My NFT</Tab>
+                <Tab>All Listings</Tab>
                 <Tab>Listed</Tab>
               </TabsList>
               <Box

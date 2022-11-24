@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home"
 import { Listings } from './pages/Listings';
+import {MyNFT} from './pages/MyNFT';
 import { ListingOffers } from './pages/ListingOffers';
 import { SwapComplete } from './pages/SwapComplete';
 import { MyListingSwapOffer } from './pages/MyListingSwapOffer';
@@ -15,6 +16,8 @@ import { useEffect } from "react";
 import {useDispatch} from "react-redux"
 import { setAddress, setBalance, setChainId, setLogin, setLogout } from "./redux/slices/accout-slice";
 import {getFormattedEther} from "./utils/unit-utils";
+import { resetCollections } from "./redux/slices/my-nft-slice";
+
 function App() {
   const {account,chainId, library} = useWeb3React();
   const dispatch = useDispatch();
@@ -33,13 +36,16 @@ function App() {
       getBalance();
     }else{
       dispatch(setLogout())
+      dispatch(resetCollections())
     }
   }, [account])
+
   return (
     <Router>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="my-nft" element={<MyNFT />} />
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
           <Route path="swap" element={<SingleSwapOffer />} />

@@ -35,7 +35,6 @@ const handleWalletConnectClick = async () => {
 }
 
 useEffect(()=> {
-  console.log(account)
   if(account && account !=="" && account.length > 0){
     toast(`Wallet Connected! /n ${getAccountString(account)}`,{type:"success", position: "bottom-left"});
   }
@@ -43,10 +42,8 @@ useEffect(()=> {
 
 useEffect(() => {
   if (error) {
-    console.log(error)
     switch (error.name) {
       case "UnsupportedChainIdError":
-        console.log(chainId);
         toast("Unsupported network, Switch to ethereum", {type: "error"})
         // setSwitchNet(true);
         break;
