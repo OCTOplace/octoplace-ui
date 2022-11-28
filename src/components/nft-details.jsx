@@ -42,7 +42,8 @@ export const NFTDetails = ({metadata}) => {
             <AccordionDetails>
               <Box sx={styles.detailsBox}>
                 <Box sx={styles.row}>
-
+                    <Box ></Box>
+                    <Box></Box>
                 </Box>
               </Box>
             </AccordionDetails>
