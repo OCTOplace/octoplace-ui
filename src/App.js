@@ -17,6 +17,7 @@ import {useDispatch} from "react-redux"
 import { setAddress, setBalance, setChainId, setLogin, setLogout } from "./redux/slices/accout-slice";
 import {getFormattedEther} from "./utils/unit-utils";
 import { resetCollections } from "./redux/slices/my-nft-slice";
+import { NFTView } from "./pages/NFTView";
 
 function App() {
   const {account,chainId, library} = useWeb3React();
@@ -46,6 +47,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="my-nft" element={<MyNFT />} />
+          <Route path="nft/:address/:tokenId" element={<NFTView /> } />
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
           <Route path="swap" element={<SingleSwapOffer />} />

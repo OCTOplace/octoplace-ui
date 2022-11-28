@@ -1,14 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react'
 import {Box,Typography }from "@mui/material"
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 
 export const NFTCard = (props) => {
     const [imgUrl, setImgUrl] = useState();
     const {view}=props;
-    const {metadata, collectionName, tokenId} = props.nft;
+    const {metadata, collectionName, tokenId, contractAddress} = props.nft;
     const styles = {
         root:{
             width: "100%",
@@ -19,6 +21,7 @@ export const NFTCard = (props) => {
             height: (view===3 ? "300px": "500px"),
             backgroundImage: `url(${imgUrl})`,
             backgroundSize: "cover",
+            cursor: "pointer"
         },
         flex:{
             display: "flex",
@@ -55,8 +58,10 @@ export const NFTCard = (props) => {
     }, [])
     return (
       <>
+        <Link className='nft-card-link' to={`/nft/${contractAddress}/${tokenId}`}>
         <Box
           sx={styles.root}
+          
         >
           <Box sx={styles.flex} >
             <div style={styles.meta}>
@@ -66,6 +71,7 @@ export const NFTCard = (props) => {
             <Typography>{`#${tokenId}`}</Typography>
           </Box>
         </Box>
+        </Link>
       </>
     );
   };

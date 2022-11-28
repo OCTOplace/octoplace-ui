@@ -13,7 +13,6 @@ import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import {  injectedConnector } from "../connectors/injected-connector";
 import { walletconnect } from "../connectors/wallet-connect";
-import { chainId } from "../connectors/address";
 import { useWeb3React } from "@web3-react/core";
 import {toast} from "react-toastify";
 

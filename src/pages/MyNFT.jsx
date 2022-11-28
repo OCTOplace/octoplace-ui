@@ -76,7 +76,7 @@ export const MyNFT = () => {
   };
 
   const getNFTDetails = async () => {
-    
+    dispatch(resetCollections());
     try {
       const provider = new JsonRpcProvider(rpc);
       nftAddrList.map(async (item) => {
@@ -126,7 +126,9 @@ export const MyNFT = () => {
         }
         setLoading(false);
       });
-    } catch {}
+    } catch (e){
+      console.log(e)
+    }
   };
 
   useEffect(() => {

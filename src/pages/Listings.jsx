@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Divider, Grid, Typography, Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import TabsUnstyled from "@mui/base/TabsUnstyled";
@@ -10,7 +11,13 @@ import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaicOutlined";
 import { useState } from "react";
-
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { rpc, swapContract } from "../connectors/address";
+import { Contract } from "@ethersproject/contracts";
+import swapAbi from "../abi/swap.json";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { resetListings, setAllListings } from "../redux/slices/listing-slice";
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -48,7 +55,24 @@ const TabsList = styled(TabsListUnstyled)`
 
 export const Listings = () => {
   const [view, setView] = useState(3);
+const dispatch = useDispatch();
 
+  const getListings = async () => {
+    const provider = new JsonRpcProvider(rpc);
+    try{
+      const contract = new Contract(swapContract, swapAbi, provider);
+      const listings = await contract.readAllListings();
+      dispatch(setAllListings(listings))
+      console.log(listings);
+    }catch (err){
+      console.log("Error fetching the listings:", err)
+    }
+  }
+
+  useEffect(() => {
+    dispatch(resetListings());
+    getListings();
+  }, [])
   const card = () => {
     return (
       <>
@@ -61,7 +85,7 @@ export const Listings = () => {
             position: "relative",
           }}
         >
-          <Box sx={{  bottom: "10px", pl: 2 }}>
+          <Box sx={{ bottom: "10px", pl: 2 }}>
             <div style={{ display: "flex" }}>
               <Typography sx={{ fontWeight: "bold" }}>Title 1</Typography>
               <VerifiedOutlinedIcon />
@@ -77,7 +101,7 @@ export const Listings = () => {
       <Row>
         <Col>
           <TabsUnstyled defaultValue={0}>
-            <Box sx={{ display: "flex", marginBottom:"24px", mt: "48px" }}>
+            <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
               <TabsList>
                 <Tab>All Listings</Tab>
                 <Tab>Listed</Tab>
@@ -92,22 +116,32 @@ export const Listings = () => {
                   "& .MuiSvgIcon-root": { color: "#3d3d3d" },
                 }}
               >
-                <Paper sx={{borderRadius:"10px"}}>
+                <Paper sx={{ borderRadius: "10px" }}>
                   <Box display="flex" flexDirection="row">
-                  <WindowOutlinedIcon
-                    sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                    onClick={() => setView(6)}
-                  />
-                  <Divider sx={{borderColor:"black"}} orientation="vertical" variant="middle" flexItem />
-                  <GridOnOutlinedIcon
-                    sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                    onClick={() => setView(3)}
-                  />
-                  <Divider sx={{borderColor:"black"}} orientation="vertical" variant="middle" flexItem />
-                  <AutoAwesomeMosaicOutlinedIcon
-                    sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                    onClick={() => setView(1)}
-                  />
+                    <WindowOutlinedIcon
+                      sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
+                      onClick={() => setView(6)}
+                    />
+                    <Divider
+                      sx={{ borderColor: "black" }}
+                      orientation="vertical"
+                      variant="middle"
+                      flexItem
+                    />
+                    <GridOnOutlinedIcon
+                      sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
+                      onClick={() => setView(3)}
+                    />
+                    <Divider
+                      sx={{ borderColor: "black" }}
+                      orientation="vertical"
+                      variant="middle"
+                      flexItem
+                    />
+                    <AutoAwesomeMosaicOutlinedIcon
+                      sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
+                      onClick={() => setView(1)}
+                    />
                   </Box>
                 </Paper>
               </Box>
