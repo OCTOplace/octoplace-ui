@@ -1,7 +1,8 @@
 import React from 'react'
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } from '@mui/material';
 import {  ExpandMore, ListAlt } from '@mui/icons-material';
-export const NFTDetails = ({metadata}) => {
+import { shortenAddress } from '../utils/string-util';
+export const NFTDetails = ({metadata, address, tokenId}) => {
     const styles = {
         accordion2: {
           backgroundColor: "transparent",
@@ -25,7 +26,19 @@ export const NFTDetails = ({metadata}) => {
         row:{
             display:"flex",
             flexDirection: "row",
-            alignItems: "center"
+            alignItems: "center",
+            width: "100%",
+            marginBottom: "8px"
+        },
+        left:{
+          display:"flex",
+          width:"100%",
+          justifyContent: "flex-start"
+        },
+        right: {
+          display: "flex",
+          width:"100%",
+          justifyContent: "flex-end"
         }
       };
     return (
@@ -42,8 +55,20 @@ export const NFTDetails = ({metadata}) => {
             <AccordionDetails>
               <Box sx={styles.detailsBox}>
                 <Box sx={styles.row}>
-                    <Box ></Box>
-                    <Box></Box>
+                    <Box sx={styles.left}>Contract Address</Box>
+                    <Box sx={styles.right}>{shortenAddress(address)}</Box>
+                </Box>
+                <Box sx={styles.row}>
+                    <Box sx={styles.left}>Token ID</Box>
+                    <Box sx={styles.right}>{tokenId}</Box>
+                </Box>
+                <Box sx={styles.row}>
+                    <Box sx={styles.left}>Token Standard</Box>
+                    <Box sx={styles.right}>ERC-721</Box>
+                </Box>
+                <Box sx={styles.row}>
+                    <Box sx={styles.left}>Chain</Box>
+                    <Box sx={styles.right}>Theta Network</Box>
                 </Box>
               </Box>
             </AccordionDetails>

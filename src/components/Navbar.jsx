@@ -88,7 +88,7 @@ export const AppNavbar = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleMenuClose}><DashboardIcon/> &nbsp;My Dashboard</MenuItem>
+        <MenuItem onClick={() => {navigate("/my-nft");handleMenuClose();}}><DashboardIcon/> &nbsp;My Dashboard</MenuItem>
         <MenuItem onClick={() => {
           deactivate();
           handleMenuClose()
