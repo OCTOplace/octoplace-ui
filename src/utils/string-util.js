@@ -1,6 +1,6 @@
 export function shortenAddress(address) {
   const first = address.substring(0, 8);
-  const last = address.substring(address.length - 5, address.length - 1);
+  const last = address.substring(address.length - 5, address.length );
 
   return `${first}...${last}`;
 }

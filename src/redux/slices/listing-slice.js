@@ -14,10 +14,10 @@ export const listingSlice = createSlice({
       state.allListings = action.payload;
     },
     setActiveListings: (state, action) => {
-      state.activeListings = [...state.activeListings, action.payload];
+      state.activeListings = action.payload;
     },
     setCompletedListings: (state, action) => {
-      state.completedListings = [...state.completedListings, action.payload];
+      state.completedListings = action.payload;
     },
     resetListings: (state) => {
       state.activeListings = [];

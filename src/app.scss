@@ -142,3 +142,31 @@
 .nft-card-link{
   text-decoration: none;
 }
+
+.nft-list-dlg{
+  .MuiPaper-root{
+      background-color: #3d3d3d ;
+      color: white;
+  }
+  .spacer{
+      flex: 1 auto;
+  }
+  .icon{
+      color:white
+  }
+  .list-dlg-paper{
+    background-color: #6c6c6c;
+  }
+  .title{
+      text-transform: uppercase;
+  }
+  .wallet-menu{
+      .MuiListItemText-root{
+          text-transform: uppercase;
+          font-weight: 700 !important;
+      }
+      .wallet-logo{
+          width: 40px;
+      }
+  }
+}

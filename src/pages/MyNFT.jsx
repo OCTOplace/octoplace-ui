@@ -77,6 +77,7 @@ export const MyNFT = () => {
 
   const getNFTDetails = async () => {
     dispatch(resetCollections());
+    console.log("Started")
     try {
       const provider = new JsonRpcProvider(rpc);
       nftAddrList.map(async (item) => {
@@ -132,7 +133,9 @@ export const MyNFT = () => {
   };
 
   useEffect(() => {
-    getNFTs();
+    if(!nftAddrList.length === 0){
+      getNFTs();
+    }
   }, []);
 
   useEffect(() => {
@@ -140,6 +143,7 @@ export const MyNFT = () => {
       getNFTDetails();
     }
   }, [account, library]);
+
   const handleRefresh = async () => {
     if(account && library){
       dispatch(resetCollections());
@@ -208,7 +212,6 @@ export const MyNFT = () => {
                   <Typography variant="h4" sx={{color:"grey", textAlign: "center"}}>You do not have any NFT's in your wallet.</Typography>
                 </div>
                 )}
-                {view === 1 && NFTCard()}
                 {view !== 1 &&
                   nfts.map((item, index) => {
                     return (

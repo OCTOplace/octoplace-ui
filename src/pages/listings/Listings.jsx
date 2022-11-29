@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Divider, Grid, Typography, Paper } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { styled } from "@mui/system";
 import TabsUnstyled from "@mui/base/TabsUnstyled";
 import TabUnstyled from "@mui/base/TabUnstyled";
@@ -10,14 +17,30 @@ import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaicOutlined";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../connectors/address";
+import { rpc, swapContract } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
-import swapAbi from "../abi/swap.json";
+import swapAbi from "../../abi/swap.json";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { resetListings, setAllListings } from "../redux/slices/listing-slice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  resetListings,
+  setActiveListings,
+  setAllListings,
+  setCompletedListings,
+} from "../../redux/slices/listing-slice";
+import {
+  formatListings,
+  getActiveListings,
+  getCompletedListings,
+  metadataUrl,
+} from "../../utils/format-listings";
+import { Refresh } from "@mui/icons-material";
+import { ActiveListings } from "./components/active";
+import erc721Abi from "../../abi/erc721.json";
+import axios from "axios";
+
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -55,47 +78,28 @@ const TabsList = styled(TabsListUnstyled)`
 
 export const Listings = () => {
   const [view, setView] = useState(3);
-const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
+  const listings = useSelector((state) => state.listings.allListings);
   const getListings = async () => {
+    dispatch(resetListings());
     const provider = new JsonRpcProvider(rpc);
-    try{
+    try {
       const contract = new Contract(swapContract, swapAbi, provider);
-      const listings = await contract.readAllListings();
-      dispatch(setAllListings(listings))
-      console.log(listings);
-    }catch (err){
-      console.log("Error fetching the listings:", err)
+      let listings = await contract.readAllListings();
+      listings = formatListings(listings);
+      dispatch(setAllListings(listings));
+      dispatch(setActiveListings(getActiveListings(listings)));
+      dispatch(setCompletedListings(getCompletedListings(listings)));
+    } catch (err) {
+      console.log("Error fetching the listings:", err);
     }
-  }
+  };
 
   useEffect(() => {
-    dispatch(resetListings());
+    
     getListings();
-  }, [])
-  const card = () => {
-    return (
-      <>
-        <Box
-          sx={{
-            width: "100%",
-            height: "248px",
-            bgcolor: "#262626",
-            borderRadius: "12px",
-            position: "relative",
-          }}
-        >
-          <Box sx={{ bottom: "10px", pl: 2 }}>
-            <div style={{ display: "flex" }}>
-              <Typography sx={{ fontWeight: "bold" }}>Title 1</Typography>
-              <VerifiedOutlinedIcon />
-            </div>
-            <Typography>#1752</Typography>
-          </Box>
-        </Box>
-      </>
-    );
-  };
+  }, []);
+
   return (
     <Container>
       <Row>
@@ -103,8 +107,8 @@ const dispatch = useDispatch();
           <TabsUnstyled defaultValue={0}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
               <TabsList>
-                <Tab>All Listings</Tab>
-                <Tab>Listed</Tab>
+                <Tab>Active Listings</Tab>
+                <Tab>Swap Completed</Tab>
               </TabsList>
               <Box
                 sx={{
@@ -138,26 +142,23 @@ const dispatch = useDispatch();
                       variant="middle"
                       flexItem
                     />
-                    <AutoAwesomeMosaicOutlinedIcon
+                    <Refresh
                       sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                      onClick={() => setView(1)}
+                      onClick={() => {getListings()}}
                     />
                   </Box>
                 </Paper>
               </Box>
             </Box>
-            <TabPanel value={0}>
-              <Grid container spacing={1}>
-                {view === 1 && card()}
-                {view !== 1 &&
-                  [...Array(20).keys()].map((item) => {
-                    return (
-                      <Grid item xs={12} sm={6} md={view}>
-                        {card()}
-                      </Grid>
-                    );
-                  })}
-              </Grid>
+            <TabPanel sx={{ minHeight: "60vh" }} value={0}>
+              <Fragment>
+                {listings && listings.length > 0 && (
+                  <ActiveListings
+                    view={view}
+                    listings={getActiveListings(listings)}
+                  />
+                )}
+              </Fragment>
             </TabPanel>
             <TabPanel value={1}>Content two</TabPanel>
           </TabsUnstyled>

@@ -3,7 +3,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home"
-import { Listings } from './pages/Listings';
+import { Listings } from './pages/listings/Listings';
 import {MyNFT} from './pages/MyNFT';
 import { ListingOffers } from './pages/ListingOffers';
 import { SwapComplete } from './pages/SwapComplete';
