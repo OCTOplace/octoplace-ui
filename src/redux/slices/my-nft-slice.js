@@ -10,10 +10,10 @@ export const myNFTSlice = createSlice({
   initialState,
   reducers: {
     addNFTCollection: (state, action) => {
-      state.nftCollections = [...state.nftCollections, action.payload];
+      state.nftCollections = action.payload;
     },
     addNFT: (state, action) => {
-        state.nfts = [...state.nfts, action.payload]
+        state.nfts = action.payload
     },
     resetCollections: (state) => {
         state.nftCollections = [];

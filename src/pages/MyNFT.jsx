@@ -23,6 +23,7 @@ import { addNFT, addNFTCollection, resetCollections } from "../redux/slices/my-n
 import axios from "axios";
 import { NFTCard } from "../components/NFTCard";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { createAction } from "@reduxjs/toolkit";
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -60,7 +61,7 @@ const TabsList = styled(TabsListUnstyled)`
 
 export const MyNFT = () => {
   const [view, setView] = useState(3);
-  const [loading, setLoading] = useState(false);
+  const loading = useSelector(state => state.app.isLoading);
   const { account, library } = useWeb3React();
   const nftAddrList = useSelector((state) => state.app.nftAddressList);
   const nfts = useSelector((state) => state.myNFT.nfts);
@@ -76,59 +77,8 @@ export const MyNFT = () => {
   };
 
   const getNFTDetails = async () => {
-    dispatch(resetCollections());
-    console.log("Started")
-    try {
-      const provider = new JsonRpcProvider(rpc);
-      nftAddrList.map(async (item) => {
-        setLoading(true);
-        const contract = new Contract(item.address, erc721Abi, provider);
-        const collectionName = await contract.name();
-        const colSymbol = await contract.symbol();
-        const balance = await contract.balanceOf(account);
-        if (Number(formatUnits(balance, 0)) > 0) {
-          const tokens = [];
-          for (let i = 0; i < balance; i++) {
-            const id = await contract.tokenOfOwnerByIndex(account, i);
-            const uri = await contract.tokenURI(Number(formatUnits(id, 0)));
-            let tokenData;
-            try {
-              const result = await axios.get(uri);
-              tokenData = result.data;
-            } catch {
-              tokenData = null;
-            }
-            tokens.push({
-              id: Number(formatUnits(id, 0)),
-              url: uri,
-              details: tokenData,
-            });
-
-            dispatch(
-              addNFT({
-                collectionName: collectionName,
-                collectionSymbol: colSymbol,
-                contractAddress: item.address,
-                tokenId: Number(formatUnits(id, 0)),
-                metadataUrl: uri,
-                metadata: tokenData,
-              })
-            );
-          }
-          dispatch(
-            addNFTCollection({
-              collectionName,
-              colSymbol,
-              balance: Number(formatUnits(balance, 0)),
-              tokens,
-              address: item.address,
-            })
-          );
-        }
-        setLoading(false);
-      });
-    } catch (e){
-      console.log(e)
+    if(nfts.length ===0){
+      dispatch(createAction("LOAD_MY_NFTS")({nftAddrList, account}));
     }
   };
 
