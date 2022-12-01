@@ -10,20 +10,21 @@ import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setAddressList } from "../redux/slices/app-slice";
+import { setAddressList } from "../../redux/slices/app-slice";
 import { useWeb3React } from "@web3-react/core";
-import erc721Abi from "../abi/erc721.json";
+import erc721Abi from "../../abi/erc721.json";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc } from "../connectors/address";
+import { rpc } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from "@ethersproject/units";
-import { addNFT, addNFTCollection, resetCollections } from "../redux/slices/my-nft-slice";
+import { addNFT, addNFTCollection, resetCollections } from "../../redux/slices/my-nft-slice";
 import axios from "axios";
-import { NFTCard } from "../components/NFTCard";
+import { NFTCard } from "../../components/NFTCard";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { createAction } from "@reduxjs/toolkit";
+import { MyListedNFT } from "./my-listed-nft";
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -61,10 +62,13 @@ const TabsList = styled(TabsListUnstyled)`
 
 export const MyNFT = () => {
   const [view, setView] = useState(3);
-  const loading = useSelector(state => state.app.isLoading);
+  const loading = useSelector(state => state.myNFT.isLoading);
   const { account, library } = useWeb3React();
   const nftAddrList = useSelector((state) => state.app.nftAddressList);
   const nfts = useSelector((state) => state.myNFT.nfts);
+  const loggedAddress = useSelector(state => state.account.address);
+  const nftOwner = useSelector(state => state.myNFT.ownerAddress);
+
   const dispatch = useDispatch();
 
   const getNFTs = async () => {
@@ -76,6 +80,13 @@ export const MyNFT = () => {
     dispatch(setAddressList(nftAddressList));
   };
 
+  useEffect(()=> {
+    if(loggedAddress !== '' && nftOwner !== loggedAddress){
+      
+        dispatch(createAction("LOAD_MY_NFTS")({nftAddrList, account:loggedAddress}));
+      
+    }
+  }, [loggedAddress]);
   const getNFTDetails = async () => {
     if(nfts.length ===0){
       dispatch(createAction("LOAD_MY_NFTS")({nftAddrList, account}));
@@ -171,7 +182,7 @@ export const MyNFT = () => {
                     );
                   })}
                 {
-                  loading && (
+                  loading && account && (
                     <div style={{textAlign: "center", width: "100%", marginTop: "10vh"}}>
               <CircularProgress color="primary" />
               </div>
@@ -179,7 +190,9 @@ export const MyNFT = () => {
                 }
               </Grid>
             </TabPanel>
-            <TabPanel value={1}>Content two</TabPanel>
+            <TabPanel value={1}>
+            <MyListedNFT />
+            </TabPanel>
           </TabsUnstyled>
         </Col>
         <Row>

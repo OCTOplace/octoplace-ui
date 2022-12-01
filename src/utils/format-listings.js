@@ -34,7 +34,7 @@ export const formatListings = (listings) => {
 
 export const getActiveListings = (listings) => {
   return listings.filter(
-    (x) => x.isCompleted === false && x.isCancelled === false
+    (x) => x.listingDetails.isCompleted === false && x.listingDetails.isCancelled === false
   );
 };
 

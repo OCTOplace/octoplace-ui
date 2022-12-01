@@ -20,9 +20,7 @@ export const Home = () => {
     dispatch(setAddressList(nftAddressList));
   };
 
-  useEffect(() => {
-    getNFTs();
-  }, []);
+  
   return (
     <Container>
       <Row className="home-container">

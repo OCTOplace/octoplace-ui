@@ -11,7 +11,17 @@ export const listingSlice = createSlice({
   initialState,
   reducers: {
     setAllListings: (state, action) => {
-      state.allListings = action.payload;
+      const searchRes = state.allListings.filter(
+        (item) =>
+          item.listingDetails.tokenAddress ===
+            action.payload.listingDetails.tokenAddress &&
+          item.listingDetails.tokenId ===
+            action.payload.listingDetails.tokenId
+      );
+      if(searchRes.length === 0){
+        state.allListings = [...state.allListings, action.payload]
+      }
+      
     },
     setActiveListings: (state, action) => {
       state.activeListings = action.payload;

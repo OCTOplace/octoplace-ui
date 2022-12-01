@@ -11,6 +11,7 @@ import {
   Paper,
   DialogActions,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import { AccountBalanceWallet, Close } from "@mui/icons-material";
 import { getImageUrl } from "../utils/string-util";
@@ -26,22 +27,23 @@ export const ListNFTDialog = (props) => {
   const { onClose, open, metadata, tokenId, owner , address} = props;
   const [isApproved, setIsApproved] = useState(false);
   const {account, library} = useWeb3React();
-
+  const [url, setUrl] = useState("");
+  const [imgLoading, setImageLoading] = useState(true);
   const handleClose = () => {
     onClose();
   };
   const provider = new JsonRpcProvider(rpc);
   const getApprovalState = async () => {
-    console.log("Called")
+    
     try{
       if(address && owner){
         const contract = new Contract(address, erc721Abi, provider);
     const isAppr = await contract.isApprovedForAll(owner, swapContract);
-    console.log("Status:", isAppr);
+    
     setIsApproved(isAppr);
       }
     }catch {
-      console.log("load fail")
+      
       setIsApproved(false);
     }
   }
@@ -62,7 +64,7 @@ export const ListNFTDialog = (props) => {
         toast.error("Connect your wallet.")
       }
     }catch (err){
-      console.log(err);
+      
     }
   }
 
@@ -78,7 +80,6 @@ export const ListNFTDialog = (props) => {
       }
     }
     catch (err) {
-      console.log(err)
     }
   }
   return (
@@ -100,11 +101,22 @@ export const ListNFTDialog = (props) => {
           <Fragment>
             <Typography>{`${metadata.name} will be listed for nft swap.`}</Typography>
             <Paper sx={style.paper} className="list-dlg-paper">
-              <img
-                style={style.img}
-                alt="nft artwork"
-                src={metadata ? getImageUrl(metadata.image) : ""}
-              />
+              {
+                !imgLoading && (<img
+                  style={style.img}
+                  alt="nft artwork"
+                  src={url}
+                  onLoad={() => setImageLoading(false)}
+                />)
+              }
+              {
+                imgLoading && (
+                  <div style={style.img}>
+                    <CircularProgress />
+                  </div>
+                )
+              }
+
               <Box>
                 <Typography variant="h6">{metadata.name}</Typography>
                 <Typography variant="body1">{`Token ID: ${tokenId}`}</Typography>

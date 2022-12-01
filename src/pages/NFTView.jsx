@@ -35,8 +35,14 @@ export const NFTView = () => {
     try {
       const contract = new Contract(address, erc721Abi, provider);
       const url = await contract.tokenURI(tokenId);
-      const result = await axios.get(url);
-      let meta = result.data;
+      let meta;
+      try {
+        const result = await axios.get(url);
+        meta = result.data;
+        console.log(meta)
+      } catch (e) {
+        meta = undefined;
+      }
       const name = await contract.name();
       const ownerAddress = await contract.ownerOf(tokenId);
 
@@ -48,29 +54,19 @@ export const NFTView = () => {
   useEffect(() => {
     getDetails();
   }, []);
-  const getListings = async () => {
-    try {
-      const contract = new Contract(swapContract, swapAbi, provider);
-      const listings = await contract.readAllListings();
-      dispatch(setAllListings(formatListings(listings)));
-    } catch (err) {
-      console.log("Error getting listings:", err);
-    }
-  };
-  useEffect(() => {
-    getListings();
-  }, []);
 
   useEffect(() => {
-    if(listings.length > 0 && address && tokenId){
-      console.log("searching")
-      const found = listings.filter(x => (x.tokenAddress === address && x.tokenId === Number(tokenId)))
-      if(found.length === 1){
-        console.log(found);
+    if (listings.length > 0 && address && tokenId) {
+      const found = listings.filter(
+        (x) =>
+          x.listingDetails.tokenAddress === address &&
+          x.listingDetails.tokenId === Number(tokenId)
+      );
+      if (found.length === 1) {
         setListed(true);
       }
     }
-  }, [listings, address , tokenId])
+  }, [listings, address, tokenId]);
   return (
     <Fragment>
       <Box
@@ -83,18 +79,21 @@ export const NFTView = () => {
       >
         <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
-            <NFTCardDetails
-              metadata={metadata}
-              tokenId={tokenId}
-              owner={owner}
-            />
+            
+              <NFTCardDetails
+                metadata={metadata}
+                tokenId={tokenId}
+                owner={owner}
+                name={collectionName}
+              />
+            
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
               {collectionName}
             </Typography>
 
-            {account && account===owner && !isListed && (
+            {account && account === owner && !isListed && (
               <Button
                 sx={{ marginBottom: "16px", borderRadius: "20px" }}
                 variant="contained"
@@ -104,7 +103,7 @@ export const NFTView = () => {
               </Button>
             )}
 
-            { account !== owner && isListed && (
+            {account !== owner && isListed && (
               <Button
                 sx={{ marginBottom: "24px", borderRadius: "20px" }}
                 variant="contained"
@@ -119,9 +118,7 @@ export const NFTView = () => {
               tokenId={tokenId}
             />
 
-            {
-              isListed && (<OfferList />)
-            }
+            {isListed && <OfferList />}
           </Grid>
         </Grid>
       </Box>
@@ -132,7 +129,7 @@ export const NFTView = () => {
         open={listDlgOpen}
         onClose={() => {
           setListDlgOpen(false);
-          getListings();
+          dispatch({ type: "LOAD_ALL_LISTING" });
         }}
         address={address}
       />

@@ -1,5 +1,5 @@
 import { createAction } from "@reduxjs/toolkit";
-import { takeLeading,takeEvery, take, put, call, all } from "redux-saga/effects";
+import { takeLeading, put, all } from "redux-saga/effects";
 
 function* GetMyNFTSagaWatcher() {
   yield takeLeading("GET_MY_NFTS", GetMyNFTWorker);

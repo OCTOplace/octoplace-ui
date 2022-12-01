@@ -16,15 +16,15 @@ import { setLoading } from "../slices/app-slice";
 import { formatUnits } from "@ethersproject/units";
 import axios from "axios";
 import { metadataUrl } from "../../utils/format-listings";
-import { addNFT, addNFTCollection } from "../slices/my-nft-slice";
+import { addNFT, addNFTCollection, resetCollections, setMyNftLoading, setOwner } from "../slices/my-nft-slice";
 function* LoadMyNFTSagaWatcher() {
-  yield takeLeading("LOAD_MY_NFTS", LoadMyNFTWorker);
+  yield takeLatest("LOAD_MY_NFTS", LoadMyNFTWorker);
 }
 
 function* LoadMyNFTWorker(action) {
   try {
-    yield put(setLoading(true));
-    yield console.log(action.payload);
+    yield put(setMyNftLoading(true));
+    yield put(resetCollections());
     const data = yield call(
       loadNFT,
       action.payload.nftAddrList,
@@ -32,8 +32,8 @@ function* LoadMyNFTWorker(action) {
     );
     yield put(addNFTCollection(data.collections));
     yield put(addNFT(data.nfts));
-    yield put(setLoading(false));
-    yield console.log(data);
+    yield put(setMyNftLoading(false));
+    yield put(setOwner(action.payload.account));
   } catch (e) {
     yield;
     yield put(createAction("LOAD_FAILED")(e));
@@ -49,8 +49,9 @@ async function loadNFT(addresses, owner) {
     const collectionName = await contract.name();
     const colSymbol = await contract.symbol();
     const balance = await contract.balanceOf(owner);
+    
     collections.push({
-      contract,
+      address: contract.address,
       name: collectionName,
       symbol: colSymbol,
       balance: Number(formatUnits(balance, 0)),
@@ -59,26 +60,43 @@ async function loadNFT(addresses, owner) {
   for (const collection of collections) {
     if (collection.balance > 0) {
       for (let i = 0; i < collection.balance; i++) {
-        const tokenId = await collection.contract.tokenOfOwnerByIndex(owner, i);
-        const uri = await collection.contract.tokenURI(
-          Number(formatUnits(tokenId, 0))
-        );
-        let tokenData;
+        let tokenId;
+        let uri;
+        const contract = new Contract(collection.address, abi,provider);
         try {
-          const result = await axios.get(metadataUrl(uri));
-          tokenData = result.data;
-        } catch {
-          tokenData = null;
-        }
+          tokenId = await contract.tokenOfOwnerByIndex(
+            owner,
+            i
+          );
+          uri = await contract.tokenURI(
+            Number(formatUnits(tokenId, 0))
+          );
+          let tokenData;
+          try {
+            const result = await axios.get(metadataUrl(uri));
+            tokenData = result.data;
+          } catch {
+            tokenData = undefined;
+          }
 
-        nfts.push({
-          collectionName: collection.name,
-          collectionSymbol: collection.symbol,
-          contractAddress: collection.contract.address,
-          tokenId: Number(formatUnits(tokenId, 0)),
-          url: uri,
-          metadata: tokenData,
-        });
+          nfts.push({
+            collectionName: collection.name,
+            collectionSymbol: collection.symbol,
+            contractAddress: collection.address,
+            tokenId: Number(formatUnits(tokenId, 0)),
+            url: uri,
+            metadata: tokenData,
+          });
+        } catch (e) {
+          nfts.push({
+            collectionName: collection.name,
+            collectionSymbol: collection.symbol,
+            contractAddress: collection.address,
+            tokenId: Number(formatUnits(tokenId, 0)),
+            url: uri,
+            metadata: undefined,
+          })
+        }
       }
     }
   }

@@ -2,10 +2,13 @@ import React, {useState} from 'react'
 import { Box, CircularProgress,Chip, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { VerifiedOutlined, FavoriteBorder, ExpandMore, Label } from "@mui/icons-material";
 import { getImageUrl, shortenAddress } from '../utils/string-util';
+import { useEffect } from 'react';
 
 export const NFTCardDetails = (props) => {
     const {metadata, tokenId, owner} = props;
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [isAnimation, setAnimation] = useState(false);
+  const [imgUrl, setUrl] = useState("");
     const styles = {
         card: {
           width: "100%",
@@ -67,17 +70,30 @@ export const NFTCardDetails = (props) => {
           marginBottom: "8px",
         },
       };
-    
+    useEffect(()=> {
+      if(metadata){
+        try{
+          if(metadata.image){
+            setUrl(getImageUrl(metadata.image))
+          }else if(metadata.aimation_url){
+            setAnimation(true);
+            setUrl(getImageUrl(metadata.animation_url))
+          }
+        }catch(e){
+          setUrl("");
+        }
+      }
+    }, [metadata]);
     return (
       <>
         <Box sx={styles.card}>
           <Box sx={{ p: 2 }}>
-            <img
+            {metadata && <img
               alt="kjbhv"
-              src={metadata ? getImageUrl(metadata.image) : ""}
+              src={imgUrl}
               style={styles.nftImg}
               onLoad={() => setImgLoaded(true)}
-            />
+            />}
             {!imgLoaded && (
               <Box
                 display="flex"
@@ -93,7 +109,7 @@ export const NFTCardDetails = (props) => {
           <Box sx={styles.metabox}>
             <div style={{ display: "flex" }}>
               <Typography sx={{ fontWeight: "bold", mr: 1 }}>
-                {metadata ? metadata.name : ""}
+                {metadata ? metadata.name : props.name}
               </Typography>
               <VerifiedOutlined />
             </div>
@@ -135,6 +151,7 @@ export const NFTCardDetails = (props) => {
                         <Chip
                           label={`${attribute.trait_type} : ${attribute.value}`}
                           sx={styles.chip}
+                          key={attribute.trait_type}
                           variant="outlined"
                         />
                       );

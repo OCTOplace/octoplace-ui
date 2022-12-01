@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home"
 import { Listings } from './pages/listings/Listings';
-import {MyNFT} from './pages/MyNFT';
+import {MyNFT} from './pages/dashboard/MyNFT';
 import { ListingOffers } from './pages/ListingOffers';
 import { SwapComplete } from './pages/SwapComplete';
 import { MyListingSwapOffer } from './pages/MyListingSwapOffer';
@@ -18,7 +18,9 @@ import { setAddress, setBalance, setChainId, setLogin, setLogout } from "./redux
 import {getFormattedEther} from "./utils/unit-utils";
 import { resetCollections } from "./redux/slices/my-nft-slice";
 import { NFTView } from "./pages/NFTView";
-
+import { db } from "./firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { setAddressList } from "./redux/slices/app-slice";
 function App() {
   const {account,chainId, library} = useWeb3React();
   const dispatch = useDispatch();
@@ -41,6 +43,18 @@ function App() {
     }
   }, [account])
 
+  const getNFTs = async () => {
+    const nftCol = collection(db, "nftAddresses");
+    const nftSnapshot = await getDocs(nftCol);
+    const nftAddressList = nftSnapshot.docs.map((doc) => {
+      return doc.data();
+    });
+    dispatch(setAddressList(nftAddressList));
+  };
+  useEffect(()=> {
+getNFTs();
+  dispatch({type:"LOAD_ALL_LISTING"});
+  },[])
   return (
     <Router>
       <Layout>

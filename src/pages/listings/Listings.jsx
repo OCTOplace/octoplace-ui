@@ -80,18 +80,11 @@ export const Listings = () => {
   const [view, setView] = useState(3);
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
+  const isLoading = useSelector(state => state.app.isLoading);
+
   const getListings = async () => {
-    dispatch(resetListings());
-    const provider = new JsonRpcProvider(rpc);
-    try {
-      const contract = new Contract(swapContract, swapAbi, provider);
-      let listings = await contract.readAllListings();
-      listings = formatListings(listings);
-      dispatch(setAllListings(listings));
-      dispatch(setActiveListings(getActiveListings(listings)));
-      dispatch(setCompletedListings(getCompletedListings(listings)));
-    } catch (err) {
-      console.log("Error fetching the listings:", err);
+    if(listings.length === 0){
+      dispatch({type: "LOAD_ALL_LISTING"})
     }
   };
 
@@ -155,9 +148,19 @@ export const Listings = () => {
                 {listings && listings.length > 0 && (
                   <ActiveListings
                     view={view}
-                    listings={getActiveListings(listings)}
                   />
                 )}
+                {isLoading && (
+          <div
+            style={{
+              textAlign: "center",
+              width: "100%",
+              marginTop: "10vh",
+            }}
+          >
+            <CircularProgress color="primary" />
+          </div>
+        )}
               </Fragment>
             </TabPanel>
             <TabPanel value={1}>Content two</TabPanel>

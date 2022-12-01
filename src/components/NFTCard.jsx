@@ -42,11 +42,10 @@ export const NFTCard = (props) => {
     
     
     useEffect(() => {
-        if(metadata){
-            if(metadata.image.includes("ipfs://")){
+        if(metadata !== undefined){
+            if(metadata.image && metadata.image.includes("ipfs://")){
                 let url = metadata.image;
                 const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-                console.log("New Url:", newUrl)
                 setImgUrl(newUrl);
             }
             else{
