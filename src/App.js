@@ -13,7 +13,7 @@ import { MyListingSwapOffer2 } from './pages/MyListingSwapOffer2';
 import {useWeb3React} from "@web3-react/core";
 import "./app.scss"
 import { useEffect } from "react";
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import { setAddress, setBalance, setChainId, setLogin, setLogout } from "./redux/slices/accout-slice";
 import {getFormattedEther} from "./utils/unit-utils";
 import { resetCollections } from "./redux/slices/my-nft-slice";
@@ -21,9 +21,13 @@ import { NFTView } from "./pages/view-nft/NFTView";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { setAddressList } from "./redux/slices/app-slice";
+import { createAction } from "@reduxjs/toolkit";
 function App() {
   const {account,chainId, library} = useWeb3React();
   const dispatch = useDispatch();
+  const loggedAddress = useSelector(state => state.account.address);
+  const myNftOwner = useSelector(state => state.myNFT.nftOwner);
+  const collections = useSelector(state => state.app.nftAddressList);
 
   const getBalance = async() => {
     const bal = await library.getBalance(account);
@@ -42,6 +46,13 @@ function App() {
       dispatch(resetCollections())
     }
   }, [account])
+
+  useEffect(() => {
+    console.log(loggedAddress);
+    if(loggedAddress !== "" && myNftOwner !== loggedAddress){
+      dispatch(createAction("LOAD_MY_NFTS")({nftAddrList: collections, account:loggedAddress}));
+    }
+  }, [loggedAddress])
 
   const getNFTs = async () => {
     const nftCol = collection(db, "nftAddresses");
@@ -65,7 +76,7 @@ getNFTs();
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
           <Route path="swap" element={<SingleSwapOffer />} />
-          <Route path="swap/mylist" element={<MyListingSwapOffer />}/>
+          <Route path="swap/initiate-offer/:baseNft/:baseTokenId/:offerNft/:offerTokenId" element={<MyListingSwapOffer />}/>
           <Route path="swap/mylist2" element={<MyListingSwapOffer2 />}/>
           <Route path="swap/done" element={<SwapComplete />} />
         </Routes>

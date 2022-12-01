@@ -73,14 +73,6 @@ export const MyNFT = () => {
     });
     dispatch(setAddressList(nftAddressList));
   };
-
-  useEffect(()=> {
-    if(loggedAddress !== '' && nftOwner !== loggedAddress){
-      
-        dispatch(createAction("LOAD_MY_NFTS")({nftAddrList, account:loggedAddress}));
-      
-    }
-  }, [loggedAddress]);
   const getNFTDetails = async () => {
     if(nfts.length ===0){
       dispatch(createAction("LOAD_MY_NFTS")({nftAddrList, account}));

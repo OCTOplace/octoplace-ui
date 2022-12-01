@@ -15,10 +15,12 @@ import { NFTCardDetails } from "../../components/nft-card-details";
 import { OfferList } from "../../components/offer-list";
 import { ListNFTDialog } from "./dialogs/list-nft-dlg";
 import { toast } from "react-toastify";
+import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
 
 export const NFTView = () => {
   const { address, tokenId } = useParams();
   const [listDlgOpen, setListDlgOpen] = useState(false);
+  const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
@@ -66,12 +68,12 @@ export const NFTView = () => {
   }, [listings, address, tokenId]);
 
   const handleOfferSwap = () => {
-    if(account){
-
-    }else{
+    if (account) {
+      setOfferDlgOpen(true);
+    } else {
       toast.error("Please connect your wallet!");
     }
-  }
+  };
   return (
     <Fragment>
       <Box
@@ -84,14 +86,12 @@ export const NFTView = () => {
       >
         <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
-            
-              <NFTCardDetails
-                metadata={metadata}
-                tokenId={tokenId}
-                owner={owner}
-                name={collectionName}
-              />
-            
+            <NFTCardDetails
+              metadata={metadata}
+              tokenId={tokenId}
+              owner={owner}
+              name={collectionName}
+            />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
@@ -138,6 +138,12 @@ export const NFTView = () => {
           dispatch({ type: "LOAD_ALL_LISTING" });
         }}
         address={address}
+      />
+      <OfferNFTDialog
+        tokenAddress={address}
+        tokenId={tokenId}
+        open={offerDlgOpen}
+        onClose={() => setOfferDlgOpen(false)}
       />
     </Fragment>
   );
