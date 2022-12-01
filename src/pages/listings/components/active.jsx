@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState } from "react";
-import { Grid, CircularProgress } from "@mui/material";
+import React, { Fragment } from "react";
+import { Grid } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NFTListingCard } from "./ListingCard";

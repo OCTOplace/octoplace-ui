@@ -17,7 +17,7 @@ import {useDispatch} from "react-redux"
 import { setAddress, setBalance, setChainId, setLogin, setLogout } from "./redux/slices/accout-slice";
 import {getFormattedEther} from "./utils/unit-utils";
 import { resetCollections } from "./redux/slices/my-nft-slice";
-import { NFTView } from "./pages/NFTView";
+import { NFTView } from "./pages/view-nft/NFTView";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { setAddressList } from "./redux/slices/app-slice";

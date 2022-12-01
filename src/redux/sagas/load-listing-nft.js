@@ -1,10 +1,10 @@
 import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
-import { takeLeading, put, all, call, takeEvery } from "redux-saga/effects";
-import {rpc, swapContract} from "../../connectors/address";
+import {  put,  call, takeEvery } from "redux-saga/effects";
+import {rpc} from "../../connectors/address";
 import ercAbi from "../../abi/erc721.json";
-import { formatListings, metadataUrl } from "../../utils/format-listings";
+import {  metadataUrl } from "../../utils/format-listings";
 import { setLoading} from "../slices/app-slice";
 import axios from "axios";
 import { setAllListings } from "../slices/listing-slice";

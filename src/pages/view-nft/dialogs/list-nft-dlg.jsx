@@ -11,14 +11,13 @@ import {
   Paper,
   DialogActions,
   Button,
-  CircularProgress,
+  CircularProgress
 } from "@mui/material";
-import { AccountBalanceWallet, Close } from "@mui/icons-material";
-import { getImageUrl } from "../utils/string-util";
+import {  Close } from "@mui/icons-material";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../connectors/address";
-import erc721Abi from "../abi/erc721.json";
-import swapAbi from "../abi/swap.json";
+import { rpc, swapContract } from "../../../connectors/address";
+import erc721Abi from "../../../abi/erc721.json";
+import swapAbi from "../../../abi/swap.json";
 import { Contract } from "@ethersproject/contracts";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";
@@ -27,6 +26,7 @@ export const ListNFTDialog = (props) => {
   const { onClose, open, metadata, tokenId, owner , address} = props;
   const [isApproved, setIsApproved] = useState(false);
   const {account, library} = useWeb3React();
+  // eslint-disable-next-line no-unused-vars
   const [url, setUrl] = useState("");
   const [imgLoading, setImageLoading] = useState(true);
   const handleClose = () => {
@@ -70,7 +70,7 @@ export const ListNFTDialog = (props) => {
 
   const handleListing = async () => {
     try{
-      if(account && library, tokenId, address){
+      if(account && library && tokenId && address){
         const signer = await library.getSigner();
         const contract = new Contract(swapContract,swapAbi , signer);
         const txResult = await contract.createListing(tokenId, address);

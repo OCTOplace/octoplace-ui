@@ -1,22 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, Grid, Typography } from "@mui/material";
-import erc721Abi from "../abi/erc721.json";
+import erc721Abi from "../../abi/erc721.json";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../connectors/address";
+import { rpc } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAllListings } from "../redux/slices/listing-slice";
-import swapAbi from "../abi/swap.json";
 import { useWeb3React } from "@web3-react/core";
-import { NFTDetails } from "../components/nft-details";
-import { NFTCardDetails } from "../components/nft-card-details";
-import { OfferList } from "../components/offer-list";
-import { ListNFTDialog } from "../components/list-nft-dlg";
-import { formatListings } from "../utils/format-listings";
+import { NFTDetails } from "../../components/nft-details";
+import { NFTCardDetails } from "../../components/nft-card-details";
+import { OfferList } from "../../components/offer-list";
+import { ListNFTDialog } from "./dialogs/list-nft-dlg";
+import { toast } from "react-toastify";
 
 export const NFTView = () => {
   const { address, tokenId } = useParams();
@@ -39,7 +37,6 @@ export const NFTView = () => {
       try {
         const result = await axios.get(url);
         meta = result.data;
-        console.log(meta)
       } catch (e) {
         meta = undefined;
       }
@@ -67,6 +64,14 @@ export const NFTView = () => {
       }
     }
   }, [listings, address, tokenId]);
+
+  const handleOfferSwap = () => {
+    if(account){
+
+    }else{
+      toast.error("Please connect your wallet!");
+    }
+  }
   return (
     <Fragment>
       <Box
@@ -107,6 +112,7 @@ export const NFTView = () => {
               <Button
                 sx={{ marginBottom: "24px", borderRadius: "20px" }}
                 variant="contained"
+                onClick={handleOfferSwap}
               >
                 Offer SWAP
               </Button>

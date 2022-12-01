@@ -1,18 +1,13 @@
 import { Contract } from "@ethersproject/contracts";
-import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
 import {
   takeLatest,
-  takeLeading,
-  takeEvery,
-  take,
   put,
-  call,
-  all,
+  call
 } from "redux-saga/effects";
 import { rpc } from "../../connectors/address";
 import abi from "../../abi/erc721.json";
-import { setLoading } from "../slices/app-slice";
 import { formatUnits } from "@ethersproject/units";
 import axios from "axios";
 import { metadataUrl } from "../../utils/format-listings";

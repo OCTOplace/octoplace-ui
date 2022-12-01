@@ -1,9 +1,5 @@
-import { Contract } from "@ethersproject/contracts";
-import { JsonRpcProvider } from "@ethersproject/providers";
+
 import { formatUnits } from "@ethersproject/units";
-import { rpc } from "../connectors/address";
-import erc721Abi from "../abi/erc721.json";
-import axios from "axios";
 
 const listingId = 0;
 const tokenAddress = 1;

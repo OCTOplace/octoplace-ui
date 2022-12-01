@@ -10,6 +10,7 @@ import { useState } from 'react';
 import {NFTListingCard} from "../listings/components/ListingCard";
 
 export const MyListedNFT = (props) => {
+    // eslint-disable-next-line no-unused-vars
     const [view, setView] = useState(3);
     const loading = useSelector(state => state.app.isLoading);
     const {account} = useWeb3React();

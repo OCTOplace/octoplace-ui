@@ -2,8 +2,6 @@
 import {
   Box,
   Divider,
-  Grid,
-  Typography,
   Paper,
   CircularProgress,
 } from "@mui/material";
@@ -15,31 +13,11 @@ import TabPanelUnstyled from "@mui/base/TabPanelUnstyled";
 import { Container, Row, Col } from "react-bootstrap";
 import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
-import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaicOutlined";
 import { Fragment, useState } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../../connectors/address";
-import { Contract } from "@ethersproject/contracts";
-import swapAbi from "../../abi/swap.json";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  resetListings,
-  setActiveListings,
-  setAllListings,
-  setCompletedListings,
-} from "../../redux/slices/listing-slice";
-import {
-  formatListings,
-  getActiveListings,
-  getCompletedListings,
-  metadataUrl,
-} from "../../utils/format-listings";
 import { Refresh } from "@mui/icons-material";
 import { ActiveListings } from "./components/active";
-import erc721Abi from "../../abi/erc721.json";
-import axios from "axios";
 
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;

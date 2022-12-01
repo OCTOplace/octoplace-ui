@@ -40,7 +40,7 @@ export const OfferList = () => {
           {listData.map((item) => {
             return (
               <>
-                <Grid item xs={1}>
+                <Grid key={item.imageSrc} item xs={1}>
                   <Typography>{item.serial}</Typography>
                 </Grid>
                 <Grid item xs={3}>

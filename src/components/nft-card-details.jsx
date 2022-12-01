@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 export const NFTCardDetails = (props) => {
     const {metadata, tokenId, owner} = props;
   const [imgLoaded, setImgLoaded] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [isAnimation, setAnimation] = useState(false);
   const [imgUrl, setUrl] = useState("");
     const styles = {

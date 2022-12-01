@@ -1,5 +1,5 @@
 import React from 'react'
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Box } from '@mui/material';
 import {  ExpandMore, ListAlt } from '@mui/icons-material';
 import { shortenAddress } from '../utils/string-util';
 export const NFTDetails = ({metadata, address, tokenId}) => {

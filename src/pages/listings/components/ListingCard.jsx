@@ -5,12 +5,6 @@ import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc } from "../../../connectors/address";
-import { Contract } from "@ethersproject/contracts";
-import nftAbi from "../../../abi/erc721.json";
-import axios from "axios";
-import { metadataUrl } from "../../../utils/format-listings";
 
 export const NFTListingCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
