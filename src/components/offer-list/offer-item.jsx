@@ -10,13 +10,14 @@ import axios from "axios";
 import { metadataUrl } from "../../utils/format-listings";
 import { getImageUrl } from "../../utils/string-util";
 import { Box } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 export const OfferItem = (props) => {
   const { offer, serial } = props;
   const [name, setName] = useState("");
   const [imgUrl, setUrl] = useState("");
   const [imgLoaded, setImgLoaded] = useState(false);
-
+  const navigate = useNavigate();
   const getOfferNft = async () => {
     const provider = new JsonRpcProvider(rpc);
     const contract = new Contract(offer.offerTokenAddress, ercAbi, provider);
@@ -48,6 +49,7 @@ export const OfferItem = (props) => {
   return (
     <Fragment>
       <Grid
+      onClick={() => navigate(`/swap/${offer.offerId}`)}
         container
         spacing={1}
         sx={{

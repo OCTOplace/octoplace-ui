@@ -11,6 +11,7 @@ import TabUnstyled from "@mui/base/TabUnstyled";
 import TabsListUnstyled from "@mui/base/TabsListUnstyled";
 import TabPanelUnstyled from "@mui/base/TabPanelUnstyled";
 import { styled } from "@mui/system";
+import { MyOfferItem } from "./components/my-offer-item";
 
 export const MyOffers = (props) => {
   const { account } = useWeb3React();
@@ -64,18 +65,19 @@ export const MyOffers = (props) => {
                     {myOffers
                       .filter((x) => x.listingTokenOwner === account)
                       .map((item) => (
-                        <Grid sx={{ marginLeft: "16px" }} item xs={12}>
+                        <Grid key={item.offerId} sx={{ marginLeft: "16px" }} item xs={12}>
                           <Box
                             sx={{
-                              height: "160px",
+                              height: "240px",
                               backgroundColor: "#6c6c6c",
                               borderRadius: "12px",
                               mb:2,
+                              p:2
                             }}
                             width="100%"
                             display="flex"
                           >
-                            aaa
+                            <MyOfferItem item={item} />
                           </Box>
                         </Grid>
                       ))}
@@ -89,14 +91,16 @@ export const MyOffers = (props) => {
                         <Grid sx={{ marginLeft: "16px" }} item xs={12}>
                           <Box
                             sx={{
-                              height: "160px",
+                              height: "240px",
                               backgroundColor: "#6c6c6c",
                               borderRadius: "12px",
+                              p:2,
+                                mb:2
                             }}
                             width="100%"
                             display="flex"
                           >
-                            aaa
+                            <MyOfferItem item={item} />
                           </Box>
                         </Grid>
                       ))}

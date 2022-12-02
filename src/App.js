@@ -75,7 +75,7 @@ getNFTs();
           <Route path="nft/:address/:tokenId" element={<NFTView /> } />
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
-          <Route path="swap" element={<SingleSwapOffer />} />
+          <Route path="swap/:offerId" element={<SingleSwapOffer />} />
           <Route path="swap/initiate-offer/:listingId/:offerNft/:offerTokenId" element={<MyListingSwapOffer />}/>
           <Route path="swap/mylist2" element={<MyListingSwapOffer2 />}/>
           <Route path="swap/done" element={<SwapComplete />} />
