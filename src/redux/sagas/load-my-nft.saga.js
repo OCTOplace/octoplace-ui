@@ -19,6 +19,7 @@ function* LoadMyNFTSagaWatcher() {
 function* LoadMyNFTWorker(action) {
   try {
     yield put(setMyNftLoading(true));
+    yield put(setOwner(action.payload.account));
     yield put(resetCollections());
     const data = yield call(
       loadNFT,
@@ -28,7 +29,6 @@ function* LoadMyNFTWorker(action) {
     yield put(addNFTCollection(data.collections));
     yield put(addNFT(data.nfts));
     yield put(setMyNftLoading(false));
-    yield put(setOwner(action.payload.account));
   } catch (e) {
     yield;
     yield put(createAction("LOAD_FAILED")(e));

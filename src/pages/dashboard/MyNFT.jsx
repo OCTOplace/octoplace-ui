@@ -19,6 +19,7 @@ import { NFTCard } from "../../components/NFTCard";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { createAction } from "@reduxjs/toolkit";
 import { MyListedNFT } from "./my-listed-nft";
+import { MyOffers } from "./my-offers";
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -60,8 +61,6 @@ export const MyNFT = () => {
   const { account, library } = useWeb3React();
   const nftAddrList = useSelector((state) => state.app.nftAddressList);
   const nfts = useSelector((state) => state.myNFT.nfts);
-  const loggedAddress = useSelector(state => state.account.address);
-  const nftOwner = useSelector(state => state.myNFT.ownerAddress);
 
   const dispatch = useDispatch();
 
@@ -106,6 +105,7 @@ export const MyNFT = () => {
               <TabsList>
                 <Tab>My NFT</Tab>
                 <Tab>Listed</Tab>
+                <Tab>Offers</Tab>
               </TabsList>
               <Box
                 sx={{
@@ -176,8 +176,11 @@ export const MyNFT = () => {
                 }
               </Grid>
             </TabPanel>
-            <TabPanel value={1}>
-            <MyListedNFT />
+            <TabPanel sx={{minHeight: "60vh"}} value={1}>
+            <MyListedNFT view={view} />
+            </TabPanel>
+            <TabPanel sx={{minHeight: "60vh"}} value={2}>
+            <MyOffers view={view} />
             </TabPanel>
           </TabsUnstyled>
         </Col>

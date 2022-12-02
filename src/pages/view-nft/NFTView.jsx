@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { NFTDetails } from "../../components/nft-details";
 import { NFTCardDetails } from "../../components/nft-card-details";
-import { OfferList } from "../../components/offer-list";
+import { OfferList } from "../../components/offer-list/offer-list";
 import { ListNFTDialog } from "./dialogs/list-nft-dlg";
 import { toast } from "react-toastify";
 import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
@@ -25,6 +25,7 @@ export const NFTView = () => {
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
+  const [listing, setListing] = useState();
   const { account } = useWeb3React();
   const listings = useSelector((state) => state.listings.allListings);
   const dispatch = useDispatch();
@@ -56,13 +57,14 @@ export const NFTView = () => {
 
   useEffect(() => {
     if (listings.length > 0 && address && tokenId) {
-      const found = listings.filter(
+      const found = listings.find(
         (x) =>
           x.listingDetails.tokenAddress === address &&
           x.listingDetails.tokenId === Number(tokenId)
       );
-      if (found.length === 1) {
+      if (found) {
         setListed(true);
+        setListing(found);
       }
     }
   }, [listings, address, tokenId]);
@@ -124,7 +126,7 @@ export const NFTView = () => {
               tokenId={tokenId}
             />
 
-            {isListed && <OfferList />}
+            {listing && <OfferList listingId={listing.listingDetails.listingid} />}
           </Grid>
         </Grid>
       </Box>
@@ -139,12 +141,14 @@ export const NFTView = () => {
         }}
         address={address}
       />
-      <OfferNFTDialog
-        tokenAddress={address}
-        tokenId={tokenId}
-        open={offerDlgOpen}
-        onClose={() => setOfferDlgOpen(false)}
-      />
+       {listing && (
+        <OfferNFTDialog
+          tokenAddress={address}
+          listingId={listing.listingDetails.listingid}
+          open={offerDlgOpen}
+          onClose={() => setOfferDlgOpen(false)}
+        />
+      )} 
     </Fragment>
   );
 };

@@ -1,19 +1,47 @@
-import React from 'react';
-import {Box, Typography, Grid} from "@mui/material";
-import {FormatListBulleted} from "@mui/icons-material";
-export const OfferList = () => {
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState} from 'react';
+import {Box, Typography, Grid, Divider} from "@mui/material";
+import { FormatListBulleted} from "@mui/icons-material";
+import { useEffect } from 'react';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { rpc, swapContract } from '../../connectors/address';
+import { Contract } from '@ethersproject/contracts';
+import swapAbi from "../../abi/swap.json";
+import {formatOffers} from "../../utils/format-listings"
+import { OfferItem } from './offer-item';
+import { useDispatch } from 'react-redux';
+import { setOffers } from '../../redux/slices/listing-slice';
+
+export const OfferList = (props) => {
+  const {listingId} = props;
+  const [offers, setPOffers] = useState([]);
+  const dispatch = useDispatch();
+
+  const getAllOffers = async () => {
+    const provider = new JsonRpcProvider(rpc);
+    const contract = new Contract(swapContract, swapAbi, provider);
+    const offer = await contract.readAllOffers();
+    setPOffers(formatOffers(offer).filter(x => x.listingId === listingId));
+    const result = formatOffers(offer);
+    dispatch(setOffers(result));
+
+  }
+  useEffect(() => {
+    if(listingId){
+      getAllOffers();
+    }
+  }, [listingId])
     return (
       <Box
         sx={{
           width: "100%",
           maxWidth: "100%",
-          height: "100%",
           border: "1px solid #6C6C6C",
           borderRadius: "12px",
-          maxHeight: "560px",
+          paddingBottom: "24px"
         }}
       >
-        <Box sx={{ display: "flex", color: "#f4f4f4", p: 2 }}>
+        <Box sx={{ display: "flex",borderBottom: "1px solid #6c6c6c", color: "#f4f4f4", p: 2 }}>
           <FormatListBulleted />
           <Typography sx={{ pl: 2 }}>Offers</Typography>
         </Box>
@@ -21,72 +49,26 @@ export const OfferList = () => {
           container
           spacing={1}
           sx={{
-            pl: 2,
-            pr: 2,
-            "& .MuiGrid-item": { alignSelf: "center" },
-            height: "500px",
+            pl: 1,
+            pr: 0,
             overflow: "scroll",
           }}
         >
-          <Grid item xs={4}>
-            <Typography>No</Typography>
+          <Grid item sx={{borderBottom: "1px solid #6c6c6c", pb:2, mt:2}} xs={4}>
+            <Typography sx={{ml: 1}}>#</Typography>
           </Grid>
-          <Grid item xs={4}>
-            <Typography>Project</Typography>
+          <Grid item sx={{borderBottom: "1px solid #6c6c6c", pb:2, mt:2}} xs={2}>
+            <Typography>TokenId</Typography>
           </Grid>
-          <Grid item xs={4}>
-            <Typography>Floor</Typography>
+          <Grid item sx={{borderBottom: "1px solid #6c6c6c", pb:2, mt:2}} xs={6}>
+            <Typography>Collection</Typography>
           </Grid>
-          {listData.map((item) => {
+          
+          {offers.map((item, index) => {
             return (
-              <>
-                <Grid key={item.imageSrc} item xs={1}>
-                  <Typography>{item.serial}</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <img
-                    alt="nsbjhvx"
-                    src={item.imageSrc}
-                    style={{
-                      width: "100px",
-                      maxHeight: "100px",
-                      objectFit: "cover",
-                      borderRadius: "12px",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography sx={{ alignSelf: "center" }}>
-                    {item.name}
-                  </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography
-                    sx={{
-                      alignSelf: "center",
-                      color: "#6C6C6C",
-                      fontSize: "13px",
-                    }}
-                  >
-                    {item.price} ETH
-                  </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography
-                    sx={{
-                      alignSelf: "center",
-                      bgcolor: "#6C6C6C",
-                      borderRadius: "12px",
-                      textAlign: "center",
-                      fontSize: "14px",
-                      lineHeight: "27px",
-                      height: "27px",
-                    }}
-                  >
-                    {item.offerId}
-                  </Typography>
-                </Grid>
-              </>
+              
+                <OfferItem serial={index+1} key={item.offerId} offer={item} />
+              
             );
           })}
         </Grid>

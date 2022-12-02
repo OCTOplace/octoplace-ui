@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   nftAddressList: [],
   isLoading: false,
+  isLoadingOffers: false,
 }
 
 export const appSlice = createSlice({
@@ -14,11 +15,14 @@ export const appSlice = createSlice({
     },
     setLoading: (state, action) => {
       state.isLoading = action.payload
+    },
+    setOffersLoading: (state, action) => {
+      state.isLoadingOffers = action.payload
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setAddressList , setLoading} = appSlice.actions
+export const { setAddressList , setLoading, setOffersLoading} = appSlice.actions
 
 export default appSlice.reducer

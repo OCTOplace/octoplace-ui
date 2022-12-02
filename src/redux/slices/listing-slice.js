@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react-dom/test-utils";
 
 const initialState = {
   allListings: [],
   activeListings: [],
   completedListings: [],
+  offers: []
 };
 
 export const listingSlice = createSlice({
@@ -29,6 +31,9 @@ export const listingSlice = createSlice({
     setCompletedListings: (state, action) => {
       state.completedListings = action.payload;
     },
+    setOffers: (state, action) => {
+      state.offers = action.payload
+    },
     resetListings: (state) => {
       state.activeListings = [];
       state.allListings = [];
@@ -42,6 +47,7 @@ export const {
   setAllListings,
   setActiveListings,
   setCompletedListings,
+  setOffers,
   resetListings,
 } = listingSlice.actions;
 

@@ -28,6 +28,28 @@ export const formatListings = (listings) => {
   return formatted;
 };
 
+export function formatOffers(offers) {
+  const formatted = offers.map(item => {
+    const obj = {
+      isCancelled: item.isCancelled,
+      isCompleted: item.isCompleted,
+      isDeclined: item.isDeclined,
+      listingId: Number(formatUnits(item.listingId, 0)),
+      listingTokenAddress: item.listingTokenAddress,
+      listingTokenId: Number(formatUnits(item.listingTokenId, 0)),
+      listingTokenOwner: item.listingTokenOwner,
+      offerId: Number(formatUnits(item.offerId, 0)),
+      offerTokenAddress: item.offerTokenAddress,
+      offerTokenId: Number(formatUnits(item.offerTokenId, 0)),
+      offerTokenOwner: item.offerTokenOwner,
+      transactionCharge: Number(formatUnits(item.transactionCharge, 0)),
+      transactionChargeBips: Number(formatUnits(item.transactionChargeBips, 0))
+    }
+    return obj;
+  });
+
+  return formatted;
+}
 export const getActiveListings = (listings) => {
   return listings.filter(
     (x) => x.listingDetails.isCompleted === false && x.listingDetails.isCancelled === false

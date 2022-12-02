@@ -7,7 +7,7 @@ import { Listings } from './pages/listings/Listings';
 import {MyNFT} from './pages/dashboard/MyNFT';
 import { ListingOffers } from './pages/ListingOffers';
 import { SwapComplete } from './pages/SwapComplete';
-import { MyListingSwapOffer } from './pages/MyListingSwapOffer';
+import { MyListingSwapOffer } from './pages/swap-offer/MyListingSwapOffer';
 import { SingleSwapOffer } from './pages/SingleSwapOffer';
 import { MyListingSwapOffer2 } from './pages/MyListingSwapOffer2';
 import {useWeb3React} from "@web3-react/core";
@@ -48,7 +48,6 @@ function App() {
   }, [account])
 
   useEffect(() => {
-    console.log(loggedAddress);
     if(loggedAddress !== "" && myNftOwner !== loggedAddress){
       dispatch(createAction("LOAD_MY_NFTS")({nftAddrList: collections, account:loggedAddress}));
     }
@@ -65,6 +64,7 @@ function App() {
   useEffect(()=> {
 getNFTs();
   dispatch({type:"LOAD_ALL_LISTING"});
+  dispatch({type:"LOAD_ALL_OFFERS"});
   },[])
   return (
     <Router>
@@ -76,7 +76,7 @@ getNFTs();
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
           <Route path="swap" element={<SingleSwapOffer />} />
-          <Route path="swap/initiate-offer/:baseNft/:baseTokenId/:offerNft/:offerTokenId" element={<MyListingSwapOffer />}/>
+          <Route path="swap/initiate-offer/:listingId/:offerNft/:offerTokenId" element={<MyListingSwapOffer />}/>
           <Route path="swap/mylist2" element={<MyListingSwapOffer2 />}/>
           <Route path="swap/done" element={<SwapComplete />} />
         </Routes>
