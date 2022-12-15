@@ -22,6 +22,7 @@ import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { setAddressList } from "./redux/slices/app-slice";
 import { createAction } from "@reduxjs/toolkit";
+import { getAllTrades } from "./redux/thunk/get-trades";
 function App() {
   const {account,chainId, library} = useWeb3React();
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ function App() {
 getNFTs();
   dispatch({type:"LOAD_ALL_LISTING"});
   dispatch({type:"LOAD_ALL_OFFERS"});
+  dispatch(getAllTrades());
   },[])
   return (
     <Router>

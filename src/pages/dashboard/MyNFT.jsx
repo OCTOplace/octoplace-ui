@@ -20,6 +20,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { createAction } from "@reduxjs/toolkit";
 import { MyListedNFT } from "./my-listed-nft";
 import { MyOffers } from "./my-offers";
+import { setSelectedTab } from "../../redux/slices/my-nft-slice";
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -61,7 +62,7 @@ export const MyNFT = () => {
   const { account, library } = useWeb3React();
   const nftAddrList = useSelector((state) => state.app.nftAddressList);
   const nfts = useSelector((state) => state.myNFT.nfts);
-
+  const selectedTab = useSelector((state) => state.myNFT.selectedTab);
   const dispatch = useDispatch();
 
   const getNFTs = async () => {
@@ -100,12 +101,12 @@ export const MyNFT = () => {
     <Container>
       <Row>
         <Col>
-          <TabsUnstyled defaultValue={0}>
+          <TabsUnstyled defaultValue={selectedTab}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
               <TabsList>
-                <Tab>My NFT</Tab>
-                <Tab>Listed</Tab>
-                <Tab>Offers</Tab>
+                <Tab onClick={() => dispatch(setSelectedTab(0))}>My NFT</Tab>
+                <Tab onClick={() => dispatch(setSelectedTab(1))}>Listed</Tab>
+                <Tab onClick={() => dispatch(setSelectedTab(2))}>Offers</Tab>
               </TabsList>
               <Box
                 sx={{

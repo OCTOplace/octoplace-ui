@@ -71,3 +71,19 @@ export function metadataUrl(uri) {
   }
   return url;
 }
+
+export const FormatTrades = (trades) => {
+  const tradeId = 0;
+  const listingId = 1;
+  const offerId = 2;
+
+  const formatted = trades.map((trade) => {
+    const data = {
+      tradeId :Number(formatUnits(trade[tradeId], 0)),
+      listingId:Number(formatUnits(trade[listingId], 0)),
+      offerId:Number(formatUnits(trade[offerId], 0))
+    }
+    return data;
+  })
+  return formatted;
+}

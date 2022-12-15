@@ -60,7 +60,7 @@ export const NFTView = () => {
       const found = listings.find(
         (x) =>
           x.listingDetails.tokenAddress === address &&
-          x.listingDetails.tokenId === Number(tokenId)
+          x.listingDetails.tokenId === Number(tokenId) 
       );
       if (found) {
         setListed(true);
@@ -109,6 +109,18 @@ export const NFTView = () => {
                 List NFT for swap
               </Button>
             )}
+            {
+              account && account === owner && isListed && (
+                <Button
+                sx={{ marginBottom: "16px", borderRadius: "20px" }}
+                color="error"
+                variant="contained"
+                onClick={() => {}}
+              >
+                Remove Listing
+              </Button>
+              )
+            }
 
             {account !== owner && isListed && (
               <Button

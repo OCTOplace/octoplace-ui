@@ -20,6 +20,7 @@ export const appSlice = createSlice({
       state.isLoadingOffers = action.payload
     }
   },
+  
 })
 
 // Action creators are generated for each case reducer function

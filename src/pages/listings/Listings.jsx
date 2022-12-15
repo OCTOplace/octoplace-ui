@@ -1,10 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Box,
-  Divider,
-  Paper,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Divider, Paper, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 import TabsUnstyled from "@mui/base/TabsUnstyled";
 import TabUnstyled from "@mui/base/TabUnstyled";
@@ -18,7 +13,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Refresh } from "@mui/icons-material";
 import { ActiveListings } from "./components/active";
-
+import { setSelectedTab } from "../../redux/slices/listing-slice";
+import { CompletedSwaps } from "./components/done-trades";
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
@@ -58,16 +54,15 @@ export const Listings = () => {
   const [view, setView] = useState(3);
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
-  const isLoading = useSelector(state => state.app.isLoading);
-
+  const isLoading = useSelector((state) => state.app.isLoading);
+  const selectedTab = useSelector((state) => state.listings.selectedTab);
   const getListings = async () => {
-    if(listings.length === 0){
-      dispatch({type: "LOAD_ALL_LISTING"})
+    if (listings.length === 0) {
+      dispatch({ type: "LOAD_ALL_LISTING" });
     }
   };
 
   useEffect(() => {
-    
     getListings();
   }, []);
 
@@ -75,11 +70,15 @@ export const Listings = () => {
     <Container>
       <Row>
         <Col>
-          <TabsUnstyled defaultValue={0}>
+          <TabsUnstyled defaultValue={selectedTab}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
               <TabsList>
-                <Tab>Active Listings</Tab>
-                <Tab>Swap Completed</Tab>
+                <Tab onClick={() => dispatch(setSelectedTab(0))}>
+                  Active Listings
+                </Tab>
+                <Tab onClick={() => dispatch(setSelectedTab(1))}>
+                  Swap Completed
+                </Tab>
               </TabsList>
               <Box
                 sx={{
@@ -91,57 +90,63 @@ export const Listings = () => {
                   "& .MuiSvgIcon-root": { color: "#3d3d3d" },
                 }}
               >
-                <Paper sx={{ borderRadius: "10px" }}>
-                  <Box display="flex" flexDirection="row">
-                    <WindowOutlinedIcon
-                      sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                      onClick={() => setView(6)}
-                    />
-                    <Divider
-                      sx={{ borderColor: "black" }}
-                      orientation="vertical"
-                      variant="middle"
-                      flexItem
-                    />
-                    <GridOnOutlinedIcon
-                      sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                      onClick={() => setView(3)}
-                    />
-                    <Divider
-                      sx={{ borderColor: "black" }}
-                      orientation="vertical"
-                      variant="middle"
-                      flexItem
-                    />
-                    <Refresh
-                      sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
-                      onClick={() => {getListings()}}
-                    />
-                  </Box>
-                </Paper>
+                {selectedTab !== 1 && (
+                  <Paper sx={{ borderRadius: "10px" }}>
+                    <Box display="flex" flexDirection="row">
+                      <WindowOutlinedIcon
+                        sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
+                        onClick={() => setView(6)}
+                      />
+                      <Divider
+                        sx={{ borderColor: "black" }}
+                        orientation="vertical"
+                        variant="middle"
+                        flexItem
+                      />
+                      <GridOnOutlinedIcon
+                        sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
+                        onClick={() => setView(3)}
+                      />
+                      <Divider
+                        sx={{ borderColor: "black" }}
+                        orientation="vertical"
+                        variant="middle"
+                        flexItem
+                      />
+                      <Refresh
+                        sx={{ p: 1, cursor: "pointer", fontSize: "2.2em" }}
+                        onClick={() => {
+                          getListings();
+                        }}
+                      />
+                    </Box>
+                  </Paper>
+                )}
               </Box>
             </Box>
             <TabPanel sx={{ minHeight: "60vh" }} value={0}>
               <Fragment>
                 {listings && listings.length > 0 && (
-                  <ActiveListings
-                    view={view}
-                  />
+                  <ActiveListings view={view} />
                 )}
                 {isLoading && (
-          <div
-            style={{
-              textAlign: "center",
-              width: "100%",
-              marginTop: "10vh",
-            }}
-          >
-            <CircularProgress color="primary" />
-          </div>
-        )}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      width: "100%",
+                      marginTop: "10vh",
+                    }}
+                  >
+                    <CircularProgress color="primary" />
+                  </div>
+                )}
               </Fragment>
             </TabPanel>
-            <TabPanel value={1}>Content two</TabPanel>
+            <TabPanel sx={{ minHeight: "60vh" }} value={1}>
+              <Fragment>
+                <CompletedSwaps />
+              </Fragment>
+            </TabPanel>
           </TabsUnstyled>
         </Col>
         <Row>

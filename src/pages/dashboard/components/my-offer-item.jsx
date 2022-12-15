@@ -195,7 +195,7 @@ export const MyOfferItem = (props) => {
         }}
       >
         <Chip
-          sx={{ width: "100px", color: "white", fontSize: "15px", letterSpacing: "0.1em" }}
+          sx={{ width: "150px", color: "white", fontSize: "15px", letterSpacing: "0.1em" }}
           label={getStatus(props.item)}
           color={getColor(getStatus(props.item))}
         />

@@ -2,7 +2,7 @@
 import { Alert, Box, Button, Grid, Typography } from "@mui/material";
 import CachedIcon from "@mui/icons-material/Cached";
 import { styled } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import swapAbi from "./../abi/swap.json";
 import ercAbi from "./../abi/erc721.json";
 import { rpc, swapContract } from "../connectors/address";
@@ -16,7 +16,9 @@ import { getImageUrl } from "../utils/string-util";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { createAction } from "@reduxjs/toolkit";
+import { getAllTrades } from "../redux/thunk/get-trades";
+import { ArrowBack } from "@mui/icons-material";
+
 const noImage =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAVvSURBVHgB7Z2NUdw6EIDXd8Aww89ABe9eBSEVPFNBeBWQVPBIBeFVkHQAqSBJBZgKQiqIO+DC3zADHNklVuYyaG0J7cpS4m+G4eZsnaTvJMu21roClDk7O3s5Go127+/vt4qi2ID+qPDvcHV19T0oUoASp6enk8XFxQ/4cgvS4uTm5ubfzc3NGhRQEdrIPMKXE0iTGqVua0gVF5qBTIOKVFGhGck0iEsVE+oos8LB6Rj/aogADoITHBCfYX47LbuJShUR6iBTdSDowmGAFJMaLNRRJhV2Cj2C5dxoyqkqNUhoLjINMaQ+WWhuMg3aUp8kVEImVWx5eVnlyun6+nralbeWVG+hoTLPz89LHH3f4MsSdKmg5VJTS6qX0FCZl5eXb/AUZh8igl/e/srKyv+2bRpSnYXmKNMQU6qT0JxlGmJJ7RT6O8g0xJDaKjSCTLoU/Yj/v4AMz1AaXWaW3A7aUlmhyjJr3PZqbW2tAgXwpvYOXsO/BabsmlIL5kNVZWrdi5ynqw5aUgvfgkAGMg19SC18CgAZyTTEllq4ZgzKMqnw4/G4xJdel6MopL69va07Pjua1MIlQ1CUiXlvYd40gJQQRoX5vGrJJ4rUB6EXFxefW3ZWlbmwsHAkOL1MZdzG6/cTJj9NqSeY7/OimTc/4HbKSKahT6nkcrTLbMxRJkGfeYS9zlppKhOVjcpo2051oroxaadNWuuXhbwsMON72xZM+DcnJGGZ82i2VEr71ZbnyJYAZX3KXCah2VIpTWXL0yoUmCZNx9tMZBqCpdINcWbbse19roXW1p35422KMg1BUpvZhUewjsARGuGAOVeczWavE5Vp6JRKN2uYtGVTdyechQJ/BVOtr69/tG1IRKahVWpz56uybfOZTPQRyvHJ9iaNhAnJNLRKBaYuPgQLxa5iHcDwtOIgMZkGKtNb2wauLj5ItNBHUOsE/WniELyOiz6oCMWuPoHEWVpa+gcUUBGKXWcCiXN3d7cJCqgI/ZMZhAozCBVmECrMIFSYQagwg1BhBqHCDEKFGYQKMwgVRkvoFBKHQnhAARWheOOhgsSheChQQEVoExxRQbpUWlGAwUKx63DTCa8hwa6PtxYp+sM6IddSF2ckWugL25tNxAZNzyYjlWRiV28Lq3wBgfgI5cSUXDBASlLnZHJBHDvATNvQo47giLPQtuMidpWDZh7pESlI7ZJJZW8ecrBR+TwAbBVKKyGAvWDW4CnkIfAqRakuMjuCjQ9tb3KOOKHWCSwKBshJaqhMqiv38C3niITaKlhyYlDqfg5SJWRSXbm0wBxvSSgXqPCBm7tOXaqyTBPFbKMazWaz98zGrUZMVlIjybSmRQ6DH1rAU6Z9LuQPOsIcmxgjKqBIFEckma0PLTwMSrQEEDDxkaDcUikUEoTAL3avJ5l141Duwa/AlnoK4a10il+QNRokgsyfdft52tQVyQuKLVWTmDKJX85D+5B6dXX1H8gcQzewpe/NvxFbJlEwH6ba/bEi7/DvG74uW+L2n8ohHpePx+PxX/h/j4tR1ZBJFEwCbam9oiWTUF0iI0WpmjIJ9UVcUpKqLZPoFNpklr3UGDIJJ6FNptlKjSWTcBbaZJ6d1JgyCS+hTSGCpOK5IqUtIQ4VXj1t2zZoyCS8J+lCT/5B4OEqD7iH0tSWu3zSrGeIVOyCIneWXLDlpSmT8O7y8/h2f4f9paE5+OdGjrZMIkgo4SCJLjXpJja1lt0eHles4ccae98wb5p3n3D7SawrFSyU6KHlSZPOsuuGjKWKrngmJpQYfrpi+HEVUZmEuFAiA6lqCxtqxYfWHQtG9cmJlkxCpYXOY35CDXpckICml/GUib5c9Z9Q+w4724wVsbrp0AAAAABJRU5ErkJggg==";
 
@@ -26,6 +28,7 @@ export const SingleSwapOffer = () => {
   const [offerObj, setOfferObj] = useState();
   const [obj, setObj] = useState();
   const { account, library } = useWeb3React();
+  const navigate = useNavigate();
   const getdetails = async () => {
     const provider = new JsonRpcProvider(rpc);
     try {
@@ -103,26 +106,29 @@ export const SingleSwapOffer = () => {
       const txResult = await contract.declineOffer(obj.offerId, obj.listingId);
       await txResult.wait();
       toast.success("Decline Offer Successful!");
+      dispatch({ type: "LOAD_ALL_OFFERS" });
+      dispatch({ type: "LOAD_ALL_LISTING" });
+      dispatch(getAllTrades());
       getdetails();
-      dispatch({type:"LOAD_ALL_OFFERS"});
     } catch (err) {
-      toast.error("Request Failed!");
+      toast.error(err);
     }
   };
 
   const handleComplete = async () => {
     try {
-        const signer = await library.getSigner();
-        const contract = new Contract(swapContract, swapAbi, signer);
-        const txResult = await contract.acceptOffer(obj.offerId, obj.listingId);
-        await txResult.wait();
-        toast.success("Swap Successful!");
-        getdetails();
-        dispatch({type:"LOAD_ALL_OFFERS"});
-      } catch (err) {
-        toast.error("Request Failed!");
-      }
-  }
+      const signer = await library.getSigner();
+      const contract = new Contract(swapContract, swapAbi, signer);
+      const txResult = await contract.acceptOffer(obj.offerId, obj.listingId);
+      await txResult.wait();
+      toast.success("Swap Successful!");
+      dispatch({ type: "LOAD_ALL_OFFERS" });
+      dispatch({ type: "LOAD_ALL_LISTING" });
+      getdetails();
+    } catch (err) {
+      toast.error("Request Failed!");
+    }
+  };
   return (
     <Box
       sx={{
@@ -137,19 +143,18 @@ export const SingleSwapOffer = () => {
       <Typography sx={{ fontSize: "20px", mt: 4, fontWeight: "bold", mb: 2 }}>
         SWAP OFFER #{obj ? obj.offerId : ""}
       </Typography>
-      {
-        obj && !showButtons(obj) && (
-            <Box>
-                {
-                    obj.isDeclined && <Alert severity="error">This offer has been <b>declined</b></Alert>
-                }
-                {
-                        obj.isCompleted && <Alert severity="success"> Swap Successful!</Alert>
-                    
-                }
-            </Box>
-        )
-      }
+      {obj && !showButtons(obj) && (
+        <Box>
+          {obj.isDeclined && (
+            <Alert severity="error">
+              This offer has been <b>declined</b>
+            </Alert>
+          )}
+          {obj.isCompleted && (
+            <Alert severity="success"> Swap Successful!</Alert>
+          )}
+        </Box>
+      )}
       <Grid container sx={{ mt: { xs: 3, md: 6, p: 0 } }}>
         <Grid item xs={12} md={5}>
           <Box
@@ -214,7 +219,9 @@ export const SingleSwapOffer = () => {
                   >
                     Decline Offer
                   </ErrorButton>
-                  <ContainedButton onClick={handleComplete} variant="outlined">SWAP</ContainedButton>
+                  <ContainedButton onClick={handleComplete} variant="outlined">
+                    SWAP
+                  </ContainedButton>
                 </>
               )}
             </>
@@ -232,7 +239,18 @@ export const SingleSwapOffer = () => {
           )}
         </Box>
       )}
-      
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          pt: { xs: 3, md: 6 },
+        }}
+      >
+        <ContainedButton onClick={() => navigate(-1)} startIcon={<ArrowBack />} variant="outlined">
+          Go Back
+        </ContainedButton>
+      </Box>
     </Box>
   );
 };

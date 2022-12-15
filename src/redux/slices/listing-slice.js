@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { act } from "react-dom/test-utils";
 
 const initialState = {
   allListings: [],
   activeListings: [],
   completedListings: [],
-  offers: []
+  offers: [],
+  selectedTab: 0
 };
 
 export const listingSlice = createSlice({
@@ -39,6 +39,9 @@ export const listingSlice = createSlice({
       state.allListings = [];
       state.completedListings = [];
     },
+    setSelectedTab: (state, action) => {
+      state.selectedTab = action.payload
+    }
   },
 });
 
@@ -49,6 +52,7 @@ export const {
   setCompletedListings,
   setOffers,
   resetListings,
+  setSelectedTab
 } = listingSlice.actions;
 
 export default listingSlice.reducer;
