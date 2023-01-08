@@ -21,6 +21,8 @@ import swapAbi from "../../../abi/swap.json";
 import { Contract } from "@ethersproject/contracts";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";
+import { useSelector } from "react-redux";
+import { parseUnits } from "@ethersproject/units";
 
 export const ListNFTDialog = (props) => {
   const { onClose, open, metadata, tokenId, owner , address} = props;
@@ -29,6 +31,7 @@ export const ListNFTDialog = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [url, setUrl] = useState("");
   const [imgLoading, setImageLoading] = useState(true);
+  const txCharge = useSelector((state) => state.app.txCharge);
   const handleClose = () => {
     onClose();
   };
@@ -71,9 +74,12 @@ export const ListNFTDialog = (props) => {
   const handleListing = async () => {
     try{
       if(account && library && tokenId && address){
+        let overRides = {
+          value: parseUnits(txCharge, "ether"),
+        }
         const signer = await library.getSigner();
         const contract = new Contract(swapContract,swapAbi , signer);
-        const txResult = await contract.createListing(tokenId, address);
+        const txResult = await contract.createListing(tokenId, address, overRides);
         await txResult.wait();
         handleClose();
         toast.success("NFT Listed successfully!");
@@ -97,6 +103,7 @@ export const ListNFTDialog = (props) => {
       </DialogTitle>
       <Divider />
       <DialogContent>
+        <p>Listing charge {txCharge} TFUEL</p>
         {metadata && (
           <Fragment>
             <Typography>{`${metadata.name} will be listed for nft swap.`}</Typography>

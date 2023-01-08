@@ -4,7 +4,7 @@ import erc721Abi from "../../abi/erc721.json";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc } from "../../connectors/address";
+import { rpc, swapAbi, swapContract } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 import { useState } from "react";
@@ -17,6 +17,14 @@ import { ListNFTDialog } from "./dialogs/list-nft-dlg";
 import { toast } from "react-toastify";
 import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
 
+//create your forceUpdate hook
+function useForceUpdate(){
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue(value => value + 1); // update state to force render
+  // An function that increment 👆🏻 the previous state like here 
+  // is better than directly setting `value + 1`
+}
+
 export const NFTView = () => {
   const { address, tokenId } = useParams();
   const [listDlgOpen, setListDlgOpen] = useState(false);
@@ -26,8 +34,9 @@ export const NFTView = () => {
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const listings = useSelector((state) => state.listings.allListings);
+  const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
   const provider = new JsonRpcProvider(rpc);
@@ -60,7 +69,8 @@ export const NFTView = () => {
       const found = listings.find(
         (x) =>
           x.listingDetails.tokenAddress === address &&
-          x.listingDetails.tokenId === Number(tokenId) 
+          x.listingDetails.tokenId === Number(tokenId) && 
+          x.listingDetails.isCancelled === false
       );
       if (found) {
         setListed(true);
@@ -75,6 +85,23 @@ export const NFTView = () => {
     } else {
       toast.error("Please connect your wallet!");
     }
+  };
+
+  const handleRemoveNFT = async () => {
+    // try {
+    //   const signer = await library.getSigner();
+    //   const contract = new Contract(swapContract, swapAbi, signer);
+    //   const txResult = await contract.removeListingById(
+    //     listing.listingDetails.listingid
+    //   );
+    //   await txResult.wait();
+    //   dispatch({type:"LOAD_ALL_LISTING"});
+    //   isListed(false);
+    //   toast.success("NFT Listing removed!");
+    // } catch(error) {
+    //   console.log(error);
+    // }
+    forceUpdate();
   };
   return (
     <Fragment>
@@ -109,18 +136,16 @@ export const NFTView = () => {
                 List NFT for swap
               </Button>
             )}
-            {
-              account && account === owner && isListed && (
-                <Button
+            {account && account === owner && isListed && (
+              <Button
                 sx={{ marginBottom: "16px", borderRadius: "20px" }}
                 color="error"
                 variant="contained"
-                onClick={() => {}}
+                onClick={handleRemoveNFT}
               >
                 Remove Listing
               </Button>
-              )
-            }
+            )}
 
             {account !== owner && isListed && (
               <Button
@@ -138,7 +163,9 @@ export const NFTView = () => {
               tokenId={tokenId}
             />
 
-            {listing && <OfferList listingId={listing.listingDetails.listingid} />}
+            {listing && (
+              <OfferList listingId={listing.listingDetails.listingid} />
+            )}
           </Grid>
         </Grid>
       </Box>
@@ -153,14 +180,14 @@ export const NFTView = () => {
         }}
         address={address}
       />
-       {listing && (
+      {listing && (
         <OfferNFTDialog
           tokenAddress={address}
           listingId={listing.listingDetails.listingid}
           open={offerDlgOpen}
           onClose={() => setOfferDlgOpen(false)}
         />
-      )} 
+      )}
     </Fragment>
   );
 };

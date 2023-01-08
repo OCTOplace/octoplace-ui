@@ -4,6 +4,7 @@ const initialState = {
   nftAddressList: [],
   isLoading: false,
   isLoadingOffers: false,
+  txCharge: 0,
 }
 
 export const appSlice = createSlice({
@@ -18,12 +19,15 @@ export const appSlice = createSlice({
     },
     setOffersLoading: (state, action) => {
       state.isLoadingOffers = action.payload
+    },
+    setTxCharge: (state, action) => {
+      state.txCharge = action.payload
     }
   },
   
 })
 
 // Action creators are generated for each case reducer function
-export const { setAddressList , setLoading, setOffersLoading} = appSlice.actions
+export const { setAddressList , setLoading, setOffersLoading, setTxCharge} = appSlice.actions
 
 export default appSlice.reducer

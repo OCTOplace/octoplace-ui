@@ -20,9 +20,13 @@ import { resetCollections } from "./redux/slices/my-nft-slice";
 import { NFTView } from "./pages/view-nft/NFTView";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { setAddressList } from "./redux/slices/app-slice";
+import { setAddressList, setTxCharge } from "./redux/slices/app-slice";
 import { createAction } from "@reduxjs/toolkit";
 import { getAllTrades } from "./redux/thunk/get-trades";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { rpc, swapAbi, swapContract } from "./connectors/address";
+import { Contract } from "@ethersproject/contracts";
+import { formatUnits } from "@ethersproject/units";
 function App() {
   const {account,chainId, library} = useWeb3React();
   const dispatch = useDispatch();
@@ -62,11 +66,20 @@ function App() {
     });
     dispatch(setAddressList(nftAddressList));
   };
+
+  const getTxCharge = async () => {
+    const provider = new JsonRpcProvider(rpc);
+    const contract = new Contract(swapContract, swapAbi, provider);
+    let txCharge = await contract.getTxCharge();
+    txCharge = formatUnits(txCharge, 18);
+    dispatch(setTxCharge(txCharge));
+  }
   useEffect(()=> {
 getNFTs();
   dispatch({type:"LOAD_ALL_LISTING"});
   dispatch({type:"LOAD_ALL_OFFERS"});
   dispatch(getAllTrades());
+  getTxCharge();
   },[])
   return (
     <Router>

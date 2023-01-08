@@ -8,7 +8,7 @@ import ercAbi from "./../abi/erc721.json";
 import { rpc, swapContract } from "../connectors/address";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
-import { formatOffers, metadataUrl } from "../utils/format-listings";
+import { formatOffers, metadataUrl, formatListings } from "../utils/format-listings";
 import React, { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -28,6 +28,7 @@ export const SingleSwapOffer = () => {
   const [offerObj, setOfferObj] = useState();
   const [obj, setObj] = useState();
   const { account, library } = useWeb3React();
+  const [isListingCancelled, setIsListingCancelled] = useState(false);
   const navigate = useNavigate();
   const getdetails = async () => {
     const provider = new JsonRpcProvider(rpc);
@@ -42,8 +43,15 @@ export const SingleSwapOffer = () => {
         listingTokenOwner,
         listingTokenId,
         offerTokenId,
+        listingId,
       } = offer;
       setObj(offer);
+
+      //Listing validity
+      let listingValidityObj = await contract.readListingById(listingId);
+      listingValidityObj = formatListings([listingValidityObj])[0];
+      listingValidityObj.isCancelled ? setIsListingCancelled(true) : setIsListingCancelled(false);
+
       //Listing
       const listContract = new Contract(listingTokenAddress, ercAbi, provider);
       const listCollName = await listContract.name();
@@ -153,8 +161,18 @@ export const SingleSwapOffer = () => {
           {obj.isCompleted && (
             <Alert severity="success"> Swap Successful!</Alert>
           )}
+
+          
         </Box>
+
       )}
+      <Box>
+      {
+            isListingCancelled && (
+              <Alert severity="error"> This listing is cancelled so offer is disabled!</Alert>
+            )
+          }
+      </Box>
       <Grid container sx={{ mt: { xs: 3, md: 6, p: 0 } }}>
         <Grid item xs={12} md={5}>
           <Box
@@ -228,7 +246,7 @@ export const SingleSwapOffer = () => {
           )}
           {obj && (
             <>
-              {account && obj.offerTokenOwner === account && (
+              {account && obj.offerTokenOwner === account && !isListingCancelled  && (
                 <>
                   <ErrorButton color="error" variant="contained">
                     Withdraw Offer
