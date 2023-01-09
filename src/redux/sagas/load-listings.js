@@ -25,11 +25,15 @@ function* LoadAllListingsWorker(action) {
 }
 
 const loadAllListings = async() => {
-    const provider = new JsonRpcProvider(rpc);
+    try{
+      const provider = new JsonRpcProvider(rpc);
     const contract = new Contract(swapContract, swapAbi, provider);
     let listings  = await contract.readAllListings();
     listings = formatListings(listings);
     return listings;
+    }catch (e) {
+      console.log(e);
+    }
 
 }
 
