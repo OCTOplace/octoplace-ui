@@ -58,7 +58,7 @@ export const OfferList = (props) => {
         sx={{
           pl: 1,
           pr: 0,
-          overflow: "scroll",
+          overflow: "hidden",
         }}
       >
         <Grid
