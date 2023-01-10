@@ -104,7 +104,7 @@ export const MyNFT = () => {
           <TabsUnstyled defaultValue={selectedTab}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
               <TabsList>
-                <Tab onClick={() => dispatch(setSelectedTab(0))}>My NFT</Tab>
+                <Tab onClick={() => dispatch(setSelectedTab(0))}>My NFTs</Tab>
                 <Tab onClick={() => dispatch(setSelectedTab(1))}>Listed</Tab>
                 <Tab onClick={() => dispatch(setSelectedTab(2))}>Offers</Tab>
               </TabsList>

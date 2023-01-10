@@ -1,9 +1,8 @@
 import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import { Fragment } from "react";
 import { Container, Row, Col } from "react-bootstrap";
+import discord from "../assets/discord.svg"
 import TextBox from "../components/text";
 export const Footer = () => {
   return (
@@ -67,15 +66,13 @@ export const Footer = () => {
                 alignItems="center"
                 sx={{ width: "100%", color: "white" }}
               >
-                <IconButton>
+                <IconButton href="https://twitter.com/octoplace" target="_blank">
                   <TwitterIcon className="icon" />
                 </IconButton>
-                <IconButton>
-                  <FacebookIcon className="icon" />
+                <IconButton target="_blank" href="https://discord.gg/H8P6T3zNYB">
+                  <img width={30} src={discord} alt="discord" />
                 </IconButton>
-                <IconButton>
-                  <InstagramIcon className="icon" />
-                </IconButton>
+      
               </Box>
             </Col>
           </Row>
@@ -99,16 +96,16 @@ export const Footer = () => {
                 }}
               >
                 <Typography sx={{ mr: 1, fontSize: "12px" }}>
-                  &#169; 2022
+                  &#169; 2023
                 </Typography>
                 <Typography sx={{ fontSize: "12px", alignSelf: "center" }}>
-                  SkeletonArts.Studio
+                  Octoplace.io
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "flex-end", color: "white",
                   mt: "12px",mb:'12px', width:"100%" }}>
                 <Typography sx={{ mr: 3, fontSize: "12px" }}>
-                  Provicy Policy
+                  Privacy Policy
                 </Typography>
                 <Typography sx={{ fontSize: "12px", alignSelf: "center" }}>
                   Terms of Service

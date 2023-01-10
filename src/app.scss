@@ -173,3 +173,18 @@
 a{
   text-decoration: none !important;
 }
+
+body > iframe {
+  pointer-events: none;
+}
+.sb{
+  .MuiOutlinedInput-input{
+    padding: 16px 20px !important;
+  }
+  .MuiOutlinedInput-notchedOutline{
+    top: -3px;
+  }
+  .MuiInputAdornment-root{
+    margin-right: 4px;
+  }
+}

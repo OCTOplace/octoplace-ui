@@ -10,7 +10,7 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   textField: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: '40px',
     marginRight: theme.spacing.unit,
     width: 300,
     
@@ -55,7 +55,7 @@ class ValidField extends React.Component {
     const { classes } = this.props;
 
     return (
-      <form className={classes.container} noValidate autoComplete="off">
+      <form className={`${classes.container} sb`}  noValidate autoComplete="off">
         <TextField
           id="standard-name"
           className={classes.textField}

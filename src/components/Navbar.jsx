@@ -52,9 +52,8 @@ export const AppNavbar = () => {
             <Searchbox className="search-nav" type="text" />
           </Nav>
           <Nav>
-            <Nav.Link onClick={() => navigate("/listing")}>Listings</Nav.Link>
-            <Nav.Link>Swap</Nav.Link>
-            <Nav.Link disabled>Auction</Nav.Link>
+            <Nav.Link onClick={() => navigate("/listing")}>Swaps</Nav.Link>
+            <Nav.Link disabled>Auctions</Nav.Link>
           </Nav>
         </Navbar.Collapse>
 

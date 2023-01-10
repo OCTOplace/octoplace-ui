@@ -27,8 +27,9 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { rpc, swapAbi, swapContract } from "./connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from "@ethersproject/units";
+import { injectedConnector } from "./connectors/injected-connector";
 function App() {
-  const {account,chainId, library} = useWeb3React();
+  const {account,chainId, library, activate} = useWeb3React();
   const dispatch = useDispatch();
   const loggedAddress = useSelector(state => state.account.address);
   const myNftOwner = useSelector(state => state.myNFT.nftOwner);
@@ -80,6 +81,9 @@ getNFTs();
   dispatch({type:"LOAD_ALL_OFFERS"});
   dispatch(getAllTrades());
   getTxCharge();
+  try{
+    activate(injectedConnector)
+  }catch {}
   },[])
   return (
     <Router>
