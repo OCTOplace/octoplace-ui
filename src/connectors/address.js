@@ -2,7 +2,7 @@ import swapabi from "../abi/swap.json";
 import ercabi from "../abi/erc721.json";
 
 
-export const rpc = "https://eth-rpc-api-testnet.thetatoken.org/rpc";
+export const rpc = "https://eth-rpc-api.thetatoken.org/rpc";
 export const chainId = "0x5";
 export const dataContract = "0x24bf96f624aa27f09de27853e177606668fcaec0";
 export const swapContract = "0x01f6121613b6f63a362ab99da73d7e32456acb88";

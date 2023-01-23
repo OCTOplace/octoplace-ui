@@ -75,7 +75,7 @@ export const MyNFT = () => {
   };
   const getNFTDetails = async () => {
     if(nfts.length ===0){
-      dispatch(createAction("LOAD_MY_NFTS")({nftAddrList, account}));
+      dispatch(createAction("LOAD_MY_NFTS_API")({account}));
     }
   };
 

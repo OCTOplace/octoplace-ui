@@ -44,11 +44,13 @@ export const NFTView = () => {
   const getDetails = async () => {
     try {
       const contract = new Contract(address, erc721Abi, provider);
-      const url = await contract.tokenURI(tokenId);
+      let url = await contract.tokenURI(tokenId);
+      url = metaUrl(url);
       let meta;
       try {
         const result = await axios.get(url);
         meta = result.data;
+        console.log(meta);
       } catch (e) {
         meta = undefined;
       }
@@ -88,19 +90,19 @@ export const NFTView = () => {
   };
 
   const handleRemoveNFT = async () => {
-    // try {
-    //   const signer = await library.getSigner();
-    //   const contract = new Contract(swapContract, swapAbi, signer);
-    //   const txResult = await contract.removeListingById(
-    //     listing.listingDetails.listingid
-    //   );
-    //   await txResult.wait();
-    //   dispatch({type:"LOAD_ALL_LISTING"});
-    //   isListed(false);
-    //   toast.success("NFT Listing removed!");
-    // } catch(error) {
-    //   console.log(error);
-    // }
+    try {
+      const signer = await library.getSigner();
+      const contract = new Contract(swapContract, swapAbi, signer);
+      const txResult = await contract.removeListingById(
+        listing.listingDetails.listingid
+      );
+      await txResult.wait();
+      dispatch({type:"LOAD_ALL_LISTING"});
+      isListed(false);
+      toast.success("NFT Listing removed!");
+    } catch(error) {
+      console.log(error);
+    }
     forceUpdate();
   };
   return (
@@ -191,3 +193,10 @@ export const NFTView = () => {
     </Fragment>
   );
 };
+
+const metaUrl = (url) => {
+  if(url.includes("ipfs://")){
+    return url.replace("ipfs://", "https://ipfs.io/ipfs/");
+  }
+  return url;
+}

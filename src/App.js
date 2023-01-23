@@ -55,7 +55,12 @@ function App() {
 
   useEffect(() => {
     if(loggedAddress !== "" && myNftOwner !== loggedAddress){
-      dispatch(createAction("LOAD_MY_NFTS")({nftAddrList: collections, account:loggedAddress}));
+      //if(chainId===361){
+       dispatch(createAction("LOAD_MY_NFTS_API")({account:loggedAddress}));
+      //}else {
+      // dispatch(createAction("LOAD_MY_NFTS")({nftAddrList: collections, account:loggedAddress}));
+      //}
+      
     }
   }, [loggedAddress])
 

@@ -19,7 +19,7 @@ export const Home = () => {
         </Col>
         <Col lg={6} md={6} sm={12}>
           <Paper onClick={() => navigate('my-nft')} className="paper-menu">
-            <h3>My NFT</h3>
+            <h3>My NFTs</h3>
           </Paper>
         </Col>
       </Row>

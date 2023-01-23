@@ -25,7 +25,7 @@ function getLibrary(provider) {
 
 
 root.render(
-  <React.StrictMode>
+ // <React.StrictMode>
     <Provider store={store}>
     <Web3ReactProvider getLibrary={getLibrary}>
       <ThemeProvider theme={theme}>
@@ -34,5 +34,5 @@ root.render(
       </ThemeProvider>
     </Web3ReactProvider>
     </Provider>
-  </React.StrictMode>
+ // </React.StrictMode>
 );
