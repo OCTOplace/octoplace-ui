@@ -27,7 +27,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { rpc, swapAbi, swapContract } from "./connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from "@ethersproject/units";
-import { injectedConnector } from "./connectors/injected-connector";
+import { activateInjectedProvider, injectedConnector } from "./connectors/injected-connector";
 function App() {
   const {account,chainId, library, activate} = useWeb3React();
   const dispatch = useDispatch();
@@ -87,6 +87,7 @@ getNFTs();
   dispatch(getAllTrades());
   getTxCharge();
   try{
+    activateInjectedProvider("MetaMask")
     activate(injectedConnector)
   }catch {}
   },[])

@@ -18,6 +18,7 @@ function* LoadAllListingsWorker(action) {
     for(const item of listings){
         yield put(createAction("LOAD_LISTING_NFT")(item));
     }
+    yield put(setLoading(false));
   } catch (e) {
     yield 
     yield put(createAction("LOAD_FAILED")(e));
@@ -29,7 +30,9 @@ const loadAllListings = async() => {
       const provider = new JsonRpcProvider(rpc);
     const contract = new Contract(swapContract, swapAbi, provider);
     let listings  = await contract.readAllListings();
+    console.log("test 1")
     listings = formatListings(listings);
+    console.log("test 2", listings)
     return listings;
     }catch (e) {
       console.log(e);

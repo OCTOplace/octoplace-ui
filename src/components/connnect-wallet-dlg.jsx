@@ -11,7 +11,7 @@ import wc from "../assets/walletconnect.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import {  injectedConnector } from "../connectors/injected-connector";
+import {  activateInjectedProvider, injectedConnector } from "../connectors/injected-connector";
 import { walletconnect } from "../connectors/wallet-connect";
 import { useWeb3React } from "@web3-react/core";
 import {toast} from "react-toastify";
@@ -24,6 +24,7 @@ export const ConnectWalletDlg = (props) => {
   };
 
   const handleMetamaskClick = async () => {
+    activateInjectedProvider("MetaMask")
     await activate(injectedConnector);
     handleClose();
 }
@@ -43,7 +44,7 @@ useEffect(() => {
   if (error) {
     switch (error.name) {
       case "UnsupportedChainIdError":
-        toast("Unsupported network, Switch to ethereum", {type: "error"})
+        toast("Unsupported network, Switch to Theta Mainnet", {type: "error"})
         // setSwitchNet(true);
         break;
       case "NoEthereumProviderError":
