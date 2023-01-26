@@ -4,7 +4,7 @@ export function filterListedNFTs(nfts, activeListings, activeOffers) {
     const found = activeListings.find(
       (x) =>
         x.listingDetails.tokenId === nft.tokenId &&
-        x.listingDetails.tokenAddress === nft.contractAddress &&
+        x.listingDetails.tokenAddress.toLowerCase() === nft.contractAddress.toLowerCase() &&
         !x.listingDetails.isCompleted &&
         !x.listingDetails.isCancelled
     );
@@ -13,7 +13,7 @@ export function filterListedNFTs(nfts, activeListings, activeOffers) {
         x.isCompleted ===false &&
         x.isCancelled ===false &&
         Number(x.offerTokenId) === Number(nft.tokenId) &&
-        x.offerTokenAddress === nft.contractAddress
+        x.offerTokenAddress.toLowerCase() === nft.contractAddress.toLowerCase()
     );
     if (!found ) {
       if(!found2){

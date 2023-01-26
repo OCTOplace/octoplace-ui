@@ -21,7 +21,7 @@ import swapAbi from "../../../abi/swap.json";
 import { Contract } from "@ethersproject/contracts";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { parseUnits } from "@ethersproject/units";
 import { defaultImage } from "../../../connectors/address";
 export const ListNFTDialog = (props) => {
@@ -32,8 +32,9 @@ export const ListNFTDialog = (props) => {
   const [url, setUrl] = useState("");
   const [imgLoading, setImageLoading] = useState(true);
   const txCharge = useSelector((state) => state.app.txCharge);
-  const handleClose = () => {
-    onClose();
+  const dispatch = useDispatch();
+  const handleClose = (isSuccess) => {
+    onClose(isSuccess);
   };
   const provider = new JsonRpcProvider(rpc);
   const getApprovalState = async () => {
@@ -88,7 +89,8 @@ export const ListNFTDialog = (props) => {
         const contract = new Contract(swapContract,swapAbi , signer);
         const txResult = await contract.createListing(tokenId, address, overRides);
         await txResult.wait();
-        handleClose();
+        dispatch({type:"LOAD_ALL_LISTING"});
+        handleClose(true);
         toast.success("NFT Listed successfully!");
       }
     }
@@ -103,7 +105,7 @@ export const ListNFTDialog = (props) => {
             List NFT for swap
           </Typography>
           <span className="spacer"></span>
-          <IconButton onClick={handleClose}>
+          <IconButton onClick={() => handleClose(false)}>
             <Close className="icon" />
           </IconButton>
         </Box>

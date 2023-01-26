@@ -18,11 +18,11 @@ import { toast } from "react-toastify";
 import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
 
 //create your forceUpdate hook
-function useForceUpdate(){
+function useForceUpdate() {
   // eslint-disable-next-line no-unused-vars
   const [value, setValue] = useState(0); // integer state
-  return () => setValue(value => value + 1); // update state to force render
-  // An function that increment 👆🏻 the previous state like here 
+  return () => setValue((value) => value + 1); // update state to force render
+  // An function that increment 👆🏻 the previous state like here
   // is better than directly setting `value + 1`
 }
 
@@ -37,6 +37,7 @@ export const NFTView = () => {
   const [listing, setListing] = useState();
   const { account, library } = useWeb3React();
   const listings = useSelector((state) => state.listings.allListings);
+  const loading = useSelector((state) => state.app.isLoading);
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
@@ -69,12 +70,15 @@ export const NFTView = () => {
 
   useEffect(() => {
     if (listings.length > 0 && address && tokenId) {
+      console.log("hit", listings, address, tokenId);
       const found = listings.find(
         (x) =>
-          x.listingDetails.tokenAddress === address &&
-          x.listingDetails.tokenId === Number(tokenId) && 
+          x.listingDetails.tokenAddress.toLowerCase() ===
+            address.toLowerCase() &&
+          x.listingDetails.tokenId === Number(tokenId) &&
           x.listingDetails.isCancelled === false
       );
+      console.log("found", found);
       if (found) {
         setListed(true);
         setListing(found);
@@ -98,10 +102,10 @@ export const NFTView = () => {
         listing.listingDetails.listingid
       );
       await txResult.wait();
-      dispatch({type:"LOAD_ALL_LISTING"});
-      isListed(false);
+      dispatch({ type: "LOAD_ALL_LISTING" });
+      setListed(false);
       toast.success("NFT Listing removed!");
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
     forceUpdate();
@@ -130,7 +134,7 @@ export const NFTView = () => {
               {collectionName}
             </Typography>
 
-            {account && account === owner && !isListed && (
+            {!loading && account && account === owner && !isListed && (
               <Button
                 sx={{ marginBottom: "16px", borderRadius: "20px" }}
                 variant="contained"
@@ -139,7 +143,7 @@ export const NFTView = () => {
                 List NFT for swap
               </Button>
             )}
-            {account && account === owner && isListed && (
+            {!loading && account && account === owner && isListed && (
               <Button
                 sx={{ marginBottom: "16px", borderRadius: "20px" }}
                 color="error"
@@ -150,7 +154,7 @@ export const NFTView = () => {
               </Button>
             )}
 
-            {account !== owner && isListed && (
+            {!loading && account !== owner && isListed && (
               <Button
                 sx={{ marginBottom: "24px", borderRadius: "20px" }}
                 variant="contained"
@@ -188,7 +192,13 @@ export const NFTView = () => {
           tokenAddress={address}
           listingId={listing.listingDetails.listingid}
           open={offerDlgOpen}
-          onClose={() => setOfferDlgOpen(false)}
+          onClose={(isSuccess) => {
+            setOfferDlgOpen(false);
+            if (isSuccess) {
+              setListed(true);
+              console.log("Listed");
+            }
+          }}
         />
       )}
     </Fragment>
@@ -196,8 +206,8 @@ export const NFTView = () => {
 };
 
 const metaUrl = (url) => {
-  if(url.includes("ipfs://")){
+  if (url.includes("ipfs://")) {
     return url.replace("ipfs://", "https://ipfs.io/ipfs/");
   }
   return url;
-}
+};

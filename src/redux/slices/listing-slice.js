@@ -15,8 +15,8 @@ export const listingSlice = createSlice({
     setAllListings: (state, action) => {
       const searchRes = state.allListings.filter(
         (item) =>
-          item.listingDetails.tokenAddress ===
-            action.payload.listingDetails.tokenAddress &&
+          item.listingDetails.tokenAddress.toLowerCase() ===
+            action.payload.listingDetails.tokenAddress.toLowerCase() &&
           item.listingDetails.tokenId ===
             action.payload.listingDetails.tokenId &&
           item.listingDetails.listingid ===
