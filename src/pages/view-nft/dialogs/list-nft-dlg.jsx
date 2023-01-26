@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from "react-redux";
 import { parseUnits } from "@ethersproject/units";
-
+import { defaultImage } from "../../../connectors/address";
 export const ListNFTDialog = (props) => {
   const { onClose, open, metadata, tokenId, owner , address} = props;
   const [isApproved, setIsApproved] = useState(false);
@@ -54,6 +54,13 @@ export const ListNFTDialog = (props) => {
     getApprovalState();
   }, [address, owner])
 
+  useEffect(() => {
+    if(props.metadata && props.metadata.image){
+      setUrl(props.metadata.image);
+    }else{
+      setUrl(defaultImage);
+    }
+  }, [props])
   const handleApprove = async () => {
     try{
       if(account && library){
@@ -109,12 +116,12 @@ export const ListNFTDialog = (props) => {
             <Typography>{`${metadata.name} will be listed for nft swap.`}</Typography>
             <Paper sx={style.paper} className="list-dlg-paper">
               {
-                !imgLoading && (<img
-                  style={style.img}
+                <img
                   alt="nft artwork"
                   src={url}
+                  style={{...style.img, display: imgLoading ? "none": "block"}}
                   onLoad={() => setImageLoading(false)}
-                />)
+                />
               }
               {
                 imgLoading && (

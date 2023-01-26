@@ -5,7 +5,7 @@ const initialState = {
   activeListings: [],
   completedListings: [],
   offers: [],
-  selectedTab: 0
+  selectedTab: 0,
 };
 
 export const listingSlice = createSlice({
@@ -18,12 +18,13 @@ export const listingSlice = createSlice({
           item.listingDetails.tokenAddress ===
             action.payload.listingDetails.tokenAddress &&
           item.listingDetails.tokenId ===
-            action.payload.listingDetails.tokenId
+            action.payload.listingDetails.tokenId &&
+          item.listingDetails.listingid ===
+            action.payload.listingDetails.listingid
       );
-      if(searchRes.length === 0){
-        state.allListings = [...state.allListings, action.payload]
+      if (searchRes.length === 0) {
+        state.allListings = [...state.allListings, action.payload];
       }
-      
     },
     setActiveListings: (state, action) => {
       state.activeListings = action.payload;
@@ -32,7 +33,7 @@ export const listingSlice = createSlice({
       state.completedListings = action.payload;
     },
     setOffers: (state, action) => {
-      state.offers = action.payload
+      state.offers = action.payload;
     },
     resetListings: (state) => {
       state.activeListings = [];
@@ -40,8 +41,8 @@ export const listingSlice = createSlice({
       state.completedListings = [];
     },
     setSelectedTab: (state, action) => {
-      state.selectedTab = action.payload
-    }
+      state.selectedTab = action.payload;
+    },
   },
 });
 
@@ -52,7 +53,7 @@ export const {
   setCompletedListings,
   setOffers,
   resetListings,
-  setSelectedTab
+  setSelectedTab,
 } = listingSlice.actions;
 
 export default listingSlice.reducer;
