@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { CircularProgress, IconButton, Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect } from "react";
@@ -10,8 +10,6 @@ import {
   defaultImage,
   ercAbi,
   rpc,
-  swapAbi,
-  swapContract,
 } from "../../../connectors/address";
 import { metadataUrl } from "../../../utils/format-listings";
 import { getImageUrl } from "../../../utils/string-util";

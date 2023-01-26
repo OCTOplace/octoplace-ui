@@ -9,10 +9,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setAddressList } from "../../redux/slices/app-slice";
 import { useWeb3React } from "@web3-react/core";
 import {  resetCollections } from "../../redux/slices/my-nft-slice";
 import { NFTCard } from "../../components/NFTCard";
@@ -60,30 +57,16 @@ export const MyNFT = () => {
   const [view, setView] = useState(3);
   const loading = useSelector(state => state.myNFT.isLoading);
   const { account, library } = useWeb3React();
-  const nftAddrList = useSelector((state) => state.app.nftAddressList);
   const nfts = useSelector((state) => state.myNFT.nfts);
   const selectedTab = useSelector((state) => state.myNFT.selectedTab);
   const dispatch = useDispatch();
 
-  const getNFTs = async () => {
-    const nftCol = collection(db, "nftAddresses");
-    const nftSnapshot = await getDocs(nftCol);
-    const nftAddressList = nftSnapshot.docs.map((doc) => {
-      return doc.data();
-    });
-    dispatch(setAddressList(nftAddressList));
-  };
+  
   const getNFTDetails = async () => {
     if(nfts.length ===0){
       dispatch(createAction("LOAD_MY_NFTS_API")({account}));
     }
   };
-
-  useEffect(() => {
-    if(!nftAddrList.length === 0){
-      getNFTs();
-    }
-  }, []);
 
   useEffect(() => {
     if (account && library) {

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
-import { Box, Typography, Grid, Divider } from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import { FormatListBulleted } from "@mui/icons-material";
 import { useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
@@ -11,13 +11,11 @@ import { formatOffers } from "../../utils/format-listings";
 import { OfferItem } from "./offer-item";
 import { useDispatch } from "react-redux";
 import { setOffers } from "../../redux/slices/listing-slice";
-import { useNavigate } from "react-router-dom";
 
 export const OfferList = (props) => {
   const { listingId } = props;
   const [offers, setPOffers] = useState([]);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const getAllOffers = async () => {
     const provider = new JsonRpcProvider(rpc);
     const contract = new Contract(swapContract, swapAbi, provider);

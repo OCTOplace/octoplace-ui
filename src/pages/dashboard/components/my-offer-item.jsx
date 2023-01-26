@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { JsonRpcProvider } from "@ethersproject/providers";
 import CachedIcon from "@mui/icons-material/Cached";
 import React from "react";
 import { useEffect } from "react";
-import { rpc, swapContract } from "../../../connectors/address";
+import { rpc } from "../../../connectors/address";
 import ercAbi from "../../../abi/erc721.json";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";

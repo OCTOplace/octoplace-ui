@@ -4,7 +4,6 @@ import { Grid, Typography, CircularProgress, Box } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { useState } from "react";
 import { setMyOffers } from "../../redux/slices/my-nft-slice";
 import TabsUnstyled from "@mui/base/TabsUnstyled";
 import TabUnstyled from "@mui/base/TabUnstyled";

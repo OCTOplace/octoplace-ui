@@ -18,9 +18,7 @@ import { setAddress, setBalance, setChainId, setLogin, setLogout } from "./redux
 import {getFormattedEther} from "./utils/unit-utils";
 import { resetCollections } from "./redux/slices/my-nft-slice";
 import { NFTView } from "./pages/view-nft/NFTView";
-import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { setAddressList, setTxCharge } from "./redux/slices/app-slice";
+import {  setTxCharge } from "./redux/slices/app-slice";
 import { createAction } from "@reduxjs/toolkit";
 import { getAllTrades } from "./redux/thunk/get-trades";
 import { JsonRpcProvider } from "@ethersproject/providers";
@@ -33,7 +31,6 @@ function App() {
   const dispatch = useDispatch();
   const loggedAddress = useSelector(state => state.account.address);
   const myNftOwner = useSelector(state => state.myNFT.nftOwner);
-  const collections = useSelector(state => state.app.nftAddressList);
 
   const getBalance = async() => {
     const bal = await library.getBalance(account);
@@ -64,15 +61,6 @@ function App() {
     }
   }, [loggedAddress])
 
-  const getNFTs = async () => {
-    const nftCol = collection(db, "nftAddresses");
-    const nftSnapshot = await getDocs(nftCol);
-    const nftAddressList = nftSnapshot.docs.map((doc) => {
-      return doc.data();
-    });
-    dispatch(setAddressList(nftAddressList));
-  };
-
   const getTxCharge = async () => {
     const provider = new JsonRpcProvider(rpc);
     const contract = new Contract(swapContract, swapAbi, provider);
@@ -81,7 +69,6 @@ function App() {
     dispatch(setTxCharge(txCharge));
   }
   useEffect(()=> {
-getNFTs();
   dispatch({type:"LOAD_ALL_LISTING"});
   dispatch({type:"LOAD_ALL_OFFERS"});
   dispatch(getAllTrades());

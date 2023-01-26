@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,7 +7,6 @@ import {
   Box,
   Divider,
   DialogContent,
-  Paper,
   DialogActions,
   Button,
   IconButton,
@@ -16,7 +16,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Close, Inbox } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { filterListedNFTs } from "../../../utils/filter";
 import { getImageUrl } from "../../../utils/string-util";
@@ -29,7 +29,7 @@ import { Contract } from "@ethersproject/contracts";
 import { formatOffers } from "../../../utils/format-listings";
 
 export const OfferNFTDialog = (props) => {
-  const { onClose, open, tokenAddress, listingId } = props;
+  const { onClose, open, listingId } = props;
   const loading = useSelector((state) => state.myNFT.isLoading);
   const nfts = useSelector((state) => state.myNFT.nfts);
   const listings = useSelector((state) => state.listings.allListings);

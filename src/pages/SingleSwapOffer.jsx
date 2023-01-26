@@ -331,22 +331,6 @@ const DisplayCard = (props) => {
   );
 };
 
-const OutlinedButton = styled(Button)(({ theme }) => ({
-  color: "#f4f4f4",
-  backgroundColor: "#3d3d3d",
-  border: "1px solid #f4f4f4",
-  borderRadius: "12px",
-  padding: "10px 72px",
-  lineHeight: "24px",
-  textTransform: "none",
-  width: "248px",
-  margin: "8px 16px",
-  "&:hover": {
-    backgroundColor: "#f4f4f4",
-    color: "#3d3d3d",
-  },
-}));
-
 const ContainedButton = styled(Button)(({ theme }) => ({
   color: "#3d3d3d",
   backgroundColor: "#f4f4f4",

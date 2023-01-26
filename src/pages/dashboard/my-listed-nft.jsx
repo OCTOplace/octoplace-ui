@@ -6,7 +6,6 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect } from "react";
 import { getActiveListings } from "../../utils/format-listings";
 import { addMyListings } from "../../redux/slices/my-nft-slice";
-import { useState } from "react";
 import { NFTListingCard } from "../listings/components/ListingCard";
 
 export const MyListedNFT = (props) => {
