@@ -99,7 +99,7 @@ export const Footer = () => {
                   &#169; 2023
                 </Typography>
                 <Typography sx={{ fontSize: "12px", alignSelf: "center" }}>
-                  Octoplace.io
+                  OCTO
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "flex-end", color: "white",

@@ -48,9 +48,10 @@ export const AppNavbar = () => {
         </Navbar.Brand>
 
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
+          {/* <Nav className="me-auto">
             <Searchbox className="search-nav" type="text" />
-          </Nav>
+          </Nav> */}
+          <span style={{flex: "1 auto"}}></span>
           <Nav>
             <Nav.Link onClick={() => navigate("/listing")}>Swaps</Nav.Link>
             <Nav.Link disabled>Auctions</Nav.Link>

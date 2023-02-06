@@ -140,8 +140,7 @@ export const MyListingSwapOffer = () => {
           <Box
             sx={{
               bgcolor: "#262626",
-              height: "100%",
-              minHeight: "312px",
+              height: "312px",
               width: "100%",
               borderRadius: "12px",
             }}

@@ -66,7 +66,7 @@ export const NFTListingCard = (props) => {
           <Box sx={styles.root}>
             <Box sx={styles.flex}>
               <div style={styles.meta}>
-                <Typography sx={styles.title}>
+                <Typography className="strokeme" sx={styles.title}>
                   {props.listingItem.listingNFT.metadata
                     ? props.listingItem.listingNFT.metadata.name
                     : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`}

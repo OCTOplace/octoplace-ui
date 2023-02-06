@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box, Typography, Hidden } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getImageUrl } from "../../../utils/string-util";
@@ -52,7 +52,7 @@ export const SwapCard = (props) => {
             />
           </Box>
         </Grid>
-        <Grid item xs={6} sx={{ mt: 2 }}>
+        <Grid item xs={6} sx={{ mt: 2, textOverflow:"clip", height:"180px" , overflow:"hidden" }}>
           <Typography sx={{ fontWeight: "bold" }}>{meta.name ? meta.name : nft.name}</Typography>
           {
             nft && <Typography variant="subtitle1">#{nft.tokenId}</Typography>

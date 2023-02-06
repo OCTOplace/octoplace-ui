@@ -59,7 +59,7 @@ export const NFTCard = (props) => {
         <Box sx={styles.root}>
           <Box sx={styles.flex}>
             <div style={styles.meta}>
-              <Typography sx={styles.title}>
+              <Typography className="strokeme" sx={styles.title}>
                 {metadata ? metadata.name : `${collectionName} #${tokenId}`}
               </Typography>
               <VerifiedOutlinedIcon sx={{ ml: "8px" }} />

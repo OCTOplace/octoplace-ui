@@ -112,7 +112,7 @@ export const ListNFTDialog = (props) => {
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <p>Listing charge {txCharge} TFUEL</p>
+        <p style={{fontWeight:700}}>Listing charge {txCharge} TFUEL</p>
         {metadata && (
           <Fragment>
             <Typography>{`${metadata.name} will be listed for nft swap.`}</Typography>
