@@ -20,8 +20,9 @@ function* LoadMyNFTFromAPIWorker(action) {
     yield put(resetCollections());
     yield put(setOwner(action.payload.account));
     const data = yield call(loadNFT, action.payload.account);
-
-    yield put(addNFT(data));
+    const data2 = yield call(loadKavaNFT, action.payload.account);
+    
+    yield put(addNFT(mergeData(data, data2)));
     yield put(setMyNftLoading(false));
   } catch (e) {
     yield put(createAction("LOAD_FAILED")(e));
@@ -37,6 +38,15 @@ async function loadNFT(account) {
   }
 }
 
+async function loadKavaNFT(account) {
+  const result = await axios.get(`${apiUrl}/users/kava/${account}`);
+  if (result.data.success) {
+    return transformData(result.data.nfts);
+  } else {
+    throw result.data.message;
+  }
+}
+
 function transformData(nfts){
     return nfts.map(nft => {
         const item = {
@@ -44,10 +54,14 @@ function transformData(nfts){
             collectionSymbol: "",
             contractAddress: nft.contract_address,
             tokenId: Number(nft.token_id),
-            url: "",
-            metadata: nft.metadata
+            metadata: (nft.metadata ? nft.metadata : null),
+            url: (nft.uri? nft.uri : ""),
+            network: nft.network
         }
         return item;
     })
+}
+function mergeData(arr1, arr2){
+  return [...arr1, ...arr2];
 }
 export default LoadMyNFTFromAPIWatcher;
