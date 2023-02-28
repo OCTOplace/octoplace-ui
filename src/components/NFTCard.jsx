@@ -5,11 +5,17 @@ import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getImageUrl } from "../utils/string-util";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { updateNFT } from "../redux/slices/my-nft-slice";
+import { defaultImage } from "../connectors/address";
 
 export const NFTCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
+  const dispatch = useDispatch();
   const { view } = props;
-  const { metadata, collectionName, tokenId, contractAddress } = props.nft;
+  const { metadata, collectionName, tokenId, contractAddress , url, network} = props.nft;
   const styles = {
     root: {
       width: "100%",
@@ -40,6 +46,24 @@ export const NFTCard = (props) => {
   };
 
   useEffect(() => {
+    const getMetadata = async () => {
+      try{
+        const result = await axios.get(getImageUrl(url));
+        dispatch(updateNFT({address: contractAddress, tokenId: tokenId, metadata: result.data}))
+      }catch{
+        dispatch(updateNFT({address: contractAddress, tokenId: tokenId, metadata: {
+          name: "Unnamed Collection",
+          image: defaultImage
+        }}))
+      }
+    }
+    if(!metadata){
+      getMetadata();
+    }
+    
+  },[metadata])
+  
+  useEffect(() => {
     if (metadata !== undefined && metadata !== null) {
       if (metadata.image && metadata.image.includes("ipfs://")) {
         let url = metadata.image;
@@ -51,11 +75,11 @@ export const NFTCard = (props) => {
     } else {
       setImgUrl("https://thereisnoimage.com/image");
     }
-  }, []);
+  }, [metadata]);
 
   return (
     <>
-      <Link className="nft-card-link" to={`/nft/${contractAddress}/${tokenId}`}>
+      <Link className="nft-card-link" to={`/nft/${network}/${contractAddress}/${tokenId}`}>
         <Box sx={styles.root}>
           <Box sx={styles.flex}>
             <div style={styles.meta}>

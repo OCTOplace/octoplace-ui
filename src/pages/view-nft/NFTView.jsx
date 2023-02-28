@@ -3,7 +3,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import erc721Abi from "../../abi/erc721.json";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import {  JsonRpcProvider } from "@ethersproject/providers";
 import { rpc, swapAbi, swapContract } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
@@ -16,6 +16,7 @@ import { OfferList } from "../../components/offer-list/offer-list";
 import { ListNFTDialog } from "./dialogs/list-nft-dlg";
 import { toast } from "react-toastify";
 import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
+import { getNetworkInfo } from "../../connectors/networks";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -27,7 +28,7 @@ function useForceUpdate() {
 }
 
 export const NFTView = () => {
-  const { address, tokenId } = useParams();
+  const { address, tokenId , network} = useParams();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
@@ -35,17 +36,19 @@ export const NFTView = () => {
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
-  const { account, library } = useWeb3React();
+  const { account, library , chainId} = useWeb3React();
   const listings = useSelector((state) => state.listings.allListings);
   const loading = useSelector((state) => state.app.isLoading);
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
-  const provider = new JsonRpcProvider(rpc);
+  
 
   const getDetails = async () => {
     try {
-      const contract = new Contract(address, erc721Abi, provider);
+      const netDetails = getNetworkInfo(network);
+      const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
+      const contract = new Contract(address, netDetails.dataNetwork.ERC_ABI, provider);
       let url = await contract.tokenURI(tokenId);
       url = metaUrl(url);
       let meta;
@@ -96,6 +99,11 @@ export const NFTView = () => {
 
   const handleRemoveNFT = async () => {
     try {
+      const netDetails = getNetworkInfo(network);
+      console.log(chainId, parseInt(netDetails.dataNetwork.CHAIN_ID))
+      if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
+        alert("Switch Required")
+      }
       const signer = await library.getSigner();
       const contract = new Contract(swapContract, swapAbi, signer);
       const txResult = await contract.removeListingById(

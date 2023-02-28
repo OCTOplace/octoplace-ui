@@ -23,6 +23,14 @@ export const myNFTSlice = createSlice({
     addMyListings: (state, action) => {
       state.nftListings = action.payload
     },
+    updateNFT: (state, action) => {
+      for(let i = 0; i< state.nfts.length; i++){
+        let obj = state.nfts[i];
+        if(obj.contractAddress === action.payload.address && obj.tokenId === action.payload.tokenId){
+          state.nfts[i].metadata = action.payload.metadata
+        }
+      }
+    },
     resetCollections: (state) => {
         state.nftCollections = [];
         state.nfts = [];
@@ -45,6 +53,6 @@ export const myNFTSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {setSelectedTab, addNFTCollection,resetCollections, addNFT, addMyListings,setMyNftLoading, setMyOffers,setOwner} = myNFTSlice.actions
+export const {setSelectedTab,updateNFT, addNFTCollection,resetCollections, addNFT, addMyListings,setMyNftLoading, setMyOffers,setOwner} = myNFTSlice.actions
 
 export default myNFTSlice.reducer

@@ -58,3 +58,12 @@ import ercabi from "../abi/erc721.json";
         ERC_ABI: ercAbi
     }
  }
+
+
+ export const getNetworkInfo = (name) => {
+  switch(name){
+    case "theta": return {switch: switchNetworks.theta, dataNetwork: NETWORKS.THETA}
+    case "kava": return {switch: switchNetworks.kava, dataNetwork: NETWORKS.KAVA}
+    default: return {switch: switchNetworks.theta, dataNetwork: NETWORKS.THETA}
+  }
+ }
