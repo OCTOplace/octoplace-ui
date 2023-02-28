@@ -3,7 +3,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import erc721Abi from "../../abi/erc721.json";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
-import {  JsonRpcProvider } from "@ethersproject/providers";
+import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { rpc, swapAbi, swapContract } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
@@ -104,7 +104,8 @@ export const NFTView = () => {
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
         await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
       }
-      const signer = await library.getSigner();
+      const provider = new Web3Provider(window.ethereum , "any");
+      const signer = await provider.getSigner();
       const contract = new Contract(swapContract, swapAbi, signer);
       const txResult = await contract.removeListingById(
         listing.listingDetails.listingid
