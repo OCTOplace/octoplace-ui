@@ -51,6 +51,12 @@ function App() {
   }, [account])
 
   useEffect(() => {
+    if(chainId && account){
+      getBalance();
+    }
+  }, [chainId])
+
+  useEffect(() => {
     if(loggedAddress !== "" && myNftOwner !== loggedAddress){
       //if(chainId===361){
        dispatch(createAction("LOAD_MY_NFTS_API")({account:loggedAddress}));

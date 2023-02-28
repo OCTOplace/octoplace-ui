@@ -190,10 +190,14 @@ export const NFTView = () => {
         tokenId={tokenId}
         owner={owner}
         open={listDlgOpen}
-        onClose={() => {
+        onClose={(isSuccess) => {
+          console.log(isSuccess)
           setListDlgOpen(false);
-          dispatch({ type: "LOAD_ALL_LISTING" });
+          if(isSuccess){
+            dispatch({ type: "LOAD_ALL_LISTING" });
+          }
         }}
+        network={network}
         address={address}
       />
       {listing && (

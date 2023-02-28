@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment , useEffect, useState} from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,10 +11,10 @@ import {
   Paper,
   DialogActions,
   Button,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
-import {  Close } from "@mui/icons-material";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { Close } from "@mui/icons-material";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { rpc, swapContract } from "../../../connectors/address";
 import erc721Abi from "../../../abi/erc721.json";
 import swapAbi from "../../../abi/swap.json";
@@ -24,10 +24,11 @@ import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
 import { parseUnits } from "@ethersproject/units";
 import { defaultImage } from "../../../connectors/address";
+import { getNetworkInfo } from "../../../connectors/networks";
 export const ListNFTDialog = (props) => {
-  const { onClose, open, metadata, tokenId, owner , address} = props;
+  const { onClose, open, metadata, tokenId, owner, address, network } = props;
   const [isApproved, setIsApproved] = useState(false);
-  const {account, library} = useWeb3React();
+  const { account, library , chainId} = useWeb3React();
   // eslint-disable-next-line no-unused-vars
   const [url, setUrl] = useState("");
   const [imgLoading, setImageLoading] = useState(true);
@@ -36,67 +37,76 @@ export const ListNFTDialog = (props) => {
   const handleClose = (isSuccess) => {
     onClose(isSuccess);
   };
-  const provider = new JsonRpcProvider(rpc);
+
   const getApprovalState = async () => {
-    
-    try{
-      if(address && owner){
-        const contract = new Contract(address, erc721Abi, provider);
-    const isAppr = await contract.isApprovedForAll(owner, swapContract);
-    
-    setIsApproved(isAppr);
+    try {
+      if (address && owner) {
+        const netDetails = getNetworkInfo(network);
+        const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
+        const contract = new Contract(address, netDetails.dataNetwork.ERC_ABI, provider);
+        const isAppr = await contract.isApprovedForAll(owner, netDetails.dataNetwork.SWAP_CONTRACT);
+        setIsApproved(isAppr);
       }
-    }catch {
-      
+    } catch {
       setIsApproved(false);
     }
-  }
+  };
   useEffect(() => {
     getApprovalState();
-  }, [address, owner])
+  }, [address, owner]);
 
   useEffect(() => {
-    if(props.metadata && props.metadata.image){
+    if (props.metadata && props.metadata.image) {
       setUrl(props.metadata.image);
-    }else{
+    } else {
       setUrl(defaultImage);
     }
-  }, [props])
+  }, [props]);
   const handleApprove = async () => {
-    try{
-      if(account && library){
-        const signer = await library.getSigner();
-      const contract = new Contract(address, erc721Abi, signer);
-    const tx = await contract.setApprovalForAll(swapContract, true);
-    await tx.wait();
-    setIsApproved(true);
-    toast.success("NFT approval successful!");
-      }else {
-        toast.error("Connect your wallet.")
+    try {
+      if (account && library) {
+        const netDetails = getNetworkInfo(network);
+        if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
+          await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+        }
+        const provider = new Web3Provider(window.ethereum , "any");
+        const signer = await provider.getSigner();
+        const contract = new Contract(address, netDetails.dataNetwork.ERC_ABI, signer);
+        const tx = await contract.setApprovalForAll(netDetails.dataNetwork.SWAP_CONTRACT, true);
+        await tx.wait();
+        setIsApproved(true);
+        toast.success("NFT approval successful!");
+      } else {
+        toast.error("Connect your wallet.");
       }
-    }catch (err){
-      
-    }
-  }
+    } catch (err) {}
+  };
 
   const handleListing = async () => {
-    try{
-      if(account && library && tokenId && address){
+    try {
+      if (account && library && tokenId && address) {
+        const netDetails = getNetworkInfo(network);
+        if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
+          await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+        }
+        const provider = new Web3Provider(window.ethereum , "any");
+        const signer = await provider.getSigner();
         let overRides = {
           value: parseUnits(txCharge, "ether"),
-        }
-        const signer = await library.getSigner();
-        const contract = new Contract(swapContract,swapAbi , signer);
-        const txResult = await contract.createListing(tokenId, address, overRides);
+        };
+        const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, netDetails.dataNetwork.SWAP_ABI, signer);
+        const txResult = await contract.createListing(
+          tokenId,
+          address,
+          overRides
+        );
         await txResult.wait();
-        dispatch({type:"LOAD_ALL_LISTING"});
+        dispatch({ type: "LOAD_ALL_LISTING" });
         handleClose(true);
         toast.success("NFT Listed successfully!");
       }
-    }
-    catch (err) {
-    }
-  }
+    } catch (err) {}
+  };
   return (
     <Dialog fullWidth open={open} className="nft-list-dlg">
       <DialogTitle className="title">
@@ -112,7 +122,7 @@ export const ListNFTDialog = (props) => {
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <p style={{fontWeight:700}}>Listing charge {txCharge} TFUEL</p>
+        <p style={{ fontWeight: 700 }}>Listing charge {txCharge} TFUEL</p>
         {metadata && (
           <Fragment>
             <Typography>{`${metadata.name} will be listed for nft swap.`}</Typography>
@@ -121,17 +131,18 @@ export const ListNFTDialog = (props) => {
                 <img
                   alt="nft artwork"
                   src={url}
-                  style={{...style.img, display: imgLoading ? "none": "block"}}
+                  style={{
+                    ...style.img,
+                    display: imgLoading ? "none" : "block",
+                  }}
                   onLoad={() => setImageLoading(false)}
                 />
               }
-              {
-                imgLoading && (
-                  <div style={style.img}>
-                    <CircularProgress />
-                  </div>
-                )
-              }
+              {imgLoading && (
+                <div style={style.img}>
+                  <CircularProgress />
+                </div>
+              )}
 
               <Box>
                 <Typography variant="h6">{metadata.name}</Typography>
@@ -142,8 +153,20 @@ export const ListNFTDialog = (props) => {
         )}
       </DialogContent>
       <DialogActions sx={style.dlgActions}>
-        <Button onClick={handleApprove} disabled={isApproved} variant="contained">Approve</Button>
-        <Button onClick={handleListing} disabled={!isApproved} variant="contained">List NFT</Button>
+        <Button
+          onClick={handleApprove}
+          disabled={isApproved}
+          variant="contained"
+        >
+          Approve
+        </Button>
+        <Button
+          onClick={handleListing}
+          disabled={!isApproved}
+          variant="contained"
+        >
+          List NFT
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -155,9 +178,9 @@ const style = {
     borderRadius: "10px",
     marginRight: "16px",
   },
-  dlgActions:{
+  dlgActions: {
     paddingRight: "24px",
-    paddingBottom: "24px"
+    paddingBottom: "24px",
   },
   paper: {
     padding: "5px",

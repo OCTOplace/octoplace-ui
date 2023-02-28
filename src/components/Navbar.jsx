@@ -15,7 +15,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import LogoutIcon from '@mui/icons-material/Logout';
 export const AppNavbar = () => {
   const [dlgOpen, setDlgOpen] = useState(false);
-  const {deactivate} = useWeb3React();
+  const {deactivate, chainId} = useWeb3React();
   const acctDetails = useSelector((state) => state.account);
   useEffect(() => {
   }, [acctDetails]);
@@ -73,7 +73,7 @@ export const AppNavbar = () => {
             onClick={handleBtnClick}
             variant="contained"
           >
-            {getAccountString(acctDetails.address)} &nbsp;| {acctDetails.balance} TFUEL
+            {getAccountString(acctDetails.address)} &nbsp;| {acctDetails.balance} {chainId===361 ? "TFUEL" : "KAVA"}
           </Button>
           )
         }
