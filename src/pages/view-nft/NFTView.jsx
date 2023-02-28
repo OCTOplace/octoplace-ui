@@ -102,7 +102,7 @@ export const NFTView = () => {
       const netDetails = getNetworkInfo(network);
       console.log(chainId, parseInt(netDetails.dataNetwork.CHAIN_ID))
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
-        alert("Switch Required")
+        await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
       }
       const signer = await library.getSigner();
       const contract = new Contract(swapContract, swapAbi, signer);
