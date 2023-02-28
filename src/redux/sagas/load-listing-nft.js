@@ -8,6 +8,7 @@ import {  metadataUrl } from "../../utils/format-listings";
 import { setLoading} from "../slices/app-slice";
 import axios from "axios";
 import { setAllListings } from "../slices/listing-slice";
+import { getNetworkInfo } from "../../connectors/networks";
 
 function* LoadListingNFtWatcher() {
   yield takeEvery("LOAD_LISTING_NFT", LoadListingNFtWorker);
@@ -27,9 +28,10 @@ function* LoadListingNFtWorker(action) {
 }
 
 const loadListingNft = async(listing) => {
-    const {tokenAddress, tokenId} = listing;
-    const provider = new JsonRpcProvider(rpc);
-    const contract = new Contract(tokenAddress, ercAbi, provider);
+    const {tokenAddress, tokenId, network} = listing;
+    const networkInfo = getNetworkInfo(network);
+    const provider = new JsonRpcProvider(networkInfo.dataNetwork.RPC);
+    const contract = new Contract(tokenAddress, networkInfo.dataNetwork.ERC_ABI, provider);
     const name  = await contract.name();
     const uri = await contract.tokenURI(tokenId);
     let metadata;
@@ -46,7 +48,8 @@ const loadListingNft = async(listing) => {
             tokenId: tokenId,
             metadataUri: uri,
             name: name,
-            metadata: metadata
+            metadata: metadata,
+            network: network
         }
     }
 
