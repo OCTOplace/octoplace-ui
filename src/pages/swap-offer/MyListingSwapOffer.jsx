@@ -4,11 +4,11 @@ import CachedIcon from "@mui/icons-material/Cached";
 import { styled } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { rpc, swapContract } from "../../connectors/address";
 import ercAbi from "../../abi/erc721.json";
 import { Contract } from "@ethersproject/contracts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { metadataUrl } from "../../utils/format-listings";
 import { useWeb3React } from "@web3-react/core";
@@ -16,22 +16,28 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { SwapCard } from "./components/swapcard";
 import swapAbi from "../../abi/swap.json";
+import { getNetworkInfo } from "../../connectors/networks";
 
 export const MyListingSwapOffer = () => {
-  const { listingId, offerNft, offerTokenId } = useParams();
+  const { listingId, offerNft, offerTokenId, network } = useParams();
   const listings = useSelector((state) => state.listings.allListings);
   const [myNft, setMyNft] = useState();
   const [listingNFT, setListingNFT] = useState();
   const [isApproved, setIsApproved] = useState(false);
   const [offerOwner, setOfferOwner] = useState("");
   const myNfts = useSelector((state) => state.myNFT.nfts);
-  const { account , library} = useWeb3React();
+  const { account, library, chainId } = useWeb3React();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const getApprovedStatus = async () => {
     try {
-      const provider = new JsonRpcProvider(rpc);
+      
+      const netDetails = getNetworkInfo(network);
+      const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
       const contract = new Contract(offerNft, ercAbi, provider);
-      const status = await contract.isApprovedForAll(offerOwner, swapContract);
+      console.log("triggered", )
+      const status = await contract.isApprovedForAll(offerOwner, netDetails.dataNetwork.SWAP_CONTRACT);
+      console.log(status, "Approval status")
       setIsApproved(status);
     } catch {
       setIsApproved(false);
@@ -39,23 +45,27 @@ export const MyListingSwapOffer = () => {
   };
 
   const getListingNft = async () => {
-
     const found = listings.find(
-      (x) => x.listingDetails.listingid === Number(listingId)
+      (x) => x.listingDetails.listingid === Number(listingId) && x.listingDetails.network === network
     );
+    console.log(listings);
     if (found) {
       setListingNFT(found);
+      console.log("Found NFT in listing list");
+      
     }
   };
   const getMyNft = async () => {
+    const netDetails = getNetworkInfo(network);
     const found = myNfts.find(
-      (x) => x.tokenId === offerTokenId && x.contractAddress === offerNft
+      (x) => x.tokenId === offerTokenId && x.contractAddress === offerNft && x.network===network
     );
     if (found) {
+      console.log("Found NFT in list")
       setMyNft(found);
     } else {
       try {
-        const provider = new JsonRpcProvider(rpc);
+        const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
         const contract = new Contract(offerNft, ercAbi, provider);
         const owner = await contract.ownerOf(offerTokenId);
         setOfferOwner(owner);
@@ -88,10 +98,10 @@ export const MyListingSwapOffer = () => {
   }, []);
 
   useEffect(() => {
-    if(account){
-        getApprovedStatus();
+    if (account, offerOwner !== "") {
+      getApprovedStatus();
     }
-  }, [account]);
+  }, [account, offerOwner]);
 
   useEffect(() => {
     if (listings.length > 0) {
@@ -99,24 +109,45 @@ export const MyListingSwapOffer = () => {
     }
   }, [listings]);
 
-  const handleApprove =async () => {
-        const signer = await library.getSigner();
-        const contract = new Contract(offerNft, ercAbi, signer);
-        const txResult = await contract.setApprovalForAll(swapContract, true);
-        await txResult.wait();
-        toast.success("Approval Successful!");
-        setIsApproved(true);
-  }
+  const handleApprove = async () => {
+    const netDetails = getNetworkInfo(network);
+    try{
+      if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
+        await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+      }
+      const provider = new Web3Provider(window.ethereum, "any");
+      const signer = await provider.getSigner();
+      const contract = new Contract(offerNft, ercAbi, signer);
+      const txResult = await contract.setApprovalForAll(netDetails.dataNetwork.SWAP_CONTRACT, true);
+      await txResult.wait();
+      toast.success("Approval Successful!");
+      setIsApproved(true);
+    }catch(err){
+      console.log("Error");
+    }
+  };
 
   const handleAddOffer = async () => {
-    const signer = await library.getSigner();
-    const contract  = new Contract(swapContract, swapAbi, signer);
-    const txResult = await contract.createOffer(offerTokenId, offerNft, listingId);
+    const netDetails = getNetworkInfo(network);
+    if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
+      await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+    }
+    const provider = new Web3Provider(window.ethereum, "any");
+      const signer = await provider.getSigner();
+    const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, netDetails.dataNetwork.SWAP_ABI, signer);
+    const txResult = await contract.createOffer(
+      offerTokenId,
+      offerNft,
+      listingId
+    );
     await txResult.wait();
     toast.success("Swap offer sent successfully!");
-    navigate(`/nft/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`);
-        
-  }
+    dispatch({type:"LOAD_ALL_OFFERS"});
+
+    navigate(
+      `/nft/${network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
+    );
+  };
   return (
     <Box
       sx={{
@@ -214,10 +245,18 @@ export const MyListingSwapOffer = () => {
             pt: { xs: 3, md: 6 },
           }}
         >
-          <ContainedButton disabled={isApproved} onClick={handleApprove} variant="outlined">
+          <ContainedButton
+            disabled={isApproved}
+            onClick={handleApprove}
+            variant="outlined"
+          >
             Approve
           </ContainedButton>
-          <ContainedButton disabled={!isApproved} onClick={handleAddOffer} variant="outlined">
+          <ContainedButton
+            disabled={!isApproved}
+            onClick={handleAddOffer}
+            variant="outlined"
+          >
             Offer
           </ContainedButton>
         </Box>

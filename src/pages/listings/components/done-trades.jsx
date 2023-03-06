@@ -12,7 +12,7 @@ export const CompletedSwaps = () => {
           trades.map((item, index) => {
             return (
               <Grid key={`index_${index}`} item lg={4} xs={12} sm={12} md={6}>
-                <TradeCard trade={item} />
+                <TradeCard number={index} trade={item} />
               </Grid>
             );
           })}

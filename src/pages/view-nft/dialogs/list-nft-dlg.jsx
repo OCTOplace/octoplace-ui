@@ -15,9 +15,6 @@ import {
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../../../connectors/address";
-import erc721Abi from "../../../abi/erc721.json";
-import swapAbi from "../../../abi/swap.json";
 import { Contract } from "@ethersproject/contracts";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";

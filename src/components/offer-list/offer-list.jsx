@@ -11,18 +11,17 @@ import { formatOffers } from "../../utils/format-listings";
 import { OfferItem } from "./offer-item";
 import { useDispatch } from "react-redux";
 import { setOffers } from "../../redux/slices/listing-slice";
+import { getNetworkInfo } from "../../connectors/networks";
 
 export const OfferList = (props) => {
-  const { listingId } = props;
+  const { listingId, network } = props;
   const [offers, setPOffers] = useState([]);
-  const dispatch = useDispatch();
   const getAllOffers = async () => {
-    const provider = new JsonRpcProvider(rpc);
-    const contract = new Contract(swapContract, swapAbi, provider);
+    const net = getNetworkInfo(network);
+    const provider = new JsonRpcProvider(net.dataNetwork.RPC);
+    const contract = new Contract(net.dataNetwork.SWAP_CONTRACT, net.dataNetwork.SWAP_ABI, provider);
     const offer = await contract.readAllOffers();
     setPOffers(formatOffers(offer).filter((x) => x.listingId === listingId));
-    const result = formatOffers(offer);
-    dispatch(setOffers(result));
   };
   useEffect(() => {
     if (listingId) {
@@ -102,7 +101,7 @@ export const OfferList = (props) => {
           )
           .map((item, index) => {
             return (
-              <OfferItem  serial={index + 1} key={item.offerId} offer={item} />
+              <OfferItem network={network} serial={index + 1} key={item.offerId} offer={item} />
             );
           })}
       </Grid>

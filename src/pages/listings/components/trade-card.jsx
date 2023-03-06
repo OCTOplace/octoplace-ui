@@ -6,22 +6,19 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import {
-  defaultImage,
-  ercAbi,
-  rpc,
-} from "../../../connectors/address";
+import { defaultImage, ercAbi, rpc } from "../../../connectors/address";
 import { metadataUrl } from "../../../utils/format-listings";
 import { getImageUrl } from "../../../utils/string-util";
 import { Cached } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { getNetworkInfo } from "../../../connectors/networks";
 
 export const TradeCard = (props) => {
   const [listingObj, setListingObj] = useState(undefined);
   const [offerObj, setOfferObj] = useState(undefined);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [img2Loaded, setImg2Loaded] = useState(false);
-  const { tradeId, listing, offer } = props.trade;
+  const { tradeId, listing, offer, network } = props.trade;
   const styles = {
     root2: {
       display: "flex",
@@ -81,7 +78,8 @@ export const TradeCard = (props) => {
   };
 
   async function getListingDetails() {
-    const provider = new JsonRpcProvider(rpc);
+    const net = getNetworkInfo(network);
+    const provider = new JsonRpcProvider(net.dataNetwork.RPC);
     const contract = new Contract(listing.tokenAddress, ercAbi, provider);
     const listingName = await contract.name();
     const tokenUri = await contract.tokenURI(listing.tokenId);
@@ -120,7 +118,8 @@ export const TradeCard = (props) => {
     }
   }
   async function getOfferDetails() {
-    const provider = new JsonRpcProvider(rpc);
+    const net = getNetworkInfo(network);
+    const provider = new JsonRpcProvider(net.dataNetwork.RPC);
     const contract = new Contract(offer.offerTokenAddress, ercAbi, provider);
     const offerName = await contract.name();
     const tokenUri = await contract.tokenURI(offer.offerTokenId);
@@ -200,11 +199,16 @@ export const TradeCard = (props) => {
         )}
       </Box>
       <Box sx={styles.root3}>
-        <Link to={`/swap/${offer.offerId}`}>
+        <Link to={`/swap/${network}/${offer.offerId}`}>
           {" "}
           <Typography
-            sx={{ color: "white", fontSize: "16px", fontWeight: 700 , textDecoration: "none"}}
-          >{`Trade #${tradeId}`}</Typography>
+            sx={{
+              color: "white",
+              fontSize: "16px",
+              fontWeight: 700,
+              textDecoration: "none",
+            }}
+          >{`Trade #${tradeId} (${network.toUpperCase()} NETWORK)`}</Typography>
         </Link>
         {listingObj && offerObj && (
           <Typography

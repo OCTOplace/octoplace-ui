@@ -11,15 +11,17 @@ import { metadataUrl } from "../../utils/format-listings";
 import { getImageUrl } from "../../utils/string-util";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { getNetworkInfo } from "../../connectors/networks";
 
 export const OfferItem = (props) => {
-  const { offer, serial } = props;
+  const { offer, serial, network } = props;
   const [name, setName] = useState("");
   const [imgUrl, setUrl] = useState("");
   const [imgLoaded, setImgLoaded] = useState(false);
   const navigate = useNavigate();
   const getOfferNft = async () => {
-    const provider = new JsonRpcProvider(rpc);
+    const netInfo = getNetworkInfo(network);
+    const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
     const contract = new Contract(offer.offerTokenAddress, ercAbi, provider);
     const nm = await contract.name();
     setName(nm);
@@ -49,7 +51,7 @@ export const OfferItem = (props) => {
   return (
     <Fragment>
       <Grid
-      onClick={() => navigate(`/swap/${offer.offerId}`)}
+      onClick={() => navigate(`/swap/${network}/${offer.offerId}`)}
         container
         spacing={1}
         sx={{

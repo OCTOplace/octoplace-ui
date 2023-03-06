@@ -55,7 +55,6 @@ export const NFTView = () => {
       try {
         const result = await axios.get(url);
         meta = result.data;
-        console.log(meta);
       } catch (e) {
         meta = undefined;
       }
@@ -73,7 +72,6 @@ export const NFTView = () => {
 
   useEffect(() => {
     if (listings.length > 0 && address && tokenId) {
-      console.log("hit", listings, address, tokenId);
       const found = listings.find(
         (x) =>
           x.listingDetails.tokenAddress.toLowerCase() ===
@@ -81,7 +79,6 @@ export const NFTView = () => {
           x.listingDetails.tokenId === Number(tokenId) &&
           x.listingDetails.isCancelled === false
       );
-      console.log("found", found);
       if (found) {
         setListed(true);
         setListing(found);
@@ -100,7 +97,6 @@ export const NFTView = () => {
   const handleRemoveNFT = async () => {
     try {
       const netDetails = getNetworkInfo(network);
-      console.log(chainId, parseInt(netDetails.dataNetwork.CHAIN_ID))
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
         await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
       }
@@ -180,7 +176,7 @@ export const NFTView = () => {
             />
 
             {listing && (
-              <OfferList listingId={listing.listingDetails.listingid} />
+              <OfferList network={network} listingId={listing.listingDetails.listingid} />
             )}
           </Grid>
         </Grid>
@@ -191,7 +187,6 @@ export const NFTView = () => {
         owner={owner}
         open={listDlgOpen}
         onClose={(isSuccess) => {
-          console.log(isSuccess)
           setListDlgOpen(false);
           if(isSuccess){
             dispatch({ type: "LOAD_ALL_LISTING" });
@@ -205,11 +200,11 @@ export const NFTView = () => {
           tokenAddress={address}
           listingId={listing.listingDetails.listingid}
           open={offerDlgOpen}
+          network={network}
           onClose={(isSuccess) => {
             setOfferDlgOpen(false);
             if (isSuccess) {
               setListed(true);
-              console.log("Listed");
             }
           }}
         />

@@ -33,6 +33,7 @@ export const listingSlice = createSlice({
       state.completedListings = action.payload;
     },
     setOffers: (state, action) => {
+      console.log("Offers: ", action.payload)
       state.offers = action.payload;
     },
     resetListings: (state) => {

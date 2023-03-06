@@ -28,7 +28,7 @@ export const formatListings = (listings) => {
   return formatted;
 };
 
-export function formatOffers(offers) {
+export function formatOffers(offers, network) {
   const formatted = offers.map(item => {
     const obj = {
       isCancelled: item.isCancelled,
@@ -43,7 +43,8 @@ export function formatOffers(offers) {
       offerTokenId: Number(formatUnits(item.offerTokenId, 0)),
       offerTokenOwner: item.offerTokenOwner,
       transactionCharge: Number(formatUnits(item.transactionCharge, 0)),
-      transactionChargeBips: Number(formatUnits(item.transactionChargeBips, 0))
+      transactionChargeBips: Number(formatUnits(item.transactionChargeBips, 0)),
+      network : network
     }
     return obj;
   });

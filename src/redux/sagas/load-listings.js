@@ -39,7 +39,6 @@ const loadAllListings = async () => {
       }
       //finalListings = [...finalListings, ...listings];
     }
-    console.log(finalListings);
     return finalListings;
   } catch (e) {
     console.log(e);
