@@ -1,7 +1,7 @@
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 const RPC_URLS= {
     361: "https://eth-rpc-api.thetatoken.org/rpc",
-    2221:"https://evm.testnet.kava.io"
+    2222:"https://evm.kava.io"
   }
 export const walletconnect = new WalletConnectConnector({
     rpc: RPC_URLS,

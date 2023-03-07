@@ -30,7 +30,7 @@ export const getAllTrades = createAsyncThunk(
           tradeId: trade.tradeId,
           listing,
           offer,
-          network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2221 ? "kava" : "") ) //TODO Remove hardcoded ChainId
+          network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2222 ? "kava" : "") ) //TODO Remove hardcoded ChainId
         });
       }
     }

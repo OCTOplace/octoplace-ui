@@ -37,7 +37,7 @@ const loadAllOffers = async () => {
       let offers = await contract.readAllOffers();
       offers = formatOffers(offers);
       for(var offer of offers){
-        finalOffers = [...finalOffers, {...offer, network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2221 ? "kava" : "") )}]  //TODO - change hardcoded chainid to Mainnet
+        finalOffers = [...finalOffers, {...offer, network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2222 ? "kava" : "") )}]  //TODO - change hardcoded chainid to Mainnet
       }
     }
     return finalOffers;

@@ -8,10 +8,10 @@ import ercabi from "../abi/erc721.json";
  const thetaSwapContract = "0x6e4c614da85DD861e08f84706742239dBA892Df1";
  const swapAbi = swapabi;
  const ercAbi = ercabi;
- const kavaRpc = "https://evm.testnet.kava.io";
- const kavaChainId = "0x8ad";
- const kavaDataContract = "0xdfB00e816bC17f46f90aeD507f9e36C3C1db1f53";
- const kavaSwapContract="0x6e4c614da85DD861e08f84706742239dBA892Df1";
+ const kavaRpc = "https://evm.kava.io";
+ const kavaChainId = "0x8ae";
+ const kavaDataContract = "0xd676051dAC65E1a96ab738e94F6a5a91905dC582";
+ const kavaSwapContract="0x61F91266F6abEA61447E00EB781A3c38a3D1b925";
 
  export const switchNetworks = {
     theta: {
@@ -27,15 +27,15 @@ import ercabi from "../abi/erc721.json";
       iconUrls: [""],
     },
     kava: {
-      chainId: "0x8ad",
-      chainName: "Kava Testnet",
+      chainId: "0x8ae",
+      chainName: "Kava Mainnet",
       nativeCurrency: {
         name: "KAVA",
         symbol: "KAVA", 
         decimals: 18,
       },
-      rpcUrls: ["https://evm.testnet.kava.io"],
-      blockExplorerUrls: ["https://explorer.testnet.kava.io"],
+      rpcUrls: ["https://evm.kava.io"],
+      blockExplorerUrls: ["https://explorer.kava.io"],
       iconUrls: [""],
     },
   };

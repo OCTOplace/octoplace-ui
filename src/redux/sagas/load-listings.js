@@ -35,7 +35,7 @@ const loadAllListings = async () => {
       let listings = await contract.readAllListings();
       listings = formatListings(listings);
       for (var listing of listings) {
-        finalListings = [...finalListings, {...listing, network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2221 ? "kava" : "") )}]  //TODO - change hardcoded chainid to Mainnet
+        finalListings = [...finalListings, {...listing, network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2222 ? "kava" : "") )}]  //TODO - change hardcoded chainid to Mainnet
       }
       //finalListings = [...finalListings, ...listings];
     }
