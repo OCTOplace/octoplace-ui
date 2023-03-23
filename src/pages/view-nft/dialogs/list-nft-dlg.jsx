@@ -19,9 +19,10 @@ import { Contract } from "@ethersproject/contracts";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
-import { parseUnits } from "@ethersproject/units";
+import { formatUnits, parseUnits } from "@ethersproject/units";
 import { defaultImage } from "../../../connectors/address";
 import { getNetworkInfo } from "../../../connectors/networks";
+import { setTxCharge } from "../../../redux/slices/app-slice";
 export const ListNFTDialog = (props) => {
   const { onClose, open, metadata, tokenId, owner, address, network } = props;
   const [isApproved, setIsApproved] = useState(false);
@@ -48,8 +49,19 @@ export const ListNFTDialog = (props) => {
       setIsApproved(false);
     }
   };
+
+  const getTxCharge = async () => {
+    const {dataNetwork} = getNetworkInfo(network);
+    const provider = new JsonRpcProvider(dataNetwork.RPC);
+    const contract = new Contract(dataNetwork.SWAP_CONTRACT, dataNetwork.SWAP_ABI, provider);
+    let txCharge = await contract.getTxCharge();
+    console.log(txCharge);
+    txCharge = formatUnits(txCharge, 18);
+    dispatch(setTxCharge(txCharge));
+  }
   useEffect(() => {
     getApprovalState();
+    getTxCharge();
   }, [address, owner]);
 
   useEffect(() => {

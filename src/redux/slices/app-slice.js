@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { getTxCharge } from '../thunk/get-txcharge'
 
 const initialState = {
   nftAddressList: [],
@@ -24,7 +25,11 @@ export const appSlice = createSlice({
       state.txCharge = action.payload
     }
   },
-  
+  extraReducers: (builder) => {
+    builder.addCase(getTxCharge.fulfilled, (state,{payload}) => {
+      state.txCharge = payload;
+    })
+  }
 })
 
 // Action creators are generated for each case reducer function
