@@ -6,7 +6,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { defaultImage, ercAbi, rpc } from "../../../connectors/address";
+import { defaultImage, ercAbi } from "../../../connectors/address";
 import { metadataUrl } from "../../../utils/format-listings";
 import { getImageUrl } from "../../../utils/string-util";
 import { Cached } from "@mui/icons-material";

@@ -3,7 +3,6 @@ import React, { Fragment, useState } from "react";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 import { useLayoutEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import ercAbi from "../../abi/erc721.json";
 import axios from "axios";

@@ -2,8 +2,6 @@ import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
 import { takeLeading, put, call } from "redux-saga/effects";
-import { rpc, swapContract } from "../../connectors/address";
-import swapAbi from "../../abi/swap.json";
 import { formatOffers } from "../../utils/format-listings";
 import { setOffersLoading } from "../slices/app-slice";
 import { setOffers } from "../slices/listing-slice";

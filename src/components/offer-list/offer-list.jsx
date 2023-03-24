@@ -4,13 +4,9 @@ import { Box, Typography, Grid } from "@mui/material";
 import { FormatListBulleted } from "@mui/icons-material";
 import { useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
-import swapAbi from "../../abi/swap.json";
 import { formatOffers } from "../../utils/format-listings";
 import { OfferItem } from "./offer-item";
-import { useDispatch } from "react-redux";
-import { setOffers } from "../../redux/slices/listing-slice";
 import { getNetworkInfo } from "../../connectors/networks";
 
 export const OfferList = (props) => {

@@ -5,7 +5,6 @@ import { styled } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { rpc, swapContract } from "../../connectors/address";
 import ercAbi from "../../abi/erc721.json";
 import { Contract } from "@ethersproject/contracts";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,8 +14,14 @@ import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { SwapCard } from "./components/swapcard";
-import swapAbi from "../../abi/swap.json";
 import { getNetworkInfo } from "../../connectors/networks";
+import {
+  setTxDialogFailed,
+  setTxDialogHash,
+  setTxDialogPending,
+  setTxDialogSuccess,
+  showTxDialog,
+} from "../../redux/slices/app-slice";
 
 export const MyListingSwapOffer = () => {
   const { listingId, offerNft, offerTokenId, network } = useParams();
@@ -26,18 +31,18 @@ export const MyListingSwapOffer = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [offerOwner, setOfferOwner] = useState("");
   const myNfts = useSelector((state) => state.myNFT.nfts);
-  const { account, library, chainId } = useWeb3React();
+  const { account, chainId } = useWeb3React();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const getApprovedStatus = async () => {
     try {
-      
       const netDetails = getNetworkInfo(network);
       const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
       const contract = new Contract(offerNft, ercAbi, provider);
-      console.log("triggered", )
-      const status = await contract.isApprovedForAll(offerOwner, netDetails.dataNetwork.SWAP_CONTRACT);
-      console.log(status, "Approval status")
+      const status = await contract.isApprovedForAll(
+        offerOwner,
+        netDetails.dataNetwork.SWAP_CONTRACT
+      );
       setIsApproved(status);
     } catch {
       setIsApproved(false);
@@ -46,22 +51,23 @@ export const MyListingSwapOffer = () => {
 
   const getListingNft = async () => {
     const found = listings.find(
-      (x) => x.listingDetails.listingid === Number(listingId) && x.listingDetails.network === network
+      (x) =>
+        x.listingDetails.listingid === Number(listingId) &&
+        x.listingDetails.network === network
     );
-    console.log(listings);
     if (found) {
       setListingNFT(found);
-      console.log("Found NFT in listing list");
-      
     }
   };
   const getMyNft = async () => {
     const netDetails = getNetworkInfo(network);
     const found = myNfts.find(
-      (x) => x.tokenId === offerTokenId && x.contractAddress === offerNft && x.network===network
+      (x) =>
+        x.tokenId === offerTokenId &&
+        x.contractAddress === offerNft &&
+        x.network === network
     );
     if (found) {
-      console.log("Found NFT in list")
       setMyNft(found);
     } else {
       try {
@@ -98,7 +104,7 @@ export const MyListingSwapOffer = () => {
   }, []);
 
   useEffect(() => {
-    if (account, offerOwner !== "") {
+    if (account && offerOwner !== "") {
       getApprovedStatus();
     }
   }, [account, offerOwner]);
@@ -111,38 +117,64 @@ export const MyListingSwapOffer = () => {
 
   const handleApprove = async () => {
     const netDetails = getNetworkInfo(network);
-    try{
-      if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
-        await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+    dispatch(showTxDialog());
+    try {
+      if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [netDetails.switch],
+        });
       }
       const provider = new Web3Provider(window.ethereum, "any");
       const signer = await provider.getSigner();
       const contract = new Contract(offerNft, ercAbi, signer);
-      const txResult = await contract.setApprovalForAll(netDetails.dataNetwork.SWAP_CONTRACT, true);
+      const txResult = await contract.setApprovalForAll(
+        netDetails.dataNetwork.SWAP_CONTRACT,
+        true
+      );
+      dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       toast.success("Approval Successful!");
       setIsApproved(true);
-    }catch(err){
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+    } catch (err) {
       console.log("Error");
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
     }
   };
 
   const handleAddOffer = async () => {
+    dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
-    if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
-      await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+    if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [netDetails.switch],
+      });
     }
     const provider = new Web3Provider(window.ethereum, "any");
-      const signer = await provider.getSigner();
-    const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, netDetails.dataNetwork.SWAP_ABI, signer);
+    const signer = await provider.getSigner();
+    const contract = new Contract(
+      netDetails.dataNetwork.SWAP_CONTRACT,
+      netDetails.dataNetwork.SWAP_ABI,
+      signer
+    );
     const txResult = await contract.createOffer(
       offerTokenId,
       offerNft,
       listingId
     );
+    dispatch(setTxDialogHash(txResult.hash))
     await txResult.wait();
+    dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
     toast.success("Swap offer sent successfully!");
-    dispatch({type:"LOAD_ALL_OFFERS"});
+    dispatch({ type: "LOAD_ALL_OFFERS" });
 
     navigate(
       `/nft/${network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`

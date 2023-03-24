@@ -3,9 +3,7 @@ import { Alert, Box, Button, Grid, Typography } from "@mui/material";
 import CachedIcon from "@mui/icons-material/Cached";
 import { styled } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
-import swapAbi from "./../abi/swap.json";
 import ercAbi from "./../abi/erc721.json";
-import { rpc, swapContract } from "../connectors/address";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { formatOffers, metadataUrl, formatListings } from "../utils/format-listings";
@@ -19,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { getAllTrades } from "../redux/thunk/get-trades";
 import { ArrowBack } from "@mui/icons-material";
 import { getNetworkInfo } from "../connectors/networks";
+import { setTxDialogFailed, setTxDialogHash, setTxDialogPending, setTxDialogSuccess, showTxDialog } from "../redux/slices/app-slice";
 const noImage =
   "data:image/png;base64,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";
 
@@ -27,7 +26,7 @@ export const SingleSwapOffer = () => {
   const [listingObj, setListingObj] = useState();
   const [offerObj, setOfferObj] = useState();
   const [obj, setObj] = useState();
-  const { account, library , chainId} = useWeb3React();
+  const { account , chainId} = useWeb3React();
   const [isListingCancelled, setIsListingCancelled] = useState(false);
   const navigate = useNavigate();
   const getdetails = async () => {
@@ -46,7 +45,6 @@ export const SingleSwapOffer = () => {
         offerTokenId,
         listingId,
       } = offer;
-      console.log("Offer: ", offer);
       setObj(offer);
 
       //Listing validity
@@ -77,13 +75,7 @@ export const SingleSwapOffer = () => {
         owner: listingTokenOwner,
         address: listingTokenAddress,
       });
-      console.log("Listing Object: ",{
-        name: listCollName,
-        metadata: listMeta,
-        tokenId: listingTokenId,
-        owner: listingTokenOwner,
-        address: listingTokenAddress,
-      } )
+     
       // Offer
       const offerContract = new Contract(offerTokenAddress, ercAbi, provider);
       const offerCollName = await offerContract.name();
@@ -108,13 +100,7 @@ export const SingleSwapOffer = () => {
         address: offerTokenAddress,
       });
 
-      console.log("offer Object", {
-        name: offerCollName,
-        metadata: offerMeta,
-        tokenId: offerTokenId,
-        owner: offerTokenOwner,
-        address: offerTokenAddress,
-      })
+     
     } catch (err) {
       console.log(err);
     }
@@ -126,6 +112,7 @@ export const SingleSwapOffer = () => {
 
   const handleDecline = async () => {
     try {
+      dispatch(showTxDialog());
       const netDetails  = getNetworkInfo(network);
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
         await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
@@ -134,19 +121,27 @@ export const SingleSwapOffer = () => {
       const signer = await provider.getSigner();
       const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, netDetails.dataNetwork.SWAP_ABI, signer);
       const txResult = await contract.declineOffer(obj.offerId, obj.listingId);
+      dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       toast.success("Decline Offer Successful!");
+      dispatch(setTxDialogSuccess(true));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(false));
       dispatch({ type: "LOAD_ALL_OFFERS" });
       dispatch({ type: "LOAD_ALL_LISTING" });
       dispatch(getAllTrades());
       getdetails();
     } catch (err) {
       toast.error(err);
+      dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(true));
     }
   };
 
   const handleRemoveOffer = async () => {
     try {
+      dispatch(showTxDialog());
       const netDetails  = getNetworkInfo(network);
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
         await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
@@ -155,20 +150,27 @@ export const SingleSwapOffer = () => {
       const signer = await provider.getSigner();
       const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, netDetails.dataNetwork.SWAP_ABI, signer);
       const txResult = await contract.removeOfferById(obj.offerId);
+      dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       toast.success("Withdraw Offer Successful!");
       dispatch({ type: "LOAD_ALL_OFFERS" });
       dispatch({ type: "LOAD_ALL_LISTING" });
       dispatch(getAllTrades());
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
       getdetails();
     } catch (err) {
       toast.error(err);
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
     }
   };
 
   const handleComplete = async () => {
     try {
-
+      dispatch(showTxDialog());
       const netDetails  = getNetworkInfo(network);
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
         await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
@@ -177,13 +179,20 @@ export const SingleSwapOffer = () => {
       const signer = await provider.getSigner();
       const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, netDetails.dataNetwork.SWAP_ABI, signer);
       const txResult = await contract.acceptOffer(obj.offerId, obj.listingId);
+      dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
       toast.success("Swap Successful!");
       dispatch({ type: "LOAD_ALL_OFFERS" });
       dispatch({ type: "LOAD_ALL_LISTING" });
       getdetails();
     } catch (err) {
       toast.error("Request Failed!");
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
     }
   };
   return (

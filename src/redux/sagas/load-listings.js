@@ -29,7 +29,6 @@ const loadAllListings = async () => {
     const nets = [NETWORKS.THETA, NETWORKS.KAVA];
     for (var net of nets) {
       const chainId = net.CHAIN_ID;
-      console.log()
       const provider = new JsonRpcProvider(net.RPC);
       const contract = new Contract(net.SWAP_CONTRACT, net.SWAP_ABI, provider);
       let listings = await contract.readAllListings();

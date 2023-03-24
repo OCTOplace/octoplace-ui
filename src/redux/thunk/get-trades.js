@@ -1,7 +1,6 @@
 import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { rpc, swapAbi, swapContract } from "../../connectors/address";
 import { NETWORKS } from "../../connectors/networks";
 import {
   FormatTrades,
@@ -34,7 +33,6 @@ export const getAllTrades = createAsyncThunk(
         });
       }
     }
-    console.log(detailedTrades);
     return detailedTrades;
   }
 );

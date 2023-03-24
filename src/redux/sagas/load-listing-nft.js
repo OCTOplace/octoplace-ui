@@ -2,8 +2,6 @@ import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
 import {  put,  call, takeEvery } from "redux-saga/effects";
-import {rpc} from "../../connectors/address";
-import ercAbi from "../../abi/erc721.json";
 import {  metadataUrl } from "../../utils/format-listings";
 import { setLoading} from "../slices/app-slice";
 import axios from "axios";

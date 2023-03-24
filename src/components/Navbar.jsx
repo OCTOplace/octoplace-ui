@@ -4,7 +4,6 @@ import Navbar from "react-bootstrap/Navbar";
 import React from "react";
 import logo from "../assets/logo.png";
 import { Button, Menu, MenuItem } from "@mui/material";
-import Searchbox from "./searchbox";
 import { useNavigate } from "react-router-dom";
 import { ConnectWalletDlg } from "./connnect-wallet-dlg";
 import { useState } from "react";

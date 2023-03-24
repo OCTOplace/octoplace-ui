@@ -23,8 +23,6 @@ import { getImageUrl } from "../../../utils/string-util";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { rpc, swapContract } from "./../../../connectors/address";
-import swapAbi from "../../../abi/swap.json";
 import { Contract } from "@ethersproject/contracts";
 import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
@@ -50,7 +48,6 @@ export const OfferNFTDialog = (props) => {
 
   const createData = async () => {
     const netInfo = getNetworkInfo(network);
-    console.log(netInfo);
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
     const contract = new Contract(
       netInfo.dataNetwork.SWAP_CONTRACT,
@@ -68,7 +65,6 @@ export const OfferNFTDialog = (props) => {
     for (var nftItem of myNFTS){
       if(nftItem.url){
         const meta = await getMetadata(nftItem.url);
-        console.log(meta);
         nftArr = [...nftArr, {...nftItem, metadata: meta}]
       }
     }
@@ -128,7 +124,6 @@ export const OfferNFTDialog = (props) => {
                   collectionName: item.collectionName,
                 };
               } else if (!item.metadata && item.url) {
-                console.log("i am hit");
                 
                 const meta = getMetadata(item.url);
                 obj = {

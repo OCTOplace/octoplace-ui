@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, Grid, Typography } from "@mui/material";
-import erc721Abi from "../../abi/erc721.json";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { rpc, swapAbi, swapContract } from "../../connectors/address";
+import {  swapAbi } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 import { useState } from "react";
@@ -17,6 +16,7 @@ import { ListNFTDialog } from "./dialogs/list-nft-dlg";
 import { toast } from "react-toastify";
 import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
 import { getNetworkInfo } from "../../connectors/networks";
+import { setTxDialogFailed, setTxDialogHash, setTxDialogPending, setTxDialogSuccess, showTxDialog } from "../../redux/slices/app-slice";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -36,7 +36,7 @@ export const NFTView = () => {
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
-  const { account, library , chainId} = useWeb3React();
+  const { account , chainId} = useWeb3React();
   const listings = useSelector((state) => state.listings.allListings);
   const loading = useSelector((state) => state.app.isLoading);
   const forceUpdate = useForceUpdate();
@@ -96,22 +96,30 @@ export const NFTView = () => {
 
   const handleRemoveNFT = async () => {
     try {
+      dispatch(showTxDialog());
       const netDetails = getNetworkInfo(network);
       if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
         await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
       }
       const provider = new Web3Provider(window.ethereum , "any");
       const signer = await provider.getSigner();
-      const contract = new Contract(swapContract, swapAbi, signer);
+      const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, swapAbi, signer);
       const txResult = await contract.removeListingById(
         listing.listingDetails.listingid
       );
+      dispatch(setTxDialogHash(txResult.hash))
       await txResult.wait();
       dispatch({ type: "LOAD_ALL_LISTING" });
       setListed(false);
       toast.success("NFT Listing removed!");
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
     } catch (error) {
       console.log(error);
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
     }
     forceUpdate();
   };
@@ -173,6 +181,7 @@ export const NFTView = () => {
               metadata={metadata}
               address={address}
               tokenId={tokenId}
+              chainId={network}
             />
 
             {listing && (

@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Grid, Box, Typography, Hidden } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getImageUrl } from "../../../utils/string-util";
