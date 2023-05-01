@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
-import { Box, Typography, Grid } from "@mui/material";
-import { FormatListBulleted } from "@mui/icons-material";
+import { Box, Typography, Grid, Accordion, AccordionSummary } from "@mui/material";
+import { ExpandMore, FormatListBulleted } from "@mui/icons-material";
 import { useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
@@ -10,6 +10,17 @@ import { OfferItem } from "./offer-item";
 import { getNetworkInfo } from "../../connectors/networks";
 
 export const OfferList = (props) => {
+
+  const styles = {
+    accordion2: {
+      backgroundColor: "transparent",
+      color: "white",
+      border: "1px solid  #6C6C6C",
+      borderRadius: "5px",
+      marginBottom: "24px"
+    },
+  }
+
   const { listingId, network } = props;
   const [offers, setPOffers] = useState([]);
   const getAllOffers = async () => {
@@ -25,26 +36,30 @@ export const OfferList = (props) => {
     }
   }, [listingId]);
   return (
+    <Accordion sx={styles.accordion2}>
+      <AccordionSummary
+              expandIcon={<ExpandMore sx={{ color: "white" }} />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography sx={{ fontWeight: "700", alignItems:"center", display:"flex" }}>
+                <FormatListBulleted /> &nbsp;&nbsp;Offers
+              </Typography>
+            </AccordionSummary>
     <Box
       sx={{
         width: "100%",
         maxWidth: "100%",
         border: "1px solid #6C6C6C",
-        borderRadius: "12px",
         paddingBottom: "24px",
+        borderLeft: "none",
+        borderRight: "none",
+        borderBottom: "none",
+        maxHeight: "470px",
+        overflowY: "scroll"
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          borderBottom: "1px solid #6c6c6c",
-          color: "#f4f4f4",
-          p: 2,
-        }}
-      >
-        <FormatListBulleted />
-        <Typography sx={{ pl: 2 }}>Offers</Typography>
-      </Box>
+      
       <Grid
         container
         spacing={1}
@@ -102,5 +117,6 @@ export const OfferList = (props) => {
           })}
       </Grid>
     </Box>
+    </Accordion>
   );
 };

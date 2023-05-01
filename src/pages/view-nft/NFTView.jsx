@@ -2,8 +2,8 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
-import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import {  swapAbi } from "../../connectors/address";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { swapAbi } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 import { useState } from "react";
@@ -16,7 +16,15 @@ import { ListNFTDialog } from "./dialogs/list-nft-dlg";
 import { toast } from "react-toastify";
 import { OfferNFTDialog } from "./dialogs/offer-nft-dlg";
 import { getNetworkInfo } from "../../connectors/networks";
-import { setTxDialogFailed, setTxDialogHash, setTxDialogPending, setTxDialogSuccess, showTxDialog } from "../../redux/slices/app-slice";
+import {
+  setTxDialogFailed,
+  setTxDialogHash,
+  setTxDialogPending,
+  setTxDialogSuccess,
+  showTxDialog,
+} from "../../redux/slices/app-slice";
+import { SendNFT } from "./dialogs/send-nft";
+import { NFTDiscussions } from "../../components/discussions/nft-discussions";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -28,7 +36,7 @@ function useForceUpdate() {
 }
 
 export const NFTView = () => {
-  const { address, tokenId , network} = useParams();
+  const { address, tokenId, network } = useParams();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
@@ -36,19 +44,22 @@ export const NFTView = () => {
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
-  const { account , chainId} = useWeb3React();
+  const { account, chainId } = useWeb3React();
+  const [sendOpen, setSendOpen] = useState(false);
   const listings = useSelector((state) => state.listings.allListings);
   const loading = useSelector((state) => state.app.isLoading);
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
-  
-
   const getDetails = async () => {
     try {
       const netDetails = getNetworkInfo(network);
       const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-      const contract = new Contract(address, netDetails.dataNetwork.ERC_ABI, provider);
+      const contract = new Contract(
+        address,
+        netDetails.dataNetwork.ERC_ABI,
+        provider
+      );
       let url = await contract.tokenURI(tokenId);
       url = metaUrl(url);
       let meta;
@@ -98,16 +109,23 @@ export const NFTView = () => {
     try {
       dispatch(showTxDialog());
       const netDetails = getNetworkInfo(network);
-      if(chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)){
-        await window.ethereum.request({method: "wallet_addEthereumChain", params: [netDetails.switch]})
+      if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [netDetails.switch],
+        });
       }
-      const provider = new Web3Provider(window.ethereum , "any");
+      const provider = new Web3Provider(window.ethereum, "any");
       const signer = await provider.getSigner();
-      const contract = new Contract(netDetails.dataNetwork.SWAP_CONTRACT, swapAbi, signer);
+      const contract = new Contract(
+        netDetails.dataNetwork.SWAP_CONTRACT,
+        swapAbi,
+        signer
+      );
       const txResult = await contract.removeListingById(
         listing.listingDetails.listingid
       );
-      dispatch(setTxDialogHash(txResult.hash))
+      dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       dispatch({ type: "LOAD_ALL_LISTING" });
       setListed(false);
@@ -148,23 +166,34 @@ export const NFTView = () => {
             </Typography>
 
             {!loading && account && account === owner && !isListed && (
-              <Button
-                sx={{ marginBottom: "16px", borderRadius: "20px" }}
-                variant="contained"
-                onClick={() => setListDlgOpen(true)}
-              >
-                List NFT for swap
-              </Button>
+              <>
+                <Button
+                  sx={{ marginBottom: "16px", borderRadius: "20px" }}
+                  variant="contained"
+                  onClick={() => setListDlgOpen(true)}
+                >
+                  List NFT for swap
+                </Button>
+                <Button
+                  sx={{ marginBottom: "16px", borderRadius: "20px", ml: 2 }}
+                  variant="contained"
+                  onClick={() => setSendOpen(true)}
+                >
+                  Send NFT
+                </Button>
+              </>
             )}
             {!loading && account && account === owner && isListed && (
-              <Button
-                sx={{ marginBottom: "16px", borderRadius: "20px" }}
-                color="error"
-                variant="contained"
-                onClick={handleRemoveNFT}
-              >
-                Remove Listing
-              </Button>
+              <>
+                <Button
+                  sx={{ marginBottom: "16px", borderRadius: "20px" }}
+                  color="error"
+                  variant="contained"
+                  onClick={handleRemoveNFT}
+                >
+                  Remove Listing
+                </Button>
+              </>
             )}
 
             {!loading && account !== owner && isListed && (
@@ -185,8 +214,15 @@ export const NFTView = () => {
             />
 
             {listing && (
-              <OfferList network={network} listingId={listing.listingDetails.listingid} />
+              <OfferList
+                network={network}
+                listingId={listing.listingDetails.listingid}
+              />
             )}
+            <NFTDiscussions metadata={metadata}
+              address={address}
+              tokenId={tokenId}
+              chainId={network} />
           </Grid>
         </Grid>
       </Box>
@@ -197,7 +233,7 @@ export const NFTView = () => {
         open={listDlgOpen}
         onClose={(isSuccess) => {
           setListDlgOpen(false);
-          if(isSuccess){
+          if (isSuccess) {
             dispatch({ type: "LOAD_ALL_LISTING" });
           }
         }}
@@ -218,6 +254,16 @@ export const NFTView = () => {
           }}
         />
       )}
+      <SendNFT
+        isOpen={sendOpen}
+        tokenId={tokenId}
+        contractAddress={address}
+        network={network}
+        onCloseDlg={() => {
+          setSendOpen(false);
+          getDetails();
+        }}
+      />
     </Fragment>
   );
 };

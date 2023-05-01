@@ -3,7 +3,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import React from "react";
 import logo from "../assets/logo.png";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ConnectWalletDlg } from "./connnect-wallet-dlg";
 import { useState } from "react";
@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LogoutIcon from '@mui/icons-material/Logout';
+import faucetImg from "../assets/faucet.png";
+
 export const AppNavbar = () => {
   const [dlgOpen, setDlgOpen] = useState(false);
   const {deactivate, chainId} = useWeb3React();
@@ -45,7 +47,9 @@ export const AppNavbar = () => {
           />
           <span className="logo-text">octo</span>
         </Navbar.Brand>
-
+            <IconButton onClick={()=>navigate("/faucet")}>
+              <img src={faucetImg} alt="faucet" />
+            </IconButton>
         <Navbar.Collapse id="responsive-navbar-nav">
           {/* <Nav className="me-auto">
             <Searchbox className="search-nav" type="text" />

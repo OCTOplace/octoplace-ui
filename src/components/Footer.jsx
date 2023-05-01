@@ -1,9 +1,8 @@
-import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
+import { Box,  Divider, IconButton, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { Fragment } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import discord from "../assets/discord.svg"
-import TextBox from "../components/text";
 export const Footer = () => {
   return (
     <Fragment>
@@ -18,12 +17,7 @@ export const Footer = () => {
                 justifyContent="flex-start"
                 alignItems="center"
               >
-                <Typography sx={{ fontSize: "16px" }}>Subscribe</Typography>
-                <Typography
-                  sx={{ fontSize: "12px", ml: "25px", alignSelf: "center" }}
-                >
-                  Join our mailing service
-                </Typography>
+                
               </Box>
               <Box
                 display="flex"
@@ -32,17 +26,7 @@ export const Footer = () => {
                 alignItems="center"
                 sx={{ width: "100%", marginTop: "12px" }}
               >
-                <TextBox placeholder="Your email address" />
-                <Button
-                  variant="outlined"
-                  sx={{
-                    width: "120px",
-                    borderRadius: "20px",
-                    marginLeft: "16px",
-                  }}
-                >
-                  Sign Up
-                </Button>
+                
               </Box>
             </Col>
             <Col lg={6} sm={12} md={12}>
@@ -69,7 +53,7 @@ export const Footer = () => {
                 <IconButton href="https://twitter.com/octoplace" target="_blank">
                   <TwitterIcon className="icon" />
                 </IconButton>
-                <IconButton target="_blank" href="https://discord.gg/H8P6T3zNYB">
+                <IconButton target="_blank" href="https://discord.gg/73Ru5XUP2X">
                   <img width={30} src={discord} alt="discord" />
                 </IconButton>
       

@@ -35,6 +35,7 @@ import {
   injectedConnector,
 } from "./connectors/injected-connector";
 import { TxDialog } from "./components/dialogs/txdialog";
+import { FaucetPage } from "./pages/faucet/faucet";
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
   const dispatch = useDispatch();
@@ -108,6 +109,7 @@ function App() {
           />
           <Route path="swap/mylist2" element={<MyListingSwapOffer2 />} />
           <Route path="swap/done" element={<SwapComplete />} />
+          <Route path="faucet" element={<FaucetPage />} />
         </Routes>
         <TxDialog
           isOpen={txDialogState.isOpen}
