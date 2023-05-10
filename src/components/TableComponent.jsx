@@ -1,0 +1,261 @@
+import { Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
+
+import flameLogo from "../assets/flame.svg";
+
+function TableComponent({ list }) {
+  const listData = list.slice(0, 10);
+  const [time, setTime] = useState(24);
+  const windowWidth = window.innerWidth;
+
+  const handleChange = (event) => {
+    setTime(event.target.value);
+  };
+
+  useEffect(() => {}, [windowWidth]);
+
+  return (
+    <Container>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          color: "white",
+        }}
+      >
+        <h3>Trending</h3>
+        <FormControl
+          sx={{
+            m: 1,
+            minWidth: 80,
+            color: "#f4f4f4",
+            border: "1px solid #ced4da",
+            borderRadius: "8px",
+          }}
+          size="small"
+        >
+          <Select
+            value={time}
+            onChange={handleChange}
+            sx={{
+              color: "#f4f4f4",
+              fontSize: "12px",
+            }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={24}>Day</MenuItem>
+            <MenuItem value={7}>Week</MenuItem>
+            <MenuItem value={30}>Month</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: "1rem",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            width: "100%",
+          }}
+        >
+          {windowWidth < 768 ? (
+            <Box>
+              {listData.map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    py: ".5rem",
+                    color: "#fff",
+                  }}
+                >
+                  {index + 1}
+                  <img
+                    src={item.imageSrc}
+                    alt={item.name}
+                    width={100}
+                    height={100}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  {item.name}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <img src={flameLogo} alt="flame" />
+                    {item.price}
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <img src={flameLogo} alt="flame" />
+                    {item.price}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 15,
+                py: ".5rem",
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                }}
+              >
+                {listData.slice(0, 5).map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "100%",
+                      py: ".5rem",
+                      color: "#fff",
+                    }}
+                  >
+                    {index + 1}
+                    <img
+                      src={item.imageSrc}
+                      alt={item.name}
+                      width={100}
+                      height={100}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    {item.name}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <img src={flameLogo} alt="flame" />
+                      {item.price}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <img src={flameLogo} alt="flame" />
+                      {item.price}
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                }}
+              >
+                {listData.slice(5, 10).map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "100%",
+                      py: ".5rem",
+                      color: "#fff",
+                    }}
+                  >
+                    {index + 6}
+                    <img
+                      src={item.imageSrc}
+                      alt={item.name}
+                      width={100}
+                      height={100}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    {item.name}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <img src={flameLogo} alt="flame" />
+                      {item.price}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <img src={flameLogo} alt="flame" />
+                      {item.price}
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Container>
+  );
+}
+
+export default TableComponent;

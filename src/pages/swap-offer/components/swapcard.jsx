@@ -69,7 +69,7 @@ export const SwapCard = (props) => {
       <Typography
         sx={{
           m: "16px 16px",
-          bgcolor: "#3d3d3d",
+          bgcolor: "#262626",
           color: "#f4f4f4",
           borderRadius: "12px",
           lineHeight: "36px",

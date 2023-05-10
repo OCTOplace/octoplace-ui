@@ -38,7 +38,7 @@ export const NFTCardDetails = (props) => {
         p: {
           paddingLeft: "16px",
           paddingRight: "16px",
-          color: "#3d3d3d",
+          color: "#262626",
         },
         spanAddress: {
           paddingLeft: "16px",

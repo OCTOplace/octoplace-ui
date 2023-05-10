@@ -124,7 +124,7 @@ const Tab = styled(TabUnstyled)`
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  background-color: #3d3d3d;
+  background-color: #262626;
   padding: 8px 16px;
   border-radius: 12px;
   border: none;
@@ -142,7 +142,7 @@ const TabPanel = styled(TabPanelUnstyled)`
 `;
 
 const TabsList = styled(TabsListUnstyled)`
-  background-color: #3d3d3d;
+  background-color: #262626;
   padding: 0 8px 0 8px;
   margin-bottom: 10px;
   display: flex;
