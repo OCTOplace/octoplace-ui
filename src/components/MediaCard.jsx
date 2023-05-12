@@ -4,7 +4,7 @@ import React from "react";
 import verifiedLogo from "../assets/verified.svg";
 import flameLogo from "../assets/flame.svg";
 
-function MediaCard({ item }) {
+function MediaCard({ item, view }) {
   return (
     <Box
       sx={{
@@ -16,6 +16,11 @@ function MediaCard({ item }) {
         boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
         borderRadius: "12px",
         cursor: "pointer",
+        width: "220px",
+        //hover
+        "&:hover": {
+          border: "1px solid #F78C09",
+        },
       }}
     >
       <img

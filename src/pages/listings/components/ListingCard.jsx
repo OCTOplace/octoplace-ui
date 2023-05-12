@@ -56,6 +56,7 @@ export const NFTListingCard = (props) => {
       setImgUrl("https://thereisnoimage.com/image");
     }
   }, [props.listingItem]);
+  
   return (
     <>
       {props.listingItem && (

@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -76,75 +76,9 @@ function TableComponent({ list }) {
             width: "100%",
           }}
         >
-          {windowWidth < 768 ? (
-            <Box>
-              {listData.map((item, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%",
-                    py: ".5rem",
-                    color: "#fff",
-                  }}
-                >
-                  {index + 1}
-                  <img
-                    src={item.imageSrc}
-                    alt={item.name}
-                    width={100}
-                    height={100}
-                    style={{
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  {item.name}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <img src={flameLogo} alt="flame" />
-                    {item.price}
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <img src={flameLogo} alt="flame" />
-                    {item.price}
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 15,
-                py: ".5rem",
-                width: "100%",
-              }}
-            >
-              <Box
-                sx={{
-                  width: "100%",
-                }}
-              >
+          <Grid container spacing={5}>
+            <Grid item xs={12} sm={12} md={6}>
+              <Box>
                 {listData.slice(0, 5).map((item, index) => (
                   <Box
                     key={index}
@@ -195,14 +129,12 @@ function TableComponent({ list }) {
                   </Box>
                 ))}
               </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                }}
-              >
+            </Grid>
+            <Grid item xs={12} sm={12} md={6}>
+              <Box>
                 {listData.slice(5, 10).map((item, index) => (
                   <Box
-                    key={index}
+                    key={index + 5}
                     sx={{
                       display: "flex",
                       flexDirection: "row",
@@ -250,8 +182,8 @@ function TableComponent({ list }) {
                   </Box>
                 ))}
               </Box>
-            </Box>
-          )}
+            </Grid>
+          </Grid>
         </Box>
       </Box>
     </Container>

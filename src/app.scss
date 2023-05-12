@@ -47,6 +47,16 @@
   border: 1px solid white;
 }
 
+.carousel {
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item {
+  margin: 5px;
+  width: 220px;
+}
+
 @media screen and (max-width: 1199px) {
   .nav-link {
     margin-right: 16px;

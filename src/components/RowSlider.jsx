@@ -5,39 +5,49 @@ import { Container, Row, Col } from "react-bootstrap";
 import infoIcon from "../assets/Infrormation_button.svg";
 import nextIcon from "../assets/next.svg";
 import prevIcon from "../assets/prev.svg";
-import { Paper, Button, Grid, Box } from "@mui/material";
+import { Paper, Button, Grid, Box, useMediaQuery } from "@mui/material";
 import { NFTListingCard } from "../pages/listings/components/ListingCard";
 import MediaCard from "./MediaCard";
 
 function RowSlider({ title, list }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
   const windowWidth = window.innerWidth;
-  const [imgUrl, setImgUrl] = useState();
+  const isXSmallScreen = useMediaQuery("(max-width: 600px)");
+  const isSmallScreen = useMediaQuery(
+    "(min-width: 601px) and (max-width: 900px)"
+  );
+  const isMediumScreen = useMediaQuery(
+    "(min-width: 901px) and (max-width: 1200px)"
+  );
+  const isLargeScreen = useMediaQuery(
+    "(min-width: 1201px) and (max-width: 1535px)"
+  );
+  const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
+
+  let numItemsToShow = 3;
+  if (isXSmallScreen) {
+    numItemsToShow = 1;
+  } else if (isSmallScreen) {
+    numItemsToShow = 2;
+  } else if (isLargeScreen) {
+    numItemsToShow = 4;
+  } else if (isXLargeScreen) {
+    numItemsToShow = 6;
+  }
 
   const handlePrevClick = () => {
-    console.log("list", Math.max(0, currentIndex - itemsPerPage));
-    setCurrentIndex(() => Math.max(0, currentIndex - itemsPerPage));
+    setCurrentIndex(Math.max(currentIndex - 1, 0));
   };
 
   const handleNextClick = () => {
-    console.log("list", Math.min(currentIndex + itemsPerPage, list.length - 1));
-    setCurrentIndex(() =>
-      Math.min(currentIndex + itemsPerPage, list.length - 1)
-    );
-  };
-
-  useEffect(() => {
-    if (windowWidth < 768) {
-      setItemsPerPage(1);
-    } else if (windowWidth < 992) {
-      setItemsPerPage(2);
-    } else if (windowWidth < 1200) {
-      setItemsPerPage(3);
+    console.log("currentIndex", currentIndex);
+    const nextIndex = currentIndex + 1;
+    if (nextIndex >= list.length) {
+      setCurrentIndex(0);
     } else {
-      setItemsPerPage(5);
+      setCurrentIndex(nextIndex);
     }
-  }, [windowWidth]);
+  };
 
   return (
     <Box
@@ -89,16 +99,24 @@ function RowSlider({ title, list }) {
         <Container
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
-            gap: "1rem",
+            gap: 10,
           }}
         >
           {list
-            .slice(currentIndex, currentIndex + itemsPerPage)
-            .map((item, i) => (
-              <MediaCard item={item} key={i} />
-            ))}
+            .slice(
+              currentIndex -
+                Math.max(currentIndex + numItemsToShow - list.length, 0),
+              currentIndex + numItemsToShow
+            )
+            .map((item, i) => {
+              return (
+                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
+                  <MediaCard item={item} key={i} view={3} />
+                </Grid>
+              );
+            })}
         </Container>
       </Carousel>
     </Box>
