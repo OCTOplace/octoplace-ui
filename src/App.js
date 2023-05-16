@@ -37,6 +37,9 @@ import {
 import { TxDialog } from "./components/dialogs/txdialog";
 import { FaucetPage } from "./pages/faucet/faucet";
 import { CollectionsPage } from "./pages/collection";
+import Market from "./pages/market/Market";
+import Swap from "./pages/market/Swap";
+import Auction from "./pages/market/Auction";
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
   const dispatch = useDispatch();
@@ -94,11 +97,15 @@ function App() {
       activate(injectedConnector);
     } catch {}
   }, []);
+
   return (
     <Router>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/market" element={<Market />} />
+          <Route path="/market/swap" element={<Swap />} />
+          <Route path="/market/auction" element={<Auction />} />
           <Route path="my-nft" element={<MyNFT />} />
           <Route path="nft/:network/:address/:tokenId" element={<NFTView />} />
           <Route path="listing" element={<Listings />} />

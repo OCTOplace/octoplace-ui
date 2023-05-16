@@ -2,9 +2,7 @@ import { Box, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 
 import flameLogo from "../assets/flame.svg";

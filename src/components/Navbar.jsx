@@ -5,12 +5,13 @@ import React from "react";
 import logo from "../assets/Logo-beta.png";
 import { styled } from "@mui/material/styles";
 import { Button, IconButton, Menu, MenuItem, ButtonProps } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useRoutes } from "react-router-dom";
 import { ConnectWalletDlg } from "./connnect-wallet-dlg";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
 import faucetImg from "../assets/faucet.png";
@@ -36,15 +37,18 @@ const WalletButton = styled(Button)({
 export const AppNavbar = () => {
   const [dlgOpen, setDlgOpen] = useState(false);
   const { deactivate, chainId } = useWeb3React();
-  const acctDetails = useSelector((state) => state.account);
-  useEffect(() => {}, [acctDetails]);
   const navigate = useNavigate();
+  const acctDetails = useSelector((state) => state.account);
+
+  useEffect(() => {}, [acctDetails]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
+
   const handleBtnClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -73,8 +77,8 @@ export const AppNavbar = () => {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             {/* <Nav className="me-auto">
-            <Searchbox className="search-nav" type="text" />
-          </Nav> */}
+              <Searchbox className="search-nav" type="text" />
+            </Nav> */}
             {/* <span style={{ flex: "1 auto" }}></span> */}
             <Nav>
               <Nav.Link onClick={() => navigate("/market")}>Market</Nav.Link>

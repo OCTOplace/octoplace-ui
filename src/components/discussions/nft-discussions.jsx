@@ -37,13 +37,32 @@ import {
 } from "../../redux/slices/app-slice";
 
 export const NFTDiscussions = ({ metadata, address, tokenId }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleChange = (event, isExpanded) => {
+    setExpanded(isExpanded);
+  };
+
   const styles = {
     accordion2: {
       backgroundColor: "transparent",
-      color: "white",
+      color: expanded ? "#f4f4f4" : "#6c6c6c",
       border: "1px solid  #6C6C6C",
-      borderRadius: "5px",
-      marginBottom: "24px",
+      borderRadius: ".5rem",
+      marginBottom: "1rem",
+    },
+    accordionHeader: {
+      fontWeight: 400,
+      fontsize: "1.125rem",
+      lineHeight: "105.02%",
+    },
+    accordionBody: {
+      backgroundColor: "#151515",
+      display: "flex",
+      flexDirection: "column",
+      gap: 1,
+      maxHeight: "470px",
+      overflowY: "scroll",
     },
     detailsBox: {
       width: "100%",
@@ -63,14 +82,36 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
     },
     comments: {
       width: "100%",
-      borderBottom: "1px solid  #6C6C6C",
     },
     address: {
-      fontWeight: 700,
-      fontSize: "18px",
+      fontWeight: 600,
+      fontSize: ".875rem",
       color: "#FF9719",
-      textTransform: "uppercase",
-      marginTop: "8px",
+      textTransform: "none",
+      display: "flex",
+      alignItems: "center",
+    },
+    copyButton: {
+      color: "#6C6C6C",
+      fontSize: ".75rem",
+    },
+    message: {
+      color: "white",
+      fontSize: ".875rem",
+      fontWeight: 400,
+    },
+    textContainer: {
+      width: "80%",
+      pt: 2,
+      pr: 1,
+    },
+    sendButton: {
+      background: "#F78C09",
+      borderRadius: ".375rem",
+      color: "#262626",
+      fontWeight: 600,
+      width: "20%",
+      textTransform: "none",
     },
   };
 
@@ -130,12 +171,12 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       tokenId
     );
     let objs = [];
-    for(var comment of comments){
+    for (var comment of comments) {
       const obj = {
         from: comment.commenter,
         msg: comment.contents,
-        timestamp: formatUnits(comment.timestamp, 0)
-      }
+        timestamp: formatUnits(comment.timestamp, 0),
+      };
       objs = [...objs, obj];
     }
     setMessages(objs);
@@ -161,11 +202,13 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
     setFeeAllowance(Number(formatEther(allowedAmt)));
     console.log("Allowed:", Number(formatEther(allowedAmt)));
   };
+
   useEffect(() => {
     if (account && feeToken) {
       getAllowance();
     }
   }, [account, allowanceRefreshTrigger, feeToken]);
+
   useEffect(() => {
     if (account) {
       getFeeToken();
@@ -246,46 +289,44 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       dispatch(setTxDialogFailed(true));
     }
   };
+
   return (
-    <Accordion sx={styles.accordion2} variant="outlined">
+    <Accordion
+      sx={styles.accordion2}
+      expanded={expanded}
+      onChange={handleChange}
+    >
       <AccordionSummary
-        expandIcon={<ExpandMore sx={{ color: "white" }} />}
+        expandIcon={
+          <ExpandMore sx={{ color: expanded ? "#f4f4f4" : "#6c6c6c" }} />
+        }
         aria-controls="panel1a-content"
         id="panel1a-header"
       >
-        <Typography
-          sx={{ fontWeight: "700", alignItems: "center", display: "flex" }}
-        >
+        <Typography sx={styles.accordionHeader}>
           <QuestionAnswer /> &nbsp;&nbsp;Discussion
         </Typography>
       </AccordionSummary>
-      <AccordionDetails
-        sx={{
-          borderTop: "1px solid #6C6C6C",
-        }}
-      >
+      <AccordionDetails sx={styles.accordionBody}>
         <Box sx={styles.detailsBox}>
-         {
-          messages.map((item) => {
+          {messages.map((item) => {
             return (
               <Box key={item.timestamp} sx={styles.comments}>
-              <Typography sx={styles.address}>
-                {shortenAddress(item.from)}
-                <IconButton sx={{ ml: 2, color: "#FF9719" }}>
-                  <ContentCopy fontSize="small" />
-                </IconButton>
-              </Typography>
-              <Typography sx={{ mb: 2 }} variant="body1">
-                {item.msg}
-              </Typography>
-            </Box>
-            )
-          })
-         }
-          
+                <Typography sx={styles.address}>
+                  {shortenAddress(item.from)}
+                  <IconButton sx={styles.copyButton}>
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
+                </Typography>
+                <Typography sx={styles.message} variant="body1">
+                  {item.msg}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Box sx={{ width: "80%", pt: 2, pr: 1 }}>
+        <Box sx={styles.row}>
+          <Box sx={styles.textContainer}>
             <TextField
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -297,18 +338,19 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
               variant="standard"
               fullWidth
               placeholder="Enter your message here"
+              InputProps={{
+                disableUnderline: true,
+              }}
             />
           </Box>
-          <Box sx={{ width: "20%", pt: 2 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={() => setOpenSendDlg(true)}
-              endIcon={<Send />}
-            >
-              Send
-            </Button>
-          </Box>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => setOpenSendDlg(true)}
+            sx={styles.sendButton}
+          >
+            Send
+          </Button>
         </Box>
         <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
           <DialogTitle

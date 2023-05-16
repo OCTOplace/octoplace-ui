@@ -1,123 +1,168 @@
-import React, {useState} from 'react'
-import { Box, CircularProgress,Chip, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
-import { VerifiedOutlined, FavoriteBorder, ExpandMore, Label } from "@mui/icons-material";
-import { getImageUrl, shortenAddress } from '../utils/string-util';
-import { useEffect } from 'react';
+import React, { useState } from "react";
+import {
+  Box,
+  CircularProgress,
+  Chip,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import {
+  VerifiedOutlined,
+  FavoriteBorder,
+  ExpandMore,
+  Label,
+} from "@mui/icons-material";
+
+import verifiedLogo from "../assets/verified.svg";
+
+import { getImageUrl, shortenAddress } from "../utils/string-util";
+import { useEffect } from "react";
 
 export const NFTCardDetails = (props) => {
-    const {metadata, tokenId, owner} = props;
+  const { metadata, tokenId, owner } = props;
   const [imgLoaded, setImgLoaded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [isAnimation, setAnimation] = useState(false);
   const [imgUrl, setUrl] = useState("");
-    const styles = {
-        card: {
-          width: "100%",
-          maxWidth: "100%",
-          bgcolor: "#6C6C6C",
-          borderRadius: "12px",
-        },
-        nftImg: {
-          width: "100%",
-          height: "100%",
-          maxHeight: "500px",
-          objectFit: "cover",
-          display: `${imgLoaded ? "block" : "none"}`,
-        },
-        imgBox: {
-          width: "100%",
-          height: "500px",
-          backgroundColor: "#3c3c3c",
-        },
-        metabox: {
-          display: "flex",
-          justifyContent: "space-between",
-          pl: 2,
-          pr: 2,
-        },
-        p: {
-          paddingLeft: "16px",
-          paddingRight: "16px",
-          color: "#262626",
-        },
-        spanAddress: {
-          paddingLeft: "16px",
-          fontWeight: "bold",
-          fontSize: "16px",
-          color: "#fff",
-          cursor: "pointer",
-        },
-        attBox: {
-          width: "100%",
-          borderRadius: 2,
-          justifyContent: "space-between",
-        },
-        accordion: {
-          backgroundColor: "transparent",
-          color: "white",
-          border: "1px solid #fff",
-          borderRadius: "5px",
-        },
-        accordion2: {
-          backgroundColor: "transparent",
-          color: "white",
-          border: "1px solid  #6C6C6C",
-          borderRadius: "5px",
-        },
-        chip: {
-          color: "white",
-          marginRight: "4px",
-          marginLeft: "4px",
-          marginBottom: "8px",
-        },
-      };
-    useEffect(()=> {
-      if(metadata){
-        try{
-          if(metadata.image){
-            setUrl(getImageUrl(metadata.image))
-          }else if(metadata.aimation_url){
-            setAnimation(true);
-            setUrl(getImageUrl(metadata.animation_url))
-          }
-        }catch(e){
-          setUrl("");
+  const styles = {
+    card: {
+      width: "100%",
+      maxWidth: "100%",
+      bgcolor: "#262626",
+      borderRadius: ".75rem",
+      border: "1px solid #6C6C6C",
+      display: "flex",
+      flexDirection: "column",
+      gap: "1rem",
+    },
+    nftImg: {
+      width: "100%",
+      height: "100%",
+      maxHeight: "500px",
+      objectFit: "cover",
+      borderTopLeftRadius: ".75rem",
+      borderTopRightRadius: ".75rem",
+      display: `${imgLoaded ? "block" : "none"}`,
+    },
+    imgBox: {
+      width: "100%",
+      height: "500px",
+      backgroundColor: "#3c3c3c",
+    },
+    textContainer: {
+      py: 1,
+      px: 2,
+      display: "flex",
+      flexDirection: "column",
+      gap: 1,
+      color: "#f4f4f4",
+    },
+    title: {
+      fontWeight: 600,
+      fontSize: "1.5rem",
+      lineHeight: "105.02%",
+    },
+    metabox: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+    p: {
+      color: "#6C6C6C",
+      fontWeight: 300,
+      fontSize: "1.125rem",
+      // color: "#262626",
+    },
+    tokenId: {
+      fontWeight: 400,
+      fontSize: "1.125rem",
+      lineHeight: "105.02%",
+    },
+    spanAddress: {
+      fontWeight: "bold",
+      fontSize: "1.125rem",
+      cursor: "pointer",
+      color: "#f4f4f4",
+    },
+    attBox: {
+      width: "100%",
+      borderRadius: 2,
+      justifyContent: "space-between",
+    },
+    accordion: {
+      backgroundColor: "transparent",
+      color: "white",
+      border: "1px solid #fff",
+      borderRadius: "5px",
+    },
+    accordion2: {
+      backgroundColor: "transparent",
+      color: "white",
+      border: "1px solid  #6C6C6C",
+      borderRadius: "5px",
+    },
+    chip: {
+      color: "white",
+      marginRight: "4px",
+      marginLeft: "4px",
+      marginBottom: "8px",
+    },
+  };
+  useEffect(() => {
+    if (metadata) {
+      try {
+        if (metadata.image) {
+          setUrl(getImageUrl(metadata.image));
+        } else if (metadata.aimation_url) {
+          setAnimation(true);
+          setUrl(getImageUrl(metadata.animation_url));
         }
+      } catch (e) {
+        setUrl("");
       }
-    }, [metadata]);
-    return (
-      <>
-        <Box sx={styles.card}>
-          <Box sx={{ p: 2 }}>
-            {metadata && <img
+    }
+  }, [metadata]);
+  return (
+    <>
+      <Box sx={styles.card}>
+        <Box>
+          {metadata && (
+            <img
               alt="kjbhv"
               src={imgUrl}
-              style={styles.nftImg}
+              style={{
+                width: "100%",
+                height: "100%",
+                maxHeight: "500px",
+                objectFit: "cover",
+                borderTopLeftRadius: ".75rem",
+                borderTopRightRadius: ".75rem",
+              }}
               onLoad={() => setImgLoaded(true)}
-            />}
-            {!imgLoaded && (
-              <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                sx={styles.imgBox}
-              >
-                <CircularProgress color="primary" />
-              </Box>
-            )}
-          </Box>
+            />
+          )}
+          {!imgLoaded && (
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              sx={styles.imgBox}
+            >
+              <CircularProgress color="primary" />
+            </Box>
+          )}
+        </Box>
+        <Box sx={styles.textContainer}>
           <Box sx={styles.metabox}>
-            <div style={{ display: "flex" }}>
-              <Typography sx={{ fontWeight: "bold", mr: 1 }}>
-                {metadata ? metadata.name : props.name}
-              </Typography>
-              <VerifiedOutlined />
-            </div>
-            <FavoriteBorder />
+            <Typography sx={styles.title}>
+              {metadata ? metadata.name : props.name}
+            </Typography>
+            <img src={verifiedLogo} alt="verified" />
           </Box>
-          <Typography sx={{ pl: 2 }}>{`#${tokenId}`}</Typography>
-          <p style={styles.p}>
+          <Typography sx={styles.tokenId}>{`#${tokenId}`}</Typography>
+          <Typography style={styles.p}>
             owned by{" "}
             <span
               style={styles.spanAddress}
@@ -130,38 +175,9 @@ export const NFTCardDetails = (props) => {
             >
               {owner === "" ? "" : shortenAddress(owner)}
             </span>
-          </p>
-          <p style={styles.p}>{metadata ? metadata.description : ""}</p>
-          <div style={{ padding: "16px" }}>
-            <Box sx={styles.attBox}>
-              <Accordion sx={styles.accordion} variant="outlined">
-                <AccordionSummary
-                  expandIcon={<ExpandMore sx={{ color: "white" }} />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography sx={{ fontWeight: "700" }}>
-                    <Label /> &nbsp;&nbsp;Properties
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {metadata &&
-                    metadata.attributes &&
-                    metadata.attributes.map((attribute) => {
-                      return (
-                        <Chip
-                          label={`${attribute.trait_type} : ${attribute.value}`}
-                          sx={styles.chip}
-                          key={attribute.trait_type}
-                          variant="outlined"
-                        />
-                      );
-                    })}
-                </AccordionDetails>
-              </Accordion>
-            </Box>
-          </div>
+          </Typography>
         </Box>
-      </>
-    );
-  };
+      </Box>
+    </>
+  );
+};

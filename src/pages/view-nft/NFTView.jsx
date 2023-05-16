@@ -51,6 +51,25 @@ export const NFTView = () => {
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
+  const styles = {
+    row: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: 3,
+    },
+    orangeButton: {
+      width: "100%",
+      backgroundColor: "#F78C09",
+      boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.25)",
+      borderRadius: ".625rem",
+      color: "#262626",
+      fontSize: "1.313rem",
+      fontWeight: 600,
+      mb: 2,
+    },
+  };
+
   const getDetails = async () => {
     try {
       const netDetails = getNetworkInfo(network);
@@ -77,6 +96,7 @@ export const NFTView = () => {
       setMetadata(meta);
     } catch {}
   };
+
   useEffect(() => {
     getDetails();
   }, []);
@@ -161,32 +181,28 @@ export const NFTView = () => {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
-              {collectionName}
-            </Typography>
-
             {!loading && account && account === owner && !isListed && (
-              <>
+              <Box sx={styles.row}>
                 <Button
-                  sx={{ marginBottom: "16px", borderRadius: "20px" }}
+                  sx={styles.orangeButton}
                   variant="contained"
                   onClick={() => setListDlgOpen(true)}
                 >
                   List NFT for swap
                 </Button>
                 <Button
-                  sx={{ marginBottom: "16px", borderRadius: "20px", ml: 2 }}
+                  sx={styles.orangeButton}
                   variant="contained"
                   onClick={() => setSendOpen(true)}
                 >
                   Send NFT
                 </Button>
-              </>
+              </Box>
             )}
             {!loading && account && account === owner && isListed && (
               <>
                 <Button
-                  sx={{ marginBottom: "16px", borderRadius: "20px" }}
+                  sx={styles.orangeButton}
                   color="error"
                   variant="contained"
                   onClick={handleRemoveNFT}
@@ -197,13 +213,22 @@ export const NFTView = () => {
             )}
 
             {!loading && account !== owner && isListed && (
-              <Button
-                sx={{ marginBottom: "24px", borderRadius: "20px" }}
-                variant="contained"
-                onClick={handleOfferSwap}
-              >
-                Offer SWAP
-              </Button>
+              <Box sx={styles.row}>
+                <Button
+                  sx={styles.orangeButton}
+                  variant="contained"
+                  onClick={handleOfferSwap}
+                >
+                  Offer SWAP
+                </Button>
+                <Button
+                  sx={styles.orangeButton}
+                  variant="contained"
+                  onClick={() => setSendOpen(true)}
+                >
+                  Send NFT
+                </Button>
+              </Box>
             )}
 
             <NFTDetails
@@ -219,10 +244,12 @@ export const NFTView = () => {
                 listingId={listing.listingDetails.listingid}
               />
             )}
-            <NFTDiscussions metadata={metadata}
+            <NFTDiscussions
+              metadata={metadata}
               address={address}
               tokenId={tokenId}
-              chainId={network} />
+              chainId={network}
+            />
           </Grid>
         </Grid>
       </Box>
