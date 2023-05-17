@@ -1,13 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+
+import { Box } from "@mui/material";
+
 import CarouselHome from "../components/CarouselHome";
 import RowSlider from "../components/RowSlider";
-import { Box } from "@mui/material";
 import TableComponent from "../components/TableComponent";
+import { getActiveListings } from "../utils/format-listings";
+import { setActiveListings } from "../redux/slices/listing-slice";
 
 export const Home = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const listings = useSelector((state) => state.listings.allListings);
+  const activeListings = useSelector((state) => state.listings.activeListings);
+  const [view, setView] = useState(3);
+  const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 
   const listData = [
     {
@@ -108,12 +118,19 @@ export const Home = () => {
     },
   ];
 
+  useEffect(() => {
+    if (listings.length > 0) {
+      const active = getActiveListings(listings);
+      dispatch(setActiveListings(active));
+    }
+  }, [listings]);
+
   return (
     <Box>
       <CarouselHome />
-      <RowSlider title="Popular Collections" list={listData} />
-      <RowSlider title="Popular NFTs" list={listData} />
-      <TableComponent list={listData} />
+      <RowSlider title="Popular Collections" />
+      <RowSlider title="Popular NFTs" />
+      <TableComponent list={activeListings} />
     </Box>
   );
 };

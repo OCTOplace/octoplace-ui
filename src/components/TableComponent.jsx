@@ -12,8 +12,17 @@ function TableComponent({ list }) {
   const [time, setTime] = useState(24);
   const windowWidth = window.innerWidth;
 
+  console.log(list);
+
   const handleChange = (event) => {
     setTime(event.target.value);
+  };
+
+  const truncate = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
   };
 
   useEffect(() => {}, [windowWidth]);
@@ -92,8 +101,8 @@ function TableComponent({ list }) {
                   >
                     {index + 1}
                     <img
-                      src={item.imageSrc}
-                      alt={item.name}
+                      src={item?.listingNFT?.metadata?.image}
+                      alt={item?.listingNFT?.name}
                       width={100}
                       height={100}
                       style={{
@@ -101,7 +110,7 @@ function TableComponent({ list }) {
                         borderRadius: "8px",
                       }}
                     />
-                    {item.name}
+                    {truncate(item?.listingNFT?.name, 15)}
                     <Box
                       sx={{
                         display: "flex",
@@ -111,7 +120,7 @@ function TableComponent({ list }) {
                       }}
                     >
                       <img src={flameLogo} alt="flame" />
-                      {item.price}
+                      {item?.listingNFT?.tokenId}
                     </Box>
                     <Box
                       sx={{
@@ -122,7 +131,7 @@ function TableComponent({ list }) {
                       }}
                     >
                       <img src={flameLogo} alt="flame" />
-                      {item.price}
+                      {item?.listingNFT?.tokenId}
                     </Box>
                   </Box>
                 ))}
@@ -145,8 +154,8 @@ function TableComponent({ list }) {
                   >
                     {index + 6}
                     <img
-                      src={item.imageSrc}
-                      alt={item.name}
+                      src={item?.listingNFT?.metadata?.image}
+                      alt={item?.listingNFT?.name}
                       width={100}
                       height={100}
                       style={{
@@ -154,7 +163,7 @@ function TableComponent({ list }) {
                         borderRadius: "8px",
                       }}
                     />
-                    {item.name}
+                    {truncate(item?.listingNFT?.name, 15)}
                     <Box
                       sx={{
                         display: "flex",
@@ -164,7 +173,7 @@ function TableComponent({ list }) {
                       }}
                     >
                       <img src={flameLogo} alt="flame" />
-                      {item.price}
+                      {item?.listingNFT?.tokenId}
                     </Box>
                     <Box
                       sx={{
@@ -175,7 +184,7 @@ function TableComponent({ list }) {
                       }}
                     >
                       <img src={flameLogo} alt="flame" />
-                      {item.price}
+                      {item?.listingNFT?.tokenId}
                     </Box>
                   </Box>
                 ))}

@@ -6,10 +6,14 @@ import infoIcon from "../assets/Infrormation_button.svg";
 import nextIcon from "../assets/next.svg";
 import prevIcon from "../assets/prev.svg";
 import { Paper, Button, Grid, Box, useMediaQuery } from "@mui/material";
+
 import { NFTListingCard } from "../pages/listings/components/ListingCard";
 import MediaCard from "./MediaCard";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveListings } from "../redux/slices/listing-slice";
+import { getActiveListings } from "../utils/format-listings";
 
-function RowSlider({ title, list }) {
+function RowSlider({ title }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const windowWidth = window.innerWidth;
   const isXSmallScreen = useMediaQuery("(max-width: 600px)");
@@ -23,8 +27,14 @@ function RowSlider({ title, list }) {
     "(min-width: 1201px) and (max-width: 1535px)"
   );
   const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
+  const dispatch = useDispatch();
+  const listings = useSelector((state) => state.listings.allListings);
+  const activeListings = useSelector((state) => state.listings.activeListings);
+  const [view, setView] = useState(3);
+  const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 
   let numItemsToShow = 3;
+
   if (isXSmallScreen) {
     numItemsToShow = 1;
   } else if (isSmallScreen) {
@@ -40,14 +50,20 @@ function RowSlider({ title, list }) {
   };
 
   const handleNextClick = () => {
-    console.log("currentIndex", currentIndex);
     const nextIndex = currentIndex + 1;
-    if (nextIndex >= list.length) {
+    if (nextIndex >= activeListings.length) {
       setCurrentIndex(0);
     } else {
       setCurrentIndex(nextIndex);
     }
   };
+
+  useEffect(() => {
+    if (listings.length > 0) {
+      const active = getActiveListings(listings);
+      dispatch(setActiveListings(active));
+    }
+  }, [listings]);
 
   return (
     <Box
@@ -100,11 +116,11 @@ function RowSlider({ title, list }) {
           style={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "flex-start",
             gap: 10,
           }}
         >
-          {list
+          {/* {list
             .slice(
               currentIndex -
                 Math.max(currentIndex + numItemsToShow - list.length, 0),
@@ -114,6 +130,22 @@ function RowSlider({ title, list }) {
               return (
                 <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
                   <MediaCard item={item} key={i} view={3} />
+                </Grid>
+              );
+            })} */}
+          {activeListings
+            .slice(
+              currentIndex -
+                Math.max(
+                  currentIndex + numItemsToShow - activeListings.length,
+                  0
+                ),
+              currentIndex + numItemsToShow
+            )
+            .map((item, i) => {
+              return (
+                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
+                  <NFTListingCard listingItem={item} view={3} />
                 </Grid>
               );
             })}

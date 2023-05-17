@@ -36,7 +36,8 @@ import {
 } from "./connectors/injected-connector";
 import { TxDialog } from "./components/dialogs/txdialog";
 import { FaucetPage } from "./pages/faucet/faucet";
-import { CollectionsPage } from "./pages/collection";
+import { CollectionsPage } from "./pages/collections/collection";
+
 import Market from "./pages/market/Market";
 import Swap from "./pages/market/Swap";
 import Auction from "./pages/market/Auction";

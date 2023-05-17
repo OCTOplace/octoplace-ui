@@ -24,7 +24,6 @@ export const NFTListingCard = (props) => {
       borderRadius: "12px",
       cursor: "pointer",
       width: "100%",
-      //hover
       "&:hover": {
         border: "1px solid #F78C09",
       },
@@ -55,6 +54,13 @@ export const NFTListingCard = (props) => {
       fontWeight: "400",
       color: "#6C6C6C",
     },
+  };
+
+  const truncate = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
   };
 
   useEffect(() => {
@@ -98,9 +104,12 @@ export const NFTListingCard = (props) => {
             <Box sx={styles.content}>
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {props.listingItem.listingNFT.metadata
-                    ? props.listingItem.listingNFT.metadata.name
-                    : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`}
+                  {truncate(
+                    props.listingItem.listingNFT.metadata
+                      ? props.listingItem.listingNFT.metadata.name
+                      : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`,
+                    15
+                  )}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
