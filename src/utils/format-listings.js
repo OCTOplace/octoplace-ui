@@ -1,4 +1,3 @@
-
 import { formatUnits } from "@ethersproject/units";
 
 const listingId = 0;
@@ -29,7 +28,7 @@ export const formatListings = (listings) => {
 };
 
 export function formatOffers(offers, network) {
-  const formatted = offers.map(item => {
+  const formatted = offers.map((item) => {
     const obj = {
       isCancelled: item.isCancelled,
       isCompleted: item.isCompleted,
@@ -44,8 +43,8 @@ export function formatOffers(offers, network) {
       offerTokenOwner: item.offerTokenOwner,
       transactionCharge: Number(formatUnits(item.transactionCharge, 0)),
       transactionChargeBips: Number(formatUnits(item.transactionChargeBips, 0)),
-      network : network
-    }
+      network: network,
+    };
     return obj;
   });
 
@@ -53,15 +52,39 @@ export function formatOffers(offers, network) {
 }
 export const getActiveListings = (listings) => {
   return listings.filter(
-    (x) => x.listingDetails.isCompleted === false && x.listingDetails.isCancelled === false
+    (x) =>
+      x.listingDetails.isCompleted === false &&
+      x.listingDetails.isCancelled === false
   );
+};
+
+export const sortListigs = (listings, order) => {
+  //order 1 - Newest 0 - Oldest
+  let sorted =[];
+  switch (order) {
+    case 1:
+      sorted = listings.slice().sort(
+        (a, b) => a.listingDetails.listingid - b.listingDetails.listingid
+      );
+      
+      break;
+    case 0:
+      sorted = listings.slice().sort(
+        (a, b) => b.listingDetails.listingid - a.listingDetails.listingid
+      );
+      break;
+    default:
+      listings.slice().sort(
+        (a, b) => a.listingDetails.listingid - b.listingDetails.listingid
+      );
+      break;
+  }
+  return sorted;
 };
 
 export const getCompletedListings = (listings) => {
   return listings.filter((x) => x.isCompleted === true);
 };
-
-
 
 export function metadataUrl(uri) {
   let url = "";
@@ -80,11 +103,11 @@ export const FormatTrades = (trades) => {
 
   const formatted = trades.map((trade) => {
     const data = {
-      tradeId :Number(formatUnits(trade[tradeId], 0)),
-      listingId:Number(formatUnits(trade[listingId], 0)),
-      offerId:Number(formatUnits(trade[offerId], 0))
-    }
+      tradeId: Number(formatUnits(trade[tradeId], 0)),
+      listingId: Number(formatUnits(trade[listingId], 0)),
+      offerId: Number(formatUnits(trade[offerId], 0)),
+    };
     return data;
-  })
+  });
   return formatted;
-}
+};

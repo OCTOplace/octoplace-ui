@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings } from "../../utils/format-listings";
+import { getActiveListings, sortListigs } from "../../utils/format-listings";
 import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
@@ -36,10 +36,22 @@ function Swap() {
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(3);
-  const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [orderMethod, setOrderMethod] = useState("Newest");
 
   const handleChange = (event) => {
     setOrderMethod(event.target.value);
+
+    switch (orderMethod) {
+      case "Newest":
+        dispatch(setActiveListings(sortListigs(activeListings, 1)));
+        return;
+      case "Oldest":
+        dispatch(setActiveListings(sortListigs(activeListings, 0)));
+        return;
+      default:
+        dispatch(setActiveListings(sortListigs(activeListings, 1)));
+        return;
+    }
   };
 
   useEffect(() => {
@@ -85,8 +97,6 @@ function Swap() {
               onChange={handleChange}
               input={<BootstrapInput />}
             >
-              <MenuItem value="Price: High to Low">High to Low</MenuItem>
-              <MenuItem value="Price: Low to High">Low to High</MenuItem>
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="Oldest">Oldest</MenuItem>
             </Select>
