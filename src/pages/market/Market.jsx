@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-import Searchbox from "../../components/searchbox";
+// import Searchbox from "../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -92,9 +92,7 @@ function Market() {
             </Select>
           </FormControl>
         </Box>
-        <Box>
-          <Searchbox className="search-nav" type="text" />
-        </Box>
+        <Box>{/* <Searchbox className="search-nav" type="text" /> */}</Box>
       </Box>
       <Fragment>
         <Grid container spacing={2}>
