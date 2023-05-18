@@ -57,7 +57,10 @@ function Swap() {
   useEffect(() => {
     if (listings.length > 0) {
       const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
+      const sorted = sortListigs(active, 0);
+      console.log("sorted", sorted);
+      console.log("active", active);
+      dispatch(setActiveListings(sorted));
     }
   }, [listings]);
 

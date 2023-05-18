@@ -221,13 +221,6 @@ export const NFTView = () => {
                 >
                   Offer SWAP
                 </Button>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={() => setSendOpen(true)}
-                >
-                  Send NFT
-                </Button>
               </Box>
             )}
 

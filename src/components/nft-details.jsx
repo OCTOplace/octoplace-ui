@@ -77,6 +77,9 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
       display: "flex",
       justifyContent: "flex-end",
     },
+    capitalize:{
+      textTransform: "capitalize"
+    }
   };
 
   return (
@@ -120,6 +123,10 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
           <Box sx={styles.row}>
             <Box sx={styles.left}>Token Standard</Box>
             <Box sx={styles.right}>ERC-721</Box>
+          </Box>
+          <Box sx={styles.row}>
+            <Box sx={styles.left}>Network</Box>
+            <Box sx={[styles.right, styles.capitalize]}>{chainId}</Box>
           </Box>
         </Box>
       </AccordionDetails>

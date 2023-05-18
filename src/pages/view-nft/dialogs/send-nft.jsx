@@ -1,6 +1,7 @@
 import { isAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
 import { Cancel, Send } from "@mui/icons-material";
+import { Web3Provider } from "@ethersproject/providers";
 import {
   Dialog,
   DialogActions,
@@ -24,6 +25,7 @@ import ercAbi from "../../../abi/erc721.json";
 import { useTheme } from "@emotion/react";
 import { toast } from "react-toastify";
 import { createAction } from "redux-actions";
+import { getNetworkInfo } from "../../../connectors/networks";
 
 export const SendNFT = ({
   network,
@@ -35,7 +37,7 @@ export const SendNFT = ({
   const [address, setAddress] = useState("");
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
-  const { library, account } = useWeb3React();
+  const { library, account , chainId} = useWeb3React();
   const theme = useTheme();
   const handleClose = () => {
     onCloseDlg();
@@ -46,7 +48,15 @@ export const SendNFT = ({
   const handleSend = async () => {
     if (isAddress(address)) {
       dispatch(showTxDialog());
-      const signer = await library.getSigner();
+      const netDetails = getNetworkInfo(network);
+      if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [netDetails.switch],
+        });
+      }
+      const provider = new Web3Provider(window.ethereum, "any");
+      const signer = await provider.getSigner();
       try {
         const contract = new Contract(contractAddress, ercAbi, signer);
         const txResult = await contract.transferFrom(account, address, tokenId);
