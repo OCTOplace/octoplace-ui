@@ -161,6 +161,8 @@ export const NFTView = () => {
     }
     forceUpdate();
   };
+
+  console.log("metadata", metadata, address, tokenId, network);
   return (
     <Fragment>
       <Box
@@ -249,6 +251,7 @@ export const NFTView = () => {
               address={address}
               tokenId={tokenId}
               chainId={network}
+              isAccordion={true}
             />
           </Grid>
         </Grid>

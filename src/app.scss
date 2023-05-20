@@ -250,16 +250,21 @@ body > iframe {
   align-items: center;
   gap: 3rem;
   width: 100%;
-  .btn {
+  .regular-btn {
     font-weight: 400;
     font-size: 1.5rem;
     line-height: 105.02%;
     color: #f4f4f4;
     text-decoration: none;
     padding: 1rem;
+    border: none !important;
+    outline: none !important;
   }
-  .btn:hover {
+  .regular-btn:hover {
     color: #f78c09;
+  }
+  .regular-btn:focus {
+    outline: none !important;
   }
   .active-button {
     font-weight: 400;

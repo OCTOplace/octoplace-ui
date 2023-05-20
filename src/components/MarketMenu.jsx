@@ -36,14 +36,16 @@ function MarketMenu() {
     <Box className="market-menu">
       <Link
         to="/market"
-        className={location.pathname === "/market" ? "active-button" : "btn"}
+        className={
+          location.pathname === "/market" ? "active-button" : "regular-btn"
+        }
       >
         Market
       </Link>
       <Link
         to="/market/swap"
         className={
-          location.pathname === "/market/swap" ? "active-button" : "btn"
+          location.pathname === "/market/swap" ? "active-button" : "regular-btn"
         }
       >
         Swap
@@ -51,7 +53,9 @@ function MarketMenu() {
       <Link
         to="/market/auction"
         className={
-          location.pathname === "/market/auction" ? "active-button" : "btn"
+          location.pathname === "/market/auction"
+            ? "active-button"
+            : "regular-btn"
         }
       >
         Auction
