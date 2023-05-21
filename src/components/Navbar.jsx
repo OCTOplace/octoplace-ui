@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import faucetImg from "../assets/faucet.png";
 
@@ -126,6 +127,14 @@ export const AppNavbar = () => {
           }}
         >
           <DashboardIcon /> &nbsp;My Dashboard
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/my-nft");
+            handleMenuClose();
+          }}
+        >
+          <SettingsIcon /> &nbsp;Settings
         </MenuItem>
         <MenuItem
           onClick={() => {
