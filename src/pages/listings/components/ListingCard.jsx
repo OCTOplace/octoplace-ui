@@ -93,13 +93,14 @@ export const NFTListingCard = (props) => {
             <img
               src={imgUrl}
               style={{
-                borderTopLeftRadius: "12px",
-                borderTopRightRadius: "12px",
+                borderTopLeftRadius: "0.75rem",
+                borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
                 width: "100%",
-                height: "260px",
+                aspectRatio: "1/1",
               }}
-              alt=""
+              alt="nft_image"
+              loading="lazy"
             />
             <Box sx={styles.content}>
               <Box style={styles.meta}>

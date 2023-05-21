@@ -16,6 +16,7 @@ function GuestCollection() {
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
+  const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("collection");
 
   const metadata = {
@@ -95,9 +96,22 @@ function GuestCollection() {
     image: {
       width: "160px",
       height: "160px",
+      webkitClipPath:
+        "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+      clipPath:
+        "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+      // filter drop shadow
+      filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.25))",
+    },
+    orangeButton: {
+      backgroundColor: "#F78C09",
+      color: "#262626",
+      textTransform: "none",
+      fontWeight: 700,
+      fontSize: "1rem",
     },
     whiteButton: {
-      backgroundColor: "#F78C09",
+      backgroundColor: "#F4F4F4",
       color: "#262626",
       textTransform: "none",
       fontWeight: 700,
@@ -135,12 +149,13 @@ function GuestCollection() {
     },
     icon: {
       color: "#f4f4f4",
-      fontSize: "1.5rem",
+      fontSize: "1.625rem",
+      marginTop: "0.7rem",
     },
     statsRow: {
       display: "flex",
       gap: 2,
-      ml: "5rem",
+      ml: "3rem",
       my: 2,
     },
     statsCol: {
@@ -156,6 +171,10 @@ function GuestCollection() {
     },
     aboutContent: {
       flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      gap: 1,
+      
     },
     menu: {
       display: "flex",
@@ -221,7 +240,8 @@ function GuestCollection() {
               <img
                 src={listings[0]?.listingNFT?.metadata?.image}
                 alt="profileImage"
-                sx={styles.image}
+                // sx={styles.image}
+                className="octagon-image"
                 width="180px"
                 height="180px"
               />
@@ -235,7 +255,7 @@ function GuestCollection() {
               </Box>
             </Box>
             <Box sx={styles.column}>
-              <Button sx={styles.whiteButton} variant="contained">
+              <Button sx={styles.orangeButton} variant="contained">
                 Mint
               </Button>
               <Box sx={styles.row}>
@@ -260,27 +280,38 @@ function GuestCollection() {
               </Box>
             </Box>
           </Box>
-          <Box sx={styles.statsRow}>
-            <Box sx={styles.statsCol}>
-              <Typography sx={styles.h2}>888</Typography>
-              <Typography sx={styles.h3}>Items</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={styles.statsRow}>
+              <Box sx={styles.statsCol}>
+                <Typography sx={styles.h2}>888</Typography>
+                <Typography sx={styles.h3}>Items</Typography>
+              </Box>
+              <Box sx={styles.statsCol}>
+                <Typography sx={styles.h2}>583</Typography>
+                <Typography sx={styles.h3}>Owners</Typography>
+              </Box>
+              <Box sx={styles.statsCol}>
+                <Typography sx={styles.h2}>183,000</Typography>
+                <Typography sx={styles.h3}>Volume</Typography>
+              </Box>
+              <Box sx={styles.statsCol}>
+                <Typography sx={styles.h2}>4900</Typography>
+                <Typography sx={styles.h3}>Floor</Typography>
+              </Box>
+              <Box sx={styles.statsCol}>
+                <Typography sx={styles.h2}>348</Typography>
+                <Typography sx={styles.h3}>Comments</Typography>
+              </Box>
             </Box>
-            <Box sx={styles.statsCol}>
-              <Typography sx={styles.h2}>583</Typography>
-              <Typography sx={styles.h3}>Owners</Typography>
-            </Box>
-            <Box sx={styles.statsCol}>
-              <Typography sx={styles.h2}>183,000</Typography>
-              <Typography sx={styles.h3}>Volume</Typography>
-            </Box>
-            <Box sx={styles.statsCol}>
-              <Typography sx={styles.h2}>4900</Typography>
-              <Typography sx={styles.h3}>Floor</Typography>
-            </Box>
-            <Box sx={styles.statsCol}>
-              <Typography sx={styles.h2}>348</Typography>
-              <Typography sx={styles.h3}>Comments</Typography>
-            </Box>
+            {isOwner && (
+              <Button sx={styles.whiteButton}>Collection settings</Button>
+            )}
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
@@ -291,6 +322,13 @@ function GuestCollection() {
             </Box>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>Recent messages</Typography>
+              <NFTDiscussions
+                metadata={metadata}
+                address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
+                tokenId={54}
+                chainId={`kava`}
+                isAccordion={false}
+              />
             </Box>
           </Box>
           <Box sx={styles.menu}>
@@ -335,7 +373,7 @@ function GuestCollection() {
           {activeMenu === "discussion" && (
             <NFTDiscussions
               metadata={metadata}
-              address={`0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b`}
+              address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
               tokenId={54}
               chainId={`kava`}
               isAccordion={false}

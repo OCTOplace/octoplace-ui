@@ -42,6 +42,7 @@ import Market from "./pages/market/Market";
 import Swap from "./pages/market/Swap";
 import Auction from "./pages/market/Auction";
 import GuestCollection from "./pages/collections/guest-collection";
+import CollectionSettings from "./pages/collections/collectionSettings";
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
   const dispatch = useDispatch();
@@ -122,6 +123,7 @@ function App() {
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
           <Route path="collections/guest" element={<GuestCollection />} />
+          <Route path="collections/settings" element={<CollectionSettings />} />
         </Routes>
         <TxDialog
           isOpen={txDialogState.isOpen}

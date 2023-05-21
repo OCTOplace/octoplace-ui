@@ -1,12 +1,23 @@
 import { PauseRounded, PlayArrowRounded } from "@mui/icons-material";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  TextField,
+  Chip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Paper,
+} from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
 import thetaImage from "../../../assets/icon.png";
 import NFTlist from "./NFTlist";
-
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
+import { useDropzone } from "react-dropzone";
+import CloseIcon from "@mui/icons-material/Close";
 
 function Content({ activeListings, view }) {
   const videoRef = useRef(null);
@@ -14,6 +25,19 @@ function Content({ activeListings, view }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [openAddVideo, setOpenAddVideo] = useState(false);
+  const [chipData, setChipData] = useState([
+    { key: 0, label: "2160p" },
+    { key: 1, label: "1080p" },
+    { key: 2, label: "720p" },
+    { key: 3, label: "480p" },
+    { key: 4, label: "360p" },
+  ]);
+
+  const handleDelete = (chipToDelete) => () => {
+    setChipData((chips) =>
+      chips.filter((chip) => chip.key !== chipToDelete.key)
+    );
+  };
 
   const styles = {
     videoContainer: {
@@ -123,6 +147,18 @@ function Content({ activeListings, view }) {
     },
   };
 
+  const onDrop = (acceptedFiles) => {
+    // Handle dropped files logic here
+    console.log(acceptedFiles);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+  };
+
   const handlePlayVideo = () => {
     if (videoRef.current.paused) {
       videoRef.current.play();
@@ -137,16 +173,262 @@ function Content({ activeListings, view }) {
     <Container>
       {openAddVideo ? (
         <Box sx={styles.formContainer}>
-          <FormControl>
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              gap: "1rem",
+            }}
+          >
             <Typography sx={styles.h1}>New Video</Typography>
+
             <TextField
-              fullWidth
-              label="fullWidth"
-              id="fullWidth"
-              style={{ backgroundColor: "lightblue", borderRadius: "5px" }}
+              type="url"
+              variant="standard"
+              hiddenLabel
+              InputProps={{
+                style: {
+                  backgroundColor: "black",
+                  color: "white",
+                  border: "1px solid white",
+                  borderRadius: "0.594rem",
+                  padding: "0.5rem",
+                },
+                disableUnderline: true,
+                size: "small",
+                placeholder: "| Enter URL",
+              }}
             />
+
             <Typography sx={styles.h1}>or</Typography>
-          </FormControl>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "25vh",
+                backgroundColor: "#3D3D3D",
+                borderRadius: "0.594rem",
+                cursor: "pointer",
+              }}
+              {...getRootProps()}
+            >
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p>Drop the files here...</p>
+              ) : (
+                <p>Drag &amp; Drop Input (Video File)</p>
+              )}
+            </div>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              <Paper
+                sx={{
+                  display: "flex",
+                  flex: 1,
+                  justifyContent: "flex-start",
+                  flexWrap: "wrap",
+                  listStyle: "none",
+                  gap: 2,
+                  py: 0.5,
+                  px: 2,
+                  m: 0,
+                  backgroundColor: "transparent",
+                  border: "1px solid white",
+                  color: "white",
+                }}
+                component="ul"
+              >
+                {chipData.map((data) => {
+                  return (
+                    <Box key={data.key}>
+                      <Chip
+                        clickable={true}
+                        label={data.label}
+                        onDelete={handleDelete(data)}
+                        sx={{
+                          border: "1px solid white",
+                          borderRadius: "0.594rem",
+                          color: "white",
+                          //change color of delete icon
+                          "& .MuiChip-deleteIcon": {
+                            color: "white",
+                          },
+                        }}
+                        deleteIcon={<CloseIcon />}
+                      />
+                    </Box>
+                  );
+                })}
+              </Paper>
+              <FormControl variant="standard" sx={{ display: "flex", flex: 1 }}>
+                <Select
+                  sx={{
+                    color: "white",
+                    backgroundColor: "transparent",
+                    border: "1px solid white",
+                    borderRadius: "0.594rem",
+                    "& .MuiSelect-icon": {
+                      color: "white",
+                    },
+                    "& .MuiSelect-select:focus": {
+                      backgroundColor: "transparent",
+                    },
+                    "& .MuiSelect-select:not(:focus):not([multiple]):not([disabled])":
+                      {
+                        color: "white",
+                      },
+                    "& .MuiInputLabel-root": {
+                      color: "white",
+                    },
+                  }}
+                  value={""}
+                >
+                  <MenuItem value="">Select an option</MenuItem>
+                  <MenuItem value="option1">Option 1</MenuItem>
+                  <MenuItem value="option2">Option 2</MenuItem>
+                  <MenuItem value="option3">Option 3</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <TextField
+              type="text"
+              variant="standard"
+              hiddenLabel
+              InputProps={{
+                style: {
+                  backgroundColor: "black",
+                  color: "white",
+                  border: "1px solid white",
+                  borderRadius: "0.594rem",
+                  padding: "0.5rem",
+                  "& .MuiInputBase-input": {
+                    padding: 0,
+                  },
+                },
+                disableUnderline: true,
+                size: "small",
+                placeholder: "| Enter Video Name",
+              }}
+            />
+            <TextField
+              type="text"
+              variant="standard"
+              hiddenLabel
+              InputProps={{
+                style: {
+                  backgroundColor: "#3D3D3D",
+                  color: "white",
+                  border: "1px solid white",
+                  borderRadius: "0.594rem",
+                  padding: "0.5rem",
+                  "& .MuiInputBase-input": {
+                    padding: 0,
+                  },
+                  // make zero the padding of the input text
+                },
+                disableUnderline: true,
+                size: "small",
+                placeholder: "| Collection Address (Optional)",
+              }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                gap: 3,
+                color: "white",
+              }}
+            >
+              <Typography sx={styles.h3}>Select NFT Network</Typography>
+              <FormControl
+                variant="standard"
+                sx={{ display: "flex", flex: 1 / 2 }}
+              >
+                <Select
+                  sx={{
+                    color: "white",
+                    backgroundColor: "transparent",
+                    border: "1px solid white",
+                    borderRadius: "0.594rem",
+                    "& .MuiSelect-icon": {
+                      color: "white",
+                    },
+                    "& .MuiSelect-select:focus": {
+                      backgroundColor: "transparent",
+                    },
+                    "& .MuiSelect-select:not(:focus):not([multiple]):not([disabled])":
+                      {
+                        color: "white",
+                      },
+                    "& .MuiInputLabel-root": {
+                      color: "white",
+                    },
+                  }}
+                  value={""}
+                >
+                  <MenuItem value="">Select an option</MenuItem>
+                  <MenuItem value="option1">Option 1</MenuItem>
+                  <MenuItem value="option2">Option 2</MenuItem>
+                  <MenuItem value="option3">Option 3</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Typography
+              sx={{
+                color: "#6C6C6C",
+                fontSize: "1.125rem",
+              }}
+            >
+              If a collection address is added, users MUST have at least one NFT
+              from the specified collection in order to view the video
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "justify-between",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              <Button
+                sx={{
+                  backgroundColor: "#3D3D3D",
+                  color: "#151515",
+                  flex: 1,
+                }}
+                type="submit"
+                variant="contained"
+              >
+                CANCEL
+              </Button>
+              <Button
+                sx={{
+                  backgroundColor: "#F78C09",
+                  color: "#151515",
+                  flex: 1,
+                }}
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
+                SAVE
+              </Button>
+            </Box>
+          </form>
         </Box>
       ) : (
         <Box sx={styles.videoContainer}>

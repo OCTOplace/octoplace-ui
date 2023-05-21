@@ -216,6 +216,10 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
     if (account) {
       getFeeToken();
     }
+    // if isAccordion is false expand the accordion default
+    if (!isAccordion) {
+      setExpanded(true);
+    }
   }, [account]);
 
   const handleFeeApprove = async () => {
