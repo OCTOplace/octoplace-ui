@@ -2,18 +2,9 @@ import React, { useState } from "react";
 import {
   Box,
   CircularProgress,
-  Chip,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
-import {
-  VerifiedOutlined,
-  FavoriteBorder,
-  ExpandMore,
-  Label,
-} from "@mui/icons-material";
+
 
 import verifiedLogo from "../assets/verified.svg";
 

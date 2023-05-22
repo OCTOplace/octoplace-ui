@@ -3,18 +3,22 @@ import ercabi from "../abi/erc721.json";
 import feeAbi from "../abi/feeAbi.json";
 import discussionAbi from "../abi/discussionAbi.json";
 import faucetAbi from "../abi/faucet.json";
+import marketAbi from "../abi/marketplace.json";
+
  const thetaRpc = "https://eth-rpc-api.thetatoken.org/rpc";
  const thetaChainId = "0x169";
  const thetaDataContract = "0xdfB00e816bC17f46f90aeD507f9e36C3C1db1f53";
  const thetaSwapContract = "0x6e4c614da85DD861e08f84706742239dBA892Df1";
  const thetaDiscussions = "0x70b6ebf21cb6cbbaaf695725e610f0914e48845c";
  const thetaFaucet = "0xf693b83d35b336ffe54dd22845ee7516218ba3fb";
+ const thetaMarketplaceContract = "0x465a8f1a0bd542f1ea9ae10165e6eeb5ec51f4c3";
  const swapAbi = swapabi;
  const ercAbi = ercabi;
  const kavaRpc = "https://evm.kava.io";
  const kavaChainId = "0x8ae";
  const kavaDataContract = "0xd676051dAC65E1a96ab738e94F6a5a91905dC582";
  const kavaSwapContract="0x61F91266F6abEA61447E00EB781A3c38a3D1b925";
+ const kavaMarketPlaceContract="";
 
  export const switchNetworks = {
     theta: {
@@ -55,7 +59,9 @@ import faucetAbi from "../abi/faucet.json";
         DISCUSSION_ABI:discussionAbi,
         FAUCET: thetaFaucet,
         FEE_ABI:feeAbi,
-        FAUCET_ABI: faucetAbi
+        FAUCET_ABI: faucetAbi,
+        MARKETPLACE_CONTRACT: thetaMarketplaceContract,
+        MARKET_ABI: marketAbi
     },
     KAVA:{
         RPC: kavaRpc,
@@ -68,7 +74,9 @@ import faucetAbi from "../abi/faucet.json";
         DISCUSSION_ABI:discussionAbi,
         FAUCET: thetaFaucet,
         FEE_ABI:feeAbi,
-        FAUCET_ABI: faucetAbi
+        FAUCET_ABI: faucetAbi,
+        MARKETPLACE_CONTRACT: kavaMarketPlaceContract,
+        MARKET_ABI: marketAbi
     }
  }
 

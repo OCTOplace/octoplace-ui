@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
+import { NFTMarketCard } from "./compoents/nft-market-card";
 // import Searchbox from "../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
@@ -36,6 +37,7 @@ function Market() {
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(3);
+  const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 
   const handleChange = (event) => {
@@ -97,11 +99,11 @@ function Market() {
       <Fragment>
         <Grid container spacing={2}>
           {view !== 1 &&
-            activeListings.length > 0 &&
-            activeListings.map((item, index) => {
+            marketItems.length > 0 &&
+            marketItems.map((item, index) => {
               return (
                 <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTListingCard listingItem={item} view={view} />
+                  <NFTMarketCard marketItem={item} view={view} />
                 </Grid>
               );
             })}

@@ -25,6 +25,10 @@ import {
 } from "../../redux/slices/app-slice";
 import { SendNFT } from "./dialogs/send-nft";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+import { SellNFT } from "./dialogs/nft-sell";
+import { cancelListing } from "../../redux/thunk/cancel-sale";
+import { executeSale } from "../../redux/thunk/execute-sale";
+import { formatUnits, parseUnits } from "@ethersproject/units";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -37,15 +41,19 @@ function useForceUpdate() {
 
 export const NFTView = () => {
   const { address, tokenId, network } = useParams();
+  const [market, setMarket] = useState();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
+  const marketItems= useSelector((state) => state.market.markets);
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
   const { account, chainId } = useWeb3React();
   const [sendOpen, setSendOpen] = useState(false);
+  const [sellOpen, setSellOpen] = useState(false);
+  const [isUpdatePrice, setIsUpdatePrice] = useState(false);
   const listings = useSelector((state) => state.listings.allListings);
   const loading = useSelector((state) => state.app.isLoading);
   const forceUpdate = useForceUpdate();
@@ -64,7 +72,7 @@ export const NFTView = () => {
       boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.25)",
       borderRadius: ".625rem",
       color: "#262626",
-      fontSize: "1.313rem",
+      fontSize: "1rem",
       fontWeight: 600,
       mb: 2,
     },
@@ -125,6 +133,11 @@ export const NFTView = () => {
     }
   };
 
+  const handleUpdatePrice = async () =>{
+    setIsUpdatePrice(true);
+    setSellOpen(true);
+  }
+
   const handleRemoveNFT = async () => {
     try {
       dispatch(showTxDialog());
@@ -161,6 +174,109 @@ export const NFTView = () => {
     }
     forceUpdate();
   };
+
+
+  const cancelSale = async () => {
+    dispatch(showTxDialog());
+    const netDetails = getNetworkInfo(network);
+    if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [netDetails.switch],
+      });
+    }
+    const provider = new Web3Provider(window.ethereum, "any");
+    const signer = await provider.getSigner();
+    try {
+      const contract = new Contract(
+        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
+        netDetails.dataNetwork.MARKET_ABI,
+        signer
+      );
+      const txResult = await contract.createMarketCancel(
+        address,
+        market.MarketId,
+      );
+      dispatch(setTxDialogHash(txResult.hash));
+      await txResult.wait();
+      dispatch(
+        cancelListing({
+          marketId: market.MarketId,
+          network: network,
+          listingId: market.Id,
+          isSold: true,
+        })
+      );
+      dispatch(setTxDialogFailed(false));
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      toast.success("NFT Listing Successful!");
+      setSellOpen(false);
+    } catch (err) {
+      console.log(err);
+      dispatch(setTxDialogFailed(true));
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+    }
+    forceUpdate();
+  }
+
+  const buyNFT = async () => {
+    dispatch(showTxDialog());
+    const netDetails = getNetworkInfo(network);
+    if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [netDetails.switch],
+      });
+    }
+    const provider = new Web3Provider(window.ethereum, "any");
+    const signer = await provider.getSigner();
+    try {
+      const contract = new Contract(
+        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
+        netDetails.dataNetwork.MARKET_ABI,
+        signer
+      );
+      const overRides = {
+        value: parseUnits(market.Price.toString(), "ether"),
+      };
+      const txResult = await contract.createMarketSale(
+        address,
+        market.MarketId,
+        overRides
+      );
+      dispatch(setTxDialogHash(txResult.hash));
+      await txResult.wait();
+      dispatch(
+        executeSale({
+          marketId: market.MarketId,
+          network: network,
+          listingId: market.Id,
+          isSold: true,
+          owner: account
+        })
+      );
+      dispatch(setTxDialogFailed(false));
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      toast.success("NFT Listing Successful!");
+    } catch (err) {
+      console.log(err);
+      dispatch(setTxDialogFailed(true));
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+    }
+    forceUpdate();
+  }
+
+  useEffect(() => {
+    if(marketItems.length > 0){
+      const index = marketItems.findIndex(obj => obj.TokenId === Number(tokenId) && obj.NFTContractAddress === address && obj.Network === network);
+      console.log(marketItems[index], index, marketItems);
+      setMarket(marketItems[index]);
+    }
+  }, [marketItems])
   return (
     <Fragment>
       <Box
@@ -188,14 +304,21 @@ export const NFTView = () => {
                   variant="contained"
                   onClick={() => setListDlgOpen(true)}
                 >
-                  List NFT for swap
+                  Swap
                 </Button>
                 <Button
                   sx={styles.orangeButton}
                   variant="contained"
                   onClick={() => setSendOpen(true)}
                 >
-                  Send NFT
+                  Send
+                </Button>
+                <Button
+                  sx={styles.orangeButton}
+                  variant="contained"
+                  onClick={() => setSellOpen(true)}
+                >
+                  Sell
                 </Button>
               </Box>
             )}
@@ -211,7 +334,36 @@ export const NFTView = () => {
                 </Button>
               </>
             )}
-
+            {!loading && market && account.toUpperCase() === market.SellerAddress.toUpperCase() && market.IsSold === false && !isListed && (
+              <Box sx={styles.row}>
+              <Button
+                sx={styles.orangeButton}
+                color="error"
+                variant="contained"
+                onClick={cancelSale}
+              >
+                Remove Listing
+              </Button>
+              <Button
+                sx={styles.orangeButton}
+                variant="contained"
+                onClick={handleUpdatePrice}
+              >
+                Update Price
+              </Button>
+            </Box>
+            )}
+            {!loading && market && account.toUpperCase() !== market.SellerAddress.toUpperCase() && market.IsSold === false && !isListed && (
+              <Box sx={styles.row}>
+              <Button
+                sx={styles.orangeButton}
+                variant="contained"
+                onClick={buyNFT}
+              >
+                Buy
+              </Button>
+            </Box>
+            )}
             {!loading && account !== owner && isListed && (
               <Box sx={styles.row}>
                 <Button
@@ -223,7 +375,11 @@ export const NFTView = () => {
                 </Button>
               </Box>
             )}
-
+            {
+              market && (
+                <Typography variant="h6" sx={{mt:2, mb:2}}>Price: {`${market.Price}`} TFUEL</Typography>
+              )
+            }
             <NFTDetails
               metadata={metadata}
               address={address}
@@ -282,6 +438,22 @@ export const NFTView = () => {
         onCloseDlg={() => {
           setSendOpen(false);
           getDetails();
+        }}
+      />
+      <SellNFT
+        isOpen={sellOpen}
+        tokenId={tokenId}
+        contractAddress={address}
+        network={network}
+        metadata={metadata}
+        isUpdate={isUpdatePrice}
+        itemPrice={market ? market.Price : 0}
+        marketId={market ? market.MarketId : 0}
+        listingId={market ? market.Id : 0}
+        onCloseDlg={() => {
+          setSellOpen(false);
+          getDetails();
+          setIsUpdatePrice(false);
         }}
       />
     </Fragment>
