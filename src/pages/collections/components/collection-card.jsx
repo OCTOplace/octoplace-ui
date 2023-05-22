@@ -87,7 +87,7 @@ export const CollectionCard = (props) => {
       {props.collectionItem && (
         <Link
           className="nft-card-link"
-          to={`/collection/${collectionItem.network}/${collectionItem.collection_id}`}
+          to={`/collection/${collectionItem.network}/${collectionItem.slug}`}
         >
           {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
@@ -108,8 +108,8 @@ export const CollectionCard = (props) => {
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
                   {truncate(
-                    collectionItem.collection_name,
-                    15
+                    collectionItem.name,
+                    30
                   )}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />

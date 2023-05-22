@@ -30,7 +30,7 @@ export const collectionsSlice = createSlice({
     })
     builder.addCase(getAllCollections.rejected, (state) => {
         state.isLoading = false;
-        toast.error("Error occured while loading markets.")
+        toast.error("Error occured while loading collections.")
     })
 //     builder.addCase(getMarketNFTDetail.fulfilled, (state, {payload}) => {
         

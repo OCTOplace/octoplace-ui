@@ -8,7 +8,19 @@ export const getAllCollections = createAsyncThunk(
   async (network, thunkAPI) => {
     let items = [];
     const result = await axios.get(`${apiUrl}/nft/get-collections`);
-    items = result.data.collections;
+    items = result.data.collections.map(item => {
+      let slug = slugify(item.name)
+      console.log({...item, slug})
+      return {...item, slug}
+    });
     return items;
   }
 );
+
+const slugify = str =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
