@@ -81,6 +81,7 @@ export const NFTListingCard = (props) => {
     }
   }, [props.listingItem]);
 
+
   return (
     <>
       {props.listingItem && (
@@ -93,13 +94,15 @@ export const NFTListingCard = (props) => {
             <img
               src={imgUrl}
               style={{
-                borderTopLeftRadius: "12px",
-                borderTopRightRadius: "12px",
+                borderTopLeftRadius: "0.75rem",
+                borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
-                width: "100%",
-                height: "260px",
+                width: view === 3 ? "200px" : "100%",
+                // width: "100%",
+                aspectRatio: "1/1",
               }}
-              alt=""
+              alt="nft_image"
+              loading="lazy"
             />
             <Box sx={styles.content}>
               <Box style={styles.meta}>

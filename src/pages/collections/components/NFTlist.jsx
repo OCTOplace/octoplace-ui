@@ -1,18 +1,12 @@
-import React, { Fragment, useEffect, useState } from "react";
-import MarketMenu from "../../components/MarketMenu";
-import { useDispatch, useSelector } from "react-redux";
-import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings } from "../../utils/format-listings";
-import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
-import { NFTListingCard } from "../listings/components/ListingCard";
+import { Box, Grid, Typography } from "@mui/material";
+import React, { Fragment, useState } from "react";
+import { NFTListingCard } from "../../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-import { NFTMarketCard } from "./compoents/nft-market-card";
-// import Searchbox from "../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -29,34 +23,18 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
       borderColor: "#ced4da",
       boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
     },
-    "& .MuiSelect-icon": {
-      color: "white",
-    },
   },
 }));
 
-function Market() {
-  const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
-  const [view, setView] = useState(3);
-  const marketItems = useSelector((state) => state.market.markets);
+function NFTlist({ activeListings, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 
   const handleChange = (event) => {
     setOrderMethod(event.target.value);
   };
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
-    }
-  }, [listings]);
-
   return (
-    <Container>
-      <MarketMenu />
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -97,23 +75,22 @@ function Market() {
             </Select>
           </FormControl>
         </Box>
-        <Box>{/* <Searchbox className="search-nav" type="text" /> */}</Box>
       </Box>
       <Fragment>
         <Grid container spacing={2}>
           {view !== 1 &&
-            marketItems.length > 0 &&
-            marketItems.map((item, index) => {
+            activeListings.length > 0 &&
+            activeListings.map((item, index) => {
               return (
                 <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTMarketCard marketItem={item} view={view} />
+                  <NFTListingCard listingItem={item} view={view} />
                 </Grid>
               );
             })}
         </Grid>
       </Fragment>
-    </Container>
+    </Box>
   );
 }
 
-export default Market;
+export default NFTlist;

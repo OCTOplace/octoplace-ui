@@ -44,6 +44,7 @@ export const OfferList = (props) => {
       gap: 1,
       maxHeight: "470px",
       overflowY: "scroll",
+      borderRadius: ".5rem",
     },
     tableItem: {
       borderBottom: "1px solid #6c6c6c",

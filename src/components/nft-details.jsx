@@ -33,6 +33,7 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
       backgroundColor: "#151515",
       display: "flex",
       flexDirection: "column",
+      borderRadius: ".5rem",
       gap: 1,
     },
     h1: {

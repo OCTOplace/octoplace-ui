@@ -36,7 +36,7 @@ import {
   showTxDialog,
 } from "../../redux/slices/app-slice";
 
-export const NFTDiscussions = ({ metadata, address, tokenId }) => {
+export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (event, isExpanded) => {
@@ -63,6 +63,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       gap: 1,
       maxHeight: "470px",
       overflowY: "scroll",
+      borderRadius: ".5rem",
     },
     detailsBox: {
       width: "100%",
@@ -130,6 +131,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
   const format = (x) => {
     return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
+
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -187,6 +189,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       getAllMessages();
     }
   }, [address, tokenId]);
+
   const getAllowance = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -212,6 +215,10 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
   useEffect(() => {
     if (account) {
       getFeeToken();
+    }
+    // if isAccordion is false expand the accordion default
+    if (!isAccordion) {
+      setExpanded(true);
     }
   }, [account]);
 
@@ -296,17 +303,21 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       expanded={expanded}
       onChange={handleChange}
     >
-      <AccordionSummary
-        expandIcon={
-          <ExpandMore sx={{ color: expanded ? "#f4f4f4" : "#6c6c6c" }} />
-        }
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography sx={styles.accordionHeader}>
-          <QuestionAnswer /> &nbsp;&nbsp;Discussion
-        </Typography>
-      </AccordionSummary>
+      {isAccordion ? (
+        <AccordionSummary
+          expandIcon={
+            <ExpandMore sx={{ color: expanded ? "#f4f4f4" : "#6c6c6c" }} />
+          }
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography sx={styles.accordionHeader}>
+            <QuestionAnswer /> &nbsp;&nbsp;Discussion
+          </Typography>
+        </AccordionSummary>
+      ) : (
+        <></>
+      )}
       <AccordionDetails sx={styles.accordionBody}>
         <Box sx={styles.detailsBox}>
           {messages.map((item) => {
