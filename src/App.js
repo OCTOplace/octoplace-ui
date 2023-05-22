@@ -44,6 +44,7 @@ import Auction from "./pages/market/Auction";
 import { getAllMarketItems } from "./redux/thunk/get-all-market-items";
 import GuestCollection from "./pages/collections/guest-collection";
 import CollectionSettings from "./pages/collections/collectionSettings";
+import { getAllCollections } from "./redux/thunk/getAllCollections";
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
   const dispatch = useDispatch();
@@ -96,6 +97,7 @@ function App() {
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
     dispatch(getAllMarketItems());
+    dispatch(getAllCollections());
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");

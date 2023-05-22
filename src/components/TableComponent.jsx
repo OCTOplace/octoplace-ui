@@ -12,8 +12,6 @@ function TableComponent({ list }) {
   const [time, setTime] = useState(24);
   const windowWidth = window.innerWidth;
 
-  console.log(list);
-
   const handleChange = (event) => {
     setTime(event.target.value);
   };

@@ -39,7 +39,7 @@ function Market() {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
-  const [view, setView] = useState(3);
+  const [view, setView] = useState(2);
   const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 

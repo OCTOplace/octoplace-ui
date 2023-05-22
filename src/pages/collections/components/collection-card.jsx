@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 
-export const NFTListingCard = (props) => {
+export const CollectionCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
-  const { view } = props;
+  const { collectionItem, view } = props;
 
   const styles = {
     root: {
@@ -64,14 +64,14 @@ export const NFTListingCard = (props) => {
   };
 
   useEffect(() => {
-    if (props.listingItem && props.listingItem.listingNFT.metadata) {
+    if (collectionItem && collectionItem.image_url) {
       try {
-        if (props.listingItem.listingNFT.metadata.image.includes("ipfs://")) {
-          let url = props.listingItem.listingNFT.metadata.image;
+        if (collectionItem.image_url.includes("ipfs://")) {
+          let url = collectionItem.image_url;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(newUrl);
         } else {
-          setImgUrl(props.listingItem.listingNFT.metadata.image);
+          setImgUrl(collectionItem.image_url);
         }
       } catch {
         setImgUrl("https://thereisnoimage.com/image");
@@ -79,15 +79,15 @@ export const NFTListingCard = (props) => {
     } else {
       setImgUrl("https://thereisnoimage.com/image");
     }
-  }, [props.listingItem]);
+  }, [props.collectionItem]);
 
 
   return (
     <>
-      {props.listingItem && (
+      {props.collectionItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${props.listingItem.listingNFT.network}/${props.listingItem.listingNFT.contractAddress}/${props.listingItem.listingNFT.tokenId}`}
+          to={`/collection/${collectionItem.network}/${collectionItem.collection_id}`}
         >
           {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
@@ -108,9 +108,7 @@ export const NFTListingCard = (props) => {
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
                   {truncate(
-                    props.listingItem.listingNFT.metadata
-                      ? props.listingItem.listingNFT.metadata.name
-                      : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`,
+                    collectionItem.collection_name,
                     15
                   )}
                 </Typography>
@@ -118,11 +116,7 @@ export const NFTListingCard = (props) => {
               </Box>
               <Typography
                 sx={styles.network}
-              >{`#${props.listingItem.listingNFT.network}`}</Typography>
-              <Box style={styles.meta}>
-                <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
-                
-              </Box>
+              >{`#${collectionItem.network}`}</Typography>
             </Box>
           </Box>
           {/* </Box> */}

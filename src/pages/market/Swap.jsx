@@ -35,7 +35,7 @@ function Swap() {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
-  const [view, setView] = useState(3);
+  const [view, setView] = useState(2);
   const [orderMethod, setOrderMethod] = useState("Newest");
 
   const handleChange = (event) => {
