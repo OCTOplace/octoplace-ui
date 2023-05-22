@@ -1,6 +1,51 @@
+.octagon-image {
+  width: 180px;
+  height: 180px;
+  background: #1e90ff;
+  -webkit-clip-path: polygon(
+    29% 0%,
+    71% 0%,
+    100% 29%,
+    100% 71%,
+    71% 100%,
+    29% 100%,
+    0% 71%,
+    0% 29%
+  );
+  clip-path: polygon(
+    29% 0%,
+    71% 0%,
+    100% 29%,
+    100% 71%,
+    71% 100%,
+    29% 100%,
+    0% 71%,
+    0% 29%
+  );
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background: no-repeat center center;
+}
+
 .logo-text {
-  font-size: 2em;
-  font-weight: 500;
+  font-size: 2.5em;
+  font-weight: 700;
+  font-family: "Poppins";
+  color: #f4f4f4;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.logo-beta-text {
+  font-family: "Indie Flower";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.2em;
+  line-height: 2em;
+  margin-top: 1em;
+  color: #f78c09;
 }
 
 .active-listing {
@@ -33,6 +78,16 @@
   border: 1px solid white;
 }
 
+.carousel {
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item {
+  margin: 5px;
+  width: 220px;
+}
+
 @media screen and (max-width: 1199px) {
   .nav-link {
     margin-right: 16px;
@@ -40,7 +95,15 @@
 }
 
 .connect-btn {
-  border-radius: 25px !important;
+  border-radius: 12px !important;
+  background: #f4f4f4;
+  color: #262626;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 105.02%;
+  text-transform: none !important;
 }
 
 .home-container {
@@ -66,148 +129,194 @@
     }
   }
 }
-.navbar{
-    background-color: #3d3d3d !important;
+.navbar {
+  background-color: #262626 !important;
 }
 .navbar-brand {
-    cursor: pointer;
+  cursor: pointer;
 }
-.footer-row{
-    margin-top: 15px !important;
-    .icon{
-        color:white !important;
-    }
+.footer-row {
+  margin-top: 15px !important;
+  .icon {
+    color: white !important;
+  }
 }
 
 @media screen and (max-width: 991px) {
-    .community-box1{
-        justify-content: center !important;
-        margin-top: 30px;
+  .community-box1 {
+    justify-content: center !important;
+    margin-top: 30px;
+  }
+  .community-box2 {
+    justify-content: center !important;
+  }
+  .home-container {
+    .paper-menu {
+      h3 {
+        font-size: 2em;
+      }
     }
-    .community-box2{
-        justify-content: center !important;
-    }
-    .home-container{
-        .paper-menu{
-            h3{
-                font-size: 2em;
-            }
-        }
-    }
+  }
 }
-
 
 @media screen and (max-width: 767px) {
-    
-    .home-container{
-        .paper-menu{
-            margin-bottom: 16px;
-        }
+  .home-container {
+    .paper-menu {
+      margin-bottom: 16px;
     }
+  }
 }
 
-.wallet-dlg{
-    .MuiPaper-root{
-        background-color: #3d3d3d;
-        color: white;
+.wallet-dlg {
+  .MuiPaper-root {
+    background-color: #262626;
+    color: white;
+  }
+  .spacer {
+    flex: 1 auto;
+  }
+  .icon {
+    color: white;
+  }
+
+  .title {
+    text-transform: uppercase;
+  }
+  .wallet-menu {
+    .MuiListItemText-root {
+      text-transform: uppercase;
+      font-weight: 700 !important;
     }
-    .spacer{
-        flex: 1 auto;
+    .wallet-logo {
+      width: 40px;
     }
-    .icon{
-        color:white
-    }
-    
-    .title{
-        text-transform: uppercase;
-    }
-    .wallet-menu{
-        .MuiListItemText-root{
-            text-transform: uppercase;
-            font-weight: 700 !important;
-        }
-        .wallet-logo{
-            width: 40px;
-        }
-    }
+  }
 }
 
-.nft-card-img{
+.nft-card-img {
   width: 100%;
   height: 300px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
 
-.nft-card-link{
+.nft-card-link {
   text-decoration: none;
 }
 
-.nft-list-dlg{
-  .MuiPaper-root{
-      background-color: #3d3d3d ;
-      color: white;
+.nft-list-dlg {
+  .MuiPaper-root {
+    background-color: #262626;
+    color: white;
   }
-  .spacer{
-      flex: 1 auto;
+  .spacer {
+    flex: 1 auto;
   }
-  .icon{
-      color:white
+  .icon {
+    color: white;
   }
-  .list-dlg-paper{
+  .list-dlg-paper {
     background-color: #6c6c6c;
   }
-  .title{
-      text-transform: uppercase;
+  .title {
+    text-transform: uppercase;
   }
-  .wallet-menu{
-      .MuiListItemText-root{
-          text-transform: uppercase;
-          font-weight: 700 !important;
-      }
-      .wallet-logo{
-          width: 40px;
-      }
+  .wallet-menu {
+    .MuiListItemText-root {
+      text-transform: uppercase;
+      font-weight: 700 !important;
+    }
+    .wallet-logo {
+      width: 40px;
+    }
   }
 }
-a{
+a {
   text-decoration: none !important;
 }
 
 body > iframe {
   pointer-events: none;
 }
-.sb{
-  .MuiOutlinedInput-input{
+.sb {
+  .MuiOutlinedInput-input {
     padding: 16px 20px !important;
   }
-  .MuiOutlinedInput-notchedOutline{
+  .MuiOutlinedInput-notchedOutline {
     top: -3px;
   }
-  .MuiInputAdornment-root{
+  .MuiInputAdornment-root {
     margin-right: 4px;
   }
 }
 
 .strokeme {
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
-.tx-dialog{
-  background-color: #3d3d3d;
+.tx-dialog {
+  background-color: #262626;
   color: #fff !important;
 }
 
-.MuiOutlinedInput-root{
-  color:white !important;
+.MuiOutlinedInput-root {
+  color: white !important;
 }
 
-.input{
-  color:white !important;
+.input {
+  color: white !important;
 }
 
-.MuiInput-input{
-  color:white !important;
-  border-color: #6C6C6C !important;
+.MuiInput-input {
+  color: white !important;
+  border-color: #6c6c6c !important;
+}
+
+.market-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  width: 100%;
+  .regular-btn {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 105.02%;
+    color: #f4f4f4;
+    text-decoration: none;
+    padding: 1rem;
+    border: none !important;
+    outline: none !important;
+  }
+  .regular-btn:hover {
+    color: #f78c09;
+  }
+  .regular-btn:focus {
+    outline: none !important;
+  }
+  .active-button {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 105.02%;
+    color: #f4f4f4;
+    text-decoration: underline !important;
+    text-decoration-color: #f78c09 !important;
+    text-underline-position: under !important;
+    text-underline-offset: 0.2em !important;
+    padding: 1rem;
+  }
+  .active-button:hover {
+    color: #f78c09;
+  }
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
 }

@@ -239,7 +239,7 @@ export const MyListingSwapOffer = () => {
               marginRight: "auto",
             }}
           >
-            <CachedIcon sx={{ color: "#3d3d3d", mt: 1 }} fontSize="large" />
+            <CachedIcon sx={{ color: "#262626", mt: 1 }} fontSize="large" />
           </div>
         </Grid>
         <Grid item xs={12} md={5}>
@@ -298,7 +298,7 @@ export const MyListingSwapOffer = () => {
 };
 
 const ContainedButton = styled(Button)(({ theme }) => ({
-  color: "#3d3d3d",
+  color: "#262626",
   backgroundColor: "#f4f4f4",
   border: "1px solid #f4f4f4",
   borderRadius: "12px",
@@ -308,7 +308,7 @@ const ContainedButton = styled(Button)(({ theme }) => ({
   width: "248px",
   fontWeight: "bold",
   "&:hover": {
-    backgroundColor: "#3d3d3d",
+    backgroundColor: "#262626",
     color: "#f4f4f4",
   },
 }));

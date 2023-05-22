@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles';
 export const MyListingSwapOffer2 = () => {
 
     const ContainedButton = styled(Button)(({ theme }) => ({
-        color: '#3d3d3d',
+        color: '#262626',
         backgroundColor: '#f4f4f4',
         border: '1px solid #f4f4f4',
         borderRadius: '12px',
@@ -15,7 +15,7 @@ export const MyListingSwapOffer2 = () => {
         width: '248px',
         fontWeight:'bold',
         '&:hover': {
-            backgroundColor: '#3d3d3d',
+            backgroundColor: '#262626',
             color: '#f4f4f4'
         },
     }));
@@ -51,7 +51,7 @@ export const MyListingSwapOffer2 = () => {
                                         <Typography variant='subtitle1'>#{item.title}</Typography>
                                     </Grid>
                                     <Grid item xs={1} sx={{alignSelf:'end', mb:2}}>
-                                        <Typography sx={{height:'34px', bgcolor:'#f4f4f4', width:'34px', borderRadius:'12px', color:'#3d3d3d', textAlign:'center', fontSize:'20px'}}>{item.quantity}</Typography>
+                                        <Typography sx={{height:'34px', bgcolor:'#f4f4f4', width:'34px', borderRadius:'12px', color:'#262626', textAlign:'center', fontSize:'20px'}}>{item.quantity}</Typography>
                                     </Grid>
                                 </>
                             )
@@ -61,7 +61,7 @@ export const MyListingSwapOffer2 = () => {
                 <Typography sx={{mt:3, fontSize:'16px', pl:2, fontWeight:'700'}}>
                     SWAPPER ID
                 </Typography>
-                <Typography sx={{m: '16px 16px', bgcolor:'#3d3d3d', color:'#f4f4f4', borderRadius:'12px', lineHeight: '36px', pl: 2, mb:2}}>
+                <Typography sx={{m: '16px 16px', bgcolor:'#262626', color:'#f4f4f4', borderRadius:'12px', lineHeight: '36px', pl: 2, mb:2}}>
                     your wallet 810r1jf01fj 1k10i018289d
                 </Typography>
             </Box>
@@ -82,13 +82,13 @@ export const MyListingSwapOffer2 = () => {
                         <Typography variant='subtitle1'>#8126</Typography>
                     </Grid>
                     <Grid item xs={1} sx={{alignSelf:'end', mb:2}}>
-                        <Typography sx={{height:'34px', bgcolor:'#f4f4f4', width:'34px', borderRadius:'12px', color:'#3d3d3d', textAlign:'center', fontSize:'20px'}}>1</Typography>
+                        <Typography sx={{height:'34px', bgcolor:'#f4f4f4', width:'34px', borderRadius:'12px', color:'#262626', textAlign:'center', fontSize:'20px'}}>1</Typography>
                     </Grid>
                 </Grid>
                 <Typography sx={{mt:3, fontSize:'16px', pl:2, fontWeight:'700'}}>
                     OWNER ID
                 </Typography>
-                <Typography sx={{m: '16px 16px', bgcolor:'#3d3d3d', color:'#f4f4f4', borderRadius:'12px', lineHeight: '36px', pl: 2}}>
+                <Typography sx={{m: '16px 16px', bgcolor:'#262626', color:'#f4f4f4', borderRadius:'12px', lineHeight: '36px', pl: 2}}>
                     your wallet 810r1jf01fj 1k10i018289d
                 </Typography>
             </Box>
@@ -111,7 +111,7 @@ export const MyListingSwapOffer2 = () => {
                     <div style={{
                         width: '53px', height: '53px', background: '#F4F4F4', borderRadius: '26px', textAlign:'center',marginLeft:'auto', marginRight:'auto'
                     }}>
-                        <CachedIcon sx={{color:'#3d3d3d', mt:1}} fontSize='large'/>
+                        <CachedIcon sx={{color:'#262626', mt:1}} fontSize='large'/>
                     </div>
                 </Grid>
                 <Grid item xs={12} md={5}>

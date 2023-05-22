@@ -262,7 +262,7 @@ export const SingleSwapOffer = () => {
               marginRight: "auto",
             }}
           >
-            <CachedIcon sx={{ color: "#3d3d3d", mt: 1 }} fontSize="large" />
+            <CachedIcon sx={{ color: "#262626", mt: 1 }} fontSize="large" />
           </div>
         </Grid>
         <Grid item xs={12} md={5}>
@@ -382,7 +382,7 @@ const DisplayCard = (props) => {
       <Typography
         sx={{
           m: "16px 16px",
-          bgcolor: "#3d3d3d",
+          bgcolor: "#262626",
           color: "#f4f4f4",
           borderRadius: "12px",
           lineHeight: "36px",
@@ -396,7 +396,7 @@ const DisplayCard = (props) => {
 };
 
 const ContainedButton = styled(Button)(({ theme }) => ({
-  color: "#3d3d3d",
+  color: "#262626",
   backgroundColor: "#f4f4f4",
   border: "1px solid #f4f4f4",
   borderRadius: "12px",
@@ -405,7 +405,7 @@ const ContainedButton = styled(Button)(({ theme }) => ({
   margin: "8px 16px",
   width: "248px",
   "&:hover": {
-    backgroundColor: "#3d3d3d",
+    backgroundColor: "#262626",
     color: "#f4f4f4",
   },
 }));
@@ -416,7 +416,7 @@ const ErrorButton = styled(Button)(({ theme }) => ({
   lineHeight: "24px",
   margin: "8px 16px",
   "&:hover": {
-    backgroundColor: "#3d3d3d",
+    backgroundColor: "#262626",
     color: "#f4f4f4",
   },
 }));

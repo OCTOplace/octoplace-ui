@@ -1,51 +1,51 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@mui/styles';
-import TextField from '@mui/material/TextField';
-import { InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-const styles = theme => ({
+import React from "react";
+import PropTypes from "prop-types";
+// import { withStyles } from "@mui/styles";
+import TextField from "@mui/material/TextField";
+import { InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+
+const styles = (theme) => ({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
   },
   textField: {
-    marginLeft: '40px',
+    marginLeft: "1rem",
     marginRight: theme.spacing.unit,
-    width: 300,
-    
+    width: 200,
   },
 
   cssLabel: {
-    color : 'green'
+    color: "green",
   },
 
   cssOutlinedInput: {
-    '&$cssFocused $notchedOutline': {
+    "&$cssFocused $notchedOutline": {
       borderColor: `${theme.palette.primary.main} !important`,
     },
-    height: "60px",
-    
+    height: "2.5rem",
   },
 
-  cssFocused: {},
+  cssFocused: {
+    color: "#f4f4f4 !important",
+  },
 
   notchedOutline: {
-    borderWidth: '1px',
-    borderColor: 'white !important',
-    color: "white !important",
-    borderRadius: "25px !important",
-    height: "60px",
+    borderWidth: "1px",
+    borderColor: "#6C6C6C !important",
+    color: "#6C6C6C !important",
+    borderRadius: ".75rem !important",
+    height: "2.5rem",
   },
-
 });
 
 class ValidField extends React.Component {
   state = {
-    name: '',
+    name: "",
   };
 
-  handleChange = name => event => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -55,14 +55,14 @@ class ValidField extends React.Component {
     const { classes } = this.props;
 
     return (
-      <form className={`${classes.container} sb`}  noValidate autoComplete="off">
+      <form className={`${classes.container} sb`} noValidate autoComplete="off">
         <TextField
           id="standard-name"
           className={classes.textField}
           value={this.state.name}
-          onChange={this.handleChange('name')}
+          onChange={this.handleChange("name")}
           variant="outlined"
-          placeholder='Search'
+          placeholder="Search"
           InputLabelProps={{
             classes: {
               root: classes.cssLabel,
@@ -75,7 +75,11 @@ class ValidField extends React.Component {
               focused: classes.cssFocused,
               notchedOutline: classes.notchedOutline,
             },
-            endAdornment: <InputAdornment position='end'><SearchIcon sx={{color:"white"}}/></InputAdornment>
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon sx={{ color: "white" }} />
+              </InputAdornment>
+            ),
           }}
         />
       </form>
@@ -87,4 +91,4 @@ ValidField.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ValidField);
+// export default withStyles(styles)(ValidField);

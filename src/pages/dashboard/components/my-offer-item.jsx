@@ -94,7 +94,7 @@ export const MyOfferItem = (props) => {
         sx={{
           p: 1,
           width: "186px",
-          backgroundColor: "#3d3d3d",
+          backgroundColor: "#262626",
           borderRadius: "8px",
         }}
         display="flex"
@@ -145,14 +145,14 @@ export const MyOfferItem = (props) => {
             marginRight: "auto",
           }}
         >
-          <CachedIcon sx={{ color: "#3d3d3d", mt: 1 }} fontSize="large" />
+          <CachedIcon sx={{ color: "#262626", mt: 1 }} fontSize="large" />
         </div>
       </Box>
       <Box
         sx={{
           p: 1,
           width: "186px",
-          backgroundColor: "#3d3d3d",
+          backgroundColor: "#262626",
           borderRadius: "8px",
         }}
         display="flex"

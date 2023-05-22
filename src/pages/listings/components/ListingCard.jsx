@@ -6,37 +6,61 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import verifiedLogo from "../../../assets/verified.svg";
+import flameLogo from "../../../assets/flame.svg";
+
 export const NFTListingCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
   const { view } = props;
 
   const styles = {
     root: {
-      width: "100%",
-      bgcolor: "#262626",
-      borderRadius: "12px",
-      position: "relative",
-      color: "white",
-      height: view === 3 ? "300px" : "500px",
-      backgroundImage: `url(${imgUrl})`,
-      backgroundSize: "cover",
-      cursor: "pointer",
-    },
-    flex: {
       display: "flex",
       flexDirection: "column",
-      justifyContent: "flex-end",
-      height: "100%",
-      padding: "10px",
+      alignItems: "flex-start",
+      gap: ".5rem",
+      color: "#fff",
+      boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
+      borderRadius: "12px",
+      cursor: "pointer",
+      width: "100%",
+      "&:hover": {
+        border: "1px solid #F78C09",
+      },
+    },
+    content: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      padding: "1rem",
+      backgroundColor: "#262626",
+      borderBottomLeftRadius: ".75rem",
+      borderBottomRightRadius: ".75rem",
+      width: "100%",
     },
     meta: {
       display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      gap: ".5rem",
     },
     title: {
       fontWeight: "500",
-      fontSize: "1.1em",
+      fontSize: ".875em",
       letterSpacing: "1px",
     },
+    network: {
+      fontSize: ".625em",
+      fontWeight: "400",
+      color: "#6C6C6C",
+    },
+  };
+
+  const truncate = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
   };
 
   useEffect(() => {
@@ -56,6 +80,8 @@ export const NFTListingCard = (props) => {
       setImgUrl("https://thereisnoimage.com/image");
     }
   }, [props.listingItem]);
+
+
   return (
     <>
       {props.listingItem && (
@@ -63,19 +89,48 @@ export const NFTListingCard = (props) => {
           className="nft-card-link"
           to={`/nft/${props.listingItem.listingNFT.network}/${props.listingItem.listingNFT.contractAddress}/${props.listingItem.listingNFT.tokenId}`}
         >
+          {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
-            <Box sx={styles.flex}>
-              <div style={styles.meta}>
+            <img
+              src={imgUrl}
+              style={{
+                borderTopLeftRadius: "0.75rem",
+                borderTopRightRadius: "0.75rem",
+                objectFit: "cover",
+                width: view === 3 ? "200px" : "100%",
+                // width: "100%",
+                aspectRatio: "1/1",
+              }}
+              alt="nft_image"
+              loading="lazy"
+            />
+            <Box sx={styles.content}>
+              <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {props.listingItem.listingNFT.metadata
-                    ? props.listingItem.listingNFT.metadata.name
-                    : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`}
+                  {truncate(
+                    props.listingItem.listingNFT.metadata
+                      ? props.listingItem.listingNFT.metadata.name
+                      : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`,
+                    15
+                  )}
                 </Typography>
-                <VerifiedOutlinedIcon sx={{ ml: "8px" }} />
-              </div>
-              <Typography>{`#${props.listingItem.listingNFT.tokenId}`}</Typography>
+                <img src={verifiedLogo} alt="verified" />
+              </Box>
+              <Typography
+                sx={styles.network}
+              >{`#${props.listingItem.listingNFT.network}`}</Typography>
+              <Box style={styles.meta}>
+                <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
+                <Box style={styles.meta}>
+                  <img src={flameLogo} alt="flame" />
+                  <Typography>
+                    {props.listingItem.listingNFT.tokenId}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
           </Box>
+          {/* </Box> */}
         </Link>
       )}
     </>

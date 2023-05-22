@@ -18,6 +18,7 @@ export const OfferItem = (props) => {
   const [imgUrl, setUrl] = useState("");
   const [imgLoaded, setImgLoaded] = useState(false);
   const navigate = useNavigate();
+
   const getOfferNft = async () => {
     const netInfo = getNetworkInfo(network);
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -32,7 +33,6 @@ export const OfferItem = (props) => {
     } catch {
       meta = undefined;
     }
-
     try {
       if (meta.image) {
         setUrl(getImageUrl(meta.image));
@@ -43,6 +43,7 @@ export const OfferItem = (props) => {
       );
     }
   };
+
   useLayoutEffect(() => {
     getOfferNft();
   }, []);
@@ -50,7 +51,7 @@ export const OfferItem = (props) => {
   return (
     <Fragment>
       <Grid
-      onClick={() => navigate(`/swap/${network}/${offer.offerId}`)}
+        onClick={() => navigate(`/swap/${network}/${offer.offerId}`)}
         container
         spacing={1}
         sx={{
@@ -60,7 +61,7 @@ export const OfferItem = (props) => {
           mt: 2,
           mr: 1,
           alignItems: "center",
-          cursor:"pointer",
+          cursor: "pointer",
           "&:hover": {
             backgroundColor: "#6c6c6c",
           },
@@ -70,36 +71,32 @@ export const OfferItem = (props) => {
           <Typography>{serial}</Typography>
         </Grid>
         <Grid item xs={3}>
-          
-            <img
-              alt="nsbjhvx"
-              src={imgUrl}
-              style={{
+          <img
+            alt="nsbjhvx"
+            src={imgUrl}
+            style={{
+              width: "100px",
+              maxHeight: "100px",
+              objectFit: "cover",
+              borderRadius: "12px",
+              display: imgLoaded ? "block" : "none",
+            }}
+            onLoad={() => setImgLoaded(true)}
+          />
+          {!imgLoaded && (
+            <Box
+              sx={{
                 width: "100px",
-                maxHeight: "100px",
-                objectFit: "cover",
-                borderRadius: "12px",
-                display: imgLoaded ? "block" : "none"
+                height: "100px",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              onLoad={() => setImgLoaded(true)}
-            />
-            {
-                !imgLoaded && (
-                    <Box
-                    sx={{
-                        width: "100px",
-                        height: "100px",
-                        display:"flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }}
-                    >
-                        <CircularProgress />
-                    </Box>
-                )
-            }
-          
+            >
+              <CircularProgress />
+            </Box>
+          )}
         </Grid>
         <Grid item xs={2}>
           <Typography sx={{ alignSelf: "center" }}>
