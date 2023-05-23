@@ -89,6 +89,11 @@ function Market() {
               value={orderMethod}
               onChange={handleChange}
               input={<BootstrapInput />}
+              sx={{
+                "& .MuiSelect-icon": {
+                  color: "white",
+                },
+              }}
             >
               <MenuItem value="Price: High to Low">High to Low</MenuItem>
               <MenuItem value="Price: Low to High">Low to High</MenuItem>

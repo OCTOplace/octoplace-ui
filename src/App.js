@@ -44,6 +44,10 @@ import Auction from "./pages/market/Auction";
 import { getAllMarketItems } from "./redux/thunk/get-all-market-items";
 import GuestCollection from "./pages/collections/guest-collection";
 import CollectionSettings from "./pages/collections/collectionSettings";
+import DashboardHome from "./pages/dashboard/dashboardHome";
+import DashboardGuest from "./pages/dashboard/dashboardGuest";
+import DashboardSettings from "./pages/dashboard/dashboardSettings";
+
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
   const dispatch = useDispatch();
@@ -126,6 +130,9 @@ function App() {
           <Route path="collections" element={<CollectionsPage />} />
           <Route path="collections/guest" element={<GuestCollection />} />
           <Route path="collections/settings" element={<CollectionSettings />} />
+          <Route path="dashboard" element={<DashboardHome />} />
+          <Route path="dashboard/guest" element={<DashboardGuest />} />
+          <Route path="dashboard/settings" element={<DashboardSettings />} />
         </Routes>
         <TxDialog
           isOpen={txDialogState.isOpen}

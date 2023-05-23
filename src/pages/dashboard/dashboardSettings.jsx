@@ -11,10 +11,17 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
+import PickDialog from "./components/pickDialog";
 
-function CollectionSettings() {
+function DashboardSettings() {
   const [hoveredBG, setHoveredBG] = useState(false);
   const [hoveredPP, setHoveredPP] = useState(false);
+  const [hoveredNFT1, setHoveredNFT1] = useState(false);
+  const [hoveredNFT2, setHoveredNFT2] = useState(false);
+  const [hoveredNFT3, setHoveredNFT3] = useState(false);
+  const [openNFT1, setOpenNFT1] = useState(false);
+  const [openNFT2, setOpenNFT2] = useState(false);
+  const [openNFT3, setOpenNFT3] = useState(false);
 
   const styles = {
     container: {
@@ -141,6 +148,23 @@ function CollectionSettings() {
       flexDirection: "column",
       gap: 1,
     },
+    rightColumn: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-end",
+      gap: 1,
+    },
+    rightRow: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 1,
+    },
+    basic: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
   };
 
   const listing = {
@@ -154,8 +178,24 @@ function CollectionSettings() {
     },
   };
 
+  const toggleNFT1Dialog = () => {
+    setOpenNFT1(!openNFT1);
+  };
+  const handleClose = () => {
+    setOpenNFT1(false);
+    setOpenNFT2(false);
+    setOpenNFT3(false);
+  };
+  const toggleNFT2Dialog = () => {
+    setOpenNFT2(!openNFT2);
+  };
+  const toggleNFT3Dialog = () => {
+    setOpenNFT3(!openNFT3);
+  };
+
   return (
     <Box>
+      {openNFT1 && <PickDialog open={openNFT1} setOpen={setOpenNFT1} />}
       <div
         onMouseEnter={() => setHoveredBG(true)}
         onMouseLeave={() => setHoveredBG(false)}
@@ -227,6 +267,78 @@ function CollectionSettings() {
                   }}
                 />
               </Box>
+            </Box>
+            <Box sx={styles.rightRow}>
+              <div
+                onMouseEnter={() => setHoveredNFT1(true)}
+                onMouseLeave={() => setHoveredNFT1(false)}
+                //center the button inside the div on image
+                style={styles.container}
+              >
+                <img
+                  src={listing?.listingNFT?.metadata?.image}
+                  alt="bg-image"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "1.2rem",
+                    border: "4px solid #F78C09",
+                  }}
+                />
+                {hoveredNFT1 && (
+                  <Button
+                    onClick={() => setOpenNFT1(true)}
+                    sx={styles.photoIcon}
+                  >
+                    <BuildIcon sx={styles.editIcon} />
+                  </Button>
+                )}
+              </div>
+              <div
+                onMouseEnter={() => setHoveredNFT2(true)}
+                onMouseLeave={() => setHoveredNFT2(false)}
+                style={styles.container}
+              >
+                <img
+                  src={listing?.listingNFT?.metadata?.image}
+                  alt="bg-image"
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    objectFit: "cover",
+                    borderRadius: "1.2rem",
+                    border: "4px solid #F78C09",
+                  }}
+                />
+                {hoveredNFT2 && (
+                  <Button sx={styles.photoIcon}>
+                    <BuildIcon sx={styles.editIcon} />
+                  </Button>
+                )}
+              </div>
+              <div
+                onMouseEnter={() => setHoveredNFT3(true)}
+                onMouseLeave={() => setHoveredNFT3(false)}
+                style={styles.container}
+              >
+                <img
+                  src={listing?.listingNFT?.metadata?.image}
+                  alt="bg-image"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "1.2rem",
+                    border: "4px solid #F78C09",
+                  }}
+                />
+                {hoveredNFT3 && (
+                  <Button sx={styles.photoIcon}>
+                    <BuildIcon sx={styles.editIcon} />
+                  </Button>
+                )}
+              </div>
             </Box>
           </Box>
           <Box sx={styles.row}>
@@ -440,4 +552,4 @@ function CollectionSettings() {
   );
 }
 
-export default CollectionSettings;
+export default DashboardSettings;
