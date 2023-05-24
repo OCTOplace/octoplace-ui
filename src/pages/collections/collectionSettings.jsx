@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Button, TextField } from "@mui/material";
+import { Box, Typography, Button, TextField, Tooltip } from "@mui/material";
 import { Container } from "react-bootstrap";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import bgImage from "../../assets/bg-collection.png";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import { FacebookRounded, SaveAlt, Settings } from "@mui/icons-material";
+import { FacebookRounded, Info, SaveAlt, Settings } from "@mui/icons-material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
@@ -18,6 +18,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 import { updateCollectionSettings } from "../../redux/thunk/update-collection-settings";
 import { getRoyaltyInfo } from "../../redux/thunk/get-royalty-info";
+import { useWeb3React } from "@web3-react/core";
+import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
+import { useTheme } from "@mui/material";
+import { setTxDialogFailed, setTxDialogHash, setTxDialogPending, setTxDialogSuccess, showTxDialog } from "../../redux/slices/app-slice";
+import { getNetworkInfo } from "../../connectors/networks";
+import { Web3Provider } from "@ethersproject/providers";
+import { Contract } from "@ethersproject/contracts";
+import { toast } from "react-toastify";
 
 function CollectionSettings() {
   const [hoveredBG, setHoveredBG] = useState(false);
@@ -37,6 +45,15 @@ function CollectionSettings() {
   const [avatarSrc, setAvatarSrc] = useState(null);
   const [isAvatarUpdated, avatarUpdated] = useState(false);
   const [isBannerUpdated, bannerUpdated] = useState(false);
+  const [royaltyReceiver, setRoyaltyReceiver] = useState(null);
+  const [royaltyBips, setRoyaltyBips] = useState(null);
+  const { account, chainId } = useWeb3React();
+  const owner = useSelector(
+    (state) => state.collection.selectedCollectionSetting.owner
+  );
+  const royalty = useSelector(
+    (state) => state.collection.selectedCollectionSetting.royalty
+  );
 
   const dispatch = useDispatch();
   const settings = useSelector(
@@ -51,8 +68,12 @@ function CollectionSettings() {
       dispatch(
         getRoyaltyInfo({ address: collectionAddress, network: network })
       );
+      dispatch(
+        getCollectionOwner({ address: collectionAddress, network: network })
+      );
     }
   }, [collectionAddress, network]);
+  const zeroAddress = "0x0000000000000000000000000000000000000000";
   useEffect(() => {
     if (settings !== {} && settings !== undefined) {
       setAbout(settings.AboutText);
@@ -73,6 +94,14 @@ function CollectionSettings() {
       }
     }
   }, [settings]);
+   useEffect(() => {
+    if(royalty){
+      setRoyaltyReceiver((royalty.address !== zeroAddress)? royalty.address: null);
+      setRoyaltyBips(Number(royalty.bips)/100 > 0 ? Number(royalty.bips)/100 : null);
+    }
+    
+  }, [royalty]);
+  const theme = useTheme();
   const listing = {
     listingNFT: {
       name: "NFT Name",
@@ -145,13 +174,48 @@ function CollectionSettings() {
       telegram,
       network,
       address: collectionAddress,
-      id:settings.Id
+      id: settings.Id,
     };
 
     console.log(saveObj);
     dispatch(updateCollectionSettings(saveObj));
   };
 
+  const isOwner = () => {
+    return account === owner;
+  };
+
+  const handleSaveRoyalty = async () => {
+    dispatch(showTxDialog());
+    const netDetails = getNetworkInfo(network);
+    if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [netDetails.switch],
+      });
+    }
+    const provider = new Web3Provider(window.ethereum, "any");
+    const signer = await provider.getSigner();
+    try{
+      const contract = new Contract(
+        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
+        netDetails.dataNetwork.MARKET_ABI,
+        signer
+      );
+      const txResult = await contract.setCreatorFeeBasisPointsByCreator(Number(royaltyBips)*100, royaltyReceiver, collectionAddress);
+      dispatch(setTxDialogHash(txResult.hash));
+      await txResult.wait();
+      dispatch(setTxDialogFailed(false));
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      toast.success("Royalty Settings Saved!");
+    }catch(err){
+      console.log(err);
+      dispatch(setTxDialogFailed(true));
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+    }
+  }
   return (
     <Box>
       <div
@@ -222,6 +286,7 @@ function CollectionSettings() {
                   onChange={(e) => setTitle(e.target.value)}
                   hiddenLabel
                   className="input-wo-padding"
+                  disabled={!isOwner()}
                   InputProps={{
                     style: {
                       backgroundColor: "#3D3D3D",
@@ -244,11 +309,13 @@ function CollectionSettings() {
           </Box>
           <Box sx={styles.row}>
             <Box sx={styles.aboutContent}>
+            <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>About</Typography>
               <TextField
                 type="url"
                 variant="standard"
                 hiddenLabel
+                disabled={!isOwner()}
                 value={about}
                 onChange={(e) => setAbout(e.target.value)}
                 InputProps={{
@@ -266,9 +333,76 @@ function CollectionSettings() {
                   multiline: true,
                 }}
               />
-              <Button sx={styles.orangeButton} onClick={handleSave} variant="contained">
+              <Button
+                disabled={!isOwner()}
+                sx={styles.orangeButton}
+                onClick={handleSave}
+                variant="contained"
+              >
                 Save
               </Button>
+            </Box>
+            <Box sx={styles.aboutContent}>
+              <Typography sx={styles.h2}>Royalty Info <Tooltip placement="top-start" title="Please note that setting up the royalty information here will override EIP2981 defined royalty settings.">
+              <Info sx={{color:theme.palette.grey[700] }} /></Tooltip> </Typography>
+              <TextField
+                type="text"
+                variant="standard"
+                hiddenLabel
+                disabled={!isOwner()}
+                value={royaltyReceiver}
+                onChange={(e) => {setRoyaltyReceiver(e.target.value)}}
+                InputProps={{
+                  style: {
+                    backgroundColor: "#3D3D3D",
+                    color: "#6C6C6C",
+                    border: "1px solid #6C6C6C",
+                    borderRadius: "0.594rem",
+                    padding: "0.5rem",
+                  },
+                  disableUnderline: true,
+                  size: "small",
+                  placeholder: "| Royalty Receiving Address",
+                  rows: 1,
+                  multiline: false,
+                }}
+              />
+              <TextField
+                type="number"
+                variant="standard"
+                hiddenLabel
+                disabled={!isOwner()}
+                value={royaltyBips}
+                onChange={(e) => {setRoyaltyBips(e.target.value)}}
+                InputProps={{
+                  endAdornment:(
+                    <InputAdornment position="end">
+                    <Typography>%</Typography>
+                    </InputAdornment>
+                  ),
+                  style: {
+                    backgroundColor: "#3D3D3D",
+                    color: "#6C6C6C",
+                    border: "1px solid #6C6C6C",
+                    borderRadius: "0.594rem",
+                    padding: "0.5rem",
+                  },
+                  disableUnderline: true,
+                  size: "small",
+                  placeholder: "| Royalty %",
+                  rows: 1,
+                  multiline: false,
+                }}
+              />
+              <Button
+                disabled={!isOwner()}
+                sx={styles.orangeButton}
+                onClick={handleSaveRoyalty}
+                variant="contained"
+              >
+                Setup Royalty
+              </Button>
+            </Box>
             </Box>
             <Box sx={styles.socialcontent}>
               <TextField
@@ -276,14 +410,18 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={telegram}
+                disabled={!isOwner()}
                 onChange={(e) => setTelegram(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
-                    color: "#6C6C6C",
+                    color: "#6C6C6C !important",
                     border: "1px solid #6C6C6C",
                     borderRadius: "0.594rem",
                     padding: "0.5rem",
+                    "& :disabled": {
+                      color: "#fff",
+                    },
                   },
                   disableUnderline: true,
                   size: "small",
@@ -300,6 +438,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={twitter}
+                disabled={!isOwner()}
                 onChange={(e) => setTwitter(e.target.value)}
                 InputProps={{
                   style: {
@@ -324,6 +463,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={facebook}
+                disabled={!isOwner()}
                 onChange={(e) => setFacebook(e.target.value)}
                 InputProps={{
                   style: {
@@ -348,6 +488,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={insta}
+                disabled={!isOwner()}
                 onChange={(e) => setInsta(e.target.value)}
                 InputProps={{
                   style: {
@@ -372,6 +513,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={discord}
+                disabled={!isOwner()}
                 onChange={(e) => setDiscord(e.target.value)}
                 InputProps={{
                   style: {
@@ -396,6 +538,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={tiktok}
+                disabled={!isOwner()}
                 onChange={(e) => setTiktok(e.target.value)}
                 InputProps={{
                   style: {
@@ -420,6 +563,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={youtube}
+                disabled={!isOwner()}
                 onChange={(e) => setYT(e.target.value)}
                 InputProps={{
                   style: {
@@ -444,6 +588,7 @@ function CollectionSettings() {
                 variant="standard"
                 hiddenLabel
                 value={medium}
+                disabled={!isOwner()}
                 onChange={(e) => setMedium(e.target.value)}
                 InputProps={{
                   style: {
