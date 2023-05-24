@@ -58,8 +58,6 @@ function Swap() {
     if (listings.length > 0) {
       const active = getActiveListings(listings);
       const sorted = sortListigs(active, 0);
-      console.log("sorted", sorted);
-      console.log("active", active);
       dispatch(setActiveListings(sorted));
     }
   }, [listings]);

@@ -126,7 +126,7 @@ function App() {
           <Route path="swap/done" element={<SwapComplete />} />
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
-          <Route path="collections/guest" element={<GuestCollection />} />
+          <Route path="collections/:network/:collectionSlug" element={<GuestCollection />} />
           <Route path="collections/settings" element={<CollectionSettings />} />
         </Routes>
         <TxDialog

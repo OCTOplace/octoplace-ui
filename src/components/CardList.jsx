@@ -9,7 +9,6 @@ function CardList({ list, view }) {
         {view !== 1 &&
           list.length > 0 &&
           list.map((collectionItem, index) => {
-            console.log(collectionItem)
             return (
               <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
                 <CollectionCard collectionItem={collectionItem} view={view} />

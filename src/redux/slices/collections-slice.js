@@ -1,12 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { getAllCollections } from "../thunk/getAllCollections";
+import { getAllCollectionNFTs } from "../thunk/get-collection-nfts";
+import { getCollectionSettings } from "../thunk/get-collection-setting";
 
 const initialState = {
   isLoading: false,
   collections: [],
   selectedCollection: {},
-  selectedCollectionSetting: {}
+  selectedCollectionSetting: {
+    isLoading: false,
+    settings: undefined
+  },
 };
 
 export const collectionsSlice = createSlice({
@@ -19,41 +24,51 @@ export const collectionsSlice = createSlice({
     setCollections: (state, action) => {
       state.collections = action.payload;
     },
+    setSelectedCollection: (state, { payload }) => {
+      state.selectedCollection = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getAllCollections.pending, (state) => {
-        state.isLoading = true;
-    })
-    builder.addCase(getAllCollections.fulfilled, (state, {payload}) => {
-        state.collections = payload;
-        state.isLoading = false;
-    })
+      state.isLoading = true;
+    });
+    builder.addCase(getAllCollections.fulfilled, (state, { payload }) => {
+      state.collections = payload;
+      state.isLoading = false;
+    });
     builder.addCase(getAllCollections.rejected, (state) => {
-        state.isLoading = false;
-        toast.error("Error occured while loading collections.")
-    })
-//     builder.addCase(getMarketNFTDetail.fulfilled, (state, {payload}) => {
-        
-//         const listingId = payload.listingId;
-//         const objIndex = state.markets.findIndex((obj => obj.Id === listingId));
-//         let items = state.markets;
-//         let item = items[objIndex];
-//         item = {
-//             ...item,
-//             nftDetails: payload.nft
-//         }
-//         console.log("item", item)
-//         items[objIndex] = item;
-//         state.markets = items;
-//     });
-//     builder.addCase(getMarketNFTDetail.rejected, (state) => {
-        
-//         toast.error("Error occured while loading NFT Details.")
-//     })
-    }
+      state.isLoading = false;
+      toast.error("Error occured while loading collections.");
+    });
+    builder.addCase(getAllCollectionNFTs.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getAllCollectionNFTs.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.selectedCollection.nfts = payload.nfts;
+      state.selectedCollection.totalItems = payload.items;
+    });
+    builder.addCase(getAllCollectionNFTs.rejected, (state) => {
+      state.isLoading = false;
+      toast.error("Error occured while loading collection NFTs.");
+    });
+    builder.addCase(getCollectionSettings.pending,(state) => {
+      state.selectedCollectionSetting.isLoading = true;
+    } )
+    builder.addCase(getCollectionSettings.fulfilled, (state, { payload }) => {
+      state.selectedCollectionSetting.isLoading = false;
+      state.selectedCollection.settings = payload
+      state.selectedCollection.totalItems = payload.items;
+    });
+    builder.addCase(getCollectionSettings.rejected, (state) => {
+      state.selectedCollectionSetting.isLoading = false;
+      toast.error("Error occured while loading collection Settings.");
+    });
+  },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, setCollections } = collectionsSlice.actions;
+export const { setLoading, setCollections, setSelectedCollection } =
+  collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

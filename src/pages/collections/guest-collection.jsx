@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../utils/format-listings";
@@ -10,15 +11,30 @@ import bgImage from "../../assets/bg-collection.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+import { useParams } from "react-router-dom";
+import { setSelectedCollection } from "../../redux/slices/collections-slice";
+import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
+import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 
 function GuestCollection() {
   const dispatch = useDispatch();
+  const {network, collectionSlug} = useParams();
   const listings = useSelector((state) => state.listings.allListings);
+  const collections = useSelector((state)=> state.collection.collections);
+  const selectedCollection = useSelector((state) => state.collection.selectedCollection)
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("collection");
 
+  useEffect(()=>{
+    if(collections.length > 0){
+      const result = collections.find(item => item.collection_id === collectionSlug);
+      dispatch(setSelectedCollection(result));
+      dispatch(getAllCollectionNFTs(result.type_id));
+      dispatch(getCollectionSettings({address: result.type_id, network: network}));
+    }
+  }, [collections]);
   const metadata = {
     name: "E.R.V Gandalf #54",
     description: "E.R.V Gandalf 2930 Unique NFT Collection.",
@@ -220,8 +236,8 @@ function GuestCollection() {
   return (
     <Box>
       <img
-        src={bgImage}
-        alt="bg-image"
+        src={selectedCollection.image_url?selectedCollection.image_url : bgImage}
+        alt="collection-avatar"
         style={{
           width: "100vw",
           height: "45vh",
@@ -238,7 +254,7 @@ function GuestCollection() {
           <Box style={styles.overlayContainer}>
             <Box sx={styles.imageContainer}>
               <img
-                src={listings[0]?.listingNFT?.metadata?.image}
+                src={selectedCollection.image_url}
                 alt="profileImage"
                 // sx={styles.image}
                 className="octagon-image"
@@ -247,17 +263,17 @@ function GuestCollection() {
               />
               <Box sx={styles.column}>
                 <Typography sx={styles.h1}>
-                  {listings[0]?.listingNFT?.name}
+                  {selectedCollection.name}
                 </Typography>
                 <Typography sx={styles.h3}>
-                  {listings[0]?.listingNFT?.contractAddress}
+                  {selectedCollection.type_id}
                 </Typography>
               </Box>
             </Box>
             <Box sx={styles.column}>
-              <Button sx={styles.orangeButton} variant="contained">
+              {/* <Button sx={styles.orangeButton} variant="contained">
                 Mint
-              </Button>
+              </Button> */}
               <Box sx={styles.row}>
                 <IconButton>
                   <FacebookRounded sx={styles.icon} />
@@ -289,10 +305,10 @@ function GuestCollection() {
           >
             <Box sx={styles.statsRow}>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>888</Typography>
+                <Typography sx={styles.h2}>{selectedCollection.totalItems}</Typography>
                 <Typography sx={styles.h3}>Items</Typography>
               </Box>
-              <Box sx={styles.statsCol}>
+              {/* <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>583</Typography>
                 <Typography sx={styles.h3}>Owners</Typography>
               </Box>
@@ -303,7 +319,7 @@ function GuestCollection() {
               <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>4900</Typography>
                 <Typography sx={styles.h3}>Floor</Typography>
-              </Box>
+              </Box> */}
               <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>348</Typography>
                 <Typography sx={styles.h3}>Comments</Typography>
@@ -365,7 +381,7 @@ function GuestCollection() {
           </Box>
 
           {activeMenu === "collection" && (
-            <NFTlist activeListings={activeListings} view={view} />
+            <NFTlist nfts={selectedCollection.nfts} view={view} />
           )}
           {activeMenu === "content" && (
             <Content activeListings={activeListings} view={view} />

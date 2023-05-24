@@ -19,9 +19,6 @@ export const CollectionsPage = () => {
   const collections = useSelector((state) => state.collection.collections);
   const [view, setView] = useState(2);
 
-  useEffect(()=> {
-    console.log(collections);
-  }, [collections]);
   return (
     <Box>
       <CarouselCollection />

@@ -67,7 +67,6 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   };
 
   useEffect(() => {
-    console.log("called1");
     dispatch(
       getMarketNFTDetail({
         contractAddress: marketItem.NFTContractAddress,

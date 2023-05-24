@@ -13,6 +13,7 @@ export const getAllCollections = createAsyncThunk(
       console.log({...item, slug})
       return {...item, slug}
     });
+    items =items.filter(item => item.site !== "thetadrop");
     return items;
   }
 );

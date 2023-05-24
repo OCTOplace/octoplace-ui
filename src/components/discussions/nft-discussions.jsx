@@ -203,7 +203,6 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
       netInfo.dataNetwork.DISCUSSION_CONTRACT
     );
     setFeeAllowance(Number(formatEther(allowedAmt)));
-    console.log("Allowed:", Number(formatEther(allowedAmt)));
   };
 
   useEffect(() => {
