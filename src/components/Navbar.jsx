@@ -122,7 +122,7 @@ export const AppNavbar = () => {
       >
         <MenuItem
           onClick={() => {
-            navigate("/my-nft");
+            navigate("/dashboard");
             handleMenuClose();
           }}
         >
@@ -130,7 +130,7 @@ export const AppNavbar = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            navigate("/my-nft");
+            navigate("/dashboard/settings");
             handleMenuClose();
           }}
         >

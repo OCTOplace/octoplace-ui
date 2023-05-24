@@ -97,6 +97,11 @@ function Swap() {
               value={orderMethod}
               onChange={handleChange}
               input={<BootstrapInput />}
+              sx={{
+                "& .MuiSelect-icon": {
+                  color: "white",
+                },
+              }}
             >
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="Oldest">Oldest</MenuItem>
