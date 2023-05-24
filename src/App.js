@@ -131,7 +131,7 @@ function App() {
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
           <Route path="collections/:network/:collectionSlug" element={<GuestCollection />} />
-          <Route path="collections/settings" element={<CollectionSettings />} />
+          <Route path="collections/settings/:network/:collectionAddress" element={<CollectionSettings />} />
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="dashboard/guest" element={<DashboardGuest />} />
           <Route path="dashboard/settings" element={<DashboardSettings />} />

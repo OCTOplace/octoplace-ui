@@ -1,92 +1,62 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getActiveListings } from "../../utils/format-listings";
-import { setActiveListings } from "../../redux/slices/listing-slice";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
-import { FacebookRounded } from "@mui/icons-material";
-
+import {
+  FacebookRounded,
+  Facebook,
+  Telegram,
+  Twitter,
+  Instagram,
+  YouTube,
+  Edit,
+  Settings,
+} from "@mui/icons-material";
+import twitter from "./../../assets/twitter.svg";
+import telegram from "./../../assets/telegram.svg";
 import bgImage from "../../assets/bg-collection.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { setSelectedCollection } from "../../redux/slices/collections-slice";
 import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
 import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
+import { BsMedium } from "react-icons/bs";
+import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
 
 function GuestCollection() {
   const dispatch = useDispatch();
-  const {network, collectionSlug} = useParams();
-  const listings = useSelector((state) => state.listings.allListings);
-  const collections = useSelector((state)=> state.collection.collections);
-  const selectedCollection = useSelector((state) => state.collection.selectedCollection)
+  const { network, collectionSlug } = useParams();
+  const collections = useSelector((state) => state.collection.collections);
+  const selectedCollection = useSelector(
+    (state) => state.collection.selectedCollection
+  );
+  const settings = useSelector(
+    (state) => state.collection.selectedCollectionSetting.settings
+  );
+  const isSettingsLoading = useSelector(
+    (state) => state.collection.selectedCollectionSetting.isLoading
+  );
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("collection");
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(collections.length > 0){
-      const result = collections.find(item => item.collection_id === collectionSlug);
+  useEffect(() => {
+    if (collections.length > 0) {
+      const result = collections.find(
+        (item) => item.collection_id === collectionSlug
+      );
       dispatch(setSelectedCollection(result));
       dispatch(getAllCollectionNFTs(result.type_id));
-      dispatch(getCollectionSettings({address: result.type_id, network: network}));
+      dispatch(
+        getCollectionSettings({ address: result.type_id, network: network })
+      );
     }
   }, [collections]);
-  const metadata = {
-    name: "E.R.V Gandalf #54",
-    description: "E.R.V Gandalf 2930 Unique NFT Collection.",
-    image:
-      "https://ipfs.io/ipfs/bafybeieo45rmgccoldjv6mq426zb5xnpqmvoifp2z4xfzwmq2hkffnmpje/54.png",
-    dna: "88553cc70d9f4eaea8e3d7380fe3e160458a1458",
-    edition: 54,
-    date: 1656787121637,
-    attributes: [
-      {
-        trait_type: "Background",
-        value: "Blue Lightning ",
-      },
-      {
-        trait_type: "Base",
-        value: "Base ",
-      },
-      {
-        trait_type: "Robe",
-        value: "Robe 2 Purple ",
-      },
-      {
-        trait_type: "Familiar",
-        value: "Lizard Bright Green ",
-      },
-      {
-        trait_type: "Beard",
-        value: "Red Wide Beard ",
-      },
-      {
-        trait_type: "Eyebrows",
-        value: "White Eyebrows ",
-      },
-      {
-        trait_type: "Eyes",
-        value: "Normal Eyes ",
-      },
-      {
-        trait_type: "Hat",
-        value: "Black ",
-      },
-      {
-        trait_type: "Staff",
-        value: "Crystal Purple ",
-      },
-      {
-        trait_type: "Mouth",
-        value: "Normal ",
-      },
-    ],
-    compiler: "HashLips Art Engine",
-  };
 
   const styles = {
     container: {},
@@ -140,7 +110,7 @@ function GuestCollection() {
     },
     row: {
       display: "flex",
-      gap: 1,
+      gap: 0.25,
     },
     h1: {
       fontWeight: 600,
@@ -166,7 +136,11 @@ function GuestCollection() {
     icon: {
       color: "#f4f4f4",
       fontSize: "1.625rem",
-      marginTop: "0.7rem",
+    },
+    iconImg: {
+      color: "#f4f4f4",
+      height: "2.1rem",
+      width: "2.1rem",
     },
     statsRow: {
       display: "flex",
@@ -190,7 +164,6 @@ function GuestCollection() {
       display: "flex",
       flexDirection: "column",
       gap: 1,
-      
     },
     menu: {
       display: "flex",
@@ -226,17 +199,12 @@ function GuestCollection() {
     },
   };
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
-    }
-  }, [listings]);
-
   return (
     <Box>
       <img
-        src={selectedCollection.image_url?selectedCollection.image_url : bgImage}
+        src={
+          settings && settings.BannerImage ? Buffer.from(settings.BannerImage).toString() : selectedCollection.image_url
+        }
         alt="collection-avatar"
         style={{
           width: "100vw",
@@ -254,7 +222,7 @@ function GuestCollection() {
           <Box style={styles.overlayContainer}>
             <Box sx={styles.imageContainer}>
               <img
-                src={selectedCollection.image_url}
+                src={settings && settings.Avatar ? Buffer.from(settings.Avatar).toString() :selectedCollection.image_url}
                 alt="profileImage"
                 // sx={styles.image}
                 className="octagon-image"
@@ -263,7 +231,7 @@ function GuestCollection() {
               />
               <Box sx={styles.column}>
                 <Typography sx={styles.h1}>
-                  {selectedCollection.name}
+                  {settings && settings.CollectionName ?settings.CollectionName : selectedCollection.name}
                 </Typography>
                 <Typography sx={styles.h3}>
                   {selectedCollection.type_id}
@@ -274,26 +242,56 @@ function GuestCollection() {
               {/* <Button sx={styles.orangeButton} variant="contained">
                 Mint
               </Button> */}
-              <Box sx={styles.row}>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-              </Box>
+              {settings && (
+                <Box sx={styles.row}>
+                  {settings.Telegram && (
+                    <IconButton LinkComponent={"a"} href={settings.Telegram}>
+                      <Telegram sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.Twitter && (
+                    <IconButton LinkComponent={"a"} href={settings.Twitter}>
+                      <Twitter sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.Discord && (
+                    <IconButton LinkComponent={"a"} href={settings.Discord}>
+                      <FaDiscord color="#fff" sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.Facebook && (
+                    <IconButton LinkComponent={"a"} href={settings.Facebook}>
+                      <Facebook sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.Instagram && (
+                    <IconButton LinkComponent={"a"} href={settings.Instagram}>
+                      <Instagram sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.Youtube && (
+                    <IconButton LinkComponent={"a"} href={settings.Youtube}>
+                      <FaYoutube color="#fff" sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.Medium && (
+                    <IconButton LinkComponent={"a"} href={settings.Medium}>
+                      <BsMedium color="#fff" sx={styles.icon} />
+                    </IconButton>
+                  )}
+                  {settings.TikTok && (
+                    <IconButton LinkComponent={"a"} href={settings.TikTok}>
+                      <FaTiktok color="#fff" sx={styles.icon} />
+                    </IconButton>
+                  )}
+
+                  <IconButton onClick={() => {
+                    navigate(`/collections/settings/${settings.Network}/${settings.CollectionAddress}`)
+                  }}>
+                    <Settings color="#fff" sx={styles.icon} />
+                  </IconButton>
+                </Box>
+              )}
             </Box>
           </Box>
           <Box
@@ -305,7 +303,9 @@ function GuestCollection() {
           >
             <Box sx={styles.statsRow}>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>{selectedCollection.totalItems}</Typography>
+                <Typography sx={styles.h2}>
+                  {selectedCollection.totalItems}
+                </Typography>
                 <Typography sx={styles.h3}>Items</Typography>
               </Box>
               {/* <Box sx={styles.statsCol}>
@@ -331,15 +331,16 @@ function GuestCollection() {
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
-              <Typography sx={styles.h2}>About</Typography>
-              <Typography sx={styles.h5}>
-                {listings[0]?.listingNFT?.metadata?.description}
-              </Typography>
+              {!isSettingsLoading && settings && settings.AboutText && (
+                <>
+                  <Typography sx={styles.h2}>About</Typography>
+                  <Typography sx={styles.h5}>{settings.AboutText}</Typography>
+                </>
+              )}
             </Box>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>Recent messages</Typography>
               <NFTDiscussions
-                metadata={metadata}
                 address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
                 tokenId={54}
                 chainId={`kava`}
@@ -388,7 +389,6 @@ function GuestCollection() {
           )}
           {activeMenu === "discussion" && (
             <NFTDiscussions
-              metadata={metadata}
               address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
               tokenId={54}
               chainId={`kava`}

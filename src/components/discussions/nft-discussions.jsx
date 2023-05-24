@@ -36,7 +36,7 @@ import {
   showTxDialog,
 } from "../../redux/slices/app-slice";
 
-export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
+export const NFTDiscussions = ({ address, tokenId, isAccordion }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (event, isExpanded) => {

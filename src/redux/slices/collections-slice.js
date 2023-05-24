@@ -57,8 +57,7 @@ export const collectionsSlice = createSlice({
     } )
     builder.addCase(getCollectionSettings.fulfilled, (state, { payload }) => {
       state.selectedCollectionSetting.isLoading = false;
-      state.selectedCollection.settings = payload
-      state.selectedCollection.totalItems = payload.items;
+      state.selectedCollectionSetting.settings = payload
     });
     builder.addCase(getCollectionSettings.rejected, (state) => {
       state.selectedCollectionSetting.isLoading = false;
