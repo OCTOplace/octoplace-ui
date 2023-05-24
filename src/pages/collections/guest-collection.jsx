@@ -18,7 +18,7 @@ import telegram from "./../../assets/telegram.svg";
 import bgImage from "../../assets/bg-collection.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
-import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import { useNavigate, useParams } from "react-router-dom";
 import { setSelectedCollection } from "../../redux/slices/collections-slice";
 import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
@@ -222,9 +222,8 @@ function GuestCollection() {
             </Box>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>Recent messages</Typography>
-              <NFTDiscussions
-                address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
-                tokenId={54}
+              <CollectionDiscussions
+                address={selectedCollection.type_id}
                 network={network}
                 isAccordion={false}
               />
@@ -270,9 +269,8 @@ function GuestCollection() {
             <Content activeListings={activeListings} view={view} />
           )}
           {activeMenu === "discussion" && (
-            <NFTDiscussions
-              address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
-              tokenId={54}
+            <CollectionDiscussions
+              address={selectedCollection.type_id}
               network={network}
               isAccordion={false}
             />
