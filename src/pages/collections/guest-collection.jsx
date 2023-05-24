@@ -225,7 +225,7 @@ function GuestCollection() {
               <NFTDiscussions
                 address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
                 tokenId={54}
-                chainId={`kava`}
+                network={network}
                 isAccordion={false}
               />
             </Box>
@@ -273,7 +273,7 @@ function GuestCollection() {
             <NFTDiscussions
               address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
               tokenId={54}
-              chainId={`kava`}
+              network={network}
               isAccordion={false}
             />
           )}

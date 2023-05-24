@@ -398,7 +398,7 @@ export const NFTView = () => {
               metadata={metadata}
               address={address}
               tokenId={tokenId}
-              chainId={network}
+              network={network}
               isAccordion={true}
             />
           </Grid>
