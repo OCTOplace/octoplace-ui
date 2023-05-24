@@ -26,7 +26,7 @@ import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther, formatUnits, parseUnits } from "@ethersproject/units";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
   setTxDialogFailed,
@@ -35,44 +35,90 @@ import {
   setTxDialogSuccess,
   showTxDialog,
 } from "../../redux/slices/app-slice";
+import copy from "clipboard-copy";
+import {setNFTDiscussions} from "../../redux/slices/discussions-slice"
+import { createNFTDiscussion, getNftDiscussions } from "../../redux/thunk/get-nft-discussions";
+export const NFTDiscussions = ({ address, tokenId, network,isAccordion }) => {
+  const [expanded, setExpanded] = useState(false);
+const styles = {
+  accordion2: {
+    backgroundColor: "transparent",
+    color: expanded ? "#f4f4f4" : "#6c6c6c",
+    border: "1px solid  #6C6C6C",
+    borderRadius: ".5rem",
+    marginBottom: "1rem",
+  },
+  accordionHeader: {
+    fontWeight: 400,
+    fontsize: "1.125rem",
+    lineHeight: "105.02%",
+  },
+  accordionBody: {
+    backgroundColor: "#151515",
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    maxHeight: "470px",
+    overflowY: "scroll",
+    borderRadius: ".5rem",
+  },
+  detailsBox: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    maxHeight: "470px",
+    overflowY: "scroll",
+    justifyContent: "flex-start",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: "8px",
+  },
+  comments: {
+    width: "100%",
+  },
+  address: {
+    fontWeight: 600,
+    fontSize: ".875rem",
+    color: "#FF9719",
+    textTransform: "none",
+    display: "flex",
+    alignItems: "center",
+  },
+  copyButton: {
+    color: "#6C6C6C",
+    fontSize: ".75rem",
+  },
+  message: {
+    color: "white",
+    fontSize: ".875rem",
+    fontWeight: 400,
+  },
+  textContainer: {
+    width: "80%",
+    pt: 2,
+    pr: 1,
+  },
+  sendButton: {
+    background: "#F78C09",
+    borderRadius: ".375rem",
+    color: "#262626",
+    fontWeight: 600,
+    width: "20%",
+    textTransform: "none",
+  },
+};
+  
+  
 
-export const NFTDiscussions = ({ metadata, address, tokenId }) => {
-  const styles = {
-    accordion2: {
-      backgroundColor: "transparent",
-      color: "white",
-      border: "1px solid  #6C6C6C",
-      borderRadius: "5px",
-      marginBottom: "24px",
-    },
-    detailsBox: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      maxHeight: "470px",
-      overflowY: "scroll",
-      justifyContent: "flex-start",
-    },
-    row: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      width: "100%",
-      marginBottom: "8px",
-    },
-    comments: {
-      width: "100%",
-      borderBottom: "1px solid  #6C6C6C",
-    },
-    address: {
-      fontWeight: 700,
-      fontSize: "18px",
-      color: "#FF9719",
-      textTransform: "uppercase",
-      marginTop: "8px",
-    },
+  const handleChange = (event, isExpanded) => {
+    setExpanded(isExpanded);
   };
+
 
   const [openSendDlg, setOpenSendDlg] = useState(false);
   const [message, setMessage] = useState("");
@@ -83,12 +129,18 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
-  const [messages, setMessages] = useState([]);
+  const messages = useSelector((state) => state.discussion.selectedNFTDiscussions)
 
   const dispatch = useDispatch();
   const format = (x) => {
     return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(setNFTDiscussions([]));
+    }
+  }, [])
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -117,28 +169,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
   };
 
   const getAllMessages = async () => {
-    const netInfo = getNetworkInfo("theta");
-    const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
-    const discussionContract = new Contract(
-      netInfo.dataNetwork.DISCUSSION_CONTRACT,
-      netInfo.dataNetwork.DISCUSSION_ABI,
-      provider
-    );
-
-    const comments = await discussionContract.getAllCommentsOf(
-      address,
-      tokenId
-    );
-    let objs = [];
-    for(var comment of comments){
-      const obj = {
-        from: comment.commenter,
-        msg: comment.contents,
-        timestamp: formatUnits(comment.timestamp, 0)
-      }
-      objs = [...objs, obj];
-    }
-    setMessages(objs);
+    dispatch(getNftDiscussions({address, tokenId, network}));
   };
 
   useEffect(() => {
@@ -146,6 +177,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       getAllMessages();
     }
   }, [address, tokenId]);
+
   const getAllowance = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -159,16 +191,21 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       netInfo.dataNetwork.DISCUSSION_CONTRACT
     );
     setFeeAllowance(Number(formatEther(allowedAmt)));
-    console.log("Allowed:", Number(formatEther(allowedAmt)));
   };
+
   useEffect(() => {
     if (account && feeToken) {
       getAllowance();
     }
   }, [account, allowanceRefreshTrigger, feeToken]);
+
   useEffect(() => {
     if (account) {
       getFeeToken();
+    }
+    // if isAccordion is false expand the accordion default
+    if (!isAccordion) {
+      setExpanded(true);
     }
   }, [account]);
 
@@ -232,6 +269,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
+      dispatch(createNFTDiscussion({address, tokenId, network, sender: account, message}));
       toast.success("Comment Posted Successfuly!");
       setOpenSendDlg(false);
       setMessage("");
@@ -246,46 +284,48 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
       dispatch(setTxDialogFailed(true));
     }
   };
+
   return (
-    <Accordion sx={styles.accordion2} variant="outlined">
-      <AccordionSummary
-        expandIcon={<ExpandMore sx={{ color: "white" }} />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography
-          sx={{ fontWeight: "700", alignItems: "center", display: "flex" }}
+    <Accordion
+      sx={styles.accordion2}
+      expanded={expanded}
+      onChange={handleChange}
+    >
+      {isAccordion ? (
+        <AccordionSummary
+          expandIcon={
+            <ExpandMore sx={{ color: expanded ? "#f4f4f4" : "#6c6c6c" }} />
+          }
+          aria-controls="panel1a-content"
+          id="panel1a-header"
         >
-          <QuestionAnswer /> &nbsp;&nbsp;Discussion
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails
-        sx={{
-          borderTop: "1px solid #6C6C6C",
-        }}
-      >
+          <Typography sx={styles.accordionHeader}>
+            <QuestionAnswer /> &nbsp;&nbsp;Discussion
+          </Typography>
+        </AccordionSummary>
+      ) : (
+        <></>
+      )}
+      <AccordionDetails sx={styles.accordionBody}>
         <Box sx={styles.detailsBox}>
-         {
-          messages.map((item) => {
+          {messages.map((item) => {
             return (
-              <Box key={item.timestamp} sx={styles.comments}>
-              <Typography sx={styles.address}>
-                {shortenAddress(item.from)}
-                <IconButton sx={{ ml: 2, color: "#FF9719" }}>
-                  <ContentCopy fontSize="small" />
-                </IconButton>
-              </Typography>
-              <Typography sx={{ mb: 2 }} variant="body1">
-                {item.msg}
-              </Typography>
-            </Box>
-            )
-          })
-         }
-          
+              <Box key={item.Id} sx={styles.comments}>
+                <Typography sx={styles.address}>
+                  {shortenAddress(item.SenderAddress)}
+                  <IconButton  onClick={() => {copy(item.SenderAddress); toast.success("Address copied!")}} sx={styles.copyButton}>
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
+                </Typography>
+                <Typography sx={styles.message} variant="body1">
+                  {item.Message}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Box sx={{ width: "80%", pt: 2, pr: 1 }}>
+        <Box sx={styles.row}>
+          <Box sx={styles.textContainer}>
             <TextField
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -297,18 +337,19 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
               variant="standard"
               fullWidth
               placeholder="Enter your message here"
+              InputProps={{
+                disableUnderline: true,
+              }}
             />
           </Box>
-          <Box sx={{ width: "20%", pt: 2 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={() => setOpenSendDlg(true)}
-              endIcon={<Send />}
-            >
-              Send
-            </Button>
-          </Box>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => setOpenSendDlg(true)}
+            sx={styles.sendButton}
+          >
+            Send
+          </Button>
         </Box>
         <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
           <DialogTitle
@@ -349,3 +390,4 @@ export const NFTDiscussions = ({ metadata, address, tokenId }) => {
     </Accordion>
   );
 };
+

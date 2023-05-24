@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, CircularProgress, Divider, Grid, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/system";
 import TabsUnstyled from "@mui/base/TabsUnstyled";
 import TabUnstyled from "@mui/base/TabUnstyled";
@@ -11,19 +18,20 @@ import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
-import {  resetCollections } from "../../redux/slices/my-nft-slice";
+import { resetCollections } from "../../redux/slices/my-nft-slice";
 import { NFTCard } from "../../components/NFTCard";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { createAction } from "@reduxjs/toolkit";
 import { MyListedNFT } from "./my-listed-nft";
 import { MyOffers } from "./my-offers";
 import { setSelectedTab } from "../../redux/slices/my-nft-slice";
+
 const Tab = styled(TabUnstyled)`
   color: #6c6c6c;
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  background-color: #3d3d3d;
+  background-color: #262626;
   padding: 8px 24px;
   border-radius: 12px;
   border: none;
@@ -31,7 +39,7 @@ const Tab = styled(TabUnstyled)`
   margin-right: 8px;
   &.Mui-selected {
     font-size: 14px;
-    color: #3d3d3d;
+    color: #262626;
     background-color: #f4f4f4;
   }
 `;
@@ -41,7 +49,7 @@ const TabPanel = styled(TabPanelUnstyled)`
 `;
 
 const TabsList = styled(TabsListUnstyled)`
-  background-color: #3d3d3d;
+  background-color: #262626;
   padding: 0 8px 0 8px;
   margin-bottom: 10px;
   display: flex;
@@ -55,16 +63,15 @@ const TabsList = styled(TabsListUnstyled)`
 
 export const MyNFT = () => {
   const [view, setView] = useState(3);
-  const loading = useSelector(state => state.myNFT.isLoading);
+  const loading = useSelector((state) => state.myNFT.isLoading);
   const { account, library } = useWeb3React();
   const nfts = useSelector((state) => state.myNFT.nfts);
   const selectedTab = useSelector((state) => state.myNFT.selectedTab);
   const dispatch = useDispatch();
 
-  
   const getNFTDetails = async () => {
-    if(nfts.length ===0){
-      dispatch(createAction("LOAD_MY_NFTS_API")({account}));
+    if (nfts.length === 0) {
+      dispatch(createAction("LOAD_MY_NFTS_API")({ account }));
     }
   };
 
@@ -75,11 +82,11 @@ export const MyNFT = () => {
   }, [account, library]);
 
   const handleRefresh = async () => {
-    if(account && library){
+    if (account && library) {
       dispatch(resetCollections());
       getNFTDetails();
     }
-  }
+  };
   return (
     <Container>
       <Row>
@@ -98,7 +105,7 @@ export const MyNFT = () => {
                   borderRadius: "12px",
                   justifyContent: "flex-end",
                   display: "flex",
-                  "& .MuiSvgIcon-root": { color: "#3d3d3d" },
+                  "& .MuiSvgIcon-root": { color: "#262626" },
                 }}
               >
                 <Paper sx={{ borderRadius: "10px" }}>
@@ -131,40 +138,72 @@ export const MyNFT = () => {
                 </Paper>
               </Box>
             </Box>
-            <TabPanel sx={{minHeight: '60vh'}} value={0}>
+            <TabPanel sx={{ minHeight: "60vh" }} value={0}>
               <Grid container spacing={2}>
                 {!account && (
-                  <div style={{textAlign: "center", width: "100%", marginTop: "10vh"}}>
-                    <Typography variant="h4" sx={{color:"grey", textAlign: "center"}}>Connect your wallet to browse your NFT's.</Typography>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      width: "100%",
+                      marginTop: "10vh",
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{ color: "grey", textAlign: "center" }}
+                    >
+                      Connect your wallet to browse your NFT's.
+                    </Typography>
                   </div>
                 )}
-                {(account && nfts.length === 0 && !loading) && (
-                  <div style={{textAlign: "center", width: "100%", marginTop: "10vh"}}>
-                  <Typography variant="h4" sx={{color:"grey", textAlign: "center"}}>You do not have any NFT's in your wallet.</Typography>
-                </div>
+                {account && nfts.length === 0 && !loading && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      width: "100%",
+                      marginTop: "10vh",
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{ color: "grey", textAlign: "center" }}
+                    >
+                      You do not have any NFT's in your wallet.
+                    </Typography>
+                  </div>
                 )}
                 {view !== 1 &&
                   nfts.map((item, index) => {
                     return (
-                      <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                        {<NFTCard nft={item} view={view}/>}
+                      <Grid
+                        key={`index_${index}`}
+                        item
+                        xs={12}
+                        sm={6}
+                        md={view}
+                      >
+                        {<NFTCard nft={item} view={view} />}
                       </Grid>
                     );
                   })}
-                {
-                  loading && account && (
-                    <div style={{textAlign: "center", width: "100%", marginTop: "10vh"}}>
-              <CircularProgress color="primary" />
-              </div>
-                  )
-                }
+                {loading && account && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      width: "100%",
+                      marginTop: "10vh",
+                    }}
+                  >
+                    <CircularProgress color="primary" />
+                  </div>
+                )}
               </Grid>
             </TabPanel>
-            <TabPanel sx={{minHeight: "60vh"}} value={1}>
-            <MyListedNFT view={view} />
+            <TabPanel sx={{ minHeight: "60vh" }} value={1}>
+              <MyListedNFT view={view} />
             </TabPanel>
-            <TabPanel sx={{minHeight: "60vh"}} value={2}>
-            <MyOffers view={view} />
+            <TabPanel sx={{ minHeight: "60vh" }} value={2}>
+              <MyOffers view={view} />
             </TabPanel>
           </TabsUnstyled>
         </Col>

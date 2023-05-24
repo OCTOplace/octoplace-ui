@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 export const SwapComplete = () => {
 
     const ContainedButton = styled(Button)(({ theme }) => ({
-        color: '#3d3d3d',
+        color: '#262626',
         backgroundColor: '#f4f4f4',
         border: '1px solid #f4f4f4',
         borderRadius: '12px',
@@ -15,7 +15,7 @@ export const SwapComplete = () => {
         textTransform: 'none',
         width: '240px',
         '&:hover': {
-            backgroundColor: '#3d3d3d',
+            backgroundColor: '#262626',
             color: '#f4f4f4'
         },
     }));

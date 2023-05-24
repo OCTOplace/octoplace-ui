@@ -20,7 +20,7 @@ const Tab = styled(TabUnstyled)`
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  background-color: #3d3d3d;
+  background-color: #262626;
   padding: 8px 24px;
   border-radius: 12px;
   border: none;
@@ -28,7 +28,7 @@ const Tab = styled(TabUnstyled)`
   margin-right: 8px;
   &.Mui-selected {
     font-size: 14px;
-    color: #3d3d3d;
+    color: #262626;
     background-color: #f4f4f4;
   }
 `;
@@ -38,7 +38,7 @@ const TabPanel = styled(TabPanelUnstyled)`
 `;
 
 const TabsList = styled(TabsListUnstyled)`
-  background-color: #3d3d3d;
+  background-color: #262626;
   padding: 0 8px 0 8px;
   margin-bottom: 10px;
   display: flex;
@@ -87,7 +87,7 @@ export const Listings = () => {
                   borderRadius: "12px",
                   justifyContent: "flex-end",
                   display: "flex",
-                  "& .MuiSvgIcon-root": { color: "#3d3d3d" },
+                  "& .MuiSvgIcon-root": { color: "#262626" },
                 }}
               >
                 {selectedTab !== 1 && (

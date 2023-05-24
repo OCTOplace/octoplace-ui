@@ -182,7 +182,7 @@ export const TradeCard = (props) => {
         )}
 
         <Box sx={styles.middle} disabled>
-          <Cached sx={{ color: "#3d3d3d" }} fontSize="large" />
+          <Cached sx={{ color: "#262626" }} fontSize="large" />
         </Box>
         {offerObj && (
           <img

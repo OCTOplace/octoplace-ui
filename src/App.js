@@ -36,7 +36,19 @@ import {
 } from "./connectors/injected-connector";
 import { TxDialog } from "./components/dialogs/txdialog";
 import { FaucetPage } from "./pages/faucet/faucet";
-import { CollectionsPage } from "./pages/collection";
+import { CollectionsPage } from "./pages/collections/collection";
+
+import Market from "./pages/market/Market";
+import Swap from "./pages/market/Swap";
+import Auction from "./pages/market/Auction";
+import { getAllMarketItems } from "./redux/thunk/get-all-market-items";
+import GuestCollection from "./pages/collections/guest-collection";
+import CollectionSettings from "./pages/collections/collectionSettings";
+import { getAllCollections } from "./redux/thunk/getAllCollections";
+import DashboardHome from "./pages/dashboard/dashboardHome";
+import DashboardGuest from "./pages/dashboard/dashboardGuest";
+import DashboardSettings from "./pages/dashboard/dashboardSettings";
+
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
   const dispatch = useDispatch();
@@ -88,17 +100,23 @@ function App() {
     dispatch({ type: "LOAD_ALL_LISTING" });
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
+    dispatch(getAllMarketItems());
+    dispatch(getAllCollections());
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");
       activate(injectedConnector);
     } catch {}
   }, []);
+
   return (
     <Router>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/market" element={<Market />} />
+          <Route path="/market/swap" element={<Swap />} />
+          <Route path="/market/auction" element={<Auction />} />
           <Route path="my-nft" element={<MyNFT />} />
           <Route path="nft/:network/:address/:tokenId" element={<NFTView />} />
           <Route path="listing" element={<Listings />} />
@@ -112,6 +130,11 @@ function App() {
           <Route path="swap/done" element={<SwapComplete />} />
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
+          <Route path="collections/:network/:collectionSlug" element={<GuestCollection />} />
+          <Route path="collections/settings/:network/:collectionAddress" element={<CollectionSettings />} />
+          <Route path="dashboard" element={<DashboardHome />} />
+          <Route path="dashboard/guest" element={<DashboardGuest />} />
+          <Route path="dashboard/settings" element={<DashboardSettings />} />
         </Routes>
         <TxDialog
           isOpen={txDialogState.isOpen}

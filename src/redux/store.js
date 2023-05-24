@@ -4,6 +4,10 @@ import appReducer from './slices/app-slice'
 import myNftSlice from './slices/my-nft-slice'
 import listingSlice from './slices/listing-slice'
 import tradeReducer from "./slices/trades-slice";
+import marketSlice from "./slices/market-slice";
+import collectionsSlice from "./slices/collections-slice";
+import discussionSlice from "./slices/discussions-slice";
+
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from './saga'
 
@@ -16,7 +20,10 @@ export const store = configureStore({
     app: appReducer,
     myNFT: myNftSlice,
     listings: listingSlice,
-    trades: tradeReducer
+    trades: tradeReducer,
+    market: marketSlice,
+    collection: collectionsSlice,
+    discussion: discussionSlice
   },
   middleware
 });

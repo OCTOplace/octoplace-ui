@@ -12,7 +12,7 @@ import Icon from '../assets/icon.png';
 
 export const ListingOffers = () => {
     const ContainedButton = styled(Button)(({ theme }) => ({
-        color: '#3d3d3d',
+        color: '#262626',
         backgroundColor: '#f4f4f4',
         border: '1px solid #f4f4f4',
         borderRadius: '12px',
@@ -24,7 +24,7 @@ export const ListingOffers = () => {
         width: '180px',
         float:'right',
         '&:hover': {
-            backgroundColor: '#3d3d3d',
+            backgroundColor: '#262626',
             color: '#f4f4f4'
         },
     }));
@@ -131,8 +131,8 @@ export const ListingOffers = () => {
                         <FavoriteBorderIcon />
                     </Box>
                     <Typography sx={{pl:2}}>#2156</Typography>
-                    <p style={{paddingLeft:'16px', paddingRight:'16px', color:'#3d3d3d'}}>owned by <span style={{paddingLeft: '16px', fontWeight:'bold', fontSize: '16px', color:'#fff'}}>OWNER ID</span></p>
-                    <p style={{paddingLeft:'16px', paddingRight:'16px', color:'#3d3d3d'}}>
+                    <p style={{paddingLeft:'16px', paddingRight:'16px', color:'#262626'}}>owned by <span style={{paddingLeft: '16px', fontWeight:'bold', fontSize: '16px', color:'#fff'}}>OWNER ID</span></p>
+                    <p style={{paddingLeft:'16px', paddingRight:'16px', color:'#262626'}}>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non etiam et turpis elit scelerisque commodo, dignissim. Egestas vitae, lacus, egestas euismod iaculis aenean adipiscing ac. Aliquam vel malesuada ut vulputate nisl, elit. Condimentum libero, tortor urna, aliquam purus.z
                     </p>
                     <div style={{display:'flex', paddingLeft:'16px', color:'#262626', fontSize:'13px', paddingBottom:'16px'}}>
