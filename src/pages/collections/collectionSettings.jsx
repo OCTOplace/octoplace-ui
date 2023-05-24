@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 import { updateCollectionSettings } from "../../redux/thunk/update-collection-settings";
+import { getRoyaltyInfo } from "../../redux/thunk/get-royalty-info";
 
 function CollectionSettings() {
   const [hoveredBG, setHoveredBG] = useState(false);
@@ -46,6 +47,9 @@ function CollectionSettings() {
     if (collectionAddress && network) {
       dispatch(
         getCollectionSettings({ address: collectionAddress, network: network })
+      );
+      dispatch(
+        getRoyaltyInfo({ address: collectionAddress, network: network })
       );
     }
   }, [collectionAddress, network]);

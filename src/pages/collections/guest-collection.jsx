@@ -25,6 +25,8 @@ import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
 import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
+import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
+import { useWeb3React } from "@web3-react/core";
 
 function GuestCollection() {
   const dispatch = useDispatch();
@@ -43,7 +45,11 @@ function GuestCollection() {
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("collection");
+  const owner = useSelector(
+    (state) => state.collection.selectedCollectionSetting.owner
+  );
   const navigate = useNavigate();
+  const { account } = useWeb3React();
 
   useEffect(() => {
     if (collections.length > 0) {
@@ -55,155 +61,19 @@ function GuestCollection() {
       dispatch(
         getCollectionSettings({ address: result.type_id, network: network })
       );
+      dispatch(
+        getCollectionOwner({ address: result.type_id, network: network })
+      );
     }
   }, [collections]);
-
-  const styles = {
-    container: {},
-    background: {
-      width: "100vw",
-      height: "50vh",
-      objectFit: "cover",
-    },
-    overlayContainer: {
-      // height: "50vh",
-      marginTop: "-10vh",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      zIndex: 3,
-    },
-    imageContainer: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-end",
-      gap: 3,
-    },
-    image: {
-      width: "160px",
-      height: "160px",
-      webkitClipPath:
-        "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
-      clipPath:
-        "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
-      // filter drop shadow
-      filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.25))",
-    },
-    orangeButton: {
-      backgroundColor: "#F78C09",
-      color: "#262626",
-      textTransform: "none",
-      fontWeight: 700,
-      fontSize: "1rem",
-    },
-    whiteButton: {
-      backgroundColor: "#F4F4F4",
-      color: "#262626",
-      textTransform: "none",
-      fontWeight: 700,
-      fontSize: "1rem",
-    },
-    column: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-    },
-    row: {
-      display: "flex",
-      gap: 0.25,
-    },
-    h1: {
-      fontWeight: 600,
-      fontSize: "2.25rem",
-      lineHeight: "2.5rem",
-      color: "#F4F4F4",
-    },
-    h2: {
-      fontWeight: 600,
-      fontSize: "1.5rem",
-      color: "#F4F4F4",
-    },
-    h5: {
-      fontWeight: 400,
-      fontSize: "1.125rem",
-      color: "#F4F4F4",
-    },
-    h3: {
-      fontWeight: 400,
-      fontSize: "1.125rem",
-      color: "#6C6C6C",
-    },
-    icon: {
-      color: "#f4f4f4",
-      fontSize: "1.625rem",
-    },
-    iconImg: {
-      color: "#f4f4f4",
-      height: "2.1rem",
-      width: "2.1rem",
-    },
-    statsRow: {
-      display: "flex",
-      gap: 2,
-      ml: "3rem",
-      my: 2,
-    },
-    statsCol: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      gap: 0.5,
-    },
-    rowAbout: {
-      display: "flex",
-      gap: 5,
-      my: 2,
-    },
-    aboutContent: {
-      flex: 1,
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-    },
-    menu: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 2,
-      width: "100%",
-      my: 2,
-    },
-    activeButton: {
-      fontWeight: 400,
-      fontSize: "1.5rem",
-      color: "#F4F4F4",
-      textTransform: "none",
-      textDecoration: "underline",
-      textUnderlinePosition: "under",
-      textDecorationColor: "#f78c09",
-      textUnderlineOffset: ".2rem",
-      "&:hover": {
-        backgroundColor: "transparent",
-        color: "#f78c09",
-      },
-    },
-    regularButton: {
-      fontWeight: 400,
-      fontSize: "1.5rem",
-      color: "#F4F4F4",
-      textTransform: "none",
-      "&:hover": {
-        backgroundColor: "transparent",
-        color: "#f78c09",
-      },
-    },
-  };
 
   return (
     <Box>
       <img
         src={
-          settings && settings.BannerImage ? Buffer.from(settings.BannerImage).toString() : selectedCollection.image_url
+          settings && settings.BannerImage
+            ? Buffer.from(settings.BannerImage).toString()
+            : selectedCollection.image_url
         }
         alt="collection-avatar"
         style={{
@@ -222,7 +92,11 @@ function GuestCollection() {
           <Box style={styles.overlayContainer}>
             <Box sx={styles.imageContainer}>
               <img
-                src={settings && settings.Avatar ? Buffer.from(settings.Avatar).toString() :selectedCollection.image_url}
+                src={
+                  settings && settings.Avatar
+                    ? Buffer.from(settings.Avatar).toString()
+                    : selectedCollection.image_url
+                }
                 alt="profileImage"
                 // sx={styles.image}
                 className="octagon-image"
@@ -231,7 +105,9 @@ function GuestCollection() {
               />
               <Box sx={styles.column}>
                 <Typography sx={styles.h1}>
-                  {settings && settings.CollectionName ?settings.CollectionName : selectedCollection.name}
+                  {settings && settings.CollectionName
+                    ? settings.CollectionName
+                    : selectedCollection.name}
                 </Typography>
                 <Typography sx={styles.h3}>
                   {selectedCollection.type_id}
@@ -285,11 +161,17 @@ function GuestCollection() {
                     </IconButton>
                   )}
 
-                  <IconButton onClick={() => {
-                    navigate(`/collections/settings/${settings.Network}/${settings.CollectionAddress}`)
-                  }}>
-                    <Settings color="#fff" sx={styles.icon} />
-                  </IconButton>
+                  {account === owner && (
+                    <IconButton
+                      onClick={() => {
+                        navigate(
+                          `/collections/settings/${settings.Network}/${settings.CollectionAddress}`
+                        );
+                      }}
+                    >
+                      <Settings color="#fff" sx={styles.icon} />
+                    </IconButton>
+                  )}
                 </Box>
               )}
             </Box>
@@ -331,7 +213,7 @@ function GuestCollection() {
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
-              {!isSettingsLoading && settings && settings.AboutText && (
+              { settings && settings.AboutText && (
                 <>
                   <Typography sx={styles.h2}>About</Typography>
                   <Typography sx={styles.h5}>{settings.AboutText}</Typography>
@@ -401,4 +283,144 @@ function GuestCollection() {
   );
 }
 
+const styles = {
+  container: {},
+  background: {
+    width: "100vw",
+    height: "50vh",
+    objectFit: "cover",
+  },
+  overlayContainer: {
+    // height: "50vh",
+    marginTop: "-10vh",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    zIndex: 3,
+  },
+  imageContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    gap: 3,
+  },
+  image: {
+    width: "160px",
+    height: "160px",
+    webkitClipPath:
+      "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+    clipPath:
+      "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+    // filter drop shadow
+    filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.25))",
+  },
+  orangeButton: {
+    backgroundColor: "#F78C09",
+    color: "#262626",
+    textTransform: "none",
+    fontWeight: 700,
+    fontSize: "1rem",
+  },
+  whiteButton: {
+    backgroundColor: "#F4F4F4",
+    color: "#262626",
+    textTransform: "none",
+    fontWeight: 700,
+    fontSize: "1rem",
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+  },
+  row: {
+    display: "flex",
+    gap: 0.25,
+  },
+  h1: {
+    fontWeight: 600,
+    fontSize: "2.25rem",
+    lineHeight: "2.5rem",
+    color: "#F4F4F4",
+  },
+  h2: {
+    fontWeight: 600,
+    fontSize: "1.5rem",
+    color: "#F4F4F4",
+  },
+  h5: {
+    fontWeight: 400,
+    fontSize: "1.125rem",
+    color: "#F4F4F4",
+  },
+  h3: {
+    fontWeight: 400,
+    fontSize: "1.125rem",
+    color: "#6C6C6C",
+  },
+  icon: {
+    color: "#f4f4f4",
+    fontSize: "1.625rem",
+  },
+  iconImg: {
+    color: "#f4f4f4",
+    height: "2.1rem",
+    width: "2.1rem",
+  },
+  statsRow: {
+    display: "flex",
+    gap: 2,
+    ml: "3rem",
+    my: 2,
+  },
+  statsCol: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 0.5,
+  },
+  rowAbout: {
+    display: "flex",
+    gap: 5,
+    my: 2,
+  },
+  aboutContent: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+  },
+  menu: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 2,
+    width: "100%",
+    my: 2,
+  },
+  activeButton: {
+    fontWeight: 400,
+    fontSize: "1.5rem",
+    color: "#F4F4F4",
+    textTransform: "none",
+    textDecoration: "underline",
+    textUnderlinePosition: "under",
+    textDecorationColor: "#f78c09",
+    textUnderlineOffset: ".2rem",
+    "&:hover": {
+      backgroundColor: "transparent",
+      color: "#f78c09",
+    },
+  },
+  regularButton: {
+    fontWeight: 400,
+    fontSize: "1.5rem",
+    color: "#F4F4F4",
+    textTransform: "none",
+    "&:hover": {
+      backgroundColor: "transparent",
+      color: "#f78c09",
+    },
+  },
+};
 export default GuestCollection;
