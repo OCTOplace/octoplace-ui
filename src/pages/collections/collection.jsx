@@ -1,9 +1,7 @@
 import { Box, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import React, {  useEffect, useState } from "react";
+import {  Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getActiveListings } from "../../utils/format-listings";
-import { setActiveListings } from "../../redux/slices/listing-slice";
 
 import infoIcon from "../../assets/Infrormation_button.svg";
 
@@ -13,16 +11,13 @@ import CarouselCollection from "../../components/CarouselCollection";
 
 export const CollectionsPage = () => {
   const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
-  const [view, setView] = useState(2);
+  // const collections = useSelector((state) => {
+  //   console.log(state.collection.collections.slice(0,49));
+  //   return state.collection.collections.slice(0,49)
+  // });
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
-    }
-  }, [listings]);
+  const collections = useSelector((state) => state.collection.collections);
+  const [view, setView] = useState(2);
 
   return (
     <Box>
@@ -50,7 +45,9 @@ export const CollectionsPage = () => {
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>
-        <CardList list={activeListings} view={view} />
+        {
+          collections && <CardList list={collections} view={view} />
+        }
       </Container>
     </Box>
   );

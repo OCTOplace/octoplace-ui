@@ -10,7 +10,7 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
-import { formatEther } from "@ethersproject/units";
+import { formatEther, parseEther } from "@ethersproject/units";
 
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
@@ -67,7 +67,6 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   };
 
   useEffect(() => {
-    console.log("called1");
     dispatch(
       getMarketNFTDetail({
         contractAddress: marketItem.NFTContractAddress,
@@ -136,7 +135,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   <Typography>#{marketItem.TokenId}</Typography>
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
-                    <Typography>{formatEther(marketItem.Price)}</Typography>
+                    <Typography>{marketItem.Price}</Typography>
                   </Box>
                 </Box>
               </Box>

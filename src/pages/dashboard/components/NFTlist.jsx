@@ -7,7 +7,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-import { NFTCard } from "./nft-card";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -27,7 +26,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function NFTlist({ nfts, view }) {
+function NFTlist({ activeListings, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 
   const handleChange = (event) => {
@@ -63,7 +62,7 @@ function NFTlist({ nfts, view }) {
           >
             NFT
           </Typography>
-          {/* <FormControl sx={{ m: 1 }} variant="standard" size="small">
+          <FormControl sx={{ m: 1 }} variant="standard" size="small">
             <Select
               value={orderMethod}
               onChange={handleChange}
@@ -79,17 +78,17 @@ function NFTlist({ nfts, view }) {
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="Oldest">Oldest</MenuItem>
             </Select>
-          </FormControl> */}
+          </FormControl>
         </Box>
       </Box>
       <Fragment>
         <Grid container spacing={2}>
-          {view !== 1 && nfts &&
-            nfts.length > 0 &&
-            nfts.map((item, index) => {
+          {view !== 1 &&
+            activeListings.length > 0 &&
+            activeListings.map((item, index) => {
               return (
                 <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTCard nft={item} view={view} />
+                  <NFTListingCard listingItem={item} view={view} />
                 </Grid>
               );
             })}

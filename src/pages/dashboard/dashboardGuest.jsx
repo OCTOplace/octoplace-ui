@@ -1,40 +1,30 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../utils/format-listings";
 import { setActiveListings } from "../../redux/slices/listing-slice";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
-import { FacebookRounded } from "@mui/icons-material";
-
+import { ContentCopy, FacebookRounded } from "@mui/icons-material";
+import TelegramIcon from "@mui/icons-material/Telegram";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
+import { BsMedium } from "react-icons/bs";
+import BuildIcon from "@mui/icons-material/Build";
 import bgImage from "../../assets/bg-collection.png";
+import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
-import { useParams } from "react-router-dom";
-import { setSelectedCollection } from "../../redux/slices/collections-slice";
-import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
-import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 
-function GuestCollection() {
+function DashboardGuest() {
   const dispatch = useDispatch();
-  const {network, collectionSlug} = useParams();
   const listings = useSelector((state) => state.listings.allListings);
-  const collections = useSelector((state)=> state.collection.collections);
-  const selectedCollection = useSelector((state) => state.collection.selectedCollection)
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("collection");
+  const [activeMenu, setActiveMenu] = useState("nft");
 
-  useEffect(()=>{
-    if(collections.length > 0){
-      const result = collections.find(item => item.collection_id === collectionSlug);
-      dispatch(setSelectedCollection(result));
-      dispatch(getAllCollectionNFTs(result.type_id));
-      dispatch(getCollectionSettings({address: result.type_id, network: network}));
-    }
-  }, [collections]);
   const metadata = {
     name: "E.R.V Gandalf #54",
     description: "E.R.V Gandalf 2930 Unique NFT Collection.",
@@ -140,7 +130,7 @@ function GuestCollection() {
     },
     row: {
       display: "flex",
-      gap: 1,
+      gap: 0.5,
     },
     h1: {
       fontWeight: 600,
@@ -190,7 +180,6 @@ function GuestCollection() {
       display: "flex",
       flexDirection: "column",
       gap: 1,
-      
     },
     menu: {
       display: "flex",
@@ -217,12 +206,29 @@ function GuestCollection() {
     regularButton: {
       fontWeight: 400,
       fontSize: "1.5rem",
-      color: "#F4F4F4",
+      color: "#6C6C6C",
       textTransform: "none",
       "&:hover": {
         backgroundColor: "transparent",
         color: "#f78c09",
       },
+    },
+    rightColumn: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-end",
+      gap: 1,
+    },
+    rightRow: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 1,
+    },
+    orangeText: {
+      color: "#F78C09",
+      fontSize: "1.5rem",
+      marginLeft: 2,
     },
   };
 
@@ -236,8 +242,8 @@ function GuestCollection() {
   return (
     <Box>
       <img
-        src={selectedCollection.image_url?selectedCollection.image_url : bgImage}
-        alt="collection-avatar"
+        src={bgImage}
+        alt="bg-image"
         style={{
           width: "100vw",
           height: "45vh",
@@ -254,44 +260,79 @@ function GuestCollection() {
           <Box style={styles.overlayContainer}>
             <Box sx={styles.imageContainer}>
               <img
-                src={selectedCollection.image_url}
+                src={ppImage}
                 alt="profileImage"
-                // sx={styles.image}
                 className="octagon-image"
                 width="180px"
                 height="180px"
               />
               <Box sx={styles.column}>
-                <Typography sx={styles.h1}>
-                  {selectedCollection.name}
-                </Typography>
+                <Typography sx={styles.h1}>King Wasabi</Typography>
                 <Typography sx={styles.h3}>
-                  {selectedCollection.type_id}
+                  0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b
+                  <IconButton sx={styles.h3}>
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
                 </Typography>
               </Box>
             </Box>
-            <Box sx={styles.column}>
-              {/* <Button sx={styles.orangeButton} variant="contained">
-                Mint
-              </Button> */}
+            <Box sx={styles.rightColumn}>
+              <Box sx={styles.rightRow}>
+                <img
+                  src={bgImage}
+                  alt="bg-image"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "1.2rem",
+                    border: "4px solid #F78C09",
+                  }}
+                />
+                <img
+                  src={bgImage}
+                  alt="bg-image"
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    objectFit: "cover",
+                    borderRadius: "1.2rem",
+                    border: "4px solid #F78C09",
+                  }}
+                />
+                <img
+                  src={bgImage}
+                  alt="bg-image"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "1.2rem",
+                    border: "4px solid #F78C09",
+                  }}
+                />
+              </Box>
               <Box sx={styles.row}>
                 <IconButton>
                   <FacebookRounded sx={styles.icon} />
                 </IconButton>
                 <IconButton>
-                  <FacebookRounded sx={styles.icon} />
+                  <TwitterIcon sx={styles.icon} />
                 </IconButton>
                 <IconButton>
-                  <FacebookRounded sx={styles.icon} />
+                  <FaInstagram style={styles.icon} />
                 </IconButton>
                 <IconButton>
-                  <FacebookRounded sx={styles.icon} />
+                  <FaDiscord style={styles.icon} />
                 </IconButton>
                 <IconButton>
-                  <FacebookRounded sx={styles.icon} />
+                  <FaTiktok style={styles.icon} />
                 </IconButton>
                 <IconButton>
-                  <FacebookRounded sx={styles.icon} />
+                  <YouTubeIcon sx={styles.icon} />
+                </IconButton>
+                <IconButton>
+                  <BsMedium style={styles.icon} />
                 </IconButton>
               </Box>
             </Box>
@@ -305,95 +346,59 @@ function GuestCollection() {
           >
             <Box sx={styles.statsRow}>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>{selectedCollection.totalItems}</Typography>
-                <Typography sx={styles.h3}>Items</Typography>
-              </Box>
-              {/* <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>583</Typography>
-                <Typography sx={styles.h3}>Owners</Typography>
+                <Typography sx={styles.h2}>$7,183</Typography>
+                <Typography sx={styles.h3}>Balance</Typography>
               </Box>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>183,000</Typography>
-                <Typography sx={styles.h3}>Volume</Typography>
+                <Typography sx={styles.h2}>11</Typography>
+                <Typography sx={styles.h3}>Currencies</Typography>
               </Box>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>4900</Typography>
-                <Typography sx={styles.h3}>Floor</Typography>
-              </Box> */}
-              <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>348</Typography>
-                <Typography sx={styles.h3}>Comments</Typography>
+                <Typography sx={styles.h2}>138</Typography>
+                <Typography sx={styles.h3}>NFTs</Typography>
               </Box>
             </Box>
-            {isOwner && (
-              <Button sx={styles.whiteButton}>Collection settings</Button>
-            )}
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>About</Typography>
               <Typography sx={styles.h5}>
-                {listings[0]?.listingNFT?.metadata?.description}
+                Never DM first. Auctioned pieces are non-negotiable...unless you
+                offer me a Lambo lol
               </Typography>
-            </Box>
-            <Box sx={styles.aboutContent}>
-              <Typography sx={styles.h2}>Recent messages</Typography>
-              <NFTDiscussions
-                metadata={metadata}
-                address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
-                tokenId={54}
-                chainId={`kava`}
-                isAccordion={false}
-              />
             </Box>
           </Box>
           <Box sx={styles.menu}>
             <Button
-              onClick={() => setActiveMenu("collection")}
+              onClick={() => setActiveMenu("nft")}
               sx={
-                activeMenu === "collection"
+                activeMenu === "nft"
                   ? styles.activeButton
                   : styles.regularButton
               }
             >
-              Collection
+              NFTs
             </Button>
             <Button
-              onClick={() => setActiveMenu("content")}
+              onClick={() => setActiveMenu("wall")}
               sx={
-                activeMenu === "content"
+                activeMenu === "wall"
                   ? styles.activeButton
                   : styles.regularButton
               }
             >
-              Content
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("discussion")}
-              sx={
-                activeMenu === "discussion"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
-            >
-              Discussion
+              Wall
             </Button>
           </Box>
 
-          {activeMenu === "collection" && (
-            <NFTlist nfts={selectedCollection.nfts} view={view} />
+          {activeMenu === "nft" && (
+            <NFTlist activeListings={activeListings} view={view} />
           )}
-          {activeMenu === "content" && (
-            <Content activeListings={activeListings} view={view} />
-          )}
-          {activeMenu === "discussion" && (
-            <NFTDiscussions
-              metadata={metadata}
-              address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
-              tokenId={54}
-              chainId={`kava`}
-              isAccordion={false}
-            />
+          {activeMenu === "wall" && (
+            // <Content activeListings={activeListings} view={view} />
+            <div>
+              Wall
+            </div>
           )}
         </Container>
       </Box>
@@ -401,4 +406,4 @@ function GuestCollection() {
   );
 }
 
-export default GuestCollection;
+export default DashboardGuest;

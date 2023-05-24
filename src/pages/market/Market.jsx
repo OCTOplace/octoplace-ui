@@ -39,7 +39,7 @@ function Market() {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
-  const [view, setView] = useState(3);
+  const [view, setView] = useState(2);
   const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
 
@@ -89,6 +89,11 @@ function Market() {
               value={orderMethod}
               onChange={handleChange}
               input={<BootstrapInput />}
+              sx={{
+                "& .MuiSelect-icon": {
+                  color: "white",
+                },
+              }}
             >
               <MenuItem value="Price: High to Low">High to Low</MenuItem>
               <MenuItem value="Price: Low to High">Low to High</MenuItem>

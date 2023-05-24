@@ -35,7 +35,7 @@ function Swap() {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
-  const [view, setView] = useState(3);
+  const [view, setView] = useState(2);
   const [orderMethod, setOrderMethod] = useState("Newest");
 
   const handleChange = (event) => {
@@ -58,8 +58,6 @@ function Swap() {
     if (listings.length > 0) {
       const active = getActiveListings(listings);
       const sorted = sortListigs(active, 0);
-      console.log("sorted", sorted);
-      console.log("active", active);
       dispatch(setActiveListings(sorted));
     }
   }, [listings]);
@@ -99,6 +97,11 @@ function Swap() {
               value={orderMethod}
               onChange={handleChange}
               input={<BootstrapInput />}
+              sx={{
+                "& .MuiSelect-icon": {
+                  color: "white",
+                },
+              }}
             >
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="Oldest">Oldest</MenuItem>

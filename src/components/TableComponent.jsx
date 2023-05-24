@@ -12,8 +12,6 @@ function TableComponent({ list }) {
   const [time, setTime] = useState(24);
   const windowWidth = window.innerWidth;
 
-  console.log(list);
-
   const handleChange = (event) => {
     setTime(event.target.value);
   };
@@ -54,6 +52,9 @@ function TableComponent({ list }) {
             sx={{
               color: "#f4f4f4",
               fontSize: "12px",
+              "& .MuiSelect-icon": {
+                color: "white",
+              },
             }}
           >
             <MenuItem value="">
@@ -83,23 +84,23 @@ function TableComponent({ list }) {
             width: "100%",
           }}
         >
-          <Grid container spacing={5}>
+          <Grid container spacing={5} sx={{ "& .no-spacing-sm": { gap: 0 } }}>
             <Grid item xs={12} sm={12} md={6}>
               <Box>
                 {listData.slice(0, 5).map((item, index) => (
                   <Box
-                    key={index}
+                    key={index + 1}
                     sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: "grid",
+                      gridTemplateColumns: ".5fr 1fr 1fr 1fr 1fr",
                       alignItems: "center",
+                      gap: 1,
                       width: "100%",
                       py: ".5rem",
                       color: "#fff",
                     }}
                   >
-                    {index + 1}
+                    <span>{index + 1}</span>
                     <img
                       src={item?.listingNFT?.metadata?.image}
                       alt={item?.listingNFT?.name}
@@ -110,7 +111,7 @@ function TableComponent({ list }) {
                         borderRadius: "8px",
                       }}
                     />
-                    {truncate(item?.listingNFT?.name, 15)}
+                    <span>{truncate(item?.listingNFT?.name, 15)}</span>
                     <Box
                       sx={{
                         display: "flex",
@@ -141,18 +142,18 @@ function TableComponent({ list }) {
               <Box>
                 {listData.slice(5, 10).map((item, index) => (
                   <Box
-                    key={index + 5}
+                    key={index + 6}
                     sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: "grid",
+                      gridTemplateColumns: ".5fr 1fr 1fr 1fr 1fr", // Adjust the column sizes here
                       alignItems: "center",
+                      gap: 1,
                       width: "100%",
                       py: ".5rem",
                       color: "#fff",
                     }}
                   >
-                    {index + 6}
+                    <span>{index + 6}</span>
                     <img
                       src={item?.listingNFT?.metadata?.image}
                       alt={item?.listingNFT?.name}
@@ -163,7 +164,7 @@ function TableComponent({ list }) {
                         borderRadius: "8px",
                       }}
                     />
-                    {truncate(item?.listingNFT?.name, 15)}
+                    <span>{truncate(item?.listingNFT?.name, 15)}</span>
                     <Box
                       sx={{
                         display: "flex",
