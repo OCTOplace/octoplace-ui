@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import verifiedLogo from "../../../assets/verified.svg";
 
-export const NFTCard = ({view, nft}) => {
+export const NFTCard = ({ view, nft }) => {
   const [imgUrl, setImgUrl] = useState();
 
   const styles = {
@@ -78,13 +78,14 @@ export const NFTCard = ({view, nft}) => {
     }
   }, [nft]);
 
-
   return (
     <>
       {nft && (
         <Link
           className="nft-card-link"
-          to={`/nft/${nft.network}/${nft.contract_address}/${Number(nft.token_id)}`}
+          to={`/nft/${nft.network}/${nft.contract_address}/${Number(
+            nft.token_id
+          )}`}
         >
           {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
@@ -103,22 +104,21 @@ export const NFTCard = ({view, nft}) => {
             />
             <Box sx={styles.content}>
               <Box style={styles.meta}>
-                <Typography className="strokeme" sx={styles.title}>
-                  {truncate(
-                    nft.metadata
-                      ? nft.metadata.name
-                      : `#${Number(nft.token_id)}`,
-                    15
-                  )}
-                </Typography>
+                {nft && nft.metadata && (
+                  <Typography className="strokeme" sx={styles.title}>
+                    {truncate(
+                      nft.metadata && nft.metadata.name
+                        ? nft.metadata.name
+                        : `#${Number(nft.token_id)}`,
+                      15
+                    )}
+                  </Typography>
+                )}
                 <img src={verifiedLogo} alt="verified" />
               </Box>
-              <Typography
-                sx={styles.network}
-              >{`#${nft.network}`}</Typography>
+              <Typography sx={styles.network}>{`#${nft.network}`}</Typography>
               <Box style={styles.meta}>
                 <Typography>#{Number(nft.token_id)}</Typography>
-                
               </Box>
             </Box>
           </Box>
