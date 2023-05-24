@@ -26,7 +26,7 @@ import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther, formatUnits, parseUnits } from "@ethersproject/units";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
   setTxDialogFailed,
@@ -35,86 +35,90 @@ import {
   setTxDialogSuccess,
   showTxDialog,
 } from "../../redux/slices/app-slice";
-
-export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
+import copy from "clipboard-copy";
+import {setNFTDiscussions} from "../../redux/slices/discussions-slice"
+import { createNFTDiscussion, getNftDiscussions } from "../../redux/thunk/get-nft-discussions";
+export const NFTDiscussions = ({ address, tokenId, network,isAccordion }) => {
   const [expanded, setExpanded] = useState(false);
+const styles = {
+  accordion2: {
+    backgroundColor: "transparent",
+    color: expanded ? "#f4f4f4" : "#6c6c6c",
+    border: "1px solid  #6C6C6C",
+    borderRadius: ".5rem",
+    marginBottom: "1rem",
+  },
+  accordionHeader: {
+    fontWeight: 400,
+    fontsize: "1.125rem",
+    lineHeight: "105.02%",
+  },
+  accordionBody: {
+    backgroundColor: "#151515",
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    maxHeight: "470px",
+    overflowY: "scroll",
+    borderRadius: ".5rem",
+  },
+  detailsBox: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    maxHeight: "470px",
+    overflowY: "scroll",
+    justifyContent: "flex-start",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: "8px",
+  },
+  comments: {
+    width: "100%",
+  },
+  address: {
+    fontWeight: 600,
+    fontSize: ".875rem",
+    color: "#FF9719",
+    textTransform: "none",
+    display: "flex",
+    alignItems: "center",
+  },
+  copyButton: {
+    color: "#6C6C6C",
+    fontSize: ".75rem",
+  },
+  message: {
+    color: "white",
+    fontSize: ".875rem",
+    fontWeight: 400,
+  },
+  textContainer: {
+    width: "80%",
+    pt: 2,
+    pr: 1,
+  },
+  sendButton: {
+    background: "#F78C09",
+    borderRadius: ".375rem",
+    color: "#262626",
+    fontWeight: 600,
+    width: "20%",
+    textTransform: "none",
+  },
+};
+  
+  
 
   const handleChange = (event, isExpanded) => {
     setExpanded(isExpanded);
   };
 
-  const styles = {
-    accordion2: {
-      backgroundColor: "transparent",
-      color: expanded ? "#f4f4f4" : "#6c6c6c",
-      border: "1px solid  #6C6C6C",
-      borderRadius: ".5rem",
-      marginBottom: "1rem",
-    },
-    accordionHeader: {
-      fontWeight: 400,
-      fontsize: "1.125rem",
-      lineHeight: "105.02%",
-    },
-    accordionBody: {
-      backgroundColor: "#151515",
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-      maxHeight: "470px",
-      overflowY: "scroll",
-      borderRadius: ".5rem",
-    },
-    detailsBox: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      maxHeight: "470px",
-      overflowY: "scroll",
-      justifyContent: "flex-start",
-    },
-    row: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      width: "100%",
-      marginBottom: "8px",
-    },
-    comments: {
-      width: "100%",
-    },
-    address: {
-      fontWeight: 600,
-      fontSize: ".875rem",
-      color: "#FF9719",
-      textTransform: "none",
-      display: "flex",
-      alignItems: "center",
-    },
-    copyButton: {
-      color: "#6C6C6C",
-      fontSize: ".75rem",
-    },
-    message: {
-      color: "white",
-      fontSize: ".875rem",
-      fontWeight: 400,
-    },
-    textContainer: {
-      width: "80%",
-      pt: 2,
-      pr: 1,
-    },
-    sendButton: {
-      background: "#F78C09",
-      borderRadius: ".375rem",
-      color: "#262626",
-      fontWeight: 600,
-      width: "20%",
-      textTransform: "none",
-    },
-  };
 
   const [openSendDlg, setOpenSendDlg] = useState(false);
   const [message, setMessage] = useState("");
@@ -125,13 +129,18 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
-  const [messages, setMessages] = useState([]);
+  const messages = useSelector((state) => state.discussion.selectedNFTDiscussions)
 
   const dispatch = useDispatch();
   const format = (x) => {
     return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(setNFTDiscussions([]));
+    }
+  }, [])
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -160,28 +169,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
   };
 
   const getAllMessages = async () => {
-    const netInfo = getNetworkInfo("theta");
-    const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
-    const discussionContract = new Contract(
-      netInfo.dataNetwork.DISCUSSION_CONTRACT,
-      netInfo.dataNetwork.DISCUSSION_ABI,
-      provider
-    );
-
-    const comments = await discussionContract.getAllCommentsOf(
-      address,
-      tokenId
-    );
-    let objs = [];
-    for (var comment of comments) {
-      const obj = {
-        from: comment.commenter,
-        msg: comment.contents,
-        timestamp: formatUnits(comment.timestamp, 0),
-      };
-      objs = [...objs, obj];
-    }
-    setMessages(objs);
+    dispatch(getNftDiscussions({address, tokenId, network}));
   };
 
   useEffect(() => {
@@ -281,6 +269,7 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
+      dispatch(createNFTDiscussion({address, tokenId, network, sender: account, message}));
       toast.success("Comment Posted Successfuly!");
       setOpenSendDlg(false);
       setMessage("");
@@ -321,15 +310,15 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
         <Box sx={styles.detailsBox}>
           {messages.map((item) => {
             return (
-              <Box key={item.timestamp} sx={styles.comments}>
+              <Box key={item.Id} sx={styles.comments}>
                 <Typography sx={styles.address}>
-                  {shortenAddress(item.from)}
-                  <IconButton sx={styles.copyButton}>
+                  {shortenAddress(item.SenderAddress)}
+                  <IconButton  onClick={() => {copy(item.SenderAddress); toast.success("Address copied!")}} sx={styles.copyButton}>
                     <ContentCopy fontSize="small" />
                   </IconButton>
                 </Typography>
                 <Typography sx={styles.message} variant="body1">
-                  {item.msg}
+                  {item.Message}
                 </Typography>
               </Box>
             );
@@ -401,3 +390,4 @@ export const NFTDiscussions = ({ metadata, address, tokenId, isAccordion }) => {
     </Accordion>
   );
 };
+
