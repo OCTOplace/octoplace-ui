@@ -146,7 +146,7 @@ const styles = {
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
     const contract = new Contract(
       netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT,
-      netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT,
+      netInfo.dataNetwork.NFT_DISCUSSION_ABI,
       provider
     );
 
