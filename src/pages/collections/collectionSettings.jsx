@@ -177,7 +177,6 @@ function CollectionSettings() {
       id: settings.Id,
     };
 
-    console.log(saveObj);
     dispatch(updateCollectionSettings(saveObj));
   };
 

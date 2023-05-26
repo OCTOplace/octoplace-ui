@@ -7,6 +7,7 @@ import tradeReducer from "./slices/trades-slice";
 import marketSlice from "./slices/market-slice";
 import collectionsSlice from "./slices/collections-slice";
 import discussionSlice from "./slices/discussions-slice";
+import analyticsSlice from "./slices/analytics-slice";
 
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from './saga'
@@ -23,7 +24,8 @@ export const store = configureStore({
     trades: tradeReducer,
     market: marketSlice,
     collection: collectionsSlice,
-    discussion: discussionSlice
+    discussion: discussionSlice,
+    analytics: analyticsSlice
   },
   middleware
 });

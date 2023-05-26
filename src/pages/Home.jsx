@@ -10,6 +10,8 @@ import RowSlider from "../components/RowSlider";
 import TableComponent from "../components/TableComponent";
 import { getActiveListings } from "../utils/format-listings";
 import { setActiveListings } from "../redux/slices/listing-slice";
+import { PopularNFTs } from "./analytics/popular-nfts";
+import { PopularCollections } from "./analytics/popular-collections";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -128,8 +130,8 @@ export const Home = () => {
   return (
     <Box>
       <CarouselHome />
-      <RowSlider title="Popular Collections" />
-      <RowSlider title="Popular NFTs" />
+      <PopularCollections title="Popular Collections" />
+      <PopularNFTs title="Popular NFTs" />
       <TableComponent list={activeListings} />
     </Box>
   );
