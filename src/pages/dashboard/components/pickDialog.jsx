@@ -57,6 +57,20 @@ function PickDialog({ open, setOpen }) {
         <Button
           onClick={handleClose}
           style={{
+            backgroundColor: "#F4F4F4",
+            color: "#262626",
+            textTransform: "none",
+            fontWeight: 700,
+            fontSize: "1rem",
+            border: "none",
+            width: "25%",
+          }}
+        >
+          CANCEL
+        </Button>
+        <Button
+          onClick={handleClose}
+          style={{
             backgroundColor: "#F78C09",
             color: "#262626",
             textTransform: "none",

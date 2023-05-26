@@ -21,7 +21,13 @@ import { getRoyaltyInfo } from "../../redux/thunk/get-royalty-info";
 import { useWeb3React } from "@web3-react/core";
 import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
 import { useTheme } from "@mui/material";
-import { setTxDialogFailed, setTxDialogHash, setTxDialogPending, setTxDialogSuccess, showTxDialog } from "../../redux/slices/app-slice";
+import {
+  setTxDialogFailed,
+  setTxDialogHash,
+  setTxDialogPending,
+  setTxDialogSuccess,
+  showTxDialog,
+} from "../../redux/slices/app-slice";
 import { getNetworkInfo } from "../../connectors/networks";
 import { Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
@@ -94,12 +100,15 @@ function CollectionSettings() {
       }
     }
   }, [settings]);
-   useEffect(() => {
-    if(royalty){
-      setRoyaltyReceiver((royalty.address !== zeroAddress)? royalty.address: null);
-      setRoyaltyBips(Number(royalty.bips)/100 > 0 ? Number(royalty.bips)/100 : null);
+  useEffect(() => {
+    if (royalty) {
+      setRoyaltyReceiver(
+        royalty.address !== zeroAddress ? royalty.address : null
+      );
+      setRoyaltyBips(
+        Number(royalty.bips) / 100 > 0 ? Number(royalty.bips) / 100 : null
+      );
     }
-    
   }, [royalty]);
   const theme = useTheme();
   const listing = {
@@ -196,26 +205,30 @@ function CollectionSettings() {
     }
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
-    try{
+    try {
       const contract = new Contract(
         netDetails.dataNetwork.MARKETPLACE_CONTRACT,
         netDetails.dataNetwork.MARKET_ABI,
         signer
       );
-      const txResult = await contract.setCreatorFeeBasisPointsByCreator(Number(royaltyBips)*100, royaltyReceiver, collectionAddress);
+      const txResult = await contract.setCreatorFeeBasisPointsByCreator(
+        Number(royaltyBips) * 100,
+        royaltyReceiver,
+        collectionAddress
+      );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       toast.success("Royalty Settings Saved!");
-    }catch(err){
+    } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
-  }
+  };
   return (
     <Box>
       <div
@@ -309,100 +322,111 @@ function CollectionSettings() {
           </Box>
           <Box sx={styles.row}>
             <Box sx={styles.aboutContent}>
-            <Box sx={styles.aboutContent}>
-              <Typography sx={styles.h2}>About</Typography>
-              <TextField
-                type="url"
-                variant="standard"
-                hiddenLabel
-                disabled={!isOwner()}
-                value={about}
-                onChange={(e) => setAbout(e.target.value)}
-                InputProps={{
-                  style: {
-                    backgroundColor: "#3D3D3D",
-                    color: "#6C6C6C",
-                    border: "1px solid #6C6C6C",
-                    borderRadius: "0.594rem",
-                    padding: "0.5rem",
-                  },
-                  disableUnderline: true,
-                  size: "small",
-                  placeholder: "| Input Description",
-                  rows: 5,
-                  multiline: true,
-                }}
-              />
-              <Button
-                disabled={!isOwner()}
-                sx={styles.orangeButton}
-                onClick={handleSave}
-                variant="contained"
-              >
-                Save
-              </Button>
-            </Box>
-            <Box sx={styles.aboutContent}>
-              <Typography sx={styles.h2}>Royalty Info <Tooltip placement="top-start" title="Please note that setting up the royalty information here will override EIP2981 defined royalty settings.">
-              <Info sx={{color:theme.palette.grey[700] }} /></Tooltip> </Typography>
-              <TextField
-                type="text"
-                variant="standard"
-                hiddenLabel
-                disabled={!isOwner()}
-                value={royaltyReceiver}
-                onChange={(e) => {setRoyaltyReceiver(e.target.value)}}
-                InputProps={{
-                  style: {
-                    backgroundColor: "#3D3D3D",
-                    color: "#6C6C6C",
-                    border: "1px solid #6C6C6C",
-                    borderRadius: "0.594rem",
-                    padding: "0.5rem",
-                  },
-                  disableUnderline: true,
-                  size: "small",
-                  placeholder: "| Royalty Receiving Address",
-                  rows: 1,
-                  multiline: false,
-                }}
-              />
-              <TextField
-                type="number"
-                variant="standard"
-                hiddenLabel
-                disabled={!isOwner()}
-                value={royaltyBips}
-                onChange={(e) => {setRoyaltyBips(e.target.value)}}
-                InputProps={{
-                  endAdornment:(
-                    <InputAdornment position="end">
-                    <Typography>%</Typography>
-                    </InputAdornment>
-                  ),
-                  style: {
-                    backgroundColor: "#3D3D3D",
-                    color: "#6C6C6C",
-                    border: "1px solid #6C6C6C",
-                    borderRadius: "0.594rem",
-                    padding: "0.5rem",
-                  },
-                  disableUnderline: true,
-                  size: "small",
-                  placeholder: "| Royalty %",
-                  rows: 1,
-                  multiline: false,
-                }}
-              />
-              <Button
-                disabled={!isOwner()}
-                sx={styles.orangeButton}
-                onClick={handleSaveRoyalty}
-                variant="contained"
-              >
-                Setup Royalty
-              </Button>
-            </Box>
+              <Box sx={styles.aboutContent}>
+                <Typography sx={styles.h2}>About</Typography>
+                <TextField
+                  type="url"
+                  variant="standard"
+                  hiddenLabel
+                  disabled={!isOwner()}
+                  value={about}
+                  onChange={(e) => setAbout(e.target.value)}
+                  InputProps={{
+                    style: {
+                      backgroundColor: "#3D3D3D",
+                      color: "#6C6C6C",
+                      border: "1px solid #6C6C6C",
+                      borderRadius: "0.594rem",
+                      padding: "0.5rem",
+                    },
+                    disableUnderline: true,
+                    size: "small",
+                    placeholder: "| Input Description",
+                    rows: 5,
+                    multiline: true,
+                  }}
+                />
+                <Button
+                  disabled={!isOwner()}
+                  sx={styles.orangeButton}
+                  onClick={handleSave}
+                  variant="contained"
+                >
+                  Save
+                </Button>
+              </Box>
+              <Box sx={styles.aboutContent}>
+                <Typography sx={styles.h2}>
+                  Royalty Info{" "}
+                  <Tooltip
+                    placement="top-start"
+                    title="Please note that setting up the royalty information here will override EIP2981 defined royalty settings."
+                  >
+                    <Info sx={{ color: theme.palette.grey[700] }} />
+                  </Tooltip>{" "}
+                </Typography>
+                <TextField
+                  type="text"
+                  variant="standard"
+                  hiddenLabel
+                  disabled={!isOwner()}
+                  value={royaltyReceiver}
+                  onChange={(e) => {
+                    setRoyaltyReceiver(e.target.value);
+                  }}
+                  InputProps={{
+                    style: {
+                      backgroundColor: "#3D3D3D",
+                      color: "#6C6C6C",
+                      border: "1px solid #6C6C6C",
+                      borderRadius: "0.594rem",
+                      padding: "0.5rem",
+                    },
+                    disableUnderline: true,
+                    size: "small",
+                    placeholder: "| Royalty Receiving Address",
+                    rows: 1,
+                    multiline: false,
+                  }}
+                />
+                <TextField
+                  type="number"
+                  variant="standard"
+                  hiddenLabel
+                  disabled={!isOwner()}
+                  value={royaltyBips}
+                  onChange={(e) => {
+                    setRoyaltyBips(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Typography>%</Typography>
+                      </InputAdornment>
+                    ),
+                    style: {
+                      backgroundColor: "#3D3D3D",
+                      color: "#6C6C6C",
+                      border: "1px solid #6C6C6C",
+                      borderRadius: "0.594rem",
+                      padding: "0.5rem",
+                    },
+                    disableUnderline: true,
+                    size: "small",
+                    placeholder: "| Royalty %",
+                    rows: 1,
+                    multiline: false,
+                  }}
+                />
+                <Button
+                  disabled={!isOwner()}
+                  sx={styles.orangeButton}
+                  onClick={handleSaveRoyalty}
+                  variant="contained"
+                >
+                  Setup Royalty
+                </Button>
+              </Box>
             </Box>
             <Box sx={styles.socialcontent}>
               <TextField

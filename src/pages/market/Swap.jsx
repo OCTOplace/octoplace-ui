@@ -11,7 +11,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-// import Searchbox from "../../components/searchbox";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Skelethon from "./compoents/sketlethon";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -37,10 +38,10 @@ function Swap() {
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [orderMethod, setOrderMethod] = useState("Newest");
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleChange = (event) => {
     setOrderMethod(event.target.value);
-
     switch (orderMethod) {
       case "Newest":
         dispatch(setActiveListings(sortListigs(activeListings, 1)));
@@ -55,12 +56,52 @@ function Swap() {
   };
 
   useEffect(() => {
+    console.log("is loading", isLoading);
     if (listings.length > 0) {
+      setIsLoading(false);
       const active = getActiveListings(listings);
       const sorted = sortListigs(active, 0);
       dispatch(setActiveListings(sorted));
+      console.log("is loading", isLoading);
     }
   }, [listings]);
+
+  const fetchData = () => {
+    console.log("lengths", activeListings.length, listings.length);
+    // When this function runs, add the next 6 new items to the active listing directory. If we are at the end of the list, set setHasMore to false.
+    if (activeListings.length >= listings.length) {
+      console.log("No more listings to fetch");
+      // setHasMore(false);
+      return;
+    }
+    // Calculate the index range for the next 6 items
+    const startIndex = activeListings.length;
+    const endIndex = Math.min(startIndex + 6, listings.length);
+    // Fetch the new items or generate them
+    const newItems = fetchNextItems(startIndex, endIndex); // Replace with your own logic
+    // Add the new items to the active listings
+    const updatedListings = [...activeListings, ...newItems];
+    // Update the active listings state
+    dispatch(setActiveListings(updatedListings));
+  };
+
+  const fetchNextItems = (startIndex, endIndex) => {
+    const newItems = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      newItems.push(listings[i]);
+    }
+    return newItems;
+  };
+
+  const refresh = () => {
+    setTimeout(() => {
+      dispatch(setActiveListings(activeListings.concat(activeListings)));
+    }, 1500);
+  };
+
+  if (isLoading) {
+    return <Skelethon />;
+  }
 
   return (
     <Container>
@@ -110,7 +151,42 @@ function Swap() {
         </Box>
         <Box>{/* <Searchbox className="search-nav" type="text" /> */}</Box>
       </Box>
-      <Fragment>
+      <InfiniteScroll
+        dataLength={activeListings.length} //This is important field to render the next data
+        next={fetchData}
+        hasMore={true}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+        // below props only if you need pull down functionality
+        refreshFunction={fetchData}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
+        }
+      >
+        <Fragment>
+          <Grid container spacing={2}>
+            {view !== 1 &&
+              activeListings.length > 0 &&
+              activeListings.map((item, index) => {
+                return (
+                  <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                    <NFTListingCard listingItem={item} view={view} />
+                  </Grid>
+                );
+              })}
+          </Grid>
+        </Fragment>
+      </InfiniteScroll>
+      {/* <Fragment>
         <Grid container spacing={2}>
           {view !== 1 &&
             activeListings.length > 0 &&
@@ -122,7 +198,7 @@ function Swap() {
               );
             })}
         </Grid>
-      </Fragment>
+      </Fragment> */}
     </Container>
   );
 }
