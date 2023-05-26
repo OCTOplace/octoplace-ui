@@ -273,7 +273,6 @@ export const NFTView = () => {
   useEffect(() => {
     if(marketItems.length > 0){
       const index = marketItems.findIndex(obj => obj.TokenId === Number(tokenId) && obj.NFTContractAddress === address && obj.Network === network);
-      console.log(marketItems[index], index, marketItems);
       setMarket(marketItems[index]);
     }
   }, [marketItems])
