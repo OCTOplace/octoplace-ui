@@ -100,6 +100,9 @@ function DashboardSettings() {
       textTransform: "none",
       fontWeight: 700,
       fontSize: "1rem",
+      "&.Mui-disabled": {
+        color: "#6c6c6c",
+      },
     },
     whiteButton: {
       backgroundColor: "#F4F4F4",
@@ -274,6 +277,11 @@ function DashboardSettings() {
                   type="url"
                   variant="standard"
                   hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   className="input-wo-padding"
                   InputProps={{
                     style: {
@@ -380,6 +388,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#3D3D3D",
@@ -404,6 +417,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -426,6 +444,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -448,6 +471,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -470,6 +498,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -492,6 +525,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -514,6 +552,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -536,6 +579,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -555,9 +603,16 @@ function DashboardSettings() {
                 }}
               />
               <TextField
+                disabled
                 type="url"
                 variant="standard"
                 hiddenLabel
+                value="medium.com/username"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",

@@ -1,13 +1,16 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { Box, Typography, Button, TextField, Tooltip } from "@mui/material";
 import { Container } from "react-bootstrap";
 import InputAdornment from "@mui/material/InputAdornment";
 
-import bgImage from "../../assets/bg-collection.png";
+import bgImage from "../../assets/GrayBackground.jpeg";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+
 import { FacebookRounded, Info, SaveAlt, Settings } from "@mui/icons-material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
@@ -54,6 +57,12 @@ function CollectionSettings() {
   const [royaltyReceiver, setRoyaltyReceiver] = useState(null);
   const [royaltyBips, setRoyaltyBips] = useState(null);
   const { account, chainId } = useWeb3React();
+  const onDrop = (acceptedFiles) => {
+    // Handle dropped files logic here
+    console.log(acceptedFiles);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const owner = useSelector(
     (state) => state.collection.selectedCollectionSetting.owner
   );
@@ -230,7 +239,58 @@ function CollectionSettings() {
   };
   return (
     <Box>
-      <div
+      <div {...getRootProps()}>
+        <input
+          {...getInputProps()}
+          onChange={handleBannerSelection}
+          id="bannerInput"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+        {isDragActive ? (
+          <div>
+            <img
+              src={bgImage}
+              alt="bg-image"
+              style={{
+                width: "100vw",
+                height: "45vh",
+                objectFit: "cover",
+                opacity: 0.5,
+              }}
+            />
+            <Typography variant="h5" sx={styles.photoIcon}>
+              Drop the image here ...
+            </Typography>
+          </div>
+        ) : (
+          <div
+            onMouseEnter={() => setHoveredBG(true)}
+            onMouseLeave={() => setHoveredBG(false)}
+          >
+            <img
+              src={bannerSrc ? bannerSrc : bgImage}
+              alt="bg-image"
+              style={{
+                width: "100vw",
+                height: "45vh",
+                objectFit: "cover",
+              }}
+            />
+            {hoveredBG && (
+              <Button
+                onClick={handleBannerClick}
+                component="label"
+                sx={styles.buildIcon}
+              >
+                <AddAPhotoIcon sx={styles.editIcon} />
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+      {/* <div
         onMouseEnter={() => setHoveredBG(true)}
         onMouseLeave={() => setHoveredBG(false)}
       >
@@ -255,7 +315,7 @@ function CollectionSettings() {
             <AddAPhotoRoundedIcon sx={styles.editIcon} />
           </Button>
         )}
-      </div>
+      </div> */}
 
       <Box
         sx={{
@@ -299,6 +359,11 @@ function CollectionSettings() {
                   hiddenLabel
                   className="input-wo-padding"
                   disabled={!isOwner()}
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   InputProps={{
                     style: {
                       backgroundColor: "#3D3D3D",
@@ -327,6 +392,11 @@ function CollectionSettings() {
                   type="url"
                   variant="standard"
                   hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   disabled={!isOwner()}
                   value={about}
                   onChange={(e) => setAbout(e.target.value)}
@@ -368,6 +438,11 @@ function CollectionSettings() {
                   type="text"
                   variant="standard"
                   hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   disabled={!isOwner()}
                   value={royaltyReceiver}
                   onChange={(e) => {
@@ -392,6 +467,11 @@ function CollectionSettings() {
                   type="number"
                   variant="standard"
                   hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   disabled={!isOwner()}
                   value={royaltyBips}
                   onChange={(e) => {
@@ -432,6 +512,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={telegram}
                 disabled={!isOwner()}
                 onChange={(e) => setTelegram(e.target.value)}
@@ -460,6 +545,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={twitter}
                 disabled={!isOwner()}
                 onChange={(e) => setTwitter(e.target.value)}
@@ -485,6 +575,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={facebook}
                 disabled={!isOwner()}
                 onChange={(e) => setFacebook(e.target.value)}
@@ -510,6 +605,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={insta}
                 disabled={!isOwner()}
                 onChange={(e) => setInsta(e.target.value)}
@@ -535,6 +635,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={discord}
                 disabled={!isOwner()}
                 onChange={(e) => setDiscord(e.target.value)}
@@ -560,6 +665,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={tiktok}
                 disabled={!isOwner()}
                 onChange={(e) => setTiktok(e.target.value)}
@@ -585,6 +695,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={youtube}
                 disabled={!isOwner()}
                 onChange={(e) => setYT(e.target.value)}
@@ -610,6 +725,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={medium}
                 disabled={!isOwner()}
                 onChange={(e) => setMedium(e.target.value)}
@@ -658,7 +778,7 @@ const styles = {
     zIndex: 5,
   },
   editIcon: {
-    color: "red",
+    color: "#fff",
     fontSize: "5rem",
   },
   imagess: {
@@ -706,6 +826,9 @@ const styles = {
     textTransform: "none",
     fontWeight: 700,
     fontSize: "1rem",
+    "&.Mui-disabled": {
+      color: "#6c6c6c",
+    },
   },
   whiteButton: {
     backgroundColor: "#F4F4F4",

@@ -12,6 +12,9 @@ import { getActiveListings } from "../utils/format-listings";
 import { setActiveListings } from "../redux/slices/listing-slice";
 import { PopularNFTs } from "./analytics/popular-nfts";
 import { PopularCollections } from "./analytics/popular-collections";
+import Market from "./market/Market";
+import { Container } from "react-bootstrap";
+import MarketMenu from "../components/MarketMenu";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -20,105 +23,6 @@ export const Home = () => {
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(3);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
-
-  const listData = [
-    {
-      serial: "1",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "2",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENG2",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "3",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA3",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "4",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA4",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "5",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA5",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "6",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA6",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "7",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA7",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "18",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA8",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "19",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA9",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "20",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA20",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "13",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA3",
-      price: "0.15",
-      offerId: "2345",
-    },
-    {
-      serial: "15",
-      imageSrc:
-        "https://static.wikia.nocookie.net/nomanssky_gamepedia/images/c/cc/PRODUCT.HORRIFICARTIFACT.png",
-      name: "RENGA5",
-      price: "0.15",
-      offerId: "2345",
-    },
-  ];
 
   useEffect(() => {
     if (listings.length > 0) {
@@ -132,7 +36,10 @@ export const Home = () => {
       <CarouselHome />
       <PopularCollections title="Popular Collections" />
       <PopularNFTs title="Popular NFTs" />
-      <TableComponent list={activeListings} />
+      {/* <TableComponent list={activeListings} /> */}
+      <Container>
+        <MarketMenu slug="home" />
+      </Container>
     </Box>
   );
 };

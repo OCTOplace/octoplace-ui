@@ -29,7 +29,7 @@ const styles = {
   },
 };
 
-function MarketMenu() {
+function MarketMenu({ slug }) {
   const location = useLocation();
 
   return (

@@ -11,7 +11,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
-import bgImage from "../../assets/bg-collection.png";
+import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
@@ -396,9 +396,7 @@ function DashboardGuest() {
           )}
           {activeMenu === "wall" && (
             // <Content activeListings={activeListings} view={view} />
-            <div>
-              Wall
-            </div>
+            <div>Wall</div>
           )}
         </Container>
       </Box>
