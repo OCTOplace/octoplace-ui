@@ -381,6 +381,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("inbox")}
+              disabled
               sx={
                 activeMenu === "inbox"
                   ? styles.activeButton
@@ -392,6 +393,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("offers")}
+              disabled
               sx={
                 activeMenu === "offers"
                   ? styles.activeButton
@@ -403,6 +405,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("content")}
+              disabled
               sx={
                 activeMenu === "content"
                   ? styles.activeButton
@@ -414,6 +417,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("wall")}
+              disabled
               sx={
                 activeMenu === "wall"
                   ? styles.activeButton
