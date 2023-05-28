@@ -372,7 +372,7 @@ function CollectionSettings() {
                       borderRadius: "0.594rem",
                       padding: "0.5rem",
                       width: "20rem",
-                      "& .MuiInputBase-input-MuiInput-input": {
+                      "& .MuiInputBaseInputMuiInputInput": {
                         padding: 0,
                       },
                     },

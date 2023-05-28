@@ -247,15 +247,22 @@ function DashboardSettings() {
               <div
                 onMouseEnter={() => setHoveredPP(true)}
                 onMouseLeave={() => setHoveredPP(false)}
-                style={styles.container}
+                className="maskBack"
               >
-                <img
+                <div className="mask1">
+                  <img
+                    src={listing?.listingNFT?.metadata?.image}
+                    alt="profileImage"
+                    // className="octagon"
+                  />
+                </div>
+                {/* <img
                   src={listing?.listingNFT?.metadata?.image}
                   alt="profileImage"
                   className="octagon-image"
                   width="180px"
                   height="180px"
-                />
+                /> */}
                 {hoveredPP && (
                   <Button
                     component="label"
@@ -291,7 +298,7 @@ function DashboardSettings() {
                       borderRadius: "0.594rem",
                       padding: "0.5rem",
                       width: "20rem",
-                      "& .MuiInputBase-input-MuiInput-input": {
+                      "& .": {
                         padding: 0,
                       },
                     },

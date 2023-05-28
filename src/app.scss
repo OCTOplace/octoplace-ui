@@ -29,6 +29,27 @@
   background: no-repeat center center;
 }
 
+.mask1 {
+  -webkit-mask-image: url("../src/assets/filter.png");
+  mask-image: url("../src/assets/filter.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  width: 196px;
+  height: 196px;
+}
+
+.maskBack {
+  background-color: white;
+  -webkit-mask-image: url("../src/assets/filter.png");
+  mask-image: url("../src/assets/filter.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  width: 200px;
+  height: 200px;
+}
+
 .logo-text {
   font-size: 2.5em;
   font-weight: 700;
@@ -313,12 +334,12 @@ body > iframe {
   }
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 input[type="text"]:disabled {
   color: #fff;
