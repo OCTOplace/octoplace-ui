@@ -1,5 +1,5 @@
-import { Box } from "@mui/material";
-import React from "react";
+import { Box, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const styles = {
@@ -29,7 +29,7 @@ const styles = {
   },
 };
 
-function MarketMenu({ slug }) {
+function MarketMenu({ activeTabRef }) {
   const location = useLocation();
 
   return (

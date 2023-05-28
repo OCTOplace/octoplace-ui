@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { Fragment, useState } from "react";
 import { NFTListingCard } from "../../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
@@ -7,6 +7,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
+import TuneIcon from "@mui/icons-material/Tune";
+import FilterComponent from "../../../components/FilterComponent";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -28,6 +30,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 function NFTlist({ activeListings, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [openFilterMenu, setOpenFilterMenu] = useState(false);
 
   const handleChange = (event) => {
     setOrderMethod(event.target.value);
@@ -79,20 +82,45 @@ function NFTlist({ activeListings, view }) {
               <MenuItem value="Oldest">Oldest</MenuItem>
             </Select>
           </FormControl>
+          <IconButton
+            sx={{
+              border: "1px solid #c6c6c6",
+              borderRadius: ".75rem",
+              color: "#f4f4f4",
+            }}
+            // toggle filter menu
+            onClick={() => setOpenFilterMenu(!openFilterMenu)}
+          >
+            <TuneIcon
+              sx={{
+                fontSize: "1rem",
+              }}
+            />
+          </IconButton>
         </Box>
       </Box>
       <Fragment>
-        <Grid container spacing={2}>
-          {view !== 1 &&
-            activeListings.length > 0 &&
-            activeListings.map((item, index) => {
-              return (
-                <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTListingCard listingItem={item} view={view} />
-                </Grid>
-              );
-            })}
-        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          {openFilterMenu && <FilterComponent filterPage={"Dashboard"} />}
+          <Grid container spacing={2}>
+            {view !== 1 &&
+              activeListings.length > 0 &&
+              activeListings.map((item, index) => {
+                return (
+                  <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                    <NFTListingCard listingItem={item} view={view} />
+                  </Grid>
+                );
+              })}
+          </Grid>
+        </Box>
       </Fragment>
     </Box>
   );

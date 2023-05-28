@@ -36,89 +36,90 @@ import {
   showTxDialog,
 } from "../../redux/slices/app-slice";
 import copy from "clipboard-copy";
-import {setCollectionDiscussions} from "../../redux/slices/discussions-slice"
-import { createCollectionDiscussion, getCollectionDiscussions } from "../../redux/thunk/get-nft-discussions";
-export const CollectionDiscussions = ({ address, network,isAccordion }) => {
+import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
+import {
+  createCollectionDiscussion,
+  getCollectionDiscussions,
+} from "../../redux/thunk/get-nft-discussions";
+export const CollectionDiscussions = ({ address, network, isAccordion }) => {
   const [expanded, setExpanded] = useState(false);
-const styles = {
-  accordion2: {
-    backgroundColor: "transparent",
-    color: expanded ? "#f4f4f4" : "#6c6c6c",
-    border: "1px solid  #6C6C6C",
-    borderRadius: ".5rem",
-    marginBottom: "1rem",
-  },
-  accordionHeader: {
-    fontWeight: 400,
-    fontsize: "1.125rem",
-    lineHeight: "105.02%",
-  },
-  accordionBody: {
-    backgroundColor: "#151515",
-    display: "flex",
-    flexDirection: "column",
-    gap: 1,
-    maxHeight: "470px",
-    overflowY: "scroll",
-    borderRadius: ".5rem",
-  },
-  detailsBox: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    maxHeight: "470px",
-    overflowY: "scroll",
-    justifyContent: "flex-start",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: "8px",
-  },
-  comments: {
-    width: "100%",
-  },
-  address: {
-    fontWeight: 600,
-    fontSize: ".875rem",
-    color: "#FF9719",
-    textTransform: "none",
-    display: "flex",
-    alignItems: "center",
-  },
-  copyButton: {
-    color: "#6C6C6C",
-    fontSize: ".75rem",
-  },
-  message: {
-    color: "white",
-    fontSize: ".875rem",
-    fontWeight: 400,
-  },
-  textContainer: {
-    width: "80%",
-    pt: 2,
-    pr: 1,
-  },
-  sendButton: {
-    background: "#F78C09",
-    borderRadius: ".375rem",
-    color: "#262626",
-    fontWeight: 600,
-    width: "20%",
-    textTransform: "none",
-  },
-};
-  
-  
+
+  const styles = {
+    accordion2: {
+      backgroundColor: "transparent",
+      color: expanded ? "#f4f4f4" : "#6c6c6c",
+      border: "1px solid  #6C6C6C",
+      borderRadius: ".5rem",
+      marginBottom: "1rem",
+    },
+    accordionHeader: {
+      fontWeight: 400,
+      fontsize: "1.125rem",
+      lineHeight: "105.02%",
+    },
+    accordionBody: {
+      backgroundColor: "#151515",
+      display: "flex",
+      flexDirection: "column",
+      gap: 1,
+      maxHeight: "470px",
+      overflowY: "scroll",
+      borderRadius: ".5rem",
+    },
+    detailsBox: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      maxHeight: "470px",
+      overflowY: "scroll",
+      justifyContent: "flex-start",
+    },
+    row: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+      marginBottom: "8px",
+    },
+    comments: {
+      width: "100%",
+    },
+    address: {
+      fontWeight: 600,
+      fontSize: ".875rem",
+      color: "#FF9719",
+      textTransform: "none",
+      display: "flex",
+      alignItems: "center",
+    },
+    copyButton: {
+      color: "#6C6C6C",
+      fontSize: ".75rem",
+    },
+    message: {
+      color: "white",
+      fontSize: ".875rem",
+      fontWeight: 400,
+    },
+    textContainer: {
+      width: "80%",
+      pt: 2,
+      pr: 1,
+    },
+    sendButton: {
+      background: "#F78C09",
+      borderRadius: ".375rem",
+      color: "#262626",
+      fontWeight: 600,
+      width: "20%",
+      textTransform: "none",
+    },
+  };
 
   const handleChange = (event, isExpanded) => {
     setExpanded(isExpanded);
   };
-
 
   const [openSendDlg, setOpenSendDlg] = useState(false);
   const [message, setMessage] = useState("");
@@ -129,7 +130,9 @@ const styles = {
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
-  const messages = useSelector((state) => state.discussion.selectedCollectionDiscussions)
+  const messages = useSelector(
+    (state) => state.discussion.selectedCollectionDiscussions
+  );
 
   const dispatch = useDispatch();
   const format = (x) => {
@@ -139,8 +142,8 @@ const styles = {
   useEffect(() => {
     return () => {
       dispatch(setCollectionDiscussions([]));
-    }
-  }, [])
+    };
+  }, []);
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -169,7 +172,7 @@ const styles = {
   };
 
   const getAllMessages = async () => {
-    dispatch(getCollectionDiscussions({address, network}));
+    dispatch(getCollectionDiscussions({ address, network }));
   };
 
   useEffect(() => {
@@ -262,13 +265,17 @@ const styles = {
         netInfo.dataNetwork.COLLECTION_DISCUSSION_ABI,
         signer
       );
-      const txResult = await contract.addComment_erc20(
-        address,
-        message
-      );
+      const txResult = await contract.addComment_erc20(address, message);
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
-      dispatch(createCollectionDiscussion({address, network, sender: account, message}));
+      dispatch(
+        createCollectionDiscussion({
+          address,
+          network,
+          sender: account,
+          message,
+        })
+      );
       toast.success("Comment Posted Successfuly!");
       setOpenSendDlg(false);
       setMessage("");
@@ -312,7 +319,13 @@ const styles = {
               <Box key={item.Id} sx={styles.comments}>
                 <Typography sx={styles.address}>
                   {shortenAddress(item.SenderAddress)}
-                  <IconButton  onClick={() => {copy(item.SenderAddress); toast.success("Address copied!")}} sx={styles.copyButton}>
+                  <IconButton
+                    onClick={() => {
+                      copy(item.SenderAddress);
+                      toast.success("Address copied!");
+                    }}
+                    sx={styles.copyButton}
+                  >
                     <ContentCopy fontSize="small" />
                   </IconButton>
                 </Typography>
@@ -389,4 +402,3 @@ const styles = {
     </Accordion>
   );
 };
-

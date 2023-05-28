@@ -1,20 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { Box } from "@mui/material";
+import { Container } from "react-bootstrap";
+import { Box, Button } from "@mui/material";
 
 import CarouselHome from "../components/CarouselHome";
-import RowSlider from "../components/RowSlider";
-import TableComponent from "../components/TableComponent";
 import { getActiveListings } from "../utils/format-listings";
 import { setActiveListings } from "../redux/slices/listing-slice";
 import { PopularNFTs } from "./analytics/popular-nfts";
 import { PopularCollections } from "./analytics/popular-collections";
 import Market from "./market/Market";
-import { Container } from "react-bootstrap";
-import MarketMenu from "../components/MarketMenu";
+import Swap from "./market/Swap";
+import Auction from "./market/Auction";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -23,6 +21,7 @@ export const Home = () => {
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(3);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [activeTab, setActiveTab] = useState("Market");
 
   useEffect(() => {
     if (listings.length > 0) {
@@ -38,7 +37,37 @@ export const Home = () => {
       <PopularNFTs title="Popular NFTs" />
       {/* <TableComponent list={activeListings} /> */}
       <Container>
-        <MarketMenu slug="home" />
+        <Box className="market-menu">
+          <Button
+            onClick={() => {
+              setActiveTab("Market");
+            }}
+            className={activeTab === "Market" ? "active-button" : "regular-btn"}
+          >
+            Market
+          </Button>
+          <Button
+            onClick={() => {
+              setActiveTab("Swap");
+            }}
+            className={activeTab === "Swap" ? "active-button" : "regular-btn"}
+          >
+            Swap
+          </Button>
+          <Button
+            onClick={() => {
+              setActiveTab("Auction");
+            }}
+            className={
+              activeTab === "Auction" ? "active-button" : "regular-btn"
+            }
+          >
+            Auction
+          </Button>
+        </Box>
+        {activeTab === "Market" && <Market isHome={true} />}
+        {activeTab === "Swap" && <Swap isHome={true} />}
+        {activeTab === "Auction" && <Auction isHome={true} />}
       </Container>
     </Box>
   );

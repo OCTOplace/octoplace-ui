@@ -32,7 +32,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Swap() {
+function Swap({ isHome }) {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
@@ -105,7 +105,7 @@ function Swap() {
 
   return (
     <Container>
-      <MarketMenu />
+      {!isHome && <MarketMenu />}
       <Box
         sx={{
           display: "flex",
