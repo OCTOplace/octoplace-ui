@@ -12,17 +12,16 @@ export const NFTCard = ({ view, nft }) => {
 
   const styles = {
     root: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: ".5rem",
-      color: "#fff",
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
       borderRadius: "12px",
       cursor: "pointer",
       width: "100%",
+      boxSizing: "border-box",
+      mb: 1,
+      border: "1px solid transparent", // Add transparent border
       "&:hover": {
         border: "1px solid #F78C09",
+        boxSizing: "border-box",
       },
     },
     content: {
@@ -96,7 +95,6 @@ export const NFTCard = ({ view, nft }) => {
                 borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
                 width: view === 3 ? "200px" : "100%",
-                // width: "100%",
                 aspectRatio: "1/1",
               }}
               alt="nft_image"

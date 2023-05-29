@@ -111,6 +111,7 @@ export function PopularCollections({ title }) {
             justifyContent: "center",
             alignItems: "flex-start",
             gap: 10,
+            minHeight: "300px",
           }}
         >
           {popularCollections

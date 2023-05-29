@@ -115,6 +115,7 @@ export function PopularNFTs({ title }) {
             justifyContent: "center",
             alignItems: "flex-start",
             gap: 10,
+            minHeight: "300px",
           }}
         >
           {/* {list

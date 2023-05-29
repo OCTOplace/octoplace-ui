@@ -58,6 +58,11 @@ function CarouselCollection() {
       textTransform: "none",
       fontWeight: 700,
       fontSize: "1rem",
+      "&:hover": {
+        backgroundColor: "#f4f4f4",
+        color: "#262626",
+        cursor: "pointer",
+      },
     },
     // bgImage: {
     //   backgroundImage: `url(${props.item.image})`,
@@ -72,8 +77,10 @@ function CarouselCollection() {
   return (
     <Carousel
       autoPlay={true}
+      stopAutoPlayOnHover={true}
+      swipe={true}
       duration={1000}
-      animation="slide"
+      animation="fade"
       cycleNavigation={true}
       activeIndicatorIconButtonProps={{
         style: {
@@ -99,6 +106,7 @@ function CarouselCollection() {
               backgroundRepeat: "no-repeat",
               padding: "2rem",
               height: "50vh",
+              cursor: "grab",
             }}
           >
             <Box

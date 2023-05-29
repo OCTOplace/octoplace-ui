@@ -13,6 +13,7 @@ function Item(props) {
         backgroundRepeat: "no-repeat",
         padding: "2rem",
         height: "50vh",
+        cursor: "grab",
       }}
     >
       {/* <h2>{props.item.name}</h2>
@@ -44,8 +45,10 @@ function CarouselHome() {
   return (
     <Carousel
       autoPlay={true}
+      stopAutoPlayOnHover={true}
+      swipe={true}
       duration={1000}
-      animation="slide"
+      animation="fade"
       cycleNavigation={true}
       activeIndicatorIconButtonProps={{
         style: {

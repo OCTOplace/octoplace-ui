@@ -22,10 +22,25 @@ const styles = {
     fontSize: "1.5rem",
     lineHeight: "105.02%",
     color: "#f4f4f4",
-    textDecoration: "underline!important",
-    textDecorationColor: "#f78C09",
-    textUnderlinePosition: "under",
-    textUnderlineOffset: "0.5rem",
+    textDecoration: "none",
+    position: "relative",
+    overflow: "hidden",
+    "&:after": {
+      content: "''",
+      position: "absolute",
+      left: 0,
+      bottom: 0,
+      width: "100%",
+      height: "2px",
+      backgroundColor: "#f78C09",
+      transform: "translateX(-100%)",
+      transition: "transform 300ms ease",
+    },
+    "&:hover": {
+      "&:after": {
+        transform: "translateX(0)",
+      },
+    },
   },
 };
 

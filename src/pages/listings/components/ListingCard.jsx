@@ -21,6 +21,8 @@ export const NFTListingCard = (props) => {
       borderRadius: ".75rem",
       cursor: "pointer",
       width: "100%",
+      border: "1px solid transparent", // Add transparent border
+      marginBottom: "1rem",
       "&:hover": {
         border: "1px solid #F78C09",
         boxSizing: "border-box",
@@ -86,7 +88,6 @@ export const NFTListingCard = (props) => {
           className="nft-card-link"
           to={`/nft/${props.listingItem.listingNFT.network}/${props.listingItem.listingNFT.contractAddress}/${props.listingItem.listingNFT.tokenId}`}
         >
-          {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
             <img
               src={imgUrl}
@@ -120,7 +121,6 @@ export const NFTListingCard = (props) => {
               </Box>
             </Box>
           </Box>
-          {/* </Box> */}
         </Link>
       )}
     </>
