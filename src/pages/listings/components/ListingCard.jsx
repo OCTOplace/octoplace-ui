@@ -15,17 +15,15 @@ export const NFTListingCard = (props) => {
 
   const styles = {
     root: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: ".5rem",
+      boxSizing: "border-box",
       color: "#fff",
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
-      borderRadius: "12px",
+      borderRadius: ".75rem",
       cursor: "pointer",
       width: "100%",
       "&:hover": {
         border: "1px solid #F78C09",
+        boxSizing: "border-box",
       },
     },
     content: {
@@ -81,7 +79,6 @@ export const NFTListingCard = (props) => {
     }
   }, [props.listingItem]);
 
-
   return (
     <>
       {props.listingItem && (
@@ -98,7 +95,6 @@ export const NFTListingCard = (props) => {
                 borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
                 width: view === 3 ? "200px" : "100%",
-                // width: "100%",
                 aspectRatio: "1/1",
               }}
               alt="nft_image"
@@ -111,7 +107,7 @@ export const NFTListingCard = (props) => {
                     props.listingItem.listingNFT.metadata
                       ? props.listingItem.listingNFT.metadata.name
                       : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`,
-                    15
+                    10
                   )}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
@@ -121,7 +117,6 @@ export const NFTListingCard = (props) => {
               >{`#${props.listingItem.listingNFT.network}`}</Typography>
               <Box style={styles.meta}>
                 <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
-                
               </Box>
             </Box>
           </Box>

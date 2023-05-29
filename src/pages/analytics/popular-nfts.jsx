@@ -6,7 +6,7 @@ import infoIcon from "../../assets/Infrormation_button.svg";
 import nextIcon from "../../assets/next.svg";
 import prevIcon from "../../assets/prev.svg";
 import { Paper, Button, Grid, Box, useMediaQuery } from "@mui/material";
-import {NFTCard} from "../collections/components/nft-card";
+import { NFTCard } from "../collections/components/nft-card";
 import { NFTListingCard } from "../../pages/listings/components/ListingCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
@@ -28,7 +28,7 @@ export function PopularNFTs({ title }) {
   );
   const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
   const dispatch = useDispatch();
-  const popularNFTs = useSelector(state => state.analytics.popularNFTs);
+  const popularNFTs = useSelector((state) => state.analytics.popularNFTs);
 
   let numItemsToShow = 3;
 
@@ -57,7 +57,7 @@ export function PopularNFTs({ title }) {
 
   useEffect(() => {
     dispatch(getPopularNFTs());
-  }, [])
+  }, []);
 
   return (
     <Box
@@ -83,7 +83,10 @@ export function PopularNFTs({ title }) {
           >
             {title}
           </h3>
-          <Tooltip title="Most Popular 12" placement="right">
+          <Tooltip
+            title="Most popular NFTs by the total number of comments"
+            placement="right"
+          >
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>
@@ -130,14 +133,11 @@ export function PopularNFTs({ title }) {
           {popularNFTs
             .slice(
               currentIndex -
-                Math.max(
-                  currentIndex + numItemsToShow - popularNFTs.length,
-                  0
-                ),
+                Math.max(currentIndex + numItemsToShow - popularNFTs.length, 0),
               currentIndex + numItemsToShow
             )
             .map((item, i) => {
-                let obj = {...item, network: item.Network};
+              let obj = { ...item, network: item.Network };
               return (
                 <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
                   <NFTCard nft={obj} view={3} />

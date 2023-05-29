@@ -16,19 +16,19 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
 
+  console.log("marketItem", view);
+
   const styles = {
     root: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: ".5rem",
+      boxSizing: "border-box",
       color: "#fff",
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
-      borderRadius: "12px",
+      borderRadius: ".75rem",
       cursor: "pointer",
       width: "100%",
       "&:hover": {
         border: "1px solid #F78C09",
+        boxSizing: "border-box",
       },
     },
     content: {
@@ -75,6 +75,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       })
     );
   }, []);
+
   useEffect(() => {
     if (marketItem && marketItem.nftDetails && marketItem.nftDetails.metadata) {
       try {
@@ -100,19 +101,19 @@ export const NFTMarketCard = ({ view, marketItem }) => {
           className="nft-card-link"
           to={`/nft/${marketItem.Network}/${marketItem.NFTContractAddress}/${marketItem.TokenId}`}
         >
-          {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
             {marketItem.nftDetails && (
               <img
                 src={imgUrl}
                 style={{
-                  borderTopLeftRadius: "12px",
-                  borderTopRightRadius: "12px",
+                  borderTopLeftRadius: ".75rem",
+                  borderTopRightRadius: ".75rem",
                   objectFit: "cover",
-                  width: "100%",
-                  height: "260px",
+                  width: view === 3 ? "200px" : "100%",
+                  aspectRatio: "1/1",
                 }}
-                alt=""
+                loading="lazy"
+                alt="nft-image"
               />
             )}
             {marketItem.nftDetails && marketItem.nftDetails.metadata && (

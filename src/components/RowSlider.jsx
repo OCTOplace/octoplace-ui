@@ -89,7 +89,10 @@ function RowSlider({ title }) {
           >
             {title}
           </h3>
-          <Tooltip title="Most Popular 12" placement="right">
+          <Tooltip
+            title="Most popular collections by the total number of comments"
+            placement="right"
+          >
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>

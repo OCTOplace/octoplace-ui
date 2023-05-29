@@ -132,12 +132,20 @@ function Market({ isHome }) {
       <Fragment>
         <Grid container spacing={2}>
           {openFilterMenu && <FilterComponent filterPage={"Market"} />}
-
           {view !== 1 &&
             marketItems.length > 0 &&
             marketItems.map((item, index) => {
               return (
-                <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                <Grid
+                  key={`index_${index}`}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={view}
+                  sx={{
+                    my: 2,
+                  }}
+                >
                   <NFTMarketCard marketItem={item} view={view} />
                 </Grid>
               );

@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import Tooltip from "@mui/material/Tooltip";
-import { Container} from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import infoIcon from "../../assets/Infrormation_button.svg";
 import nextIcon from "../../assets/next.svg";
 import prevIcon from "../../assets/prev.svg";
-import {  Grid, Box, useMediaQuery } from "@mui/material";
-import {CollectionCard}from "../collections/components/collection-card"
+import { Grid, Box, useMediaQuery } from "@mui/material";
+import { CollectionCard } from "../collections/components/collection-card";
 import { useDispatch, useSelector } from "react-redux";
 import { getPopularCollections } from "../../redux/thunk/get-analytics";
 
@@ -22,7 +22,9 @@ export function PopularCollections({ title }) {
   );
   const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
   const dispatch = useDispatch();
-  const popularCollections =  useSelector((state) => state.analytics.popularCollections);
+  const popularCollections = useSelector(
+    (state) => state.analytics.popularCollections
+  );
 
   let numItemsToShow = 3;
 
@@ -51,8 +53,7 @@ export function PopularCollections({ title }) {
 
   useEffect(() => {
     dispatch(getPopularCollections());
-  }, [])
- 
+  }, []);
 
   return (
     <Box
@@ -78,7 +79,10 @@ export function PopularCollections({ title }) {
           >
             {title}
           </h3>
-          <Tooltip title="Most Popular 12" placement="right">
+          <Tooltip
+            title="Most popular collections by the total number of comments"
+            placement="right"
+          >
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>
