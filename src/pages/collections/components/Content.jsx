@@ -130,6 +130,9 @@ function Content({ activeListings, view }) {
       fontWeight: 600,
       fontSize: "1rem",
       borderRadius: "0.594rem",
+      "&:hover": {
+        backgroundColor: "#f4f4f4",
+      },
     },
     formContainer: {
       display: "flex",

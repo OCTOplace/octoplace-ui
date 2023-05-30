@@ -13,9 +13,6 @@ import {
   Edit,
   Settings,
 } from "@mui/icons-material";
-import twitter from "./../../assets/twitter.svg";
-import telegram from "./../../assets/telegram.svg";
-import bgImage from "../../assets/bg-collection.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
@@ -27,6 +24,7 @@ import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
 import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
 import { useWeb3React } from "@web3-react/core";
+import RecentMessages from "./components/RecentMessages";
 
 function GuestCollection() {
   const dispatch = useDispatch();
@@ -213,7 +211,7 @@ function GuestCollection() {
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
-              { settings && settings.AboutText && (
+              {settings && settings.AboutText && (
                 <>
                   <Typography sx={styles.h2}>About</Typography>
                   <Typography sx={styles.h5}>{settings.AboutText}</Typography>
@@ -222,11 +220,12 @@ function GuestCollection() {
             </Box>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>Recent messages</Typography>
-              <CollectionDiscussions
+              {/* <CollectionDiscussions
                 address={selectedCollection.type_id}
                 network={network}
                 isAccordion={false}
-              />
+              /> */}
+              <RecentMessages />
             </Box>
           </Box>
           <Box sx={styles.menu}>

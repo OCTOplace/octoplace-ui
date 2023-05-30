@@ -1,13 +1,10 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { Fragment, useState } from "react";
-import { NFTListingCard } from "../../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
 import { NFTCard } from "./nft-card";
+import FilterComponent from "../../../components/FilterComponent";
+import TuneIcon from "@mui/icons-material/Tune";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -29,6 +26,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 function NFTlist({ nfts, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [openFilterMenu, setOpenFilterMenu] = useState(false);
 
   const handleChange = (event) => {
     setOrderMethod(event.target.value);
@@ -63,6 +61,21 @@ function NFTlist({ nfts, view }) {
           >
             NFT
           </Typography>
+          <IconButton
+            sx={{
+              border: "1px solid #c6c6c6",
+              borderRadius: ".75rem",
+              color: "#f4f4f4",
+            }}
+            // toggle filter menu
+            onClick={() => setOpenFilterMenu(!openFilterMenu)}
+          >
+            <TuneIcon
+              sx={{
+                fontSize: "1rem",
+              }}
+            />
+          </IconButton>
           {/* <FormControl sx={{ m: 1 }} variant="standard" size="small">
             <Select
               value={orderMethod}
@@ -83,17 +96,28 @@ function NFTlist({ nfts, view }) {
         </Box>
       </Box>
       <Fragment>
-        <Grid container spacing={2}>
-          {view !== 1 && nfts &&
-            nfts.length > 0 &&
-            nfts.map((item, index) => {
-              return (
-                <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTCard nft={item} view={view} />
-                </Grid>
-              );
-            })}
-        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          {openFilterMenu && <FilterComponent filterPage={"Collection"} />}
+          <Grid container spacing={2}>
+            {view !== 1 &&
+              nfts &&
+              nfts.length > 0 &&
+              nfts.map((item, index) => {
+                return (
+                  <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                    <NFTCard nft={item} view={view} />
+                  </Grid>
+                );
+              })}
+          </Grid>
+        </Box>
       </Fragment>
     </Box>
   );

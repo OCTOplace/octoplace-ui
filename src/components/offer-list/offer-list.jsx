@@ -31,6 +31,13 @@ export const OfferList = (props) => {
       border: "1px solid  #6C6C6C",
       borderRadius: ".5rem",
       marginBottom: "1rem",
+      "&:hover": {
+        border: "1px solid #f4f4f4",
+        color: "#f4f4f4",
+      },
+      "&:hover .MuiSvgIcon-root": {
+        color: "#f4f4f4",
+      },
     },
     accordionHeader: {
       fontWeight: 400,

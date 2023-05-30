@@ -23,6 +23,13 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
       border: "1px solid  #6C6C6C",
       borderRadius: ".5rem",
       marginBottom: "1rem",
+      "&:hover": {
+        border: "1px solid #f4f4f4",
+        color: "#f4f4f4",
+      },
+      "&:hover .MuiSvgIcon-root": {
+        color: "#f4f4f4",
+      },
     },
     accordionHeader: {
       fontWeight: 400,
@@ -78,9 +85,9 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
       display: "flex",
       justifyContent: "flex-end",
     },
-    capitalize:{
-      textTransform: "capitalize"
-    }
+    capitalize: {
+      textTransform: "capitalize",
+    },
   };
 
   return (

@@ -89,7 +89,10 @@ function RowSlider({ title }) {
           >
             {title}
           </h3>
-          <Tooltip title="Most Popular 12" placement="right">
+          <Tooltip
+            title="Most popular collections by the total number of comments"
+            placement="right"
+          >
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>
@@ -118,21 +121,9 @@ function RowSlider({ title }) {
             justifyContent: "center",
             alignItems: "flex-start",
             gap: 10,
+            minHeight: "300px",
           }}
         >
-          {/* {list
-            .slice(
-              currentIndex -
-                Math.max(currentIndex + numItemsToShow - list.length, 0),
-              currentIndex + numItemsToShow
-            )
-            .map((item, i) => {
-              return (
-                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
-                  <MediaCard item={item} key={i} view={3} />
-                </Grid>
-              );
-            })} */}
           {activeListings
             .slice(
               currentIndex -

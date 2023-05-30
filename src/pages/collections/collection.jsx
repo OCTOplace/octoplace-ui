@@ -41,7 +41,7 @@ export const CollectionsPage = () => {
           >
             Collections
           </h3>
-          <Tooltip title="Most Popular 12" placement="right">
+          <Tooltip title=" 12" placement="right">
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>

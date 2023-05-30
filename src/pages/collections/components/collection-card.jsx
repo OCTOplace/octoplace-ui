@@ -16,17 +16,16 @@ export const CollectionCard = (props) => {
 
   const styles = {
     root: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: ".5rem",
+      boxSizing: "border-box",
       color: "#fff",
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
-      borderRadius: "12px",
+      borderRadius: ".75rem",
       cursor: "pointer",
       width: "100%",
+      border: "1px solid transparent", // Add transparent border
       "&:hover": {
         border: "1px solid #F78C09",
+        boxSizing: "border-box",
       },
     },
     content: {
@@ -82,7 +81,6 @@ export const CollectionCard = (props) => {
     }
   }, [props.collectionItem]);
 
-
   return (
     <>
       {props.collectionItem && (
@@ -90,7 +88,6 @@ export const CollectionCard = (props) => {
           className="nft-card-link"
           to={`/collections/${collectionItem.network}/${collectionItem.collection_id}`}
         >
-          {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
             <img
               src={imgUrl}
@@ -99,7 +96,6 @@ export const CollectionCard = (props) => {
                 borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
                 width: view === 3 ? "200px" : "100%",
-                // width: "100%",
                 aspectRatio: "1/1",
               }}
               alt="nft_image"
@@ -108,10 +104,7 @@ export const CollectionCard = (props) => {
             <Box sx={styles.content}>
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {truncate(
-                    collectionItem.collection_name,
-                    15
-                  )}
+                  {truncate(collectionItem.collection_name, 15)}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
@@ -120,7 +113,6 @@ export const CollectionCard = (props) => {
               >{`#${collectionItem.network}`}</Typography>
             </Box>
           </Box>
-          {/* </Box> */}
         </Link>
       )}
     </>

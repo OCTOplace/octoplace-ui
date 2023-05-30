@@ -1,22 +1,17 @@
-import React, { useState } from "react";
-import {
-  Box,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
-
+import React, { useState, useEffect } from "react";
+import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
+import { getImageUrl, shortenAddress } from "../utils/string-util";
+import copy from "clipboard-copy";
+import { toast } from "react-toastify";
 
 import verifiedLogo from "../assets/verified.svg";
-
-import { getImageUrl, shortenAddress } from "../utils/string-util";
-import { useEffect } from "react";
-
+import { ContentCopy } from "@mui/icons-material";
 export const NFTCardDetails = (props) => {
   const { metadata, tokenId, owner } = props;
   const [imgLoaded, setImgLoaded] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [isAnimation, setAnimation] = useState(false);
   const [imgUrl, setUrl] = useState("");
+
   const styles = {
     card: {
       width: "100%",
@@ -99,7 +94,12 @@ export const NFTCardDetails = (props) => {
       marginLeft: "4px",
       marginBottom: "8px",
     },
+    copyButton: {
+      color: "#6C6C6C",
+      fontSize: ".75rem",
+    },
   };
+
   useEffect(() => {
     if (metadata) {
       try {
@@ -166,6 +166,15 @@ export const NFTCardDetails = (props) => {
             >
               {owner === "" ? "" : shortenAddress(owner)}
             </span>
+            <IconButton
+              onClick={() => {
+                copy(owner);
+                toast.success("Address copied!");
+              }}
+              sx={styles.copyButton}
+            >
+              <ContentCopy fontSize="small" />
+            </IconButton>
           </Typography>
         </Box>
       </Box>

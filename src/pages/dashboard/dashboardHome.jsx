@@ -11,11 +11,12 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
-import bgImage from "../../assets/bg-collection.png";
+import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
-import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+import { toast } from "react-toastify";
+import copy from "clipboard-copy";
 
 function DashboardHome() {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ function DashboardHome() {
   const styles = {
     container: {},
     background: {
-      width: "100vw",
+      width: "100%",
       height: "50vh",
       objectFit: "cover",
     },
@@ -230,6 +231,10 @@ function DashboardHome() {
       fontSize: "1.5rem",
       marginLeft: 2,
     },
+    copyButton: {
+      color: "#6C6C6C",
+      fontSize: ".75rem",
+    },
   };
 
   useEffect(() => {
@@ -245,7 +250,7 @@ function DashboardHome() {
         src={bgImage}
         alt="bg-image"
         style={{
-          width: "100vw",
+          width: "100%",
           height: "45vh",
           objectFit: "cover",
         }}
@@ -270,7 +275,13 @@ function DashboardHome() {
                 <Typography sx={styles.h1}>King Wasabi</Typography>
                 <Typography sx={styles.h3}>
                   0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b
-                  <IconButton sx={styles.h3}>
+                  <IconButton
+                    onClick={() => {
+                      copy(0xa366c1e80642abcaa190ed4fd7c9ba642228053b);
+                      toast.success("Address copied!");
+                    }}
+                    sx={styles.copyButton}
+                  >
                     <ContentCopy fontSize="small" />
                   </IconButton>
                 </Typography>
