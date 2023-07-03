@@ -21,7 +21,7 @@ import InputBase from "@mui/material/InputBase";
 import { NFTMarketCard } from "./compoents/nft-market-card";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
-// import Searchbox from "../../components/searchbox";
+import Searchbox from "../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -52,17 +52,59 @@ function Market({ isHome }) {
   const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [filterObj, setFilterObj] = useState(
+    {
+      minPrice: 0,
+      maxPrice: 0,
+      blockchain: "empty",
+      collection: "empty",
+      saleOnly: false,
+      auctionOnly: false,
+      offersReceived: false,
+      includeBurned: false,
+    }
+  );
 
-  const handleChange = (event) => {
+  useEffect(() => {
+    console.log(marketItems);
+  }, [marketItems]);
+
+  const handleOrder = (event) => {
     setOrderMethod(event.target.value);
   };
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
+  const handleSearch = (event) => {
+    setKeyword(event.target.value);
+  };
+
+  const handleFilter = (filterObj) => {
+    setFilterObj(filterObj);
+  };
+
+  const filteredMarketItems = marketItems.filter((item) => {
+    if (item.TokenName && !item.TokenName.toLowerCase().includes(keyword.toLowerCase())) {
+      return false;
     }
-  }, [listings]);
+
+    if (filterObj.minPrice !== 0 && parseInt(item.Price, 10) < filterObj.minPrice) {
+      return false;
+    }
+
+    if (filterObj.maxPrice !== 0 && parseInt(item.Price, 10) > filterObj.maxPrice) {
+      return false;
+    }
+
+    if (filterObj.blockchain !== "empty" && item.Network.toLowerCase() !== filterObj.blockchain) {
+      return false;
+    }
+
+    if (filterObj.collection !== "empty" && item.NFTContractAddress !== filterObj.collection) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <Container>
@@ -97,7 +139,7 @@ function Market({ isHome }) {
           <FormControl sx={{ m: 1 }} variant="standard" size="small">
             <Select
               value={orderMethod}
-              onChange={handleChange}
+              onChange={handleOrder}
               input={<BootstrapInput />}
               sx={{
                 "& .MuiSelect-icon": {
@@ -127,14 +169,22 @@ function Market({ isHome }) {
             />
           </IconButton>
         </Box>
-        <Box>{/* <Searchbox className="search-nav" type="text" /> */}</Box>
+        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
       </Box>
       <Fragment>
-        <Grid container spacing={2}>
-          {openFilterMenu && <FilterComponent filterPage={"Market"} />}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          {openFilterMenu && <FilterComponent filterPage={"Market"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          <Grid container spacing={2}>
           {view !== 1 &&
-            marketItems.length > 0 &&
-            marketItems.map((item, index) => {
+            filteredMarketItems.length > 0 &&
+            filteredMarketItems.map((item, index) => {
               return (
                 <Grid
                   key={`index_${index}`}
@@ -150,7 +200,8 @@ function Market({ isHome }) {
                 </Grid>
               );
             })}
-        </Grid>
+          </Grid>
+        </Box>
       </Fragment>
     </Container>
   );

@@ -140,7 +140,7 @@ export const MyListingSwapOffer = () => {
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
     } catch (err) {
-      console.log("Error");
+      console.log("Error on handleApprove", err);
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));

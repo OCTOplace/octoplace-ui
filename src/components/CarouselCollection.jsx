@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button, Box, Typography } from "@mui/material";
@@ -7,23 +7,47 @@ import profileImage from "../assets/pp.png";
 import { Container } from "react-bootstrap";
 
 function CarouselCollection() {
-  var items = [
+  const [items, setItems] = useState([]);
+    
+  const defaultItems = [
     {
-      name: "Random Name #1",
-      description: "Probably the most random thing you have ever seen!",
+      name: "Banner1",
+      url: "",
       image: backgroundImage,
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
+      name: "Banner2",
+      url: "",
       image: backgroundImage,
     },
     {
-      name: "Random Name #3",
-      description: "Hello World!",
+      name: "Banner3",
+      url: "",
       image: backgroundImage,
     },
   ];
+
+  const downloadBanners = async () => {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    try {
+      const response = await fetch(apiUrl + 'banners/lists');
+
+      if (response.ok) {
+        const bannerInfos = await response.json();
+        setItems(bannerInfos);
+      } else {
+        console.error('Failed to get banner file');
+        setItems(defaultItems)
+      }
+    } catch (error) {
+      console.error('Error downloading banner file:', error);
+      setItems(defaultItems)
+    }
+  };
+
+  useEffect(() => {
+    downloadBanners();
+  }, []);
 
   const styles = {
     container: {
@@ -74,6 +98,22 @@ function CarouselCollection() {
     // },
   };
 
+  function isUrl(str) {
+    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return pattern.test(str);
+  }
+
+  const handleImageClick = (url) => {
+    if (isUrl(url)) {
+      window.open(url, '_blank');
+    }    
+  };
+
   return (
     <Carousel
       autoPlay={true}
@@ -96,11 +136,11 @@ function CarouselCollection() {
         },
       }}
     >
-      {items.map((item, i) => (
-        <Box>
+      {items.map((item, index) => (
+        <Box key={`index_${index}`}>
           <Paper
             style={{
-              backgroundImage: `url(${item.image})`,
+              backgroundImage: `url(${process.env.REACT_APP_API_URL}assets/banners/${item.filename})`,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -108,6 +148,7 @@ function CarouselCollection() {
               height: "50vh",
               cursor: "grab",
             }}
+            onClick={() => handleImageClick(item.url, '_blank')}
           >
             <Box
               sx={{

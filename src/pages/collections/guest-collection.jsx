@@ -39,6 +39,9 @@ function GuestCollection() {
   const isSettingsLoading = useSelector(
     (state) => state.collection.selectedCollectionSetting.isLoading
   );
+  const isNFTsLoading = useSelector(
+    (state) => state.collection.isLoading
+  );
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
@@ -62,7 +65,7 @@ function GuestCollection() {
       dispatch(
         getCollectionOwner({ address: result.type_id, network: network })
       );
-    }
+    }    
   }, [collections]);
 
   return (
@@ -261,7 +264,8 @@ function GuestCollection() {
             </Button>
           </Box>
 
-          {activeMenu === "collection" && (
+          {
+          activeMenu === "collection" && !isNFTsLoading && (
             <NFTlist nfts={selectedCollection.nfts} view={view} />
           )}
           {activeMenu === "content" && (

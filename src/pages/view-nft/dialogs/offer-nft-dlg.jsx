@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -15,8 +15,18 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Grid,
 } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputBase from "@mui/material/InputBase";
+import { NFTMarketCard } from "../components/nft-market-card";
+import { styled } from "@mui/material/styles";
 import { Close } from "@mui/icons-material";
+import TuneIcon from "@mui/icons-material/Tune";
+import FilterComponent from "../../../components/FilterComponent";
+import Searchbox from "../../../components/searchbox";
 import { useSelector } from "react-redux";
 import { filterListedNFTs } from "../../../utils/filter";
 import { getImageUrl } from "../../../utils/string-util";
@@ -27,6 +37,28 @@ import { Contract } from "@ethersproject/contracts";
 import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
 import axios from "axios";
+import { width } from "@mui/system";
+
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+  "& .MuiInputBase-input": {
+    padding: ".3rem 1rem",
+    fontSize: ".9rem",
+    borderRadius: ".75rem",
+    position: "relative",
+    color: "#f4f4f4",
+    backgroundColor: "transparent",
+    border: "1px solid #ced4da",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    "&:focus": {
+      borderRadius: ".75rem",
+      borderColor: "#ced4da",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+    "& .MuiSelect-icon": {
+      color: "white",
+    },
+  },
+}));
 
 export const OfferNFTDialog = (props) => {
   const { onClose, open, listingId, network } = props;
@@ -37,14 +69,37 @@ export const OfferNFTDialog = (props) => {
     onClose();
   };
   const navigate = useNavigate();
+  const [view, setView] = useState(2);
+
+  const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const handleChange = (event) => {
+    setOrderMethod(event.target.value);
+  };
 
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [selectedNftOffer, setSelectedNftOffer] = useState();
-  const [myNFT, setMyNFT] = useState([]);
+  const [myNFTs, setMyNFT] = useState([]);
+  
   const handleListItemClick = (event, index, item) => {
     setSelectedIndex(index);
     setSelectedNftOffer(item);
   };
+  
+  const [openFilterMenu, setOpenFilterMenu] = useState(false);
+  
+  const [keyword, setKeyword] = useState("");
+  const [filterObj, setFilterObj] = useState(
+    {
+      minPrice: 0,
+      maxPrice: 0,
+      blockchain: "empty",
+      collection: "empty",
+      saleOnly: false,
+      auctionOnly: false,
+      offersReceived: false,
+      includeBurned: false,
+    }
+  );
 
   const createData = async () => {
     const netInfo = getNetworkInfo(network);
@@ -54,6 +109,7 @@ export const OfferNFTDialog = (props) => {
       netInfo.dataNetwork.SWAP_ABI,
       provider
     );
+
     let offers = await contract.readAllOffers();
     offers = formatOffers(offers, network);
     let myNFTS = filterListedNFTs(
@@ -61,13 +117,18 @@ export const OfferNFTDialog = (props) => {
       listings,
       offers
     );
+
     let nftArr = [];
     for (var nftItem of myNFTS){
       if(nftItem.url){
         const meta = await getMetadata(nftItem.url);
         nftArr = [...nftArr, {...nftItem, metadata: meta}]
       }
+      else {
+        nftArr = [...nftArr, nftItem]
+      }
     }
+
     setMyNFT(nftArr);
   };
 
@@ -81,12 +142,45 @@ export const OfferNFTDialog = (props) => {
     const metadataResult = await axios.get(url);
     return metadataResult.data;
   }
+
+  const handleSearch = (event) => {
+    setKeyword(event.target.value);
+  };
+
+  const handleFilter = (filterObj) => {
+    setFilterObj(filterObj);
+  };
+
+  const filteredMyNFTs = myNFTs.filter((item) => {
+    if (item.metadata.name && !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
+      return false;
+    }
+
+    if (filterObj.minPrice !== 0 && parseInt(item.Price, 10) < filterObj.minPrice) {
+      return false;
+    }
+
+    if (filterObj.maxPrice !== 0 && parseInt(item.Price, 10) > filterObj.maxPrice) {
+      return false;
+    }
+
+    if (filterObj.blockchain !== "empty" && item.network.toLowerCase() !== filterObj.blockchain) {
+      return false;
+    }
+
+    if (filterObj.collection !== "empty" && item.contractAddress !== filterObj.collection) {
+      return false;
+    }
+
+    return true;
+  });
+
   return (
-    <Dialog fullWidth open={open} className="nft-list-dlg">
+    <Dialog fullWidth maxWidth="lg" open={open} className="nft-list-dlg">
       <DialogTitle className="title">
         <Box display="flex" flexDirection="row" alignItems="center">
           <Typography sx={{ ml: "8px" }} variant="h5">
-            Propose NFT for swap
+            Pick NFT
           </Typography>
           <span className="spacer"></span>
           <IconButton onClick={handleClose}>
@@ -94,9 +188,9 @@ export const OfferNFTDialog = (props) => {
           </IconButton>
         </Box>
       </DialogTitle>
-      <Divider />
+      {/* <Divider /> */}
       <DialogContent sx={{ maxHeight: "60vh" }}>
-        {!loading && <Typography>Select your NFT for swap.</Typography>}
+        {/* {!loading && <Typography>Select your NFT for swap.</Typography>} */}
         {loading && (
           <Box>
             <Box sx={style.progress}>
@@ -107,7 +201,7 @@ export const OfferNFTDialog = (props) => {
             </Box>
           </Box>
         )}
-        <List component="nav">
+        {/* <List component="nav">
           {myNFT.map( (item, index) => {
             let obj;
             try {
@@ -171,11 +265,101 @@ export const OfferNFTDialog = (props) => {
               </ListItemButton>
             );
           })}
-        </List>
+        </List> */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            color: "#f4f4f4",
+            mb: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Typography sx={{ ml: "8px" }} variant="h5">
+              NFT
+            </Typography>
+            <FormControl sx={{ m: 1 }} variant="standard" size="small">
+              <Select
+                value={orderMethod}
+                onChange={handleChange}
+                input={<BootstrapInput />}
+                sx={{
+                  "& .MuiSelect-icon": {
+                    color: "white",
+                  },
+                }}
+              >
+                <MenuItem value="Price: High to Low">High to Low</MenuItem>
+                <MenuItem value="Price: Low to High">Low to High</MenuItem>
+                <MenuItem value="Newest">Newest</MenuItem>
+                <MenuItem value="Oldest">Oldest</MenuItem>
+              </Select>
+            </FormControl>
+            <IconButton
+              sx={{
+                border: "1px solid #c6c6c6",
+                borderRadius: ".75rem",
+                color: "#f4f4f4",
+              }}
+              // toggle filter menu
+              onClick={() => setOpenFilterMenu(!openFilterMenu)}
+            >
+              <TuneIcon
+                sx={{
+                  fontSize: "1rem",
+                }}
+              />
+            </IconButton>
+          </Box>
+          <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
+        </Box>
+        <Fragment>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              gap: 2,
+            }}
+          >
+            {openFilterMenu && <FilterComponent filterPage={"Market"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+            <Grid container spacing={2}>
+            {view !== 1 &&
+              filteredMyNFTs.length > 0 &&
+              filteredMyNFTs.map((item, index) => {
+                return (
+                  <Grid
+                    key={`index_${index}`}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={view}
+                    sx={{
+                      my: 2,
+                    }}
+                  >
+                    <NFTMarketCard marketItem={item} view={view} />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        </Fragment>
       </DialogContent>
       <DialogActions sx={style.dlgActions}>
         <Button
-          disabled={loading}
+          disabled={loading || myNFTs.length == 0}
+          sx={style.orangeButton}
           onClick={() => {
             onClose();
             navigate(
@@ -184,7 +368,7 @@ export const OfferNFTDialog = (props) => {
           }}
           variant="contained"
         >
-          Proceed
+          SAVE
         </Button>
       </DialogActions>
     </Dialog>
@@ -197,8 +381,24 @@ const style = {
     height: "auto",
   },
   dlgActions: {
-    paddingRight: "24px",
+    // paddingRight: "24px",
+    direction: "column",
     paddingBottom: "24px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 3,
+  },
+  orangeButton: {
+    width: "100%",
+    backgroundColor: "#F78C09",
+    boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.25)",
+    borderRadius: ".625rem",
+    color: "#262626",
+    fontSize: "1rem",
+    fontWeight: 600,
+    width: 300,
+    mb: 2,
   },
   paper: {
     padding: "5px",

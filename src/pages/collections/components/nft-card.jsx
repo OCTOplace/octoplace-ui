@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { memo } from "react";
 import { Box, Typography } from "@mui/material";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import verifiedLogo from "../../../assets/verified.svg";
 
-export const NFTCard = ({ view, nft }) => {
+const MemoNFTCard = ({ view, nft }) => {
   const [imgUrl, setImgUrl] = useState();
 
   const styles = {
@@ -126,3 +126,5 @@ export const NFTCard = ({ view, nft }) => {
     </>
   );
 };
+
+export const NFTCard = memo(MemoNFTCard);

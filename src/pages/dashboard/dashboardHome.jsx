@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../utils/format-listings";
 import { setActiveListings } from "../../redux/slices/listing-slice";
+import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
+import { useWeb3React } from "@web3-react/core";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { ContentCopy, FacebookRounded } from "@mui/icons-material";
@@ -22,9 +24,12 @@ function DashboardHome() {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
+  const myNFTs = useSelector((state) => state.myNFT.nfts);
+  const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("nft");
+  const { account, chainId } = useWeb3React();
 
   const metadata = {
     name: "E.R.V Gandalf #54",
@@ -238,11 +243,37 @@ function DashboardHome() {
   };
 
   useEffect(() => {
+    if (myNFTs.length > 0) {
+      setMyNFTListings(transformData(myNFTs));
+    }
+    
     if (listings.length > 0) {
       const active = getActiveListings(listings);
       dispatch(setActiveListings(active));
     }
-  }, [listings]);
+
+    dispatch(
+      getCollectionOwner({ address: account, network: "theta" })
+    );
+
+  }, [myNFTs]);
+
+  function transformData(nfts) {
+    return nfts.map(nft => {
+      const item = {
+        listingNFT: {
+          collectionName: "",
+          collectionSymbol: "",
+          contractAddress: nft.contractAddress,
+          tokenId: Number(nft.tokenId),
+          metadata: (nft.metadata ? nft.metadata : null),
+          url: (nft.uri? nft.uri : ""),
+          network: nft.network
+        }
+      }
+      return item;
+    })
+  }
 
   return (
     <Box>
@@ -440,10 +471,10 @@ function DashboardHome() {
           </Box>
 
           {activeMenu === "nft" && (
-            <NFTlist activeListings={activeListings} view={view} />
+            <NFTlist activeListings={myNFTListings} view={view} />
           )}
           {activeMenu === "inbox" && (
-            <Content activeListings={activeListings} view={view} />
+            <Content activeListings={myNFTListings} view={view} />
           )}
         </Container>
       </Box>
