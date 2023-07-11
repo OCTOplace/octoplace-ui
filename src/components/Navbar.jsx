@@ -16,6 +16,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import faucetImg from "../assets/faucet.png";
+// import Searchbox from "./searchbox";
 
 const WalletButton = styled(Button)({
   boxShadow: "none",
@@ -80,7 +81,7 @@ export const AppNavbar = () => {
             {/* <Nav className="me-auto">
               <Searchbox className="search-nav" type="text" />
             </Nav> */}
-            {/* <span style={{ flex: "1 auto" }}></span> */}
+            <span style={{ flex: "1 auto" }}></span>
             <Nav>
               <Nav.Link onClick={() => navigate("/market")}>Market</Nav.Link>
               <Nav.Link onClick={() => navigate("/collections")}>

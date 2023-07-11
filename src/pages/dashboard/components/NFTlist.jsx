@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { Fragment, useState } from "react";
 import { NFTListingCard } from "../../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
@@ -7,6 +7,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
+import TuneIcon from "@mui/icons-material/Tune";
+import FilterComponent from "../../../components/FilterComponent";
+import Searchbox from "../../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -28,10 +31,62 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 function NFTlist({ activeListings, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [openFilterMenu, setOpenFilterMenu] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [filterObj, setFilterObj] = useState(
+    {
+      minPrice: 0,
+      maxPrice: 0,
+      blockchain: "empty",
+      collection: "empty",
+      saleOnly: false,
+      auctionOnly: false,
+      offersReceived: false,
+      includeBurned: false,
+    }
+  );
 
-  const handleChange = (event) => {
+  const handleOrder = (event) => {
     setOrderMethod(event.target.value);
   };
+
+  const handleSearch = (event) => {
+    setKeyword(event.target.value);
+  };
+
+  const handleFilter = (filterObj) => {
+    setFilterObj(filterObj);
+  };
+
+  const filteredNFTItems = activeListings.filter((item) => {
+    const selItem = item.listingNFT;
+
+    if (selItem.metadata.name && !selItem.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
+      return false;
+    }
+
+    if (filterObj.saleOnly && !selItem.saleOnly) {
+      return false;
+    }
+
+    if (filterObj.offersReceived && !selItem.offersReceived) {
+      return false;
+    }
+
+    if (filterObj.includeBurned && !selItem.includeBurned) {
+      return false;
+    }
+
+    if (filterObj.blockchain !== "empty" && selItem.network.toLowerCase() !== filterObj.blockchain) {
+      return false;
+    }
+
+    if (filterObj.collection !== "empty" && selItem.contractAddress !== filterObj.collection) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <Box>
@@ -65,7 +120,7 @@ function NFTlist({ activeListings, view }) {
           <FormControl sx={{ m: 1 }} variant="standard" size="small">
             <Select
               value={orderMethod}
-              onChange={handleChange}
+              onChange={handleOrder}
               input={<BootstrapInput />}
               sx={{
                 "& .MuiSelect-icon": {
@@ -79,20 +134,46 @@ function NFTlist({ activeListings, view }) {
               <MenuItem value="Oldest">Oldest</MenuItem>
             </Select>
           </FormControl>
+          <IconButton
+            sx={{
+              border: "1px solid #c6c6c6",
+              borderRadius: ".75rem",
+              color: "#f4f4f4",
+            }}
+            // toggle filter menu
+            onClick={() => setOpenFilterMenu(!openFilterMenu)}
+          >
+            <TuneIcon
+              sx={{
+                fontSize: "1rem",
+              }}
+            />
+          </IconButton>
         </Box>
+        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
       </Box>
       <Fragment>
-        <Grid container spacing={2}>
-          {view !== 1 &&
-            activeListings.length > 0 &&
-            activeListings.map((item, index) => {
-              return (
-                <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTListingCard listingItem={item} view={view} />
-                </Grid>
-              );
-            })}
-        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          {openFilterMenu && <FilterComponent filterPage={"Dashboard"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          <Grid container spacing={2}>
+            {view !== 1 &&
+              filteredNFTItems.length > 0 &&
+              filteredNFTItems.map((item, index) => {
+                return (
+                  <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                    <NFTListingCard listingItem={item} view={view} />
+                  </Grid>
+                );
+              })}
+          </Grid>
+        </Box>
       </Fragment>
     </Box>
   );

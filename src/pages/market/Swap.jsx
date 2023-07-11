@@ -3,7 +3,7 @@ import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
 import { getActiveListings, sortListigs } from "../../utils/format-listings";
-import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
@@ -11,7 +11,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-// import Searchbox from "../../components/searchbox";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Skelethon from "./compoents/sketlethon";
+import TuneIcon from "@mui/icons-material/Tune";
+import FilterComponent from "../../components/FilterComponent";
+import Searchbox from "../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -31,16 +35,30 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Swap() {
+function Swap({ isHome }) {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [orderMethod, setOrderMethod] = useState("Newest");
+  const [openFilterMenu, setOpenFilterMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [keyword, setKeyword] = useState("");
+  const [filterObj, setFilterObj] = useState(
+    {
+      minPrice: 0,
+      maxPrice: 0,
+      blockchain: "empty",
+      collection: "empty",
+      saleOnly: false,
+      auctionOnly: false,
+      offersReceived: false,
+      includeBurned: false,
+    }
+  );
 
-  const handleChange = (event) => {
+  const handleOrder = (event) => {
     setOrderMethod(event.target.value);
-
     switch (orderMethod) {
       case "Newest":
         dispatch(setActiveListings(sortListigs(activeListings, 1)));
@@ -56,15 +74,78 @@ function Swap() {
 
   useEffect(() => {
     if (listings.length > 0) {
+      setIsLoading(false);
       const active = getActiveListings(listings);
       const sorted = sortListigs(active, 0);
       dispatch(setActiveListings(sorted));
     }
   }, [listings]);
 
+  const fetchData = () => {
+    // When this function runs, add the next 6 new items to the active listing directory. If we are at the end of the list, set setHasMore to false.
+    if (activeListings.length >= listings.length) {
+      console.log("No more listings to fetch");
+      // setHasMore(false);
+      return;
+    }
+    // Calculate the index range for the next 6 items
+    const startIndex = activeListings.length;
+    const endIndex = Math.min(startIndex + 6, listings.length);
+    // Fetch the new items or generate them
+    const newItems = fetchNextItems(startIndex, endIndex); // Replace with your own logic
+    // Add the new items to the active listings
+    const updatedListings = [...activeListings, ...newItems];
+    // Update the active listings state
+    dispatch(setActiveListings(updatedListings));
+  };
+
+  const fetchNextItems = (startIndex, endIndex) => {
+    const newItems = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      newItems.push(listings[i]);
+    }
+    return newItems;
+  };
+
+  const refresh = () => {
+    setTimeout(() => {
+      dispatch(setActiveListings(activeListings.concat(activeListings)));
+    }, 1500);
+  };
+
+  const handleSearch = (event) => {
+    setKeyword(event.target.value);
+  };
+
+  const handleFilter = (filterObj) => {
+    setFilterObj(filterObj);
+  };
+
+  const filteredSwapItems = activeListings.filter((item, index) => {
+    const selItem = item.listingNFT;
+
+    if (selItem.name && !selItem.name.toLowerCase().includes(keyword.toLowerCase())) {
+      return false;
+    }
+
+    if (filterObj.blockchain !== "empty" && selItem.network.toLowerCase() !== filterObj.blockchain) {
+      return false;
+    }
+
+    if (filterObj.collection !== "empty" && selItem.contractAddress.toLowerCase() !== filterObj.collection.toLowerCase()) {
+      return false;
+    }
+
+    return true;
+  });
+
+  if (isLoading) {
+    return <Skelethon />;
+  }
+
   return (
     <Container>
-      <MarketMenu />
+      {!isHome && <MarketMenu />}
       <Box
         sx={{
           display: "flex",
@@ -95,7 +176,7 @@ function Swap() {
           <FormControl sx={{ m: 1 }} variant="standard" size="small">
             <Select
               value={orderMethod}
-              onChange={handleChange}
+              onChange={handleOrder}
               input={<BootstrapInput />}
               sx={{
                 "& .MuiSelect-icon": {
@@ -107,21 +188,91 @@ function Swap() {
               <MenuItem value="Oldest">Oldest</MenuItem>
             </Select>
           </FormControl>
+          <IconButton
+            sx={{
+              border: "1px solid #c6c6c6",
+              borderRadius: ".75rem",
+              color: "#f4f4f4",
+            }}
+            // toggle filter menu
+            onClick={() => setOpenFilterMenu(!openFilterMenu)}
+          >
+            <TuneIcon
+              sx={{
+                fontSize: "1rem",
+              }}
+            />
+          </IconButton>
         </Box>
-        <Box>{/* <Searchbox className="search-nav" type="text" /> */}</Box>
+        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
       </Box>
-      <Fragment>
-        <Grid container spacing={2}>
+      {/* <InfiniteScroll
+        dataLength={activeListings.length} //This is important field to render the next data
+        next={fetchData}
+        hasMore={true}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+        // below props only if you need pull down functionality
+        refreshFunction={fetchData}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
+        }
+      >
+        <Fragment>
+          <Grid container spacing={2}>
+          {openFilterMenu && <FilterComponent filterPage={"Market"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
           {view !== 1 &&
-            activeListings.length > 0 &&
-            activeListings.map((item, index) => {
-              return (
-                <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                  <NFTListingCard listingItem={item} view={view} />
-                </Grid>
-              );
-            })}
-        </Grid>
+              filteredSwapItems.length > 0 &&
+              filteredSwapItems.map((item, index) => {
+                return (
+                  <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                    <NFTListingCard listingItem={item} view={view} />
+                  </Grid>
+                );
+              })}
+          </Grid>
+        </Fragment>
+      </InfiniteScroll> */}
+      <Fragment>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          {openFilterMenu && <FilterComponent filterPage={"Swap"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          <Grid container spacing={2}>
+            {view !== 1 &&
+              filteredSwapItems.length > 0 &&
+              filteredSwapItems.map((item, index) => {
+                return (
+                  <Grid
+                    key={`index_${index}`}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={view}
+                    sx={{
+                      my: 2,
+                    }}
+                  >
+                    <NFTListingCard listingItem={item} view={view} />
+                  </Grid>
+                );
+              })}
+          </Grid>
+        </Box>
       </Fragment>
     </Container>
   );

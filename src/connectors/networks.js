@@ -1,15 +1,16 @@
 import swapabi from "../abi/swap.json";
 import ercabi from "../abi/erc721.json";
 import feeAbi from "../abi/feeAbi.json";
-import discussionAbi from "../abi/discussionAbi.json";
+import nftDiscussionAbi from "../abi/discussionAbi.json";
 import faucetAbi from "../abi/faucet.json";
 import marketAbi from "../abi/marketplace.json";
-
+import collectionDiscussionsAbi from "../abi/collection-discussions.json";
  const thetaRpc = "https://eth-rpc-api.thetatoken.org/rpc";
  const thetaChainId = "0x169";
  const thetaDataContract = "0xdfB00e816bC17f46f90aeD507f9e36C3C1db1f53";
  const thetaSwapContract = "0x6e4c614da85DD861e08f84706742239dBA892Df1";
- const thetaDiscussions = "0x70b6ebf21cb6cbbaaf695725e610f0914e48845c";
+ const thetaNFTDiscussions = "0x70b6ebf21cb6cbbaaf695725e610f0914e48845c";
+ const thetaCollectionDisscussions = "0x25Ffe4FCd767411aa1Acc0ef127d07D8F7D1ff8e";
  const thetaFaucet = "0xf693b83d35b336ffe54dd22845ee7516218ba3fb";
  const thetaMarketplaceContract = "0x465a8f1a0bd542f1ea9ae10165e6eeb5ec51f4c3";
  const swapAbi = swapabi;
@@ -55,8 +56,10 @@ import marketAbi from "../abi/marketplace.json";
         SWAP_CONTRACT: thetaSwapContract,
         SWAP_ABI: swapAbi,
         ERC_ABI: ercAbi,
-        DISCUSSION_CONTRACT:thetaDiscussions, 
-        DISCUSSION_ABI:discussionAbi,
+        NFT_DISCUSSION_CONTRACT:thetaNFTDiscussions, 
+        NFT_DISCUSSION_ABI:nftDiscussionAbi,
+        COLLECTION_DISCUSSION_CONTRACT:thetaCollectionDisscussions, 
+        COLLECTION_DISCUSSION_ABI:collectionDiscussionsAbi,
         FAUCET: thetaFaucet,
         FEE_ABI:feeAbi,
         FAUCET_ABI: faucetAbi,
@@ -70,8 +73,10 @@ import marketAbi from "../abi/marketplace.json";
         SWAP_CONTRACT: kavaSwapContract,
         SWAP_ABI: swapAbi,
         ERC_ABI: ercAbi,
-        DISCUSSION_CONTRACT:thetaDiscussions, 
-        DISCUSSION_ABI:discussionAbi,
+        NFT_DISCUSSION_CONTRACT:thetaNFTDiscussions, 
+        NFT_DISCUSSION_ABI:nftDiscussionAbi,
+        COLLECTION_DISCUSSION_CONTRACT:thetaCollectionDisscussions, 
+        COLLECTION_DISCUSSION_ABI:collectionDiscussionsAbi,
         FAUCET: thetaFaucet,
         FEE_ABI:feeAbi,
         FAUCET_ABI: faucetAbi,

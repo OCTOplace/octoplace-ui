@@ -36,13 +36,14 @@ import {
   showTxDialog,
 } from "../../redux/slices/app-slice";
 import copy from "clipboard-copy";
-import { setNFTDiscussions } from "../../redux/slices/discussions-slice";
+import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
 import {
-  createNFTDiscussion,
-  getNftDiscussions,
+  createCollectionDiscussion,
+  getCollectionDiscussions,
 } from "../../redux/thunk/get-nft-discussions";
-export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
+export const CollectionDiscussions = ({ address, network, isAccordion }) => {
   const [expanded, setExpanded] = useState(false);
+
   const styles = {
     accordion2: {
       backgroundColor: "transparent",
@@ -50,13 +51,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       border: "1px solid  #6C6C6C",
       borderRadius: ".5rem",
       marginBottom: "1rem",
-      "&:hover": {
-        border: "1px solid #f4f4f4",
-        color: "#f4f4f4",
-      },
-      "&:hover .MuiSvgIcon-root": {
-        color: "#f4f4f4",
-      },
     },
     accordionHeader: {
       fontWeight: 400,
@@ -137,7 +131,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
   const messages = useSelector(
-    (state) => state.discussion.selectedNFTDiscussions
+    (state) => state.discussion.selectedCollectionDiscussions
   );
 
   const dispatch = useDispatch();
@@ -147,15 +141,15 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(setNFTDiscussions([]));
+      dispatch(setCollectionDiscussions([]));
     };
   }, []);
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
     const contract = new Contract(
-      netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT,
-      netInfo.dataNetwork.NFT_DISCUSSION_ABI,
+      netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT,
+      netInfo.dataNetwork.COLLECTION_DISCUSSION_ABI,
       provider
     );
 
@@ -178,14 +172,14 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   };
 
   const getAllMessages = async () => {
-    dispatch(getNftDiscussions({ address, tokenId, network }));
+    dispatch(getCollectionDiscussions({ address, network }));
   };
 
   useEffect(() => {
-    if (address && tokenId) {
+    if (address) {
       getAllMessages();
     }
-  }, [address, tokenId]);
+  }, [address]);
 
   const getAllowance = async () => {
     const netInfo = getNetworkInfo("theta");
@@ -197,7 +191,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     );
     const allowedAmt = await tokenContract.allowance(
       account,
-      netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT
+      netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT
     );
     setFeeAllowance(Number(formatEther(allowedAmt)));
   };
@@ -236,7 +230,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
         signer
       );
       const txResult = await contract.approve(
-        netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT,
+        netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT,
         parseUnits(commentFee.toString(), "ether")
       );
       dispatch(setTxDialogHash(txResult.hash));
@@ -267,21 +261,16 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       const provider = new Web3Provider(window.ethereum, "any");
       const signer = await provider.getSigner();
       const contract = new Contract(
-        netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT,
-        netInfo.dataNetwork.NFT_DISCUSSION_ABI,
+        netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT,
+        netInfo.dataNetwork.COLLECTION_DISCUSSION_ABI,
         signer
       );
-      const txResult = await contract.addComment_erc20(
-        address,
-        tokenId,
-        message
-      );
+      const txResult = await contract.addComment_erc20(address, message);
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       dispatch(
-        createNFTDiscussion({
+        createCollectionDiscussion({
           address,
-          tokenId,
           network,
           sender: account,
           message,

@@ -45,7 +45,7 @@ export const NFTView = () => {
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
-  const marketItems= useSelector((state) => state.market.markets);
+  const marketItems = useSelector((state) => state.market.markets);
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
   const [isListed, setListed] = useState(false);
@@ -133,10 +133,10 @@ export const NFTView = () => {
     }
   };
 
-  const handleUpdatePrice = async () =>{
+  const handleUpdatePrice = async () => {
     setIsUpdatePrice(true);
     setSellOpen(true);
-  }
+  };
 
   const handleRemoveNFT = async () => {
     try {
@@ -167,14 +167,13 @@ export const NFTView = () => {
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
     } catch (error) {
-      console.log(error);
+      console.log("Error on handleRemoveNFT", error);
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
     }
     forceUpdate();
   };
-
 
   const cancelSale = async () => {
     dispatch(showTxDialog());
@@ -195,7 +194,7 @@ export const NFTView = () => {
       );
       const txResult = await contract.createMarketCancel(
         address,
-        market.MarketId,
+        market.MarketId
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
@@ -213,13 +212,13 @@ export const NFTView = () => {
       toast.success("NFT Listing Successful!");
       setSellOpen(false);
     } catch (err) {
-      console.log(err);
+      console.log("Error on cancelSale", err);
       dispatch(setTxDialogFailed(true));
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
     forceUpdate();
-  }
+  };
 
   const buyNFT = async () => {
     dispatch(showTxDialog());
@@ -254,7 +253,7 @@ export const NFTView = () => {
           network: network,
           listingId: market.Id,
           isSold: true,
-          owner: account
+          owner: account,
         })
       );
       dispatch(setTxDialogFailed(false));
@@ -262,22 +261,28 @@ export const NFTView = () => {
       dispatch(setTxDialogPending(false));
       toast.success("NFT Listing Successful!");
     } catch (err) {
-      console.log(err);
+      console.log("Error on buyNFT", err);
       dispatch(setTxDialogFailed(true));
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
     forceUpdate();
-  }
+  };
 
   useEffect(() => {
-    if(marketItems.length > 0){
-      const index = marketItems.findIndex(obj => obj.TokenId === Number(tokenId) && obj.NFTContractAddress === address && obj.Network === network);
-      console.log(marketItems[index], index, marketItems);
+    if (marketItems.length > 0) {
+      const index = marketItems.findIndex(
+        (obj) =>
+          obj.TokenId === Number(tokenId) &&
+          obj.NFTContractAddress === address &&
+          obj.Network === network
+      );
       setMarket(marketItems[index]);
     }
-  }, [marketItems])
+  }, [marketItems]);
+
   console.log("metadata", metadata, address, tokenId, network);
+
   return (
     <Fragment>
       <Box
@@ -335,36 +340,46 @@ export const NFTView = () => {
                 </Button>
               </>
             )}
-            {!loading && market && account.toUpperCase() === market.SellerAddress.toUpperCase() && market.IsSold === false && !isListed && (
-              <Box sx={styles.row}>
-              <Button
-                sx={styles.orangeButton}
-                color="error"
-                variant="contained"
-                onClick={cancelSale}
-              >
-                Remove Listing
-              </Button>
-              <Button
-                sx={styles.orangeButton}
-                variant="contained"
-                onClick={handleUpdatePrice}
-              >
-                Update Price
-              </Button>
-            </Box>
-            )}
-            {!loading && market && account.toUpperCase() !== market.SellerAddress.toUpperCase() && market.IsSold === false && !isListed && (
-              <Box sx={styles.row}>
-              <Button
-                sx={styles.orangeButton}
-                variant="contained"
-                onClick={buyNFT}
-              >
-                Buy
-              </Button>
-            </Box>
-            )}
+            {!loading &&
+              market &&
+              market.SellerAddress &&
+              account.toUpperCase() === market.SellerAddress.toUpperCase() &&
+              market.IsSold === false &&
+              !isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    color="error"
+                    variant="contained"
+                    onClick={cancelSale}
+                  >
+                    Remove Listing
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleUpdatePrice}
+                  >
+                    Update Price
+                  </Button>
+                </Box>
+              )}
+            {!loading &&
+              market &&
+              market.SellerAddress &&
+              account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
+              market.IsSold === false &&
+              !isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={buyNFT}
+                  >
+                    Buy
+                  </Button>
+                </Box>
+              )}
             {!loading && account !== owner && isListed && (
               <Box sx={styles.row}>
                 <Button
@@ -376,11 +391,11 @@ export const NFTView = () => {
                 </Button>
               </Box>
             )}
-            {
-              market && (
-                <Typography variant="h6" sx={{mt:2, mb:2}}>Price: {`${market.Price}`} TFUEL</Typography>
-              )
-            }
+            {market && market.Price && (
+              <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>
+                Price: {`${market.Price}`} TFUEL
+              </Typography>
+            )}
             <NFTDetails
               metadata={metadata}
               address={address}

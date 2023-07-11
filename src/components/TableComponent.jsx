@@ -42,7 +42,7 @@ function TableComponent({ list }) {
             minWidth: 80,
             color: "#f4f4f4",
             border: "1px solid #ced4da",
-            borderRadius: "8px",
+            borderRadius: ".5rem",
           }}
           size="small"
         >
@@ -51,7 +51,8 @@ function TableComponent({ list }) {
             onChange={handleChange}
             sx={{
               color: "#f4f4f4",
-              fontSize: "12px",
+              fontSize: ".75rem",
+              borderRadius: ".5rem",
               "& .MuiSelect-icon": {
                 color: "white",
               },

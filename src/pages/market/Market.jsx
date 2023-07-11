@@ -3,7 +3,14 @@ import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
 import { getActiveListings } from "../../utils/format-listings";
-import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
@@ -12,7 +19,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
 import { NFTMarketCard } from "./compoents/nft-market-card";
-// import Searchbox from "../../components/searchbox";
+import TuneIcon from "@mui/icons-material/Tune";
+import FilterComponent from "../../components/FilterComponent";
+import Searchbox from "../../components/searchbox";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -35,28 +44,71 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Market() {
+function Market({ isHome }) {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [openFilterMenu, setOpenFilterMenu] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [filterObj, setFilterObj] = useState(
+    {
+      minPrice: 0,
+      maxPrice: 0,
+      blockchain: "empty",
+      collection: "empty",
+      saleOnly: false,
+      auctionOnly: false,
+      offersReceived: false,
+      includeBurned: false,
+    }
+  );
 
-  const handleChange = (event) => {
+  useEffect(() => {
+    console.log(marketItems);
+  }, [marketItems]);
+
+  const handleOrder = (event) => {
     setOrderMethod(event.target.value);
   };
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
+  const handleSearch = (event) => {
+    setKeyword(event.target.value);
+  };
+
+  const handleFilter = (filterObj) => {
+    setFilterObj(filterObj);
+  };
+
+  const filteredMarketItems = marketItems.filter((item) => {
+    if (item.TokenName && !item.TokenName.toLowerCase().includes(keyword.toLowerCase())) {
+      return false;
     }
-  }, [listings]);
+
+    if (filterObj.minPrice !== 0 && parseInt(item.Price, 10) < filterObj.minPrice) {
+      return false;
+    }
+
+    if (filterObj.maxPrice !== 0 && parseInt(item.Price, 10) > filterObj.maxPrice) {
+      return false;
+    }
+
+    if (filterObj.blockchain !== "empty" && item.Network.toLowerCase() !== filterObj.blockchain) {
+      return false;
+    }
+
+    if (filterObj.collection !== "empty" && item.NFTContractAddress !== filterObj.collection) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <Container>
-      <MarketMenu />
+      {!isHome && <MarketMenu />}
       <Box
         sx={{
           display: "flex",
@@ -87,7 +139,7 @@ function Market() {
           <FormControl sx={{ m: 1 }} variant="standard" size="small">
             <Select
               value={orderMethod}
-              onChange={handleChange}
+              onChange={handleOrder}
               input={<BootstrapInput />}
               sx={{
                 "& .MuiSelect-icon": {
@@ -101,21 +153,55 @@ function Market() {
               <MenuItem value="Oldest">Oldest</MenuItem>
             </Select>
           </FormControl>
+          <IconButton
+            sx={{
+              border: "1px solid #c6c6c6",
+              borderRadius: ".75rem",
+              color: "#f4f4f4",
+            }}
+            // toggle filter menu
+            onClick={() => setOpenFilterMenu(!openFilterMenu)}
+          >
+            <TuneIcon
+              sx={{
+                fontSize: "1rem",
+              }}
+            />
+          </IconButton>
         </Box>
-        <Box>{/* <Searchbox className="search-nav" type="text" /> */}</Box>
+        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
       </Box>
       <Fragment>
-        <Grid container spacing={2}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          {openFilterMenu && <FilterComponent filterPage={"Market"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          <Grid container spacing={2}>
           {view !== 1 &&
-            marketItems.length > 0 &&
-            marketItems.map((item, index) => {
+            filteredMarketItems.length > 0 &&
+            filteredMarketItems.map((item, index) => {
               return (
-                <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                <Grid
+                  key={`index_${index}`}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={view}
+                  sx={{
+                    my: 2,
+                  }}
+                >
                   <NFTMarketCard marketItem={item} view={view} />
                 </Grid>
               );
             })}
-        </Grid>
+          </Grid>
+        </Box>
       </Fragment>
     </Container>
   );

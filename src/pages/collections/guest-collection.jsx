@@ -13,12 +13,9 @@ import {
   Edit,
   Settings,
 } from "@mui/icons-material";
-import twitter from "./../../assets/twitter.svg";
-import telegram from "./../../assets/telegram.svg";
-import bgImage from "../../assets/bg-collection.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
-import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import { useNavigate, useParams } from "react-router-dom";
 import { setSelectedCollection } from "../../redux/slices/collections-slice";
 import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
@@ -27,6 +24,7 @@ import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
 import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
 import { useWeb3React } from "@web3-react/core";
+import RecentMessages from "./components/RecentMessages";
 
 function GuestCollection() {
   const dispatch = useDispatch();
@@ -40,6 +38,9 @@ function GuestCollection() {
   );
   const isSettingsLoading = useSelector(
     (state) => state.collection.selectedCollectionSetting.isLoading
+  );
+  const isNFTsLoading = useSelector(
+    (state) => state.collection.isLoading
   );
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
@@ -64,7 +65,7 @@ function GuestCollection() {
       dispatch(
         getCollectionOwner({ address: result.type_id, network: network })
       );
-    }
+    }    
   }, [collections]);
 
   return (
@@ -213,7 +214,7 @@ function GuestCollection() {
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
-              { settings && settings.AboutText && (
+              {settings && settings.AboutText && (
                 <>
                   <Typography sx={styles.h2}>About</Typography>
                   <Typography sx={styles.h5}>{settings.AboutText}</Typography>
@@ -222,12 +223,12 @@ function GuestCollection() {
             </Box>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>Recent messages</Typography>
-              <NFTDiscussions
-                address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
-                tokenId={54}
+              {/* <CollectionDiscussions
+                address={selectedCollection.type_id}
                 network={network}
                 isAccordion={false}
-              />
+              /> */}
+              <RecentMessages />
             </Box>
           </Box>
           <Box sx={styles.menu}>
@@ -263,16 +264,16 @@ function GuestCollection() {
             </Button>
           </Box>
 
-          {activeMenu === "collection" && (
+          {
+          activeMenu === "collection" && !isNFTsLoading && (
             <NFTlist nfts={selectedCollection.nfts} view={view} />
           )}
           {activeMenu === "content" && (
             <Content activeListings={activeListings} view={view} />
           )}
           {activeMenu === "discussion" && (
-            <NFTDiscussions
-              address={0xa366c1e80642abcaa190ed4fd7c9ba642228053b}
-              tokenId={54}
+            <CollectionDiscussions
+              address={selectedCollection.type_id}
               network={network}
               isAccordion={false}
             />

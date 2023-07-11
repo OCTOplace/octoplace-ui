@@ -3,81 +3,87 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import EmailIcon from "@mui/icons-material/Email";
 import { Fragment } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import discord from "../assets/discord.svg";
+import { FaDiscord } from "react-icons/fa";
 import { MailLockOutlined } from "@mui/icons-material";
 
 export const Footer = () => {
+  const styles = {
+    nav: {
+      backgroundColor: "#262626",
+      position: "relative",
+      bottom: 0,
+      width: "100%",
+      paddingTop: 2,
+    },
+    row: {
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      gap: 1,
+      color: "white",
+      width: "100%",
+      fontSize: "1rem",
+    },
+    legal: {
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      gap: 3,
+      color: "#6C6C6C",
+      mt: ".75rem",
+      mb: ".75rem",
+      width: "100%",
+      fontSize: ".75rem",
+      cursor: "pointer",
+    },
+    legalText: {
+      "&:hover": {
+        color: "#F4F4F4",
+      },
+    },
+    icon: {
+      color: "#fff",
+      "&:hover": {
+        color: "#F78C09",
+      },
+    },
+  };
   return (
     <Fragment>
-      <nav
-        style={{
-          backgroundColor: "#262626",
-          position: "relative",
-          bottom: 0,
-          width: "100%",
-          paddingTop: "30px",
-        }}
-      >
+      <nav style={styles.nav}>
         <Container>
           <Row>
-            {/* <Col lg={12} md={12} sm={12}>
-              <Divider
-                sx={{
-                  bgcolor: "#f4f4f4",
-                  mt: "16px",
-                }}
-              />
-            </Col> */}
             <Col lg={12} sm={12} md={12}>
               <Box flexDirection="row" display="flex">
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    gap: 1,
-                    color: "white",
-                    width: "100%",
-                    fontSize: "16px",
-                  }}
-                >
+                <Box sx={styles.row}>
                   <Typography>&#169; 2023</Typography>
                   <Typography>OCTO</Typography>
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    gap: 3,
-                    color: "#6C6C6C",
-                    mt: "12px",
-                    mb: "12px",
-                    width: "100%",
-                    fontSize: "12px",
-                  }}
-                >
-                  <Typography>Privacy Policy</Typography>
-                  <Typography>Terms of Service</Typography>
-                  <Typography>Risks Disclamer</Typography>
-                  <div>
+                <Box sx={styles.legal}>
+                  <Typography sx={styles.legalText}>Privacy Policy</Typography>
+                  <Typography sx={styles.legalText}>
+                    Terms of Service
+                  </Typography>
+                  <Typography sx={styles.legalText}>Risks Disclamer</Typography>
+                  <Box>
                     <IconButton
                       href="https://twitter.com/octoplace"
                       target="_blank"
-                      color="primary"
+                      sx={styles.icon}
                     >
-                      <TwitterIcon className="icon" />
+                      <TwitterIcon />
                     </IconButton>
                     <IconButton
                       target="_blank"
                       href="https://discord.gg/73Ru5XUP2X"
+                      sx={styles.icon}
                     >
-                      <img width={26} src={discord} alt="discord" />
+                      <FaDiscord />
                     </IconButton>
-                    <IconButton href="mailto:" target="_blank" color="primary">
-                      <EmailIcon className="icon" />
+                    <IconButton href="mailto:" target="_blank" sx={styles.icon}>
+                      <EmailIcon />
                     </IconButton>
-                  </div>
+                  </Box>
                 </Box>
               </Box>
             </Col>

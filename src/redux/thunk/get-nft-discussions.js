@@ -21,7 +21,7 @@ export const getCollectionDiscussions = createAsyncThunk(
   async (nft, thunkAPI) => {
     const result = await axios.post(
       `${apiUrl}/discussions/collection-discussions`,
-      { address: nft.address, network: nft.network }
+      { contract: nft.address, network: nft.network }
     );
     return result.data;
   }
@@ -41,3 +41,15 @@ export const createNFTDiscussion = createAsyncThunk(
     }
   );
   
+
+  export const createCollectionDiscussion = createAsyncThunk(
+    "discussion/createCollectionDiscussion",
+    async (nft, thunkAPI) => {
+      const result = await axios.post(
+        `${apiUrl}/discussions/create-collection-discussion`,
+        { contract: nft.address, network: nft.network, sender: nft.sender, message:nft.message  }
+      );
+      thunkAPI.dispatch(getCollectionDiscussions({address:nft.address, network:nft.network}))
+      return result.data;
+    }
+  );

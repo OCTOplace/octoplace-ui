@@ -1,13 +1,16 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { Box, Typography, Button, TextField, Tooltip } from "@mui/material";
 import { Container } from "react-bootstrap";
 import InputAdornment from "@mui/material/InputAdornment";
 
-import bgImage from "../../assets/bg-collection.png";
+import bgImage from "../../assets/GrayBackground.jpeg";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+
 import { FacebookRounded, Info, SaveAlt, Settings } from "@mui/icons-material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
@@ -21,7 +24,13 @@ import { getRoyaltyInfo } from "../../redux/thunk/get-royalty-info";
 import { useWeb3React } from "@web3-react/core";
 import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
 import { useTheme } from "@mui/material";
-import { setTxDialogFailed, setTxDialogHash, setTxDialogPending, setTxDialogSuccess, showTxDialog } from "../../redux/slices/app-slice";
+import {
+  setTxDialogFailed,
+  setTxDialogHash,
+  setTxDialogPending,
+  setTxDialogSuccess,
+  showTxDialog,
+} from "../../redux/slices/app-slice";
 import { getNetworkInfo } from "../../connectors/networks";
 import { Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
@@ -48,6 +57,12 @@ function CollectionSettings() {
   const [royaltyReceiver, setRoyaltyReceiver] = useState(null);
   const [royaltyBips, setRoyaltyBips] = useState(null);
   const { account, chainId } = useWeb3React();
+  const onDrop = (acceptedFiles) => {
+    // Handle dropped files logic here
+    console.log(acceptedFiles);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const owner = useSelector(
     (state) => state.collection.selectedCollectionSetting.owner
   );
@@ -94,12 +109,15 @@ function CollectionSettings() {
       }
     }
   }, [settings]);
-   useEffect(() => {
-    if(royalty){
-      setRoyaltyReceiver((royalty.address !== zeroAddress)? royalty.address: null);
-      setRoyaltyBips(Number(royalty.bips)/100 > 0 ? Number(royalty.bips)/100 : null);
+  useEffect(() => {
+    if (royalty) {
+      setRoyaltyReceiver(
+        royalty.address !== zeroAddress ? royalty.address : null
+      );
+      setRoyaltyBips(
+        Number(royalty.bips) / 100 > 0 ? Number(royalty.bips) / 100 : null
+      );
     }
-    
   }, [royalty]);
   const theme = useTheme();
   const listing = {
@@ -177,7 +195,6 @@ function CollectionSettings() {
       id: settings.Id,
     };
 
-    console.log(saveObj);
     dispatch(updateCollectionSettings(saveObj));
   };
 
@@ -196,29 +213,84 @@ function CollectionSettings() {
     }
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
-    try{
+    try {
       const contract = new Contract(
         netDetails.dataNetwork.MARKETPLACE_CONTRACT,
         netDetails.dataNetwork.MARKET_ABI,
         signer
       );
-      const txResult = await contract.setCreatorFeeBasisPointsByCreator(Number(royaltyBips)*100, royaltyReceiver, collectionAddress);
+      const txResult = await contract.setCreatorFeeBasisPointsByCreator(
+        Number(royaltyBips) * 100,
+        royaltyReceiver,
+        collectionAddress
+      );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       toast.success("Royalty Settings Saved!");
-    }catch(err){
+    } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
-  }
+  };
   return (
     <Box>
-      <div
+      <div {...getRootProps()}>
+        <input
+          {...getInputProps()}
+          onChange={handleBannerSelection}
+          id="bannerInput"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+        {isDragActive ? (
+          <div>
+            <img
+              src={bgImage}
+              alt="bg-image"
+              style={{
+                width: "100vw",
+                height: "45vh",
+                objectFit: "cover",
+                opacity: 0.5,
+              }}
+            />
+            <Typography variant="h5" sx={styles.photoIcon}>
+              Drop the image here ...
+            </Typography>
+          </div>
+        ) : (
+          <div
+            onMouseEnter={() => setHoveredBG(true)}
+            onMouseLeave={() => setHoveredBG(false)}
+          >
+            <img
+              src={bannerSrc ? bannerSrc : bgImage}
+              alt="bg-image"
+              style={{
+                width: "100vw",
+                height: "45vh",
+                objectFit: "cover",
+              }}
+            />
+            {hoveredBG && (
+              <Button
+                onClick={handleBannerClick}
+                component="label"
+                sx={styles.buildIcon}
+              >
+                <AddAPhotoIcon sx={styles.editIcon} />
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+      {/* <div
         onMouseEnter={() => setHoveredBG(true)}
         onMouseLeave={() => setHoveredBG(false)}
       >
@@ -243,7 +315,7 @@ function CollectionSettings() {
             <AddAPhotoRoundedIcon sx={styles.editIcon} />
           </Button>
         )}
-      </div>
+      </div> */}
 
       <Box
         sx={{
@@ -287,6 +359,11 @@ function CollectionSettings() {
                   hiddenLabel
                   className="input-wo-padding"
                   disabled={!isOwner()}
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   InputProps={{
                     style: {
                       backgroundColor: "#3D3D3D",
@@ -295,7 +372,7 @@ function CollectionSettings() {
                       borderRadius: "0.594rem",
                       padding: "0.5rem",
                       width: "20rem",
-                      "& .MuiInputBase-input-MuiInput-input": {
+                      "& .MuiInputBaseInputMuiInputInput": {
                         padding: 0,
                       },
                     },
@@ -309,106 +386,137 @@ function CollectionSettings() {
           </Box>
           <Box sx={styles.row}>
             <Box sx={styles.aboutContent}>
-            <Box sx={styles.aboutContent}>
-              <Typography sx={styles.h2}>About</Typography>
-              <TextField
-                type="url"
-                variant="standard"
-                hiddenLabel
-                disabled={!isOwner()}
-                value={about}
-                onChange={(e) => setAbout(e.target.value)}
-                InputProps={{
-                  style: {
-                    backgroundColor: "#3D3D3D",
-                    color: "#6C6C6C",
-                    border: "1px solid #6C6C6C",
-                    borderRadius: "0.594rem",
-                    padding: "0.5rem",
-                  },
-                  disableUnderline: true,
-                  size: "small",
-                  placeholder: "| Input Description",
-                  rows: 5,
-                  multiline: true,
-                }}
-              />
-              <Button
-                disabled={!isOwner()}
-                sx={styles.orangeButton}
-                onClick={handleSave}
-                variant="contained"
-              >
-                Save
-              </Button>
-            </Box>
-            <Box sx={styles.aboutContent}>
-              <Typography sx={styles.h2}>Royalty Info <Tooltip placement="top-start" title="Please note that setting up the royalty information here will override EIP2981 defined royalty settings.">
-              <Info sx={{color:theme.palette.grey[700] }} /></Tooltip> </Typography>
-              <TextField
-                type="text"
-                variant="standard"
-                hiddenLabel
-                disabled={!isOwner()}
-                value={royaltyReceiver}
-                onChange={(e) => {setRoyaltyReceiver(e.target.value)}}
-                InputProps={{
-                  style: {
-                    backgroundColor: "#3D3D3D",
-                    color: "#6C6C6C",
-                    border: "1px solid #6C6C6C",
-                    borderRadius: "0.594rem",
-                    padding: "0.5rem",
-                  },
-                  disableUnderline: true,
-                  size: "small",
-                  placeholder: "| Royalty Receiving Address",
-                  rows: 1,
-                  multiline: false,
-                }}
-              />
-              <TextField
-                type="number"
-                variant="standard"
-                hiddenLabel
-                disabled={!isOwner()}
-                value={royaltyBips}
-                onChange={(e) => {setRoyaltyBips(e.target.value)}}
-                InputProps={{
-                  endAdornment:(
-                    <InputAdornment position="end">
-                    <Typography>%</Typography>
-                    </InputAdornment>
-                  ),
-                  style: {
-                    backgroundColor: "#3D3D3D",
-                    color: "#6C6C6C",
-                    border: "1px solid #6C6C6C",
-                    borderRadius: "0.594rem",
-                    padding: "0.5rem",
-                  },
-                  disableUnderline: true,
-                  size: "small",
-                  placeholder: "| Royalty %",
-                  rows: 1,
-                  multiline: false,
-                }}
-              />
-              <Button
-                disabled={!isOwner()}
-                sx={styles.orangeButton}
-                onClick={handleSaveRoyalty}
-                variant="contained"
-              >
-                Setup Royalty
-              </Button>
-            </Box>
+              <Box sx={styles.aboutContent}>
+                <Typography sx={styles.h2}>About</Typography>
+                <TextField
+                  type="url"
+                  variant="standard"
+                  hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
+                  disabled={!isOwner()}
+                  value={about}
+                  onChange={(e) => setAbout(e.target.value)}
+                  InputProps={{
+                    style: {
+                      backgroundColor: "#3D3D3D",
+                      color: "#6C6C6C",
+                      border: "1px solid #6C6C6C",
+                      borderRadius: "0.594rem",
+                      padding: "0.5rem",
+                    },
+                    disableUnderline: true,
+                    size: "small",
+                    placeholder: "| Input Description",
+                    rows: 5,
+                    multiline: true,
+                  }}
+                />
+                <Button
+                  disabled={!isOwner()}
+                  sx={styles.orangeButton}
+                  onClick={handleSave}
+                  variant="contained"
+                >
+                  Save
+                </Button>
+              </Box>
+              <Box sx={styles.aboutContent}>
+                <Typography sx={styles.h2}>
+                  Royalty Info{" "}
+                  <Tooltip
+                    placement="top-start"
+                    title="Please note that setting up the royalty information here will override EIP2981 defined royalty settings."
+                  >
+                    <Info sx={{ color: theme.palette.grey[700] }} />
+                  </Tooltip>{" "}
+                </Typography>
+                <TextField
+                  type="text"
+                  variant="standard"
+                  hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
+                  disabled={!isOwner()}
+                  value={royaltyReceiver}
+                  onChange={(e) => {
+                    setRoyaltyReceiver(e.target.value);
+                  }}
+                  InputProps={{
+                    style: {
+                      backgroundColor: "#3D3D3D",
+                      color: "#6C6C6C",
+                      border: "1px solid #6C6C6C",
+                      borderRadius: "0.594rem",
+                      padding: "0.5rem",
+                    },
+                    disableUnderline: true,
+                    size: "small",
+                    placeholder: "| Royalty Receiving Address",
+                    rows: 1,
+                    multiline: false,
+                  }}
+                />
+                <TextField
+                  type="number"
+                  variant="standard"
+                  hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
+                  disabled={!isOwner()}
+                  value={royaltyBips}
+                  onChange={(e) => {
+                    setRoyaltyBips(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Typography>%</Typography>
+                      </InputAdornment>
+                    ),
+                    style: {
+                      backgroundColor: "#3D3D3D",
+                      color: "#6C6C6C",
+                      border: "1px solid #6C6C6C",
+                      borderRadius: "0.594rem",
+                      padding: "0.5rem",
+                    },
+                    disableUnderline: true,
+                    size: "small",
+                    placeholder: "| Royalty %",
+                    rows: 1,
+                    multiline: false,
+                  }}
+                />
+                <Button
+                  disabled={!isOwner()}
+                  sx={styles.orangeButton}
+                  onClick={handleSaveRoyalty}
+                  variant="contained"
+                >
+                  Setup Royalty
+                </Button>
+              </Box>
             </Box>
             <Box sx={styles.socialcontent}>
               <TextField
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={telegram}
                 disabled={!isOwner()}
                 onChange={(e) => setTelegram(e.target.value)}
@@ -437,6 +545,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={twitter}
                 disabled={!isOwner()}
                 onChange={(e) => setTwitter(e.target.value)}
@@ -462,6 +575,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={facebook}
                 disabled={!isOwner()}
                 onChange={(e) => setFacebook(e.target.value)}
@@ -487,6 +605,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={insta}
                 disabled={!isOwner()}
                 onChange={(e) => setInsta(e.target.value)}
@@ -512,6 +635,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={discord}
                 disabled={!isOwner()}
                 onChange={(e) => setDiscord(e.target.value)}
@@ -537,6 +665,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={tiktok}
                 disabled={!isOwner()}
                 onChange={(e) => setTiktok(e.target.value)}
@@ -562,6 +695,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={youtube}
                 disabled={!isOwner()}
                 onChange={(e) => setYT(e.target.value)}
@@ -587,6 +725,11 @@ function CollectionSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 value={medium}
                 disabled={!isOwner()}
                 onChange={(e) => setMedium(e.target.value)}
@@ -635,7 +778,7 @@ const styles = {
     zIndex: 5,
   },
   editIcon: {
-    color: "red",
+    color: "#fff",
     fontSize: "5rem",
   },
   imagess: {
@@ -683,6 +826,9 @@ const styles = {
     textTransform: "none",
     fontWeight: 700,
     fontSize: "1rem",
+    "&.Mui-disabled": {
+      color: "#6c6c6c",
+    },
   },
   whiteButton: {
     backgroundColor: "#F4F4F4",

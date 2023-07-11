@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-// import { withStyles } from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import { InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     flexWrap: "wrap",
@@ -38,57 +38,43 @@ const styles = (theme) => ({
     borderRadius: ".75rem !important",
     height: "2.5rem",
   },
-});
+}));
 
-class ValidField extends React.Component {
-  state = {
-    name: "",
-  };
+function Searchbox(props) {
+  const classes = useStyles();
 
-  handleChange = (name) => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
+  const [name, setName] = useState("");
 
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <form className={`${classes.container} sb`} noValidate autoComplete="off">
-        <TextField
-          id="standard-name"
-          className={classes.textField}
-          value={this.state.name}
-          onChange={this.handleChange("name")}
-          variant="outlined"
-          placeholder="Search"
-          InputLabelProps={{
-            classes: {
-              root: classes.cssLabel,
-              focused: classes.cssFocused,
-            },
-          }}
-          InputProps={{
-            classes: {
-              root: classes.cssOutlinedInput,
-              focused: classes.cssFocused,
-              notchedOutline: classes.notchedOutline,
-            },
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon sx={{ color: "white" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </form>
-    );
-  }
+  return (
+    <form className={`${classes.container} sb`} noValidate autoComplete="off">
+      <TextField
+        id="standard-name"
+        className={classes.textField}
+        variant="outlined"
+        placeholder="Search"
+        InputLabelProps={{
+          classes: {
+            root: classes.cssLabel,
+            focused: classes.cssFocused,
+          },
+        }}
+        InputProps={{
+          classes: {
+            root: classes.cssOutlinedInput,
+            focused: classes.cssFocused,
+            notchedOutline: classes.notchedOutline,
+          },
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon sx={{ color: "white" }} />
+            </InputAdornment>
+          ),
+        }}
+        {...props}
+      />
+    </form>
+  );
 }
 
-ValidField.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
-// export default withStyles(styles)(ValidField);
+export default Searchbox;

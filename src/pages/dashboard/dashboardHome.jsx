@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../utils/format-listings";
 import { setActiveListings } from "../../redux/slices/listing-slice";
+import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
+import { useWeb3React } from "@web3-react/core";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { ContentCopy, FacebookRounded } from "@mui/icons-material";
@@ -11,19 +13,23 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
-import bgImage from "../../assets/bg-collection.png";
+import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
-import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+import { toast } from "react-toastify";
+import copy from "clipboard-copy";
 
 function DashboardHome() {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
+  const myNFTs = useSelector((state) => state.myNFT.nfts);
+  const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("nft");
+  const { account, chainId } = useWeb3React();
 
   const metadata = {
     name: "E.R.V Gandalf #54",
@@ -81,7 +87,7 @@ function DashboardHome() {
   const styles = {
     container: {},
     background: {
-      width: "100vw",
+      width: "100%",
       height: "50vh",
       objectFit: "cover",
     },
@@ -230,14 +236,44 @@ function DashboardHome() {
       fontSize: "1.5rem",
       marginLeft: 2,
     },
+    copyButton: {
+      color: "#6C6C6C",
+      fontSize: ".75rem",
+    },
   };
 
   useEffect(() => {
+    if (myNFTs.length > 0) {
+      setMyNFTListings(transformData(myNFTs));
+    }
+    
     if (listings.length > 0) {
       const active = getActiveListings(listings);
       dispatch(setActiveListings(active));
     }
-  }, [listings]);
+
+    dispatch(
+      getCollectionOwner({ address: account, network: "theta" })
+    );
+
+  }, [myNFTs]);
+
+  function transformData(nfts) {
+    return nfts.map(nft => {
+      const item = {
+        listingNFT: {
+          collectionName: "",
+          collectionSymbol: "",
+          contractAddress: nft.contractAddress,
+          tokenId: Number(nft.tokenId),
+          metadata: (nft.metadata ? nft.metadata : null),
+          url: (nft.uri? nft.uri : ""),
+          network: nft.network
+        }
+      }
+      return item;
+    })
+  }
 
   return (
     <Box>
@@ -245,7 +281,7 @@ function DashboardHome() {
         src={bgImage}
         alt="bg-image"
         style={{
-          width: "100vw",
+          width: "100%",
           height: "45vh",
           objectFit: "cover",
         }}
@@ -270,7 +306,13 @@ function DashboardHome() {
                 <Typography sx={styles.h1}>King Wasabi</Typography>
                 <Typography sx={styles.h3}>
                   0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b
-                  <IconButton sx={styles.h3}>
+                  <IconButton
+                    onClick={() => {
+                      copy(0xa366c1e80642abcaa190ed4fd7c9ba642228053b);
+                      toast.success("Address copied!");
+                    }}
+                    sx={styles.copyButton}
+                  >
                     <ContentCopy fontSize="small" />
                   </IconButton>
                 </Typography>
@@ -381,6 +423,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("inbox")}
+              disabled
               sx={
                 activeMenu === "inbox"
                   ? styles.activeButton
@@ -392,6 +435,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("offers")}
+              disabled
               sx={
                 activeMenu === "offers"
                   ? styles.activeButton
@@ -403,6 +447,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("content")}
+              disabled
               sx={
                 activeMenu === "content"
                   ? styles.activeButton
@@ -414,6 +459,7 @@ function DashboardHome() {
             </Button>
             <Button
               onClick={() => setActiveMenu("wall")}
+              disabled
               sx={
                 activeMenu === "wall"
                   ? styles.activeButton
@@ -425,10 +471,10 @@ function DashboardHome() {
           </Box>
 
           {activeMenu === "nft" && (
-            <NFTlist activeListings={activeListings} view={view} />
+            <NFTlist activeListings={myNFTListings} view={view} />
           )}
           {activeMenu === "inbox" && (
-            <Content activeListings={activeListings} view={view} />
+            <Content activeListings={myNFTListings} view={view} />
           )}
         </Container>
       </Box>

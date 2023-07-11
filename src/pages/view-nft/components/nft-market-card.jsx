@@ -67,22 +67,22 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   useEffect(() => {
     dispatch(
       getMarketNFTDetail({
-        contractAddress: marketItem.NFTContractAddress,
-        tokenId: marketItem.TokenId,
-        listingId: marketItem.Id,
+        contractAddress: marketItem.contractAddress,
+        tokenId: marketItem.tokenId,
+        listingId: marketItem.id,
       })
     );
   }, []);
 
   useEffect(() => {
-    if (marketItem && marketItem.nftDetails && marketItem.nftDetails.metadata) {
+    if (marketItem && marketItem.metadata) {
       try {
-        if (marketItem.nftDetails.metadata.image.includes("ipfs://")) {
-          let url = marketItem.nftDetails.metadata.image;
+        if (marketItem.metadata.image.includes("ipfs://")) {
+          let url = marketItem.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(newUrl);
         } else {
-          setImgUrl(marketItem.nftDetails.metadata.image);
+          setImgUrl(marketItem.metadata.image);
         }
       } catch {
         setImgUrl("https://thereisnoimage.com/image");
@@ -97,11 +97,10 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       {marketItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${marketItem.Network}/${marketItem.NFTContractAddress}/${marketItem.TokenId}`}
+          to={`/nft/${marketItem.Network}/${marketItem.contractAddress}/${marketItem.tokenId}`}
         >
           <Box sx={styles.root}>
-            {marketItem.nftDetails && (
-              <img
+            <img
                 src={imgUrl}
                 style={{
                   borderTopLeftRadius: ".75rem",
@@ -112,16 +111,15 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                 }}
                 loading="lazy"
                 alt="nft-image"
-              />
-            )}
-            {marketItem.nftDetails && marketItem.nftDetails.metadata && (
+            />
+            {marketItem.metadata && (
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
                     {truncate(
-                      marketItem.nftDetails.metadata
-                        ? marketItem.nftDetails.metadata.name
-                        : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`,
+                      marketItem.metadata
+                        ? marketItem.metadata.name
+                        : `${marketItem.metadata.name} #${marketItem.tokenId}`,
                       15
                     )}
                   </Typography>
@@ -129,12 +127,12 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                 </Box>
                 <Typography
                   sx={styles.network}
-                >{`#${marketItem.Network}`}</Typography>
+                >{`#${marketItem.network}`}</Typography>
                 <Box style={styles.meta}>
-                  <Typography>#{marketItem.TokenId}</Typography>
+                  <Typography>#{marketItem.tokenId}</Typography>
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
-                    <Typography>{marketItem.Price}</Typography>
+                    <Typography>{marketItem.price}</Typography>
                   </Box>
                 </Box>
               </Box>

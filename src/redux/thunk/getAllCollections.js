@@ -10,7 +10,6 @@ export const getAllCollections = createAsyncThunk(
     const result = await axios.get(`${apiUrl}/nft/get-collections`);
     items = result.data.collections.map(item => {
       let slug = slugify(item.name)
-      console.log({...item, slug})
       return {...item, slug}
     });
     items =items.filter(item => item.site !== "thetadrop");

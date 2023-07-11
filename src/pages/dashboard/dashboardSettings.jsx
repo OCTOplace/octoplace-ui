@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { Container } from "react-bootstrap";
 import InputAdornment from "@mui/material/InputAdornment";
+import { useDropzone } from "react-dropzone";
 
 import bgImage from "../../assets/bg-collection.png";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { FacebookRounded } from "@mui/icons-material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
-import BuildIcon from "@mui/icons-material/Build";
 import PickDialog from "./components/pickDialog";
 
 function DashboardSettings() {
@@ -22,6 +23,13 @@ function DashboardSettings() {
   const [openNFT1, setOpenNFT1] = useState(false);
   const [openNFT2, setOpenNFT2] = useState(false);
   const [openNFT3, setOpenNFT3] = useState(false);
+
+  const onDrop = (acceptedFiles) => {
+    // Handle dropped files logic here
+    console.log(acceptedFiles);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const styles = {
     container: {
@@ -41,9 +49,10 @@ function DashboardSettings() {
       left: "50%",
       transform: "translate(-50%, -50%)",
       zIndex: 5,
+      color: "#F4F4F4",
     },
     editIcon: {
-      color: "red",
+      color: "#F4F4F4",
       fontSize: "5rem",
     },
     imagess: {
@@ -57,7 +66,7 @@ function DashboardSettings() {
       },
     },
     background: {
-      width: "100vw",
+      width: "100%",
       height: "50vh",
       objectFit: "cover",
     },
@@ -91,6 +100,9 @@ function DashboardSettings() {
       textTransform: "none",
       fontWeight: 700,
       fontSize: "1rem",
+      "&.Mui-disabled": {
+        color: "#6c6c6c",
+      },
     },
     whiteButton: {
       backgroundColor: "#F4F4F4",
@@ -178,44 +190,51 @@ function DashboardSettings() {
     },
   };
 
-  const toggleNFT1Dialog = () => {
-    setOpenNFT1(!openNFT1);
-  };
-  const handleClose = () => {
-    setOpenNFT1(false);
-    setOpenNFT2(false);
-    setOpenNFT3(false);
-  };
-  const toggleNFT2Dialog = () => {
-    setOpenNFT2(!openNFT2);
-  };
-  const toggleNFT3Dialog = () => {
-    setOpenNFT3(!openNFT3);
-  };
-
   return (
     <Box>
       {openNFT1 && <PickDialog open={openNFT1} setOpen={setOpenNFT1} />}
-      <div
-        onMouseEnter={() => setHoveredBG(true)}
-        onMouseLeave={() => setHoveredBG(false)}
-      >
-        <img
-          src={bgImage}
-          alt="bg-image"
-          style={{
-            width: "100vw",
-            height: "45vh",
-            objectFit: "cover",
-          }}
-        />
-        {hoveredBG && (
-          <Button sx={styles.buildIcon}>
-            <BuildIcon sx={styles.editIcon} />
-          </Button>
+      {openNFT2 && <PickDialog open={openNFT2} setOpen={setOpenNFT2} />}
+      {openNFT3 && <PickDialog open={openNFT3} setOpen={setOpenNFT3} />}
+      <div {...getRootProps()}>
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <div>
+            <img
+              src={bgImage}
+              alt="bg-image"
+              style={{
+                width: "100%",
+                height: "45vh",
+                objectFit: "cover",
+                opacity: 0.5,
+              }}
+            />
+            <Typography variant="h5" sx={styles.photoIcon}>
+              Drop the image here ...
+            </Typography>
+          </div>
+        ) : (
+          <div
+            onMouseEnter={() => setHoveredBG(true)}
+            onMouseLeave={() => setHoveredBG(false)}
+          >
+            <img
+              src={bgImage}
+              alt="bg-image"
+              style={{
+                width: "100%",
+                height: "45vh",
+                objectFit: "cover",
+              }}
+            />
+            {hoveredBG && (
+              <Button component="label" sx={styles.buildIcon}>
+                <AddAPhotoIcon sx={styles.editIcon} />
+              </Button>
+            )}
+          </div>
         )}
       </div>
-
       <Box
         sx={{
           display: "flex",
@@ -228,18 +247,35 @@ function DashboardSettings() {
               <div
                 onMouseEnter={() => setHoveredPP(true)}
                 onMouseLeave={() => setHoveredPP(false)}
-                style={styles.container}
+                className="maskBack"
               >
-                <img
+                <div className="mask1">
+                  <img
+                    src={listing?.listingNFT?.metadata?.image}
+                    alt="profileImage"
+                    // className="octagon"
+                  />
+                </div>
+                {/* <img
                   src={listing?.listingNFT?.metadata?.image}
                   alt="profileImage"
                   className="octagon-image"
                   width="180px"
                   height="180px"
-                />
+                /> */}
                 {hoveredPP && (
-                  <Button sx={styles.photoIcon}>
-                    <BuildIcon sx={styles.editIcon} />
+                  <Button
+                    component="label"
+                    htmlFor="profilePicture"
+                    sx={styles.photoIcon}
+                  >
+                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <input
+                      type="file"
+                      name="profilePicture"
+                      id="profilePicture"
+                      hidden
+                    />
                   </Button>
                 )}
               </div>
@@ -248,6 +284,11 @@ function DashboardSettings() {
                   type="url"
                   variant="standard"
                   hiddenLabel
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#6c6c6c",
+                    },
+                  }}
                   className="input-wo-padding"
                   InputProps={{
                     style: {
@@ -257,7 +298,7 @@ function DashboardSettings() {
                       borderRadius: "0.594rem",
                       padding: "0.5rem",
                       width: "20rem",
-                      "& .MuiInputBase-input-MuiInput-input": {
+                      "& .": {
                         padding: 0,
                       },
                     },
@@ -291,7 +332,7 @@ function DashboardSettings() {
                     onClick={() => setOpenNFT1(true)}
                     sx={styles.photoIcon}
                   >
-                    <BuildIcon sx={styles.editIcon} />
+                    <AddAPhotoIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -312,8 +353,11 @@ function DashboardSettings() {
                   }}
                 />
                 {hoveredNFT2 && (
-                  <Button sx={styles.photoIcon}>
-                    <BuildIcon sx={styles.editIcon} />
+                  <Button
+                    sx={styles.photoIcon}
+                    onClick={() => setOpenNFT2(true)}
+                  >
+                    <AddAPhotoIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -334,8 +378,11 @@ function DashboardSettings() {
                   }}
                 />
                 {hoveredNFT3 && (
-                  <Button sx={styles.photoIcon}>
-                    <BuildIcon sx={styles.editIcon} />
+                  <Button
+                    sx={styles.photoIcon}
+                    onClick={() => setOpenNFT3(true)}
+                  >
+                    <AddAPhotoIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -348,6 +395,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#3D3D3D",
@@ -372,6 +424,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -394,6 +451,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -416,6 +478,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -438,6 +505,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -460,6 +532,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -482,6 +559,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -504,6 +586,11 @@ function DashboardSettings() {
                 type="url"
                 variant="standard"
                 hiddenLabel
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -523,9 +610,16 @@ function DashboardSettings() {
                 }}
               />
               <TextField
+                disabled
                 type="url"
                 variant="standard"
                 hiddenLabel
+                value="medium.com/username"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#6c6c6c",
+                  },
+                }}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
