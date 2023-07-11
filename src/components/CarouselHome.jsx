@@ -23,7 +23,7 @@ function Item(props) {
   return (
     <Paper
       style={{
-        backgroundImage: `url(${process.env.REACT_APP_API_URL}assets/banners/${props.item.filename})`, //process.env.REACT_APP_API_URL + "assets/banners/" + 
+        backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${props.item.filename})`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
@@ -64,7 +64,7 @@ function CarouselHome() {
   const downloadBanners = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
-      const response = await fetch(apiUrl + 'banners/lists');
+      const response = await fetch(apiUrl + '/banners/lists');
 
       if (response.ok) {
         const bannerInfos = await response.json();

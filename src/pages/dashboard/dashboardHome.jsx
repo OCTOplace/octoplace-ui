@@ -13,12 +13,14 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
+import { fetchUserSetting } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { toast } from "react-toastify";
 import copy from "clipboard-copy";
+import { Link } from "react-router-dom";
 
 function DashboardHome() {
   const dispatch = useDispatch();
@@ -30,6 +32,8 @@ function DashboardHome() {
   const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("nft");
   const { account, chainId } = useWeb3React();
+  const [userSetting, setUserSetting] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const metadata = {
     name: "E.R.V Gandalf #54",
@@ -243,42 +247,57 @@ function DashboardHome() {
   };
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedData = await fetchUserSetting(account);
+        setUserSetting(fetchedData);
+        setLoading(false);
+      } catch (error) {
+        // Handle error here, e.g. show an error message
+        console.log("Error loading data:", error);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+
     if (myNFTs.length > 0) {
       setMyNFTListings(transformData(myNFTs));
     }
-    
+
     if (listings.length > 0) {
       const active = getActiveListings(listings);
       dispatch(setActiveListings(active));
     }
 
-    dispatch(
-      getCollectionOwner({ address: account, network: "theta" })
-    );
-
-  }, [myNFTs]);
+    dispatch(getCollectionOwner({ address: account, network: "theta" }));
+  }, []);
 
   function transformData(nfts) {
-    return nfts.map(nft => {
+    return nfts.map((nft) => {
       const item = {
         listingNFT: {
           collectionName: "",
           collectionSymbol: "",
           contractAddress: nft.contractAddress,
           tokenId: Number(nft.tokenId),
-          metadata: (nft.metadata ? nft.metadata : null),
-          url: (nft.uri? nft.uri : ""),
-          network: nft.network
-        }
-      }
+          metadata: nft.metadata ? nft.metadata : null,
+          url: nft.uri ? nft.uri : "",
+          network: nft.network,
+        },
+      };
       return item;
-    })
+    });
   }
 
   return (
     <Box>
       <img
-        src={bgImage}
+        src={
+          userSetting.bannerImage
+            ? process.env.REACT_APP_API_URL + userSetting.bannerImage
+            : bgImage
+        }
         alt="bg-image"
         style={{
           width: "100%",
@@ -296,14 +315,18 @@ function DashboardHome() {
           <Box style={styles.overlayContainer}>
             <Box sx={styles.imageContainer}>
               <img
-                src={ppImage}
+                src={
+                  userSetting.avatarImage
+                    ? process.env.REACT_APP_API_URL + userSetting.avatarImage
+                    : bgImage
+                }
                 alt="profileImage"
                 className="octagon-image"
                 width="180px"
                 height="180px"
               />
               <Box sx={styles.column}>
-                <Typography sx={styles.h1}>King Wasabi</Typography>
+                <Typography sx={styles.h1}>{userSetting.title}</Typography>
                 <Typography sx={styles.h3}>
                   0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b
                   <IconButton
@@ -355,27 +378,61 @@ function DashboardHome() {
                 />
               </Box>
               <Box sx={styles.row}>
-                <IconButton>
-                  <FacebookRounded sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <TwitterIcon sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FaInstagram style={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FaDiscord style={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <FaTiktok style={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <YouTubeIcon sx={styles.icon} />
-                </IconButton>
-                <IconButton>
-                  <BsMedium style={styles.icon} />
-                </IconButton>
+                {userSetting.facebook && (
+                  <a href={userSetting.facebook}>
+                    <IconButton>
+                      <FacebookRounded sx={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.twitter && (
+                  <a href={userSetting.twitter}>
+                    <IconButton>
+                      <TwitterIcon sx={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.instagram && (
+                  <a href={userSetting.instagram}>
+                    <IconButton>
+                      <FaInstagram style={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.discord && (
+                  <a href={userSetting.discord}>
+                    <IconButton>
+                      <FaDiscord style={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.tikTok && (
+                  <a href={userSetting.tikTok}>
+                    <IconButton>
+                      <FaTiktok style={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.youtube && (
+                  <a href={userSetting.youtube}>
+                    <IconButton>
+                      <YouTubeIcon sx={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.medium && (
+                  <a href={userSetting.medium}>
+                    <IconButton>
+                      <BsMedium style={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
               </Box>
             </Box>
           </Box>
@@ -404,10 +461,7 @@ function DashboardHome() {
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>About</Typography>
-              <Typography sx={styles.h5}>
-                Never DM first. Auctioned pieces are non-negotiable...unless you
-                offer me a Lambo lol
-              </Typography>
+              <Typography sx={styles.h5}>{userSetting.description}</Typography>
             </Box>
           </Box>
           <Box sx={styles.menu}>
