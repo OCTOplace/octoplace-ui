@@ -7,6 +7,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { useDropzone } from "react-dropzone";
 import AddAPhotoRoundedIcon from "@mui/icons-material/AddAPhotoRounded";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import BuildIcon from "@mui/icons-material/Build";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { FacebookRounded } from "@mui/icons-material";
@@ -15,6 +16,7 @@ import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import {
   registerOrFetchUserSetting,
+  fetchUserTopNFTs,
   updateUserSetting,
 } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
@@ -23,6 +25,7 @@ import PickDialog from "./components/pickDialog";
 function DashboardSettings() {
   const { account, chainId } = useWeb3React();
   const [userSetting, setUserSetting] = useState({});
+  const [topNFTs, setTopNFTs] = useState({});
 
   const [title, setTitle] = useState(null);
   const [about, setAbout] = useState(null);
@@ -78,7 +81,7 @@ function DashboardSettings() {
     },
     editIcon: {
       color: "#F4F4F4",
-      fontSize: "5rem",
+      fontSize: "4rem",
     },
     imagess: {
       display: "block",
@@ -112,7 +115,7 @@ function DashboardSettings() {
     image: {
       width: "160px",
       height: "160px",
-      webkitClipPath:
+      WebkitClipPath:
         "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
       clipPath:
         "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
@@ -220,6 +223,9 @@ function DashboardSettings() {
       try {
         const fetchedData = await registerOrFetchUserSetting(account, "theta");
         setUserSetting(fetchedData);
+
+        const topNFTs = await fetchUserTopNFTs(account);
+        setTopNFTs(topNFTs);
 
         // const fetchedData = await fetchOne(network, collectionAddress);
         //
@@ -338,11 +344,45 @@ function DashboardSettings() {
     }
   };
 
+  const onClosePickDialog = async () => {
+    try {
+      const topNFTs = await fetchUserTopNFTs(account);
+      setTopNFTs(topNFTs);
+    } catch (error) {
+      // Handle error here, e.g. show an error message
+      console.log("Error loading data:", error);
+    }
+  };
+
   return (
     <Box>
-      {openNFT1 && <PickDialog open={openNFT1} setOpen={setOpenNFT1} />}
-      {openNFT2 && <PickDialog open={openNFT2} setOpen={setOpenNFT2} />}
-      {openNFT3 && <PickDialog open={openNFT3} setOpen={setOpenNFT3} />}
+      {openNFT1 && (
+        <PickDialog
+          open={openNFT1}
+          setOpen={setOpenNFT1}
+          onClose={onClosePickDialog}
+          wallet={account}
+          nftIndex={1}
+        />
+      )}
+      {openNFT2 && (
+        <PickDialog
+          open={openNFT2}
+          setOpen={setOpenNFT2}
+          onClose={onClosePickDialog}
+          wallet={account}
+          nftIndex={2}
+        />
+      )}
+      {openNFT3 && (
+        <PickDialog
+          open={openNFT3}
+          setOpen={setOpenNFT3}
+          onClose={onClosePickDialog}
+          wallet={account}
+          nftIndex={3}
+        />
+      )}
       <div>
         <input
           //   {...getInputProps()}
@@ -461,7 +501,7 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={listing?.listingNFT?.metadata?.image}
+                  src={topNFTs.bannerImage1 ? topNFTs.bannerImage1 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -476,7 +516,7 @@ function DashboardSettings() {
                     onClick={() => setOpenNFT1(true)}
                     sx={styles.photoIcon}
                   >
-                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <BuildIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -486,7 +526,7 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={listing?.listingNFT?.metadata?.image}
+                  src={topNFTs.bannerImage2 ? topNFTs.bannerImage2 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "150px",
@@ -501,7 +541,7 @@ function DashboardSettings() {
                     sx={styles.photoIcon}
                     onClick={() => setOpenNFT2(true)}
                   >
-                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <BuildIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -511,7 +551,7 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={listing?.listingNFT?.metadata?.image}
+                  src={topNFTs.bannerImage3 ? topNFTs.bannerImage3 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -526,7 +566,7 @@ function DashboardSettings() {
                     sx={styles.photoIcon}
                     onClick={() => setOpenNFT3(true)}
                   >
-                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <BuildIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>

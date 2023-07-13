@@ -13,7 +13,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
-import { fetchUserSetting } from "../../redux/thunk/user-setting";
+import { fetchUserSetting, fetchUserTopNFTs } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
@@ -27,6 +27,7 @@ function DashboardHome() {
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const myNFTs = useSelector((state) => state.myNFT.nfts);
+  const [topNFTs, setTopNFTs] = useState({});
   const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
@@ -112,7 +113,7 @@ function DashboardHome() {
     image: {
       width: "160px",
       height: "160px",
-      webkitClipPath:
+      WebkitClipPath:
         "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
       clipPath:
         "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
@@ -251,6 +252,10 @@ function DashboardHome() {
       try {
         const fetchedData = await fetchUserSetting(account);
         setUserSetting(fetchedData);
+
+        const topNFTs = await fetchUserTopNFTs(account);
+        setTopNFTs(topNFTs);
+
         setLoading(false);
       } catch (error) {
         // Handle error here, e.g. show an error message
@@ -261,9 +266,9 @@ function DashboardHome() {
 
     loadData();
 
-    if (myNFTs.length > 0) {
-      setMyNFTListings(transformData(myNFTs));
-    }
+    // if (myNFTs.length > 0) {
+    //   setMyNFTListings(transformData(myNFTs));
+    // }
 
     if (listings.length > 0) {
       const active = getActiveListings(listings);
@@ -344,7 +349,7 @@ function DashboardHome() {
             <Box sx={styles.rightColumn}>
               <Box sx={styles.rightRow}>
                 <img
-                  src={bgImage}
+                  src={topNFTs.bannerImage1 ? topNFTs.bannerImage1 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -355,7 +360,7 @@ function DashboardHome() {
                   }}
                 />
                 <img
-                  src={bgImage}
+                  src={topNFTs.bannerImage2 ? topNFTs.bannerImage2 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "150px",
@@ -366,7 +371,7 @@ function DashboardHome() {
                   }}
                 />
                 <img
-                  src={bgImage}
+                  src={topNFTs.bannerImage3 ? topNFTs.bannerImage3 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -382,6 +387,14 @@ function DashboardHome() {
                   <a href={userSetting.facebook}>
                     <IconButton>
                       <FacebookRounded sx={styles.icon} />
+                    </IconButton>
+                  </a>
+                )}
+
+                {userSetting.telegram && (
+                  <a href={userSetting.telegram}>
+                    <IconButton>
+                      <TelegramIcon sx={styles.icon} />
                     </IconButton>
                   </a>
                 )}
@@ -525,10 +538,10 @@ function DashboardHome() {
           </Box>
 
           {activeMenu === "nft" && (
-            <NFTlist activeListings={myNFTListings} view={view} />
+            <NFTlist activeListings={myNFTs} view={view} />
           )}
           {activeMenu === "inbox" && (
-            <Content activeListings={myNFTListings} view={view} />
+            <Content activeListings={myNFTs} view={view} />
           )}
         </Container>
       </Box>

@@ -18,7 +18,12 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Margin } from "@mui/icons-material";
 
-function FilterComponent({ filterPage, unionTraits, filterObject, handleFilter }) {
+function FilterComponent({
+  filterPage,
+  unionTraits,
+  filterObject,
+  handleFilter,
+}) {
   const myNFTs = useSelector((state) => state.myNFT.nfts);
   const collections = useSelector((state) => state.collection.collections);
 
@@ -26,33 +31,41 @@ function FilterComponent({ filterPage, unionTraits, filterObject, handleFilter }
   const [maxPrice, setMaxPrice] = useState(filterObject.maxPrice);
   const [blockchain, setBlockchain] = useState(filterObject.blockchain);
   const [collection, setCollection] = useState(filterObject.collection);
-  const [selectedTraits, setSelectedTraits] = useState(filterObject.selectedTraits);
+  const [selectedTraits, setSelectedTraits] = useState(
+    filterObject.selectedTraits
+  );
 
   const [saleOnly, setSaleOnly] = useState(filterObject.saleOnly);
   const [auctionOnly, setAuctionOnly] = useState(filterObject.auctionOnly);
-  const [offersReceived, setOffersReceived] = useState(filterObject.offersReceived);
-  const [includeBurned, setIncludeBurned] = useState(filterObject.includeBurned);
+  const [offersReceived, setOffersReceived] = useState(
+    filterObject.offersReceived
+  );
+  const [includeBurned, setIncludeBurned] = useState(
+    filterObject.includeBurned
+  );
   const marketItems = useSelector((state) => state.market.markets);
   const activeListings = useSelector((state) => state.listings.activeListings);
-console.log("///////////////////////// FilterComponent -> activeListings ", activeListings);
-  const onlyCollections = collections.filter((item, index, self) =>
-    index === self.findIndex((t) => (
-      t.collection_id === item.collection_id
-    ))
+
+  const onlyCollections = collections.filter(
+    (item, index, self) =>
+      index === self.findIndex((t) => t.collection_id === item.collection_id)
   );
-  
-  let filterCollections = onlyCollections.filter(collection =>
-    myNFTs.some(nft => nft.contractAddress === collection.type_id)
+
+  let filterCollections = onlyCollections.filter((collection) =>
+    myNFTs.some((nft) => nft.contractAddress === collection.type_id)
   );
 
   if (filterPage === "Market") {
-    filterCollections = onlyCollections.filter(collection =>
-      marketItems.some(nft => nft.NFTContractAddress === collection.type_id)
+    filterCollections = onlyCollections.filter((collection) =>
+      marketItems.some((nft) => nft.NFTContractAddress === collection.type_id)
     );
-  }
-  else if (filterPage === "Swap") {
-    filterCollections = onlyCollections.filter(collection =>
-      activeListings.some(nft => nft.listingNFT.contractAddress.toLowerCase() === collection.type_id.toLowerCase())
+  } else if (filterPage === "Swap") {
+    filterCollections = onlyCollections.filter((collection) =>
+      activeListings.some(
+        (nft) =>
+          nft.listingNFT.contractAddress.toLowerCase() ===
+          collection.type_id.toLowerCase()
+      )
     );
   }
 
@@ -62,7 +75,10 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
 
     if (index !== -1) {
       // If it is, remove it from the selected traits array
-      setSelectedTraits([...selectedTraits.slice(0, index), ...selectedTraits.slice(index + 1)]);
+      setSelectedTraits([
+        ...selectedTraits.slice(0, index),
+        ...selectedTraits.slice(index + 1),
+      ]);
     } else {
       // If it isn't, add it to the selected traits array
       setSelectedTraits([...selectedTraits, traitType]);
@@ -76,12 +92,18 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
     if (index !== -1) {
       // If it is, update the selected values for that trait type
       let updatedTraits = [...selectedTraits]; //[...unionTraits];
-      const traitIndex = updatedTraits.findIndex((t) => t.trait_type === traitType);
+      const traitIndex = updatedTraits.findIndex(
+        (t) => t.trait_type === traitType
+      );
 
       if (updatedTraits[traitIndex].value.includes(value.value)) {
-        updatedTraits[traitIndex].value = updatedTraits[traitIndex].value.filter((v) => v !== value.value);
+        updatedTraits[traitIndex].value = updatedTraits[
+          traitIndex
+        ].value.filter((v) => v !== value.value);
         if (updatedTraits[traitIndex].value.length === 0) {
-          updatedTraits = updatedTraits.filter((element) => element.trait_type !== traitType);
+          updatedTraits = updatedTraits.filter(
+            (element) => element.trait_type !== traitType
+          );
         }
       } else {
         updatedTraits[traitIndex].value.push(value.value);
@@ -90,7 +112,10 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
       setSelectedTraits(updatedTraits);
     } else {
       // If it isn't, add it to the selected traits array along with the selected value
-      setSelectedTraits([...selectedTraits, { trait_type: traitType, value: [value.value] }]);
+      setSelectedTraits([
+        ...selectedTraits,
+        { trait_type: traitType, value: [value.value] },
+      ]);
     }
   };
 
@@ -153,7 +178,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
       },
       // paddingLeft: "5px",
       // paddingRight: "0px",
-      padding: "3px 0 3px 5px"
+      padding: "3px 0 3px 5px",
     },
     attr: {
       fontSize: "1.3rem",
@@ -187,8 +212,18 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
   };
 
   useEffect(() => {
-    handleChange()
-  }, [minPrice, maxPrice, blockchain, collection, saleOnly, auctionOnly, offersReceived, includeBurned, selectedTraits])
+    handleChange();
+  }, [
+    minPrice,
+    maxPrice,
+    blockchain,
+    collection,
+    saleOnly,
+    auctionOnly,
+    offersReceived,
+    includeBurned,
+    selectedTraits,
+  ]);
 
   const handleChange = () => {
     const filterObj = {
@@ -216,7 +251,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
               type="number"
               variant="standard"
               value={minPrice === 0 ? "" : minPrice}
-              onChange={(e)=> setMinPrice(e.target.value)}
+              onChange={(e) => setMinPrice(e.target.value)}
               hiddenLabel
               className="input-wo-padding"
               sx={{
@@ -246,7 +281,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
               type="number"
               variant="standard"
               value={maxPrice === 0 ? "" : maxPrice}
-              onChange={(e)=> setMaxPrice(e.target.value)}
+              onChange={(e) => setMaxPrice(e.target.value)}
               hiddenLabel
               className="input-wo-padding"
               sx={{
@@ -287,7 +322,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           >
             <Select
               value={blockchain}
-              onChange={(e)=> setBlockchain(e.target.value)}
+              onChange={(e) => setBlockchain(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -298,9 +333,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                 },
               }}
             >
-              <MenuItem value="empty">
-                No Filter
-              </MenuItem>
+              <MenuItem value="empty">No Filter</MenuItem>
               <MenuItem value="theta">THETA</MenuItem>
               <MenuItem value="kava">KAVA</MenuItem>
             </Select>
@@ -320,7 +353,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           >
             <Select
               value={collection}
-              onChange={(e)=> setCollection(e.target.value)}
+              onChange={(e) => setCollection(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -331,9 +364,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                 },
               }}
             >
-              <MenuItem value="empty">
-                No Filter
-              </MenuItem>
+              <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
                   <MenuItem key={`index_${index}`} value={collection.type_id}>
@@ -428,7 +459,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           >
             <Select
               value={blockchain}
-              onChange={(e)=> setBlockchain(e.target.value)}
+              onChange={(e) => setBlockchain(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -439,9 +470,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                 },
               }}
             >
-              <MenuItem value="empty">
-                No Filter
-              </MenuItem>
+              <MenuItem value="empty">No Filter</MenuItem>
               <MenuItem value="theta">THETA</MenuItem>
               <MenuItem value="kava">KAVA</MenuItem>
             </Select>
@@ -461,7 +490,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           >
             <Select
               value={collection}
-              onChange={(e)=> setCollection(e.target.value)}
+              onChange={(e) => setCollection(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -472,9 +501,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                 },
               }}
             >
-              <MenuItem value="empty">
-                No Filter
-              </MenuItem>
+              <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
                   <MenuItem key={`index_${index}`} value={collection.type_id}>
@@ -498,7 +525,11 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
               <Typography sx={styles.p}>23</Typography>
-              <Checkbox sx={styles.checkbox} checked={saleOnly} onChange={(e) => setSaleOnly(e.target.checked)} />
+              <Checkbox
+                sx={styles.checkbox}
+                checked={saleOnly}
+                onChange={(e) => setSaleOnly(e.target.checked)}
+              />
             </Box>
           </Box>
           {/* <Box sx={styles.checkboxRow}>
@@ -589,25 +620,22 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           </Box>
         </Box>
         <Divider />
-        {
-          unionTraits && 
-          unionTraits.length > 0 && 
+        {unionTraits &&
+          unionTraits.length > 0 &&
           unionTraits.map((item, index) => {
             return (
               <Accordion key={`index_${index}`} sx={styles.accordion}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon sx={{ color: "#f4f4f4" }} />}
                   aria-controls="panel1a-content"
-                  
                   id={`panel1a-header-${index}`}
                   sx={styles.accordionHeader}
                 >
                   <Typography sx={styles.attr}>{item.trait_type}</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={styles.accordionBody}>
-                  {
-                    item.value && 
-                    item.value.length > 0 && 
+                  {item.value &&
+                    item.value.length > 0 &&
                     item.value.map((value, index) => {
                       return (
                         <Box key={`index_${index}`} sx={styles.checkboxRow}>
@@ -615,20 +643,25 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                           <Box sx={styles.boxRow}>
                             <Typography sx={styles.p}>{value.count}</Typography>
                             <Checkbox
-                             sx={styles.checkbox}
-                             checked={selectedTraits.some((t) => t.trait_type === item.trait_type && t.value && t.value.includes(value.value))}
-                             onChange={() => handleValueSelect(item.trait_type, value)}
+                              sx={styles.checkbox}
+                              checked={selectedTraits.some(
+                                (t) =>
+                                  t.trait_type === item.trait_type &&
+                                  t.value &&
+                                  t.value.includes(value.value)
+                              )}
+                              onChange={() =>
+                                handleValueSelect(item.trait_type, value)
+                              }
                             />
                           </Box>
                         </Box>
                       );
-                    })
-                  }
+                    })}
                 </AccordionDetails>
               </Accordion>
             );
-          })
-        }
+          })}
       </Box>
     );
   }
@@ -642,7 +675,11 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
               <Typography sx={styles.p}>23</Typography>
-              <Checkbox sx={styles.checkbox} checked={saleOnly} onChange={(e) => setSaleOnly(e.target.checked)} />
+              <Checkbox
+                sx={styles.checkbox}
+                checked={saleOnly}
+                onChange={(e) => setSaleOnly(e.target.checked)}
+              />
             </Box>
           </Box>
           {/* <Box sx={styles.checkboxRow}>
@@ -681,7 +718,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           >
             <Select
               value={blockchain}
-              onChange={(e)=> setBlockchain(e.target.value)}
+              onChange={(e) => setBlockchain(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -692,9 +729,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                 },
               }}
             >
-              <MenuItem value="empty">
-                No Filter
-              </MenuItem>
+              <MenuItem value="empty">No Filter</MenuItem>
               <MenuItem value="theta">THETA</MenuItem>
               <MenuItem value="kava">KAVA</MenuItem>
             </Select>
@@ -714,7 +749,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
           >
             <Select
               value={collection}
-              onChange={(e)=> setCollection(e.target.value)}
+              onChange={(e) => setCollection(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -725,9 +760,7 @@ console.log("///////////////////////// FilterComponent -> activeListings ", acti
                 },
               }}
             >
-              <MenuItem value="empty">
-                No Filter
-              </MenuItem>
+              <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
                   <MenuItem key={`index_${index}`} value={collection.type_id}>

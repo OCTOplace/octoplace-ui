@@ -59,29 +59,27 @@ function NFTlist({ activeListings, view }) {
   };
 
   const filteredNFTItems = activeListings.filter((item) => {
-    const selItem = item.listingNFT;
-
-    if (selItem.metadata.name && !selItem.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
+    if (item.metadata.name && !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
       return false;
     }
 
-    if (filterObj.saleOnly && !selItem.saleOnly) {
+    if (filterObj.saleOnly && !item.saleOnly) {
       return false;
     }
 
-    if (filterObj.offersReceived && !selItem.offersReceived) {
+    if (filterObj.offersReceived && !item.offersReceived) {
       return false;
     }
 
-    if (filterObj.includeBurned && !selItem.includeBurned) {
+    if (filterObj.includeBurned && !item.includeBurned) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && selItem.network.toLowerCase() !== filterObj.blockchain) {
+    if (filterObj.blockchain !== "empty" && item.network.toLowerCase() !== filterObj.blockchain) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && selItem.contractAddress !== filterObj.collection) {
+    if (filterObj.collection !== "empty" && item.contractAddress !== filterObj.collection) {
       return false;
     }
 
@@ -168,7 +166,7 @@ function NFTlist({ activeListings, view }) {
               filteredNFTItems.map((item, index) => {
                 return (
                   <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                    <NFTListingCard listingItem={item} view={view} />
+                    <NFTListingCard listingItem={{listingNFT: item}} view={view} />
                   </Grid>
                 );
               })}
