@@ -33,7 +33,8 @@ function CarouselCollection() {
       const response = await fetch(apiUrl + '/banners/lists');
 
       if (response.ok) {
-        const bannerInfos = await response.json();
+        let bannerInfos = await response.json();
+        bannerInfos = bannerInfos.filter((item) => item.filename);
         setItems(bannerInfos);
       } else {
         console.error('Failed to get banner file');
