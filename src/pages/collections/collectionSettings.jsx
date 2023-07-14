@@ -813,7 +813,7 @@ const styles = {
   image: {
     width: "160px",
     height: "160px",
-    webkitClipPath:
+    WebkitClipPath:
       "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
     clipPath:
       "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -6,33 +6,80 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box } from "@mui/material";
 import { Button } from "react-bootstrap";
-import NFTlist from "./NFTlist";
+import { toast } from "react-toastify";
+import NFTSelectlist from "./NFTSelectList";
+import { updateUserTopNFT } from "../../../redux/thunk/user-setting";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../../utils/format-listings";
 import { setActiveListings } from "../../../redux/slices/listing-slice";
 
-function PickDialog({ open, setOpen }) {
-  const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
+function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
+  // const dispatch = useDispatch();
+  const myNFTs = useSelector((state) => state.myNFT.nfts);
+  // const listings = useSelector((state) => state.listings.allListings);
+  // const activeListings = useSelector((state) => state.listings.activeListings);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      dispatch(setActiveListings(active));
+  const handleSave = async () => {
+    const bannerImage =
+      selectedItem.metadata && selectedItem.metadata.image
+        ? selectedItem.metadata.image.includes("ipfs://")
+          ? selectedItem.metadata.image.replace(
+              "ipfs://",
+              "https://ipfs.io/ipfs/"
+            )
+          : selectedItem.metadata.image
+        : "";
+
+    const saveObj = { walletAddress: wallet };
+    saveObj[`nftAddress${nftIndex}`] = selectedItem.contractAddress;
+    saveObj[`tokenId${nftIndex}`] = selectedItem.tokenId;
+    saveObj[`bannerImage${nftIndex}`] = bannerImage;
+
+    try {
+      const fetchedData = await updateUserTopNFT(saveObj);
+      toast.success(fetchedData.message, {
+        position: "top-center",
+      });
+
+      setTimeout(() => {
+        onClose();
+        setLoading(false);
+        setOpen(false);
+      }, 1000);
+    } catch (error) {
+      // Handle error here, e.g. show an error message
+      console.log("Error loading data:", error);
+      toast.error(error.message, {
+        position: "top-center",
+      });
+      setLoading(false);
+      setOpen(false);
     }
-  }, [listings]);
+  };
+
+  const onSelect = (item) => {
+    setSelectedItem(item);
+  };
+
+  // useEffect(() => {
+  //   if (listings.length > 0) {
+  //     const active = getActiveListings(listings);
+  //     dispatch(setActiveListings(active));
+  //   }
+  // }, [listings]);
 
   return (
     <Dialog
       fullWidth={true}
       maxWidth="lg"
       open={open}
-      onClose={handleClose}
+      // onClose={handleClose}
       sx={{
         backdropFilter: "blur(5px)",
         "& .MuiDialog-paper": {
@@ -51,7 +98,7 @@ function PickDialog({ open, setOpen }) {
     >
       <DialogTitle>Pick NFT</DialogTitle>
       <DialogContent>
-        <NFTlist activeListings={activeListings} view={2} />
+        <NFTSelectlist nftListings={myNFTs} view={2} onSelect={onSelect} />
       </DialogContent>
       <DialogActions>
         <Button
@@ -69,7 +116,7 @@ function PickDialog({ open, setOpen }) {
           CANCEL
         </Button>
         <Button
-          onClick={handleClose}
+          onClick={handleSave}
           style={{
             backgroundColor: "#F78C09",
             color: "#262626",

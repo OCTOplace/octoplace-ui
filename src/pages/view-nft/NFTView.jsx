@@ -281,7 +281,7 @@ export const NFTView = () => {
     }
   }, [marketItems]);
 
-  console.log("metadata", metadata, address, tokenId, network);
+  // console.log("metadata", metadata, address, tokenId, network);
 
   return (
     <Fragment>

@@ -67,7 +67,7 @@ function Market({ isHome }) {
   );
 
   useEffect(() => {
-    console.log(marketItems);
+    // console.log(marketItems);
   }, [marketItems]);
 
   const handleOrder = (event) => {

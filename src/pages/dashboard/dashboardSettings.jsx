@@ -1,20 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useWeb3React } from "@web3-react/core";
+import { toast } from "react-toastify";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { Container } from "react-bootstrap";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useDropzone } from "react-dropzone";
-
-import bgImage from "../../assets/bg-collection.png";
+import AddAPhotoRoundedIcon from "@mui/icons-material/AddAPhotoRounded";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import BuildIcon from "@mui/icons-material/Build";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { FacebookRounded } from "@mui/icons-material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
+import {
+  registerOrFetchUserSetting,
+  fetchUserTopNFTs,
+  updateUserSetting,
+} from "../../redux/thunk/user-setting";
+import bgImage from "../../assets/GrayBackground.jpeg";
 import PickDialog from "./components/pickDialog";
 
 function DashboardSettings() {
+  const { account, chainId } = useWeb3React();
+  const [userSetting, setUserSetting] = useState({});
+  const [topNFTs, setTopNFTs] = useState({});
+
+  const [title, setTitle] = useState(null);
+  const [about, setAbout] = useState(null);
+  const [telegram, setTelegram] = useState(null);
+  const [twitter, setTwitter] = useState(null);
+  const [discord, setDiscord] = useState(null);
+  const [youtube, setYT] = useState(null);
+  const [tiktok, setTiktok] = useState(null);
+  const [medium, setMedium] = useState(null);
+  const [insta, setInsta] = useState(null);
+  const [facebook, setFacebook] = useState(null);
+  const [bannerSrc, setBannerSrc] = useState(null);
+  const [avatarSrc, setAvatarSrc] = useState(null);
+  const [isAvatarUpdated, avatarUpdated] = useState(false);
+  const [isBannerUpdated, bannerUpdated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [hoveredBG, setHoveredBG] = useState(false);
   const [hoveredPP, setHoveredPP] = useState(false);
   const [hoveredNFT1, setHoveredNFT1] = useState(false);
@@ -53,7 +81,7 @@ function DashboardSettings() {
     },
     editIcon: {
       color: "#F4F4F4",
-      fontSize: "5rem",
+      fontSize: "4rem",
     },
     imagess: {
       display: "block",
@@ -87,7 +115,7 @@ function DashboardSettings() {
     image: {
       width: "160px",
       height: "160px",
-      webkitClipPath:
+      WebkitClipPath:
         "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
       clipPath:
         "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%,71% 100%, 29% 100%, 0% 71%, 0% 29%)",
@@ -184,56 +212,215 @@ function DashboardSettings() {
       name: "NFT Name",
       contractAddress: "0x1234567890",
       metadata: {
-        image: "https://picsum.photos/200",
+        image: bgImage,
         description: "NFT Description",
       },
     },
   };
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedData = await registerOrFetchUserSetting(account, "theta");
+        setUserSetting(fetchedData);
+
+        const topNFTs = await fetchUserTopNFTs(account);
+        setTopNFTs(topNFTs);
+
+        // const fetchedData = await fetchOne(network, collectionAddress);
+        //
+
+        if (fetchedData !== undefined && fetchedData !== {}) {
+          setTitle(fetchedData.title);
+          setAbout(fetchedData.description);
+          setTelegram(fetchedData.telegram);
+          setTwitter(fetchedData.twitter);
+          setDiscord(fetchedData.discord);
+          setInsta(fetchedData.instagram);
+          setFacebook(fetchedData.facebook);
+          setYT(fetchedData.youtube);
+          setMedium(fetchedData.medium);
+          setTiktok(fetchedData.tikTok);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        // Handle error here, e.g. show an error message
+        console.log("Error loading data:", error);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const handleBannerClick = () => {
+    const bannerInput = document.getElementById("bannerInput");
+    bannerInput.click();
+  };
+
+  const handleAvatarClick = () => {
+    const avatarInput = document.getElementById("avatarInput");
+    avatarInput.click();
+  };
+
+  const handleBannerSelection = (event) => {
+    const bannerInput = document.getElementById("bannerInput");
+    if (bannerInput && bannerInput.files && bannerInput.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        setBannerSrc(e.target.result);
+        bannerUpdated(true);
+      };
+      const val = reader.readAsDataURL(bannerInput.files[0]);
+      // console.log(val);
+    }
+  };
+
+  const handleAvatarSelection = (event) => {
+    const avatarInput = document.getElementById("avatarInput");
+    if (avatarInput && avatarInput.files && avatarInput.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        setAvatarSrc(e.target.result);
+        avatarUpdated(true);
+      };
+      const val = reader.readAsDataURL(avatarInput.files[0]);
+      // console.log(val);
+    }
+  };
+
+  const handleSave = async () => {
+    let saveObj = {};
+
+    if (isBannerUpdated) {
+      saveObj = {
+        ...saveObj,
+        bannerImage: bannerSrc,
+      };
+    }
+
+    if (isAvatarUpdated) {
+      saveObj = {
+        ...saveObj,
+        avatarImage: avatarSrc,
+      };
+    }
+
+    saveObj = {
+      ...saveObj,
+      walletAddress: account,
+      title: title,
+      description: about,
+      facebook: facebook,
+      twitter: twitter,
+      instagram: insta,
+      discord: discord,
+      tikTok: tiktok,
+      youtube: youtube,
+      medium: medium,
+      telegram: telegram,
+    };
+
+    try {
+      const fetchedData = await updateUserSetting(saveObj);
+      toast.success(fetchedData.message, {
+        position: "top-center",
+      });
+
+      bannerUpdated(false);
+      avatarUpdated(false);
+      setLoading(false);
+    } catch (error) {
+      // Handle error here, e.g. show an error message
+      console.log("Error loading data:", error);
+      toast.error(error.message, {
+        position: "top-center",
+      });
+
+      bannerUpdated(false);
+      avatarUpdated(false);
+      setLoading(false);
+    }
+  };
+
+  const onClosePickDialog = async () => {
+    try {
+      const topNFTs = await fetchUserTopNFTs(account);
+      setTopNFTs(topNFTs);
+    } catch (error) {
+      // Handle error here, e.g. show an error message
+      console.log("Error loading data:", error);
+    }
+  };
+
   return (
     <Box>
-      {openNFT1 && <PickDialog open={openNFT1} setOpen={setOpenNFT1} />}
-      {openNFT2 && <PickDialog open={openNFT2} setOpen={setOpenNFT2} />}
-      {openNFT3 && <PickDialog open={openNFT3} setOpen={setOpenNFT3} />}
-      <div {...getRootProps()}>
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <div>
-            <img
-              src={bgImage}
-              alt="bg-image"
-              style={{
-                width: "100%",
-                height: "45vh",
-                objectFit: "cover",
-                opacity: 0.5,
-              }}
-            />
-            <Typography variant="h5" sx={styles.photoIcon}>
-              Drop the image here ...
-            </Typography>
-          </div>
-        ) : (
-          <div
-            onMouseEnter={() => setHoveredBG(true)}
-            onMouseLeave={() => setHoveredBG(false)}
-          >
-            <img
-              src={bgImage}
-              alt="bg-image"
-              style={{
-                width: "100%",
-                height: "45vh",
-                objectFit: "cover",
-              }}
-            />
-            {hoveredBG && (
-              <Button component="label" sx={styles.buildIcon}>
-                <AddAPhotoIcon sx={styles.editIcon} />
-              </Button>
-            )}
-          </div>
-        )}
+      {openNFT1 && (
+        <PickDialog
+          open={openNFT1}
+          setOpen={setOpenNFT1}
+          onClose={onClosePickDialog}
+          wallet={account}
+          nftIndex={1}
+        />
+      )}
+      {openNFT2 && (
+        <PickDialog
+          open={openNFT2}
+          setOpen={setOpenNFT2}
+          onClose={onClosePickDialog}
+          wallet={account}
+          nftIndex={2}
+        />
+      )}
+      {openNFT3 && (
+        <PickDialog
+          open={openNFT3}
+          setOpen={setOpenNFT3}
+          onClose={onClosePickDialog}
+          wallet={account}
+          nftIndex={3}
+        />
+      )}
+      <div>
+        <input
+          //   {...getInputProps()}
+          onChange={handleBannerSelection}
+          id="bannerInput"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+        <div
+          onMouseEnter={() => setHoveredBG(true)}
+          onMouseLeave={() => setHoveredBG(false)}
+        >
+          <img
+            src={
+              bannerSrc
+                ? bannerSrc
+                : userSetting.bannerImage
+                ? process.env.REACT_APP_API_URL + userSetting.bannerImage
+                : bgImage
+            }
+            alt="bg-image"
+            style={{
+              width: "100%",
+              height: "45vh",
+              objectFit: "cover",
+            }}
+          />
+          {hoveredBG && (
+            <Button
+              onClick={handleBannerClick}
+              component="label"
+              sx={styles.buildIcon}
+            >
+              <AddAPhotoIcon sx={styles.editIcon} />
+            </Button>
+          )}
+        </div>
       </div>
       <Box
         sx={{
@@ -247,35 +434,30 @@ function DashboardSettings() {
               <div
                 onMouseEnter={() => setHoveredPP(true)}
                 onMouseLeave={() => setHoveredPP(false)}
-                className="maskBack"
+                style={styles.container}
               >
-                <div className="mask1">
-                  <img
-                    src={listing?.listingNFT?.metadata?.image}
-                    alt="profileImage"
-                    // className="octagon"
-                  />
-                </div>
-                {/* <img
-                  src={listing?.listingNFT?.metadata?.image}
+                <img
+                  src={
+                    avatarSrc
+                      ? avatarSrc
+                      : userSetting.avatarImage
+                      ? process.env.REACT_APP_API_URL + userSetting.avatarImage
+                      : bgImage
+                  }
                   alt="profileImage"
-                  className="octagon-image"
+                  style={styles.image}
                   width="180px"
                   height="180px"
-                /> */}
+                />
+                <input
+                  id="avatarInput"
+                  type="file"
+                  onChange={handleAvatarSelection}
+                  style={{ display: "none" }}
+                />
                 {hoveredPP && (
-                  <Button
-                    component="label"
-                    htmlFor="profilePicture"
-                    sx={styles.photoIcon}
-                  >
-                    <AddAPhotoIcon sx={styles.editIcon} />
-                    <input
-                      type="file"
-                      name="profilePicture"
-                      id="profilePicture"
-                      hidden
-                    />
+                  <Button sx={styles.photoIcon} onClick={handleAvatarClick}>
+                    <AddAPhotoRoundedIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -289,6 +471,8 @@ function DashboardSettings() {
                       WebkitTextFillColor: "#6c6c6c",
                     },
                   }}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   className="input-wo-padding"
                   InputProps={{
                     style: {
@@ -304,7 +488,7 @@ function DashboardSettings() {
                     },
                     disableUnderline: true,
                     size: "small",
-                    placeholder: "| Collection Title",
+                    placeholder: "| User Title",
                   }}
                 />
               </Box>
@@ -317,7 +501,7 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={listing?.listingNFT?.metadata?.image}
+                  src={topNFTs.bannerImage1 ? topNFTs.bannerImage1 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -332,7 +516,7 @@ function DashboardSettings() {
                     onClick={() => setOpenNFT1(true)}
                     sx={styles.photoIcon}
                   >
-                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <BuildIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -342,7 +526,7 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={listing?.listingNFT?.metadata?.image}
+                  src={topNFTs.bannerImage2 ? topNFTs.bannerImage2 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "150px",
@@ -357,7 +541,7 @@ function DashboardSettings() {
                     sx={styles.photoIcon}
                     onClick={() => setOpenNFT2(true)}
                   >
-                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <BuildIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -367,7 +551,7 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={listing?.listingNFT?.metadata?.image}
+                  src={topNFTs.bannerImage3 ? topNFTs.bannerImage3 : bgImage}
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -382,7 +566,7 @@ function DashboardSettings() {
                     sx={styles.photoIcon}
                     onClick={() => setOpenNFT3(true)}
                   >
-                    <AddAPhotoIcon sx={styles.editIcon} />
+                    <BuildIcon sx={styles.editIcon} />
                   </Button>
                 )}
               </div>
@@ -400,6 +584,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#3D3D3D",
@@ -415,7 +601,12 @@ function DashboardSettings() {
                   multiline: true,
                 }}
               />
-              <Button sx={styles.orangeButton} variant="contained">
+              <Button
+                sx={styles.orangeButton}
+                variant="contained"
+                onClick={handleSave}
+                disabled={loading}
+              >
                 Save
               </Button>
             </Box>
@@ -429,6 +620,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={telegram}
+                onChange={(e) => setTelegram(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -456,6 +649,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={twitter}
+                onChange={(e) => setTwitter(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -483,6 +678,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={facebook}
+                onChange={(e) => setFacebook(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -510,6 +707,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={insta}
+                onChange={(e) => setInsta(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -537,6 +736,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={discord}
+                onChange={(e) => setDiscord(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -564,6 +765,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={tiktok}
+                onChange={(e) => setTiktok(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -591,6 +794,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={youtube}
+                onChange={(e) => setYT(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",
@@ -610,16 +815,16 @@ function DashboardSettings() {
                 }}
               />
               <TextField
-                disabled
                 type="url"
                 variant="standard"
                 hiddenLabel
-                value="medium.com/username"
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
+                value={medium}
+                onChange={(e) => setMedium(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",

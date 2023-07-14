@@ -30,10 +30,11 @@ function CarouselCollection() {
   const downloadBanners = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
-      const response = await fetch(apiUrl + 'banners/lists');
+      const response = await fetch(apiUrl + '/banners/lists');
 
       if (response.ok) {
-        const bannerInfos = await response.json();
+        let bannerInfos = await response.json();
+        bannerInfos = bannerInfos.filter((item) => item.filename);
         setItems(bannerInfos);
       } else {
         console.error('Failed to get banner file');
@@ -140,7 +141,7 @@ function CarouselCollection() {
         <Box key={`index_${index}`}>
           <Paper
             style={{
-              backgroundImage: `url(${process.env.REACT_APP_API_URL}assets/banners/${item.filename})`,
+              backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${item.filename})`,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
