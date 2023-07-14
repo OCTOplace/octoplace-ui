@@ -13,7 +13,10 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
-import { fetchUserSetting, fetchUserTopNFTs } from "../../redux/thunk/user-setting";
+import {
+  fetchUserSetting,
+  fetchUserTopNFTs,
+} from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
@@ -466,7 +469,9 @@ function DashboardHome() {
                 <Typography sx={styles.h3}>Currencies</Typography>
               </Box>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>138</Typography>
+                <Typography sx={styles.h2}>
+                  {myNFTs && myNFTs.length > 0 ? myNFTs.length : ""}
+                </Typography>
                 <Typography sx={styles.h3}>NFTs</Typography>
               </Box>
             </Box>
