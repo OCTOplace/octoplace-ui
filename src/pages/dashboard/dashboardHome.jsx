@@ -470,7 +470,7 @@ function DashboardHome() {
               </Box>
               <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>
-                  {myNFTs && myNFTs.length > 0 ? myNFTs.length : ""}
+                  {myNFTs && myNFTs.length > 0 ? myNFTs.length : "0"}
                 </Typography>
                 <Typography sx={styles.h3}>NFTs</Typography>
               </Box>
