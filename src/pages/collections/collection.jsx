@@ -18,6 +18,7 @@ export const CollectionsPage = () => {
 
   const collections = useSelector((state) => state.collection.collections);
   const [view, setView] = useState(2);
+  const [page, setPage] = useState(1);
 
   return (
     <Box>

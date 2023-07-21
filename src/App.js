@@ -101,7 +101,7 @@ function App() {
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
     dispatch(getAllMarketItems());
-    dispatch(getAllCollections());
+    dispatch(getAllCollections({ page: 1, limit: 1000 }));
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");
@@ -130,8 +130,14 @@ function App() {
           <Route path="swap/done" element={<SwapComplete />} />
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
-          <Route path="collections/:network/:collectionSlug" element={<GuestCollection />} />
-          <Route path="collections/settings/:network/:collectionAddress" element={<CollectionSettings />} />
+          <Route
+            path="collections/:network/:collectionSlug"
+            element={<GuestCollection />}
+          />
+          <Route
+            path="collections/settings/:network/:collectionAddress"
+            element={<CollectionSettings />}
+          />
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="dashboard/guest" element={<DashboardGuest />} />
           <Route path="dashboard/settings" element={<DashboardSettings />} />

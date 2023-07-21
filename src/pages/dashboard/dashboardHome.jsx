@@ -279,7 +279,7 @@ function DashboardHome() {
     }
 
     dispatch(getCollectionOwner({ address: account, network: "theta" }));
-  }, []);
+  }, [account]);
 
   function transformData(nfts) {
     return nfts.map((nft) => {
