@@ -128,6 +128,7 @@ function NFTSelectlist({ nftListings, view, onSelect }) {
 
   const filteredNFTItems = nftListings.filter((item) => {
     if (
+      item.metadata &&
       item.metadata.name &&
       !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())
     ) {
@@ -272,7 +273,7 @@ function NFTSelectlist({ nftListings, view, onSelect }) {
                     >
                       <img
                         src={
-                          item.metadata.image
+                          item.metadata && item.metadata.image
                             ? item.metadata.image.includes("ipfs://")
                               ? item.metadata.image.replace(
                                   "ipfs://",

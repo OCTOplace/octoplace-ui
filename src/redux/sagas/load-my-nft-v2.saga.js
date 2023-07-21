@@ -21,7 +21,7 @@ function* LoadMyNFTFromAPIWorker(action) {
     yield put(setOwner(action.payload.account));
     const data = yield call(loadNFT, action.payload.account);
     const data2 = yield call(loadKavaNFT, action.payload.account);
-    
+
     yield put(addNFT(mergeData(data, data2)));
     yield put(setMyNftLoading(false));
   } catch (e) {
@@ -47,21 +47,21 @@ async function loadKavaNFT(account) {
   }
 }
 
-function transformData(nfts){
-    return nfts.map(nft => {
-        const item = {
-            collectionName: "",
-            collectionSymbol: "",
-            contractAddress: nft.contract_address,
-            tokenId: Number(nft.token_id),
-            metadata: (nft.metadata ? nft.metadata : null),
-            url: (nft.uri? nft.uri : ""),
-            network: nft.network
-        }
-        return item;
-    })
+function transformData(nfts) {
+  return nfts.map((nft) => {
+    const item = {
+      collectionName: "",
+      collectionSymbol: "",
+      contractAddress: nft.contract_address,
+      tokenId: Number(nft.token_id),
+      metadata: nft.metadata ? nft.metadata : null,
+      url: nft.uri ? nft.uri : "",
+      network: nft.network,
+    };
+    return item;
+  });
 }
-function mergeData(arr1, arr2){
+function mergeData(arr1, arr2) {
   return [...arr1, ...arr2];
 }
 export default LoadMyNFTFromAPIWatcher;

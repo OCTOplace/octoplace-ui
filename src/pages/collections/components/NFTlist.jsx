@@ -32,19 +32,17 @@ function NFTlist({ nfts, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [filterObj, setFilterObj] = useState(
-    {
-      minPrice: 0,
-      maxPrice: 0,
-      blockchain: "empty",
-      collection: "empty",
-      saleOnly: false,
-      auctionOnly: false,
-      offersReceived: false,
-      includeBurned: false,
-      selectedTraits: [],
-    }
-  );
+  const [filterObj, setFilterObj] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+    selectedTraits: [],
+  });
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -75,11 +73,15 @@ function NFTlist({ nfts, view }) {
         const attribute = metadata.attributes[j];
 
         // Check if the trait_type already exists in the traits array
-        const index = traits.findIndex((t) => t.trait_type === attribute.trait_type);
+        const index = traits.findIndex(
+          (t) => t.trait_type === attribute.trait_type
+        );
 
         // If it does, add the value to the existing object only if it doesn't already exist
         if (index !== -1) {
-          const valueIndex = traits[index].value.findIndex((v) => v.value === attribute.value);
+          const valueIndex = traits[index].value.findIndex(
+            (v) => v.value === attribute.value
+          );
 
           if (valueIndex !== -1) {
             traits[index].value[valueIndex].count++;
@@ -90,7 +92,11 @@ function NFTlist({ nfts, view }) {
           traits[index].count++;
         } else {
           // If it doesn't, create a new object with the trait_type, value and count
-          traits.push({ trait_type: attribute.trait_type, value: [{ value: attribute.value, count: 1 }], count: 1 });
+          traits.push({
+            trait_type: attribute.trait_type,
+            value: [{ value: attribute.value, count: 1 }],
+            count: 1,
+          });
         }
       }
     }
@@ -102,75 +108,97 @@ function NFTlist({ nfts, view }) {
       const trait = traits[i];
 
       // Check if the trait_type value already exists in the unionTraits array
-      const index = unionTraits.findIndex((t) => t.trait_type === trait.trait_type);
+      const index = unionTraits.findIndex(
+        (t) => t.trait_type === trait.trait_type
+      );
 
       // If it does, merge the value arrays only if they don't overlap
       if (index !== -1) {
-        const mergedValues = unionTraits[index].value.concat(trait.value.filter((v) => !unionTraits[index].value.some((u) => u.value === v.value)));
+        const mergedValues = unionTraits[index].value.concat(
+          trait.value.filter(
+            (v) => !unionTraits[index].value.some((u) => u.value === v.value)
+          )
+        );
         unionTraits[index].value = mergedValues;
         unionTraits[index].count += trait.count;
       } else {
         // If it doesn't, create a new object with the trait_type and merged values
-        unionTraits.push({ trait_type: trait.trait_type, value: trait.value, count: trait.count });
+        unionTraits.push({
+          trait_type: trait.trait_type,
+          value: trait.value,
+          count: trait.count,
+        });
       }
     }
-    
   }
 
-  const filteredNFTItems = nfts && nfts.filter((item) => {
-    if (item.metadata.name && !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
-      return false;
-    }
-
-    if (filterObj.saleOnly && !item.saleOnly) {
-      return false;
-    }
-
-    if (filterObj.auctionOnly && !item.auctionOnly) {
-      return false;
-    }
-
-    if (filterObj.offersReceived && !item.offersReceived) {
-      return false;
-    }
-
-    if (filterObj.includeBurned && !item.includeBurned) {
-      return false;
-    }
-
-    if (filterObj.minPrice !== 0 && parseInt(item.price, 10) < filterObj.minPrice) {
-      return false;
-    }
-
-    if (filterObj.maxPrice !== 0 && parseInt(item.price, 10) > filterObj.maxPrice) {
-      return false;
-    }
-
-    for (let i = 0; i < filterObj.selectedTraits.length; i++) {
-      const traitType = filterObj.selectedTraits[i].trait_type;
-      const values = filterObj.selectedTraits[i].value;
-
-      // Check if the object has the selected trait type
-      const metadata = item.metadata;
-      if (!metadata.attributes) {
-        continue;
-      }
-
-      const index = metadata.attributes.findIndex((a) => a.trait_type === traitType);
-      
-      if (index === -1) {
+  const filteredNFTItems =
+    nfts &&
+    nfts.filter((item) => {
+      if (
+        item.metadata &&
+        item.metadata.name &&
+        !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())
+      ) {
         return false;
       }
-      else {
-        // Check if the object's value for the selected trait type is in the selected values array
-        if (values && !values.includes(metadata.attributes[index].value)) {
+
+      if (filterObj.saleOnly && !item.saleOnly) {
+        return false;
+      }
+
+      if (filterObj.auctionOnly && !item.auctionOnly) {
+        return false;
+      }
+
+      if (filterObj.offersReceived && !item.offersReceived) {
+        return false;
+      }
+
+      if (filterObj.includeBurned && !item.includeBurned) {
+        return false;
+      }
+
+      if (
+        filterObj.minPrice !== 0 &&
+        parseInt(item.price, 10) < filterObj.minPrice
+      ) {
+        return false;
+      }
+
+      if (
+        filterObj.maxPrice !== 0 &&
+        parseInt(item.price, 10) > filterObj.maxPrice
+      ) {
+        return false;
+      }
+
+      for (let i = 0; i < filterObj.selectedTraits.length; i++) {
+        const traitType = filterObj.selectedTraits[i].trait_type;
+        const values = filterObj.selectedTraits[i].value;
+
+        // Check if the object has the selected trait type
+        const metadata = item.metadata;
+        if (!metadata.attributes) {
+          continue;
+        }
+
+        const index = metadata.attributes.findIndex(
+          (a) => a.trait_type === traitType
+        );
+
+        if (index === -1) {
           return false;
+        } else {
+          // Check if the object's value for the selected trait type is in the selected values array
+          if (values && !values.includes(metadata.attributes[index].value)) {
+            return false;
+          }
         }
       }
-    }
 
-    return true;
-  });
+      return true;
+    });
 
   return (
     <Box>
@@ -234,7 +262,14 @@ function NFTlist({ nfts, view }) {
             />
           </IconButton>
         </Box>
-        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
+        <Box>
+          <Searchbox
+            value={keyword}
+            onChange={handleSearch}
+            className="search-nav"
+            type="text"
+          />
+        </Box>
       </Box>
       <Fragment>
         <Box
@@ -245,7 +280,14 @@ function NFTlist({ nfts, view }) {
             gap: 2,
           }}
         >
-          {openFilterMenu && <FilterComponent filterPage={"Collection"} unionTraits={unionTraits} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          {openFilterMenu && (
+            <FilterComponent
+              filterPage={"Collection"}
+              unionTraits={unionTraits}
+              filterObject={filterObj}
+              handleFilter={(obj) => handleFilter(obj)}
+            />
+          )}
           <Grid container spacing={2}>
             {view !== 1 &&
               nfts &&

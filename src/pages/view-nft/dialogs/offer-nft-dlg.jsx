@@ -79,27 +79,25 @@ export const OfferNFTDialog = (props) => {
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [selectedNftOffer, setSelectedNftOffer] = useState();
   const [myNFTs, setMyNFT] = useState([]);
-  
+
   const handleListItemClick = (event, index, item) => {
     setSelectedIndex(index);
     setSelectedNftOffer(item);
   };
-  
+
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
-  
+
   const [keyword, setKeyword] = useState("");
-  const [filterObj, setFilterObj] = useState(
-    {
-      minPrice: 0,
-      maxPrice: 0,
-      blockchain: "empty",
-      collection: "empty",
-      saleOnly: false,
-      auctionOnly: false,
-      offersReceived: false,
-      includeBurned: false,
-    }
-  );
+  const [filterObj, setFilterObj] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+  });
 
   const createData = async () => {
     const netInfo = getNetworkInfo(network);
@@ -119,13 +117,12 @@ export const OfferNFTDialog = (props) => {
     );
 
     let nftArr = [];
-    for (var nftItem of myNFTS){
-      if(nftItem.url){
+    for (var nftItem of myNFTS) {
+      if (nftItem.url) {
         const meta = await getMetadata(nftItem.url);
-        nftArr = [...nftArr, {...nftItem, metadata: meta}]
-      }
-      else {
-        nftArr = [...nftArr, nftItem]
+        nftArr = [...nftArr, { ...nftItem, metadata: meta }];
+      } else {
+        nftArr = [...nftArr, nftItem];
       }
     }
 
@@ -141,7 +138,7 @@ export const OfferNFTDialog = (props) => {
   const getMetadata = async (url) => {
     const metadataResult = await axios.get(url);
     return metadataResult.data;
-  }
+  };
 
   const handleSearch = (event) => {
     setKeyword(event.target.value);
@@ -152,23 +149,39 @@ export const OfferNFTDialog = (props) => {
   };
 
   const filteredMyNFTs = myNFTs.filter((item) => {
-    if (item.metadata.name && !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
+    if (
+      item.metadata &&
+      item.metadata.name &&
+      !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())
+    ) {
       return false;
     }
 
-    if (filterObj.minPrice !== 0 && parseInt(item.Price, 10) < filterObj.minPrice) {
+    if (
+      filterObj.minPrice !== 0 &&
+      parseInt(item.Price, 10) < filterObj.minPrice
+    ) {
       return false;
     }
 
-    if (filterObj.maxPrice !== 0 && parseInt(item.Price, 10) > filterObj.maxPrice) {
+    if (
+      filterObj.maxPrice !== 0 &&
+      parseInt(item.Price, 10) > filterObj.maxPrice
+    ) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && item.network.toLowerCase() !== filterObj.blockchain) {
+    if (
+      filterObj.blockchain !== "empty" &&
+      item.network.toLowerCase() !== filterObj.blockchain
+    ) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && item.contractAddress !== filterObj.collection) {
+    if (
+      filterObj.collection !== "empty" &&
+      item.contractAddress !== filterObj.collection
+    ) {
       return false;
     }
 
@@ -321,7 +334,14 @@ export const OfferNFTDialog = (props) => {
               />
             </IconButton>
           </Box>
-          <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
+          <Box>
+            <Searchbox
+              value={keyword}
+              onChange={handleSearch}
+              className="search-nav"
+              type="text"
+            />
+          </Box>
         </Box>
         <Fragment>
           <Box
@@ -332,26 +352,32 @@ export const OfferNFTDialog = (props) => {
               gap: 2,
             }}
           >
-            {openFilterMenu && <FilterComponent filterPage={"Market"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+            {openFilterMenu && (
+              <FilterComponent
+                filterPage={"Market"}
+                filterObject={filterObj}
+                handleFilter={(obj) => handleFilter(obj)}
+              />
+            )}
             <Grid container spacing={2}>
-            {view !== 1 &&
-              filteredMyNFTs.length > 0 &&
-              filteredMyNFTs.map((item, index) => {
-                return (
-                  <Grid
-                    key={`index_${index}`}
-                    item
-                    xs={12}
-                    sm={6}
-                    md={view}
-                    sx={{
-                      my: 2,
-                    }}
-                  >
-                    <NFTMarketCard marketItem={item} view={view} />
-                  </Grid>
-                );
-              })}
+              {view !== 1 &&
+                filteredMyNFTs.length > 0 &&
+                filteredMyNFTs.map((item, index) => {
+                  return (
+                    <Grid
+                      key={`index_${index}`}
+                      item
+                      xs={12}
+                      sm={6}
+                      md={view}
+                      sx={{
+                        my: 2,
+                      }}
+                    >
+                      <NFTMarketCard marketItem={item} view={view} />
+                    </Grid>
+                  );
+                })}
             </Grid>
           </Box>
         </Fragment>
@@ -361,7 +387,10 @@ export const OfferNFTDialog = (props) => {
           disabled={loading || myNFTs.length == 0}
           sx={style.orangeButton}
           onClick={() => {
-            console.log("///////////////////// selectedNftOffer", selectedNftOffer);
+            console.log(
+              "///////////////////// selectedNftOffer",
+              selectedNftOffer
+            );
             onClose();
             navigate(
               `/swap/initiate-offer/${network}/${listingId}/${selectedNftOffer.contractAddress}/${selectedNftOffer.tokenId}`

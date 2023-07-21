@@ -7,7 +7,7 @@ export const getPopularNFTs = createAsyncThunk(
   "analytics/getPopularNFTs",
   async (address, thunkAPI) => {
     const result = await axios.get(`${apiUrl}/analytics/popular-nfts`);
-    console.log(result.data);
+    // console.log("/////////////////////////// getPopularNFTs", result.data);
     return result.data;
   }
 );

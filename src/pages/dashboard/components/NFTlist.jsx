@@ -33,18 +33,16 @@ function NFTlist({ activeListings, view }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [filterObj, setFilterObj] = useState(
-    {
-      minPrice: 0,
-      maxPrice: 0,
-      blockchain: "empty",
-      collection: "empty",
-      saleOnly: false,
-      auctionOnly: false,
-      offersReceived: false,
-      includeBurned: false,
-    }
-  );
+  const [filterObj, setFilterObj] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+  });
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -59,7 +57,11 @@ function NFTlist({ activeListings, view }) {
   };
 
   const filteredNFTItems = activeListings.filter((item) => {
-    if (item.metadata.name && !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())) {
+    if (
+      item.metadata &&
+      item.metadata.name &&
+      !item.metadata.name.toLowerCase().includes(keyword.toLowerCase())
+    ) {
       return false;
     }
 
@@ -75,11 +77,17 @@ function NFTlist({ activeListings, view }) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && item.network.toLowerCase() !== filterObj.blockchain) {
+    if (
+      filterObj.blockchain !== "empty" &&
+      item.network.toLowerCase() !== filterObj.blockchain
+    ) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && item.contractAddress !== filterObj.collection) {
+    if (
+      filterObj.collection !== "empty" &&
+      item.contractAddress !== filterObj.collection
+    ) {
       return false;
     }
 
@@ -148,7 +156,14 @@ function NFTlist({ activeListings, view }) {
             />
           </IconButton>
         </Box>
-        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
+        <Box>
+          <Searchbox
+            value={keyword}
+            onChange={handleSearch}
+            className="search-nav"
+            type="text"
+          />
+        </Box>
       </Box>
       <Fragment>
         <Box
@@ -159,14 +174,23 @@ function NFTlist({ activeListings, view }) {
             gap: 2,
           }}
         >
-          {openFilterMenu && <FilterComponent filterPage={"Dashboard"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          {openFilterMenu && (
+            <FilterComponent
+              filterPage={"Dashboard"}
+              filterObject={filterObj}
+              handleFilter={(obj) => handleFilter(obj)}
+            />
+          )}
           <Grid container spacing={2}>
             {view !== 1 &&
               filteredNFTItems.length > 0 &&
               filteredNFTItems.map((item, index) => {
                 return (
                   <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                    <NFTListingCard listingItem={{listingNFT: item}} view={view} />
+                    <NFTListingCard
+                      listingItem={{ listingNFT: item }}
+                      view={view}
+                    />
                   </Grid>
                 );
               })}

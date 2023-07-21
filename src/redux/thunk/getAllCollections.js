@@ -5,11 +5,12 @@ const apiUrl = process.env.REACT_APP_API_URL;
 
 export const getAllCollections = createAsyncThunk(
   "collections/getAllCollections",
-  async (network, thunkAPI) => {
+  async (params, thunkAPI) => {
     let items = [];
     // const result = await axios.get(`${apiUrl}/nft/get-collections`);
     const result = await axios.get(
-      `${apiUrl}/collections/listAllVisible?limit=5000`
+      `${apiUrl}/collections/listAllVisible`,
+      { params }
     );
     items = result.data.items.map((item) => {
       let slug = slugify(item.collectionName);

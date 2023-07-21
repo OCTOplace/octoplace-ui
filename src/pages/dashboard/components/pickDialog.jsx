@@ -26,6 +26,10 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
   };
 
   const handleSave = async () => {
+    if (!selectedItem) {
+      return;
+    }
+
     const bannerImage =
       selectedItem.metadata && selectedItem.metadata.image
         ? selectedItem.metadata.image.includes("ipfs://")

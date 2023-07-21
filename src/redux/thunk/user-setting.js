@@ -46,7 +46,9 @@ const updateUserTopNFT = async (nftObj) => {
 const fetchUserSetting = async (address) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   try {
-    const result = await axios.get(`${apiUrl}/users/find/${address}?${Date.now()}`);
+    const result = await axios.get(
+      `${apiUrl}/users/find/${address}?${Date.now()}`
+    );
     return result.data;
   } catch (error) {
     // Handle error here, e.g. show an error message
@@ -58,7 +60,9 @@ const fetchUserSetting = async (address) => {
 const fetchUserTopNFTs = async (address) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   try {
-    const result = await axios.get(`${apiUrl}/users/find-top-nft/${address}?${Date.now()}`);
+    const result = await axios.get(
+      `${apiUrl}/users/find-top-nft/${address}?${Date.now()}`
+    );
     return result.data;
   } catch (error) {
     // Handle error here, e.g. show an error message
