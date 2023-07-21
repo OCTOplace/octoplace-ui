@@ -1,8 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-function RecentMessages() {
-
+function RecentMessages({ messages }) {
   const styles = {
     container: {
       display: "flex",
@@ -55,42 +54,60 @@ function RecentMessages() {
     },
   };
 
-  const messages = [
-    {
-      id: 1,
-      name: "John Doe",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    },
-    {
-      id: 2,
-      name: "John Doe 2",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    },
-    {
-      id: 3,
-      name: "John Doe 3",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    },
-  ];
+  // const messages = [
+  //   {
+  //     id: 1,
+  //     name: "John Doe",
+  //     message:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "John Doe 2",
+  //     message:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "John Doe 3",
+  //     message:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+  //   },
+  // ];
+
+  const RecentMessages = messages.slice(0, 3);
 
   return (
     <Box sx={styles.container}>
-      {messages.map((message) => (
-        <Box key={message.id} sx={styles.messageRow}>
-          <Box sx={styles.avatar}></Box>
-          <Box sx={styles.textCol}>
-            <Box sx={styles.name}>{message.name}</Box>
-            <Box sx={styles.message}>
-              {message.message.length > 80
-                ? message.message.slice(0, 50) + "..."
-                : message.message}
+      {RecentMessages &&
+        RecentMessages.map((message) => (
+          <Box key={message.id} sx={styles.messageRow}>
+            <Box sx={styles.avatar}>
+              {message.avatarImage && (
+                <img
+                  src={process.env.REACT_APP_API_URL + message.avatarImage}
+                  alt="collection-avatar"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+            </Box>
+            <Box sx={styles.textCol}>
+              <Box sx={styles.name}>
+                {message.title ? message.title : message.senderAddress}
+              </Box>
+              <Box sx={styles.message}>
+                {message.message.length > 80
+                  ? message.message.slice(0, 50) + "..."
+                  : message.message}
+              </Box>
             </Box>
           </Box>
-        </Box>
-      ))}
+        ))}
     </Box>
   );
 }

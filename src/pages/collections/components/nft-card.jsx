@@ -5,10 +5,12 @@ import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import broken from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
 
 const MemoNFTCard = ({ view, nft }) => {
-  const [imgUrl, setImgUrl] = useState();
+  const [imgUrl, setImgUrl] = useState(broken);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const styles = {
     root: {
@@ -59,22 +61,52 @@ const MemoNFTCard = ({ view, nft }) => {
     return text;
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    console.log("handleImageLoad");
+  };
+
+  const handleImageError = () => {
+    setImgUrl(broken);
+    console.log("handleImageError");
+  };
+
+  const fetchImage = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      setImgUrl(URL.createObjectURL(blob));
+      setImageLoaded(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    let fetchUrl = broken;
     if (nft && nft.metadata) {
       try {
         if (nft.metadata.image.includes("ipfs://")) {
           let url = nft.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(newUrl);
+          fetchUrl = newUrl;
         } else {
           setImgUrl(nft.metadata.image);
+          fetchUrl = nft.metadata.image;
         }
+
+        // fetchImage(fetchUrl);
       } catch {
-        setImgUrl("https://thereisnoimage.com/image");
+        // setImgUrl("https://thereisnoimage.com/image");
+        setImgUrl(broken);
       }
     } else {
-      setImgUrl("https://thereisnoimage.com/image");
+      // setImgUrl("https://thereisnoimage.com/image");
+      setImgUrl(broken);
     }
+
+    
   }, [nft]);
 
   return (
@@ -90,15 +122,18 @@ const MemoNFTCard = ({ view, nft }) => {
           <Box sx={styles.root}>
             <img
               src={imgUrl}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
               style={{
                 borderTopLeftRadius: "0.75rem",
                 borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
                 width: view === 3 ? "200px" : "100%",
                 aspectRatio: "1/1",
+                // display: imageLoaded ? 'block' : 'none',
               }}
               alt="nft_image"
-              loading="lazy"
+              // loading="lazy"
             />
             <Box sx={styles.content}>
               <Box style={styles.meta}>
@@ -128,3 +163,47 @@ const MemoNFTCard = ({ view, nft }) => {
 };
 
 export const NFTCard = memo(MemoNFTCard);
+
+
+
+// import { useState } from 'react';
+// import { Card, CardMedia } from '@material-ui/core';
+
+// function MyComponent() {
+//   const [imageUrl, setImageUrl] = useState('/default-image.jpg');
+//   const [imageLoaded, setImageLoaded] = useState(false);
+
+//   const handleImageLoad = () => {
+//     setImageLoaded(true);
+//   };
+
+//   const handleImageError = () => {
+//     setImageUrl('/default-image.jpg');
+//   };
+
+//   const fetchImage = async () => {
+//     try {
+//       const response = await fetch('https://example.com/image.jpg');
+//       const blob = await response.blob();
+//       setImageUrl(URL.createObjectURL(blob));
+//       setImageLoaded(false);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   return (
+//     <Card>
+//       <CardMedia>
+//         <img
+//           src={imageUrl}
+//           alt="Image"
+//           onLoad={handleImageLoad}
+//           onError={handleImageError}
+//           style={{ display: imageLoaded ? 'block' : 'none' }}
+//         />
+//         <button onClick={fetchImage}>Load Image</button>
+//       </CardMedia>
+//     </Card>
+//   );
+// }

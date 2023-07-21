@@ -11,7 +11,7 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 
 export const CollectionCard = (props) => {
-  const [imgUrl, setImgUrl] = useState();
+  const [imgUrl, setImgUrl] = useState(broken);
   const { collectionItem, view } = props;
 
   const styles = {
@@ -64,14 +64,16 @@ export const CollectionCard = (props) => {
   };
 
   useEffect(() => {
-    if (collectionItem && collectionItem.image_url) {
+    if (collectionItem && collectionItem.bannerUrl) {
       try {
-        if (collectionItem.image_url.includes("ipfs://")) {
-          let url = collectionItem.image_url;
+        if (collectionItem.bannerImage) {
+          setImgUrl(process.env.REACT_APP_API_URL + collectionItem.bannerImage);
+        } else if (collectionItem.bannerUrl.includes("ipfs://")) {
+          let url = collectionItem.bannerUrl;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(newUrl);
         } else {
-          setImgUrl(collectionItem.image_url);
+          setImgUrl(collectionItem.bannerUrl);
         }
       } catch {
         setImgUrl(broken);
@@ -86,7 +88,7 @@ export const CollectionCard = (props) => {
       {props.collectionItem && (
         <Link
           className="nft-card-link"
-          to={`/collections/${collectionItem.network}/${collectionItem.collection_id}`}
+          to={`/collections/${collectionItem.network}/${collectionItem.collectionAddress}`}
         >
           <Box sx={styles.root}>
             <img
@@ -104,7 +106,7 @@ export const CollectionCard = (props) => {
             <Box sx={styles.content}>
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {truncate(collectionItem.collection_name, 15)}
+                  {truncate(collectionItem.collectionName, 15)}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>

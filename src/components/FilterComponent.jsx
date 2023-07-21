@@ -48,23 +48,23 @@ function FilterComponent({
 
   const onlyCollections = collections.filter(
     (item, index, self) =>
-      index === self.findIndex((t) => t.collection_id === item.collection_id)
+      index === self.findIndex((t) => t.collectionId === item.collectionId)
   );
 
   let filterCollections = onlyCollections.filter((collection) =>
-    myNFTs.some((nft) => nft.contractAddress === collection.type_id)
+    myNFTs.some((nft) => nft.contractAddress === collection.collectionAddress)
   );
 
   if (filterPage === "Market") {
     filterCollections = onlyCollections.filter((collection) =>
-      marketItems.some((nft) => nft.NFTContractAddress === collection.type_id)
+      marketItems.some((nft) => nft.NFTContractAddress === collection.collectionAddress)
     );
   } else if (filterPage === "Swap") {
     filterCollections = onlyCollections.filter((collection) =>
       activeListings.some(
         (nft) =>
           nft.listingNFT.contractAddress.toLowerCase() ===
-          collection.type_id.toLowerCase()
+          collection.collectionAddress.toLowerCase()
       )
     );
   }
@@ -367,8 +367,8 @@ function FilterComponent({
               <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
-                  <MenuItem key={`index_${index}`} value={collection.type_id}>
-                    {collection.collection_name}
+                  <MenuItem key={`index_${index}`} value={collection.collectionAddress}>
+                    {collection.collectionName}
                   </MenuItem>
                 );
               })}
@@ -504,8 +504,8 @@ function FilterComponent({
               <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
-                  <MenuItem key={`index_${index}`} value={collection.type_id}>
-                    {collection.collection_name}
+                  <MenuItem key={`index_${index}`} value={collection.collectionAddress}>
+                    {collection.collectionName}
                   </MenuItem>
                 );
               })}
@@ -763,8 +763,8 @@ function FilterComponent({
               <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
-                  <MenuItem key={`index_${index}`} value={collection.type_id}>
-                    {collection.collection_name}
+                  <MenuItem key={`index_${index}`} value={collection.collectionAddress}>
+                    {collection.collectionName}
                   </MenuItem>
                 );
               })}
