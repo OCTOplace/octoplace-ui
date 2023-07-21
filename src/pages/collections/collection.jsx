@@ -1,6 +1,6 @@
 import { Box, Tooltip } from "@mui/material";
-import React, {  useEffect, useState } from "react";
-import {  Container } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
 import infoIcon from "../../assets/Infrormation_button.svg";
@@ -45,9 +45,7 @@ export const CollectionsPage = () => {
             <img src={infoIcon} alt="" width={16} height={16} />
           </Tooltip>
         </Box>
-        {
-          collections && <CardList list={collections} view={view} />
-        }
+        {collections && <CardList list={collections} view={view} />}
       </Container>
     </Box>
   );

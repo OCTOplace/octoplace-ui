@@ -18,6 +18,7 @@ import Content from "./components/Content";
 import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import { useNavigate, useParams } from "react-router-dom";
 import { setSelectedCollection } from "../../redux/slices/collections-slice";
+import { getCollectionDiscussions } from "../../redux/thunk/get-nft-discussions";
 import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
 import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 import { BsMedium } from "react-icons/bs";
@@ -33,15 +34,13 @@ function GuestCollection() {
   const selectedCollection = useSelector(
     (state) => state.collection.selectedCollection
   );
-  const settings = useSelector(
-    (state) => state.collection.selectedCollectionSetting.settings
-  );
-  const isSettingsLoading = useSelector(
-    (state) => state.collection.selectedCollectionSetting.isLoading
-  );
-  const isNFTsLoading = useSelector(
-    (state) => state.collection.isLoading
-  );
+  // const settings = useSelector(
+  //   (state) => state.collection.selectedCollectionSetting.settings
+  // );
+  // const isSettingsLoading = useSelector(
+  //   (state) => state.collection.selectedCollectionSetting.isLoading
+  // );
+  const isNFTsLoading = useSelector((state) => state.collection.isLoading);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
@@ -49,33 +48,69 @@ function GuestCollection() {
   const owner = useSelector(
     (state) => state.collection.selectedCollectionSetting.owner
   );
+  const messages = useSelector(
+    (state) => state.discussion.selectedCollectionDiscussions
+  );
   const navigate = useNavigate();
   const { account } = useWeb3React();
+  const [bannerUrl, setBannerUrl] = useState();
+  const [avatarUrl, setAvatarUrl] = useState();
 
   useEffect(() => {
     if (collections.length > 0) {
       const result = collections.find(
-        (item) => item.collection_id === collectionSlug
+        (item) => item.collectionAddress === collectionSlug
       );
+
+      dispatch(
+        getCollectionDiscussions({
+          address: result.collectionAddress,
+          network: result.network,
+        })
+      );
+
       dispatch(setSelectedCollection(result));
-      dispatch(getAllCollectionNFTs(result.type_id));
-      dispatch(
-        getCollectionSettings({ address: result.type_id, network: network })
-      );
-      dispatch(
-        getCollectionOwner({ address: result.type_id, network: network })
-      );
-    }    
+      dispatch(getAllCollectionNFTs(result.collectionAddress));
+
+      // dispatch(
+      //   getCollectionSettings({
+      //     address: result.collectionAddress,
+      //     network: network,
+      //   })
+      // );
+      // dispatch(
+      //   getCollectionOwner({
+      //     address: result.collectionAddress,
+      //     network: result.network,
+      //   })
+      // );
+
+      if (result.bannerImage) {
+        setBannerUrl(process.env.REACT_APP_API_URL + result.bannerImage);
+      } else if (result.bannerUrl.includes("ipfs://")) {
+        let url = result.bannerUrl;
+        const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+        setBannerUrl(newUrl);
+      } else {
+        setBannerUrl(result.bannerUrl);
+      }
+
+      if (result.avatarImage) {
+        setAvatarUrl(process.env.REACT_APP_API_URL + result.avatarImage);
+      } else if (result.bannerUrl.includes("ipfs://")) {
+        let url = result.bannerUrl;
+        const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+        setAvatarUrl(newUrl);
+      } else {
+        setAvatarUrl(result.bannerUrl);
+      }
+    }
   }, [collections]);
 
   return (
     <Box>
       <img
-        src={
-          settings && settings.BannerImage
-            ? Buffer.from(settings.BannerImage).toString()
-            : selectedCollection.image_url
-        }
+        src={bannerUrl}
         alt="collection-avatar"
         style={{
           width: "100vw",
@@ -93,11 +128,7 @@ function GuestCollection() {
           <Box style={styles.overlayContainer}>
             <Box sx={styles.imageContainer}>
               <img
-                src={
-                  settings && settings.Avatar
-                    ? Buffer.from(settings.Avatar).toString()
-                    : selectedCollection.image_url
-                }
+                src={avatarUrl}
                 alt="profileImage"
                 // sx={styles.image}
                 className="octagon-image"
@@ -106,12 +137,10 @@ function GuestCollection() {
               />
               <Box sx={styles.column}>
                 <Typography sx={styles.h1}>
-                  {settings && settings.CollectionName
-                    ? settings.CollectionName
-                    : selectedCollection.name}
+                  {selectedCollection.collectionName}
                 </Typography>
                 <Typography sx={styles.h3}>
-                  {selectedCollection.type_id}
+                  {selectedCollection.collectionAddress}
                 </Typography>
               </Box>
             </Box>
@@ -119,45 +148,77 @@ function GuestCollection() {
               {/* <Button sx={styles.orangeButton} variant="contained">
                 Mint
               </Button> */}
-              {settings && (
+              {selectedCollection && (
                 <Box sx={styles.row}>
-                  {settings.Telegram && (
-                    <IconButton LinkComponent={"a"} href={settings.Telegram}>
+                  {selectedCollection.telegram && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.telegram}
+                      target="_blank"
+                    >
                       <Telegram sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.Twitter && (
-                    <IconButton LinkComponent={"a"} href={settings.Twitter}>
+                  {selectedCollection.twitter && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.twitter}
+                      target="_blank"
+                    >
                       <Twitter sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.Discord && (
-                    <IconButton LinkComponent={"a"} href={settings.Discord}>
+                  {selectedCollection.discord && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.discord}
+                      target="_blank"
+                    >
                       <FaDiscord color="#fff" sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.Facebook && (
-                    <IconButton LinkComponent={"a"} href={settings.Facebook}>
+                  {selectedCollection.facebook && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.facebook}
+                      target="_blank"
+                    >
                       <Facebook sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.Instagram && (
-                    <IconButton LinkComponent={"a"} href={settings.Instagram}>
+                  {selectedCollection.instagram && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.instagram}
+                      target="_blank"
+                    >
                       <Instagram sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.Youtube && (
-                    <IconButton LinkComponent={"a"} href={settings.Youtube}>
+                  {selectedCollection.youtube && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.youtube}
+                      target="_blank"
+                    >
                       <FaYoutube color="#fff" sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.Medium && (
-                    <IconButton LinkComponent={"a"} href={settings.Medium}>
+                  {selectedCollection.medium && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.medium}
+                      target="_blank"
+                    >
                       <BsMedium color="#fff" sx={styles.icon} />
                     </IconButton>
                   )}
-                  {settings.TikTok && (
-                    <IconButton LinkComponent={"a"} href={settings.TikTok}>
+                  {selectedCollection.tikTok && (
+                    <IconButton
+                      LinkComponent={"a"}
+                      href={selectedCollection.tikTok}
+                      target="_blank"
+                    >
                       <FaTiktok color="#fff" sx={styles.icon} />
                     </IconButton>
                   )}
@@ -166,7 +227,7 @@ function GuestCollection() {
                     <IconButton
                       onClick={() => {
                         navigate(
-                          `/collections/settings/${settings.Network}/${settings.CollectionAddress}`
+                          `/collections/settings/${selectedCollection.network}/${selectedCollection.collectionAddress}`
                         );
                       }}
                     >
@@ -187,7 +248,9 @@ function GuestCollection() {
             <Box sx={styles.statsRow}>
               <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>
-                  {selectedCollection.totalItems}
+                  {selectedCollection.totalItems
+                    ? selectedCollection.totalItems
+                    : 0}
                 </Typography>
                 <Typography sx={styles.h3}>Items</Typography>
               </Box>
@@ -204,7 +267,9 @@ function GuestCollection() {
                 <Typography sx={styles.h3}>Floor</Typography>
               </Box> */}
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>348</Typography>
+                <Typography sx={styles.h2}>
+                  {messages ? messages.length : 0}
+                </Typography>
                 <Typography sx={styles.h3}>Comments</Typography>
               </Box>
             </Box>
@@ -214,21 +279,23 @@ function GuestCollection() {
           </Box>
           <Box sx={styles.rowAbout}>
             <Box sx={styles.aboutContent}>
-              {settings && settings.AboutText && (
+              {selectedCollection.collectionDesc && (
                 <>
                   <Typography sx={styles.h2}>About</Typography>
-                  <Typography sx={styles.h5}>{settings.AboutText}</Typography>
+                  <Typography sx={styles.h5}>
+                    {selectedCollection.collectionDesc}
+                  </Typography>
                 </>
               )}
             </Box>
             <Box sx={styles.aboutContent}>
               <Typography sx={styles.h2}>Recent messages</Typography>
               {/* <CollectionDiscussions
-                address={selectedCollection.type_id}
+                address={selectedCollection.collectionAddress}
                 network={network}
                 isAccordion={false}
               /> */}
-              <RecentMessages />
+              <RecentMessages messages={messages} />
             </Box>
           </Box>
           <Box sx={styles.menu}>
@@ -264,8 +331,7 @@ function GuestCollection() {
             </Button>
           </Box>
 
-          {
-          activeMenu === "collection" && !isNFTsLoading && (
+          {activeMenu === "collection" && !isNFTsLoading && (
             <NFTlist nfts={selectedCollection.nfts} view={view} />
           )}
           {activeMenu === "content" && (
@@ -273,8 +339,9 @@ function GuestCollection() {
           )}
           {activeMenu === "discussion" && (
             <CollectionDiscussions
-              address={selectedCollection.type_id}
+              address={selectedCollection.collectionAddress}
               network={network}
+              discussions={messages}
               isAccordion={false}
             />
           )}

@@ -41,7 +41,13 @@ import {
   createCollectionDiscussion,
   getCollectionDiscussions,
 } from "../../redux/thunk/get-nft-discussions";
-export const CollectionDiscussions = ({ address, network, isAccordion }) => {
+
+export const CollectionDiscussions = ({
+  address,
+  network,
+  discussions,
+  isAccordion,
+}) => {
   const [expanded, setExpanded] = useState(false);
 
   const styles = {
@@ -130,8 +136,12 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
-  const messages = useSelector(
-    (state) => state.discussion.selectedCollectionDiscussions
+  // const ownerMessages = useSelector(
+  //   (state) => state.discussion.selectedCollectionDiscussions
+  // );
+
+  const ownerMessages = discussions.filter(
+    (message) => message.senderAddress === account
   );
 
   const dispatch = useDispatch();
@@ -139,11 +149,11 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
     return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
 
-  useEffect(() => {
-    return () => {
-      dispatch(setCollectionDiscussions([]));
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(setCollectionDiscussions([]));
+  //   };
+  // }, []);
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -171,13 +181,13 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
     getAllowance();
   };
 
-  const getAllMessages = async () => {
-    dispatch(getCollectionDiscussions({ address, network }));
+  const getMessages = async () => {
+    dispatch(getCollectionDiscussions({ address, network, owner: account }));
   };
 
   useEffect(() => {
     if (address) {
-      getAllMessages();
+      // getMessages();
     }
   }, [address]);
 
@@ -249,6 +259,10 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
   };
 
   const handleSendMessage = async () => {
+    if (!message) {
+      return;
+    }
+
     const netInfo = getNetworkInfo("theta");
     dispatch(showTxDialog());
     try {
@@ -267,7 +281,9 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
       );
       const txResult = await contract.addComment_erc20(address, message);
       dispatch(setTxDialogHash(txResult.hash));
+      
       await txResult.wait();
+      
       dispatch(
         createCollectionDiscussion({
           address,
@@ -276,7 +292,10 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
           message,
         })
       );
+      
       toast.success("Comment Posted Successfuly!");
+      setMessage("");
+      
       setOpenSendDlg(false);
       setMessage("");
       getAllowance();
@@ -289,6 +308,16 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
     }
+
+    // dispatch(
+    //   createCollectionDiscussion({
+    //     address,
+    //     network,
+    //     sender: account,
+    //     message,
+    //   })
+    // );
+    // setMessage("");
   };
 
   return (
@@ -310,18 +339,18 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
           </Typography>
         </AccordionSummary>
       ) : (
-        <></>
+        <div></div>
       )}
       <AccordionDetails sx={styles.accordionBody}>
         <Box sx={styles.detailsBox}>
-          {messages.map((item) => {
+          {ownerMessages.map((item) => {
             return (
-              <Box key={item.Id} sx={styles.comments}>
+              <Box key={item.id} sx={styles.comments}>
                 <Typography sx={styles.address}>
-                  {shortenAddress(item.SenderAddress)}
+                  {shortenAddress(item.senderAddress)}
                   <IconButton
                     onClick={() => {
-                      copy(item.SenderAddress);
+                      copy(item.senderAddress);
                       toast.success("Address copied!");
                     }}
                     sx={styles.copyButton}
@@ -330,7 +359,7 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
                   </IconButton>
                 </Typography>
                 <Typography sx={styles.message} variant="body1">
-                  {item.Message}
+                  {item.message}
                 </Typography>
               </Box>
             );
@@ -357,7 +386,9 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
           <Button
             fullWidth
             variant="contained"
-            onClick={() => setOpenSendDlg(true)}
+            onClick={() => {
+              if (message) setOpenSendDlg(true);
+            }}
             sx={styles.sendButton}
           >
             Send
@@ -379,7 +410,8 @@ export const CollectionDiscussions = ({ address, network, isAccordion }) => {
             </Typography>
           </DialogContent>
           <DialogActions sx={{ pb: 2, pr: 2 }} className="tx-dialog">
-            {feeAllowance >= commentFee ? (
+            {/* {feeAllowance >= commentFee ? ( */}
+            {true ? (
               <Button onClick={handleSendMessage} variant="contained">
                 Send Message
               </Button>

@@ -22,35 +22,33 @@ export const marketSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getAllMarketItems.pending, (state) => {
-        state.isLoading = true;
-    })
-    builder.addCase(getAllMarketItems.fulfilled, (state, {payload}) => {
-        state.markets = payload;
-        state.isLoading = false;
-    })
+      state.isLoading = true;
+    });
+    builder.addCase(getAllMarketItems.fulfilled, (state, { payload }) => {
+      state.markets = payload;
+      state.isLoading = false;
+    });
     builder.addCase(getAllMarketItems.rejected, (state) => {
-        state.isLoading = false;
-        toast.error("Error occured while loading markets.")
-    })
-    builder.addCase(getMarketNFTDetail.fulfilled, (state, {payload}) => {
-        
-        const listingId = payload.listingId;
-        const objIndex = state.markets.findIndex((obj => obj.Id === listingId));
-        let items = state.markets;
-        let item = items[objIndex];
-        item = {
-            ...item,
-            nftDetails: payload.nft
-        }
-        console.log("item", item)
-        items[objIndex] = item;
-        state.markets = items;
+      state.isLoading = false;
+      toast.error("Error occured while loading markets.");
+    });
+    builder.addCase(getMarketNFTDetail.fulfilled, (state, { payload }) => {
+      const listingId = payload.listingId;
+      const objIndex = state.markets.findIndex((obj) => obj.Id === listingId);
+      let items = state.markets;
+      let item = items[objIndex];
+      item = {
+        ...item,
+        nftDetails: payload.nft,
+      };
+
+      items[objIndex] = item;
+      state.markets = items;
     });
     builder.addCase(getMarketNFTDetail.rejected, (state) => {
-        
-        toast.error("Error occured while loading NFT Details.")
-    })
-  }
+      toast.error("Error occured while loading NFT Details.");
+    });
+  },
 });
 
 // Action creators are generated for each case reducer function

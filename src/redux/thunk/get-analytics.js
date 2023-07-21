@@ -16,7 +16,6 @@ export const getPopularCollections = createAsyncThunk(
     "analytics/getPopularCollections",
     async (address, thunkAPI) => {
       const result = await axios.get(`${apiUrl}/analytics/popular-collections`);
-      console.log(result.data);
       return result.data;
     }
   );

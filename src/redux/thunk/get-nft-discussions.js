@@ -4,6 +4,47 @@ import { toast } from "react-toastify";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
+export const getCollectionDiscussions = createAsyncThunk(
+  "discussion/getCollectionDiscussions",
+  async (collection, thunkAPI) => {
+    const params = {
+      address: collection.address,
+      network: collection.network,
+      owner: collection.owner,
+      limits: collection.limits,
+    };
+
+    const result = await axios.get(
+      `${apiUrl}/discussions/collection-discussions`,
+      { params }
+    );
+    return result.data;
+  }
+);
+
+export const createCollectionDiscussion = createAsyncThunk(
+  "discussion/createCollectionDiscussion",
+  async (collection, thunkAPI) => {
+    const result = await axios.post(
+      `${apiUrl}/discussions/create-collection-discussion`,
+      {
+        address: collection.address,
+        network: collection.network,
+        sender: collection.sender,
+        message: collection.message,
+      }
+    );
+    thunkAPI.dispatch(
+      getCollectionDiscussions({
+        address: collection.address,
+        network: collection.network,
+        owner: collection.sender,
+      })
+    );
+    return result.data;
+  }
+);
+
 export const getNftDiscussions = createAsyncThunk(
   "discussion/getNftDiscussions",
   async (nft, thunkAPI) => {
@@ -16,40 +57,26 @@ export const getNftDiscussions = createAsyncThunk(
   }
 );
 
-export const getCollectionDiscussions = createAsyncThunk(
-  "discussion/getCollectionDiscussions",
+export const createNFTDiscussion = createAsyncThunk(
+  "discussion/createNFTDiscussion",
   async (nft, thunkAPI) => {
     const result = await axios.post(
-      `${apiUrl}/discussions/collection-discussions`,
-      { contract: nft.address, network: nft.network }
+      `${apiUrl}/discussions/create-nft-discussion`,
+      {
+        contract: nft.address,
+        network: nft.network,
+        tokenId: nft.tokenId,
+        sender: nft.sender,
+        message: nft.message,
+      }
+    );
+    thunkAPI.dispatch(
+      getNftDiscussions({
+        address: nft.address,
+        tokenId: nft.tokenId,
+        network: nft.network,
+      })
     );
     return result.data;
   }
 );
-
-
-
-export const createNFTDiscussion = createAsyncThunk(
-    "discussion/createNFTDiscussion",
-    async (nft, thunkAPI) => {
-      const result = await axios.post(
-        `${apiUrl}/discussions/create-nft-discussion`,
-        { contract: nft.address, network: nft.network,tokenId: nft.tokenId, sender: nft.sender, message:nft.message  }
-      );
-      thunkAPI.dispatch(getNftDiscussions({address:nft.address, tokenId: nft.tokenId, network:nft.network}))
-      return result.data;
-    }
-  );
-  
-
-  export const createCollectionDiscussion = createAsyncThunk(
-    "discussion/createCollectionDiscussion",
-    async (nft, thunkAPI) => {
-      const result = await axios.post(
-        `${apiUrl}/discussions/create-collection-discussion`,
-        { contract: nft.address, network: nft.network, sender: nft.sender, message:nft.message  }
-      );
-      thunkAPI.dispatch(getCollectionDiscussions({address:nft.address, network:nft.network}))
-      return result.data;
-    }
-  );

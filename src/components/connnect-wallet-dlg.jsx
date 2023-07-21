@@ -36,7 +36,7 @@ const handleWalletConnectClick = async () => {
 
 useEffect(()=> {
   if(account && account !=="" && account.length > 0){
-    toast(`Wallet Connected! /n ${getAccountString(account)}`,{type:"success", position: "bottom-left"});
+    toast(`Wallet Connected! ${getAccountString(account)}`,{type:"success", position: "bottom-left"});
   }
 }, [account]);
 
