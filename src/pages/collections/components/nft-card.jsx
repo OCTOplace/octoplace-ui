@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import broken from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
 
-const MemoNFTCard = ({ view, nft }) => {
+export const NFTCard = ({ view, nft }) => {
   const [imgUrl, setImgUrl] = useState(broken);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -105,9 +105,7 @@ const MemoNFTCard = ({ view, nft }) => {
       // setImgUrl("https://thereisnoimage.com/image");
       setImgUrl(broken);
     }
-
-    
-  }, [nft]);
+  }, []);
 
   return (
     <>
@@ -162,9 +160,7 @@ const MemoNFTCard = ({ view, nft }) => {
   );
 };
 
-export const NFTCard = memo(MemoNFTCard);
-
-
+// export const NFTCard = memo(MemoNFTCard);
 
 // import { useState } from 'react';
 // import { Card, CardMedia } from '@material-ui/core';

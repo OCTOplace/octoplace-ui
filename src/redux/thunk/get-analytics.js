@@ -13,9 +13,9 @@ export const getPopularNFTs = createAsyncThunk(
 );
 
 export const getPopularCollections = createAsyncThunk(
-    "analytics/getPopularCollections",
-    async (address, thunkAPI) => {
-      const result = await axios.get(`${apiUrl}/analytics/popular-collections`);
-      return result.data;
-    }
-  );
+  "analytics/getPopularCollections",
+  async (address, thunkAPI) => {
+    const result = await axios.get(`${apiUrl}/analytics/popular-collections`);
+    return result.data;
+  }
+);
