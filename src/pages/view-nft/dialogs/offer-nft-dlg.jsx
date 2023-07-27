@@ -387,10 +387,6 @@ export const OfferNFTDialog = (props) => {
           disabled={loading || myNFTs.length == 0}
           sx={style.orangeButton}
           onClick={() => {
-            console.log(
-              "///////////////////// selectedNftOffer",
-              selectedNftOffer
-            );
             onClose();
             navigate(
               `/swap/initiate-offer/${network}/${listingId}/${selectedNftOffer.contractAddress}/${selectedNftOffer.tokenId}`

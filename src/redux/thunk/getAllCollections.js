@@ -8,10 +8,9 @@ export const getAllCollections = createAsyncThunk(
   async (params, thunkAPI) => {
     let items = [];
     // const result = await axios.get(`${apiUrl}/nft/get-collections`);
-    const result = await axios.get(
-      `${apiUrl}/collections/listAllVisible`,
-      { params }
-    );
+    const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
+      params,
+    });
     items = result.data.items.map((item) => {
       let slug = slugify(item.collectionName);
       return { ...item, slug };
@@ -20,6 +19,24 @@ export const getAllCollections = createAsyncThunk(
     return items;
   }
 );
+
+export const getVisibleCollections = async (params) => {
+  let items = [];
+  const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
+    params,
+  });
+  items = result.data.items.map((item) => {
+    let slug = slugify(item.collectionName);
+    return { ...item, slug };
+  });
+
+  return {
+    items,
+    totalPages: result.data.totalPages,
+    currentPage: result.data.currentPage,
+    totalCount: result.data.totalCount,
+  };
+};
 
 const slugify = (str) =>
   str

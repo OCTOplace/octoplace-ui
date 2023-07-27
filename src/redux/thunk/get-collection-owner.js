@@ -6,7 +6,10 @@ const apiUrl = process.env.REACT_APP_API_URL;
 export const getCollectionOwner = createAsyncThunk(
   "collection/getCollectionOwner",
   async (collection, thunkAPI) => {
-    const result =  await axios.post(`${apiUrl}/collection-setting/collection-owner`,{address: collection.address, network:collection.network});
+    const result = await axios.post(
+      `${apiUrl}/collection-setting/collection-owner`,
+      { address: collection.address, network: collection.network }
+    );
     // console.log("////////////////// getCollectionOwner ", result.data);
     return result.data;
   }

@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
-import { useEffect } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import broken from "./../../../assets/broken.png";
 
@@ -11,8 +9,12 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 
 export const CollectionCard = (props) => {
-  const [imgUrl, setImgUrl] = useState(broken);
   const { collectionItem, view } = props;
+  const boxRef = useRef(null);
+  const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
+  const [titleLength, setTitleLength] = useState(0);
+  const [imgUrl, setImgUrl] = useState(broken);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const styles = {
     root: {
@@ -56,11 +58,42 @@ export const CollectionCard = (props) => {
     },
   };
 
+  useEffect(() => {
+    function handleResize() {
+      const boxRect = boxRef.current.getBoundingClientRect();
+      if (boxRect.top < window.innerHeight && boxRect.bottom > 0) {
+        // Box is currently visible in viewport, update size
+        setBoxSize({
+          width: boxRef.current.offsetWidth,
+          height: boxRef.current.offsetHeight,
+        });
+        setTitleLength(Math.floor(boxRef.current.offsetWidth / 18));
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const truncate = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
+    let realLength = titleLength;
+    if (realLength === 0) {
+      realLength = boxRef.current
+        ? Math.floor(boxRef.current.offsetWidth / 15)
+        : 15;
+    }
+    if (text.length > realLength) {
+      return text.substring(0, realLength) + "...";
     }
     return text;
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImgUrl(broken);
   };
 
   useEffect(() => {
@@ -90,9 +123,11 @@ export const CollectionCard = (props) => {
           className="nft-card-link"
           to={`/collections/${collectionItem.network}/${collectionItem.collectionAddress}`}
         >
-          <Box sx={styles.root}>
+          <Box ref={boxRef} sx={styles.root}>
             <img
               src={imgUrl}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
               style={{
                 borderTopLeftRadius: "0.75rem",
                 borderTopRightRadius: "0.75rem",
