@@ -28,7 +28,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function NFTlist({ nfts, view }) {
+function NFTlist({ nfts, attributes, view, filterChanged }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -50,87 +50,88 @@ function NFTlist({ nfts, view }) {
 
   const handleSearch = (event) => {
     setKeyword(event.target.value);
+    filterChanged(event.target.value);
   };
 
   const handleFilter = (filterObj) => {
     setFilterObj(filterObj);
   };
 
-  let unionTraits = [];
-  if (nfts) {
-    const traits = [];
+  // let unionTraits = [];
+  // if (nfts) {
+  //   const traits = [];
 
-    // Loop through each object in the array
-    for (let i = 0; i < nfts.length; i++) {
-      const metadata = nfts[i].metadata;
+  //   // Loop through each object in the array
+  //   for (let i = 0; i < nfts.length; i++) {
+  //     const metadata = nfts[i].metadata;
 
-      if (!metadata.attributes) {
-        continue;
-      }
+  //     if (!metadata.attributes) {
+  //       continue;
+  //     }
 
-      // Loop through each attribute in the metadata object
-      for (let j = 0; j < metadata.attributes.length; j++) {
-        const attribute = metadata.attributes[j];
+  //     // Loop through each attribute in the metadata object
+  //     for (let j = 0; j < metadata.attributes.length; j++) {
+  //       const attribute = metadata.attributes[j];
 
-        // Check if the trait_type already exists in the traits array
-        const index = traits.findIndex(
-          (t) => t.trait_type === attribute.trait_type
-        );
+  //       // Check if the trait_type already exists in the traits array
+  //       const index = traits.findIndex(
+  //         (t) => t.trait_type === attribute.trait_type
+  //       );
 
-        // If it does, add the value to the existing object only if it doesn't already exist
-        if (index !== -1) {
-          const valueIndex = traits[index].value.findIndex(
-            (v) => v.value === attribute.value
-          );
+  //       // If it does, add the value to the existing object only if it doesn't already exist
+  //       if (index !== -1) {
+  //         const valueIndex = traits[index].value.findIndex(
+  //           (v) => v.value === attribute.value
+  //         );
 
-          if (valueIndex !== -1) {
-            traits[index].value[valueIndex].count++;
-          } else {
-            traits[index].value.push({ value: attribute.value, count: 1 });
-          }
+  //         if (valueIndex !== -1) {
+  //           traits[index].value[valueIndex].count++;
+  //         } else {
+  //           traits[index].value.push({ value: attribute.value, count: 1 });
+  //         }
 
-          traits[index].count++;
-        } else {
-          // If it doesn't, create a new object with the trait_type, value and count
-          traits.push({
-            trait_type: attribute.trait_type,
-            value: [{ value: attribute.value, count: 1 }],
-            count: 1,
-          });
-        }
-      }
-    }
+  //         traits[index].count++;
+  //       } else {
+  //         // If it doesn't, create a new object with the trait_type, value and count
+  //         traits.push({
+  //           trait_type: attribute.trait_type,
+  //           value: [{ value: attribute.value, count: 1 }],
+  //           count: 1,
+  //         });
+  //       }
+  //     }
+  //   }
 
-    unionTraits = [];
+  //   unionTraits = [];
 
-    // Loop through each object in the traits array
-    for (let i = 0; i < traits.length; i++) {
-      const trait = traits[i];
+  //   // Loop through each object in the traits array
+  //   for (let i = 0; i < traits.length; i++) {
+  //     const trait = traits[i];
 
-      // Check if the trait_type value already exists in the unionTraits array
-      const index = unionTraits.findIndex(
-        (t) => t.trait_type === trait.trait_type
-      );
+  //     // Check if the trait_type value already exists in the unionTraits array
+  //     const index = unionTraits.findIndex(
+  //       (t) => t.trait_type === trait.trait_type
+  //     );
 
-      // If it does, merge the value arrays only if they don't overlap
-      if (index !== -1) {
-        const mergedValues = unionTraits[index].value.concat(
-          trait.value.filter(
-            (v) => !unionTraits[index].value.some((u) => u.value === v.value)
-          )
-        );
-        unionTraits[index].value = mergedValues;
-        unionTraits[index].count += trait.count;
-      } else {
-        // If it doesn't, create a new object with the trait_type and merged values
-        unionTraits.push({
-          trait_type: trait.trait_type,
-          value: trait.value,
-          count: trait.count,
-        });
-      }
-    }
-  }
+  //     // If it does, merge the value arrays only if they don't overlap
+  //     if (index !== -1) {
+  //       const mergedValues = unionTraits[index].value.concat(
+  //         trait.value.filter(
+  //           (v) => !unionTraits[index].value.some((u) => u.value === v.value)
+  //         )
+  //       );
+  //       unionTraits[index].value = mergedValues;
+  //       unionTraits[index].count += trait.count;
+  //     } else {
+  //       // If it doesn't, create a new object with the trait_type and merged values
+  //       unionTraits.push({
+  //         trait_type: trait.trait_type,
+  //         value: trait.value,
+  //         count: trait.count,
+  //       });
+  //     }
+  //   }
+  // }
 
   const filteredNFTItems =
     nfts &&
@@ -283,7 +284,7 @@ function NFTlist({ nfts, view }) {
           {openFilterMenu && (
             <FilterComponent
               filterPage={"Collection"}
-              unionTraits={unionTraits}
+              unionTraits={attributes}
               filterObject={filterObj}
               handleFilter={(obj) => handleFilter(obj)}
             />
