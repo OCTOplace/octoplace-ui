@@ -85,7 +85,8 @@ function FilterComponent({
     }
   };
 
-  const handleValueSelect = (traitType, value) => {
+  const handleAttributeSelect = (traitType, value) => {
+    console.log("////////////////////////////////////////", selectedTraits);
     // Check if the trait type is already selected
     const index = selectedTraits.findIndex((t) => t.trait_type === traitType);
 
@@ -117,6 +118,8 @@ function FilterComponent({
         { trait_type: traitType, value: [value.value] },
       ]);
     }
+
+    handleChange();
   };
 
   const styles = {
@@ -222,7 +225,7 @@ function FilterComponent({
     auctionOnly,
     offersReceived,
     includeBurned,
-    selectedTraits,
+    // selectedTraits,
   ]);
 
   const handleChange = () => {
@@ -524,7 +527,7 @@ function FilterComponent({
           <Box sx={styles.checkboxRow}>
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
-              <Typography sx={styles.p}>23</Typography>
+              <Typography sx={styles.p}>0</Typography>
               <Checkbox
                 sx={styles.checkbox}
                 checked={saleOnly}
@@ -651,7 +654,7 @@ function FilterComponent({
                                   t.value.includes(value.value)
                               )}
                               onChange={() =>
-                                handleValueSelect(item.trait_type, value)
+                                handleAttributeSelect(item.trait_type, value)
                               }
                             />
                           </Box>
@@ -674,7 +677,7 @@ function FilterComponent({
           <Box sx={styles.checkboxRow}>
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
-              <Typography sx={styles.p}>23</Typography>
+              <Typography sx={styles.p}>0</Typography>
               <Checkbox
                 sx={styles.checkbox}
                 checked={saleOnly}

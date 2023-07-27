@@ -7,7 +7,6 @@ export const getAllCollections = createAsyncThunk(
   "collections/getAllCollections",
   async (params, thunkAPI) => {
     let items = [];
-    // const result = await axios.get(`${apiUrl}/nft/get-collections`);
     const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
       params,
     });
