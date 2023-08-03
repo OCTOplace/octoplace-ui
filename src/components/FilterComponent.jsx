@@ -21,28 +21,26 @@ import { Margin } from "@mui/icons-material";
 function FilterComponent({
   filterPage,
   unionTraits,
-  filterObject,
+  filterParam,
   handleFilter,
 }) {
   const myNFTs = useSelector((state) => state.myNFT.nfts);
   const collections = useSelector((state) => state.collection.collections);
 
-  const [minPrice, setMinPrice] = useState(filterObject.minPrice);
-  const [maxPrice, setMaxPrice] = useState(filterObject.maxPrice);
-  const [blockchain, setBlockchain] = useState(filterObject.blockchain);
-  const [collection, setCollection] = useState(filterObject.collection);
-  const [selectedTraits, setSelectedTraits] = useState(
-    filterObject.selectedTraits
-  );
-
-  const [saleOnly, setSaleOnly] = useState(filterObject.saleOnly);
-  const [auctionOnly, setAuctionOnly] = useState(filterObject.auctionOnly);
+  const [minPrice, setMinPrice] = useState(filterParam.minPrice);
+  const [maxPrice, setMaxPrice] = useState(filterParam.maxPrice);
+  const [blockchain, setBlockchain] = useState(filterParam.blockchain);
+  const [collection, setCollection] = useState(filterParam.collection);
+  // const [selectedTraits, setSelectedTraits] = useState(
+  //   filterParam.traits
+  // );
+  const selectedTraits = filterParam.traits;
+  const [saleOnly, setSaleOnly] = useState(filterParam.saleOnly);
+  const [auctionOnly, setAuctionOnly] = useState(filterParam.auctionOnly);
   const [offersReceived, setOffersReceived] = useState(
-    filterObject.offersReceived
+    filterParam.offersReceived
   );
-  const [includeBurned, setIncludeBurned] = useState(
-    filterObject.includeBurned
-  );
+  const [includeBurned, setIncludeBurned] = useState(filterParam.includeBurned);
   const marketItems = useSelector((state) => state.market.markets);
   const activeListings = useSelector((state) => state.listings.activeListings);
 
@@ -57,7 +55,9 @@ function FilterComponent({
 
   if (filterPage === "Market") {
     filterCollections = onlyCollections.filter((collection) =>
-      marketItems.some((nft) => nft.NFTContractAddress === collection.collectionAddress)
+      marketItems.some(
+        (nft) => nft.NFTContractAddress === collection.collectionAddress
+      )
     );
   } else if (filterPage === "Swap") {
     filterCollections = onlyCollections.filter((collection) =>
@@ -69,30 +69,14 @@ function FilterComponent({
     );
   }
 
-  const handleTraitSelect = (traitType) => {
-    // Check if the trait type is already selected
-    const index = selectedTraits.indexOf(traitType);
-
-    if (index !== -1) {
-      // If it is, remove it from the selected traits array
-      setSelectedTraits([
-        ...selectedTraits.slice(0, index),
-        ...selectedTraits.slice(index + 1),
-      ]);
-    } else {
-      // If it isn't, add it to the selected traits array
-      setSelectedTraits([...selectedTraits, traitType]);
-    }
-  };
-
   const handleAttributeSelect = (traitType, value) => {
-    console.log("////////////////////////////////////////", selectedTraits);
+    let updatedTraits = [];
     // Check if the trait type is already selected
     const index = selectedTraits.findIndex((t) => t.trait_type === traitType);
 
     if (index !== -1) {
       // If it is, update the selected values for that trait type
-      let updatedTraits = [...selectedTraits]; //[...unionTraits];
+      updatedTraits = [...selectedTraits]; //[...unionTraits];
       const traitIndex = updatedTraits.findIndex(
         (t) => t.trait_type === traitType
       );
@@ -110,16 +94,20 @@ function FilterComponent({
         updatedTraits[traitIndex].value.push(value.value);
       }
 
-      setSelectedTraits(updatedTraits);
+      // setSelectedTraits(updatedTraits);
     } else {
       // If it isn't, add it to the selected traits array along with the selected value
-      setSelectedTraits([
+      // setSelectedTraits([
+      //   ...selectedTraits,
+      //   { trait_type: traitType, value: [value.value] },
+      // ]);
+      updatedTraits = [
         ...selectedTraits,
         { trait_type: traitType, value: [value.value] },
-      ]);
+      ];
     }
 
-    handleChange();
+    handleChange(updatedTraits);
   };
 
   const styles = {
@@ -214,21 +202,7 @@ function FilterComponent({
     },
   };
 
-  useEffect(() => {
-    handleChange();
-  }, [
-    minPrice,
-    maxPrice,
-    blockchain,
-    collection,
-    saleOnly,
-    auctionOnly,
-    offersReceived,
-    includeBurned,
-    // selectedTraits,
-  ]);
-
-  const handleChange = () => {
+  const handleChange = (selectedTraits) => {
     const filterObj = {
       minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
       maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
@@ -238,7 +212,7 @@ function FilterComponent({
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
       includeBurned: includeBurned,
-      selectedTraits: selectedTraits,
+      traits: selectedTraits,
     };
 
     handleFilter(filterObj);
@@ -370,7 +344,10 @@ function FilterComponent({
               <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
-                  <MenuItem key={`index_${index}`} value={collection.collectionAddress}>
+                  <MenuItem
+                    key={`index_${index}`}
+                    value={collection.collectionAddress}
+                  >
                     {collection.collectionName}
                   </MenuItem>
                 );
@@ -507,7 +484,10 @@ function FilterComponent({
               <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
-                  <MenuItem key={`index_${index}`} value={collection.collectionAddress}>
+                  <MenuItem
+                    key={`index_${index}`}
+                    value={collection.collectionAddress}
+                  >
                     {collection.collectionName}
                   </MenuItem>
                 );
@@ -644,7 +624,9 @@ function FilterComponent({
                         <Box key={`index_${index}`} sx={styles.checkboxRow}>
                           <Typography sx={styles.p}>{value.value}</Typography>
                           <Box sx={styles.boxRow}>
-                            <Typography sx={styles.p}>{value.count}</Typography>
+                            <Typography sx={styles.p}>
+                              {value.count || ""}
+                            </Typography>
                             <Checkbox
                               sx={styles.checkbox}
                               checked={selectedTraits.some(
@@ -766,7 +748,10 @@ function FilterComponent({
               <MenuItem value="empty">No Filter</MenuItem>
               {filterCollections.map((collection, index) => {
                 return (
-                  <MenuItem key={`index_${index}`} value={collection.collectionAddress}>
+                  <MenuItem
+                    key={`index_${index}`}
+                    value={collection.collectionAddress}
+                  >
                     {collection.collectionName}
                   </MenuItem>
                 );

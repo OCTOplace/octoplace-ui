@@ -61,29 +61,28 @@ function GuestCollection() {
   const [attributes, setAttributes] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [filterParam, setFilterParam] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+    traits: [],
+  });
   const [totalCount, setTotalCount] = useState(0);
-  const [itemCount, setItemCount] = useState(0);
+  const [filteredCount, setFilteredCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
   const fetchNFTs = async () => {
-    const attributes = {
-      trails: [
-        {
-          trait_type: "Background",
-          value: ["Red", "Teal"],
-        },
-        {
-          trait_type: "Pillow",
-          value: ["Ghost", "Blue"],
-        },
-      ],
-    };
     const response = await getNFTsOfCollection(collectionSlug, {
       page: page,
       limit: 24,
       search,
-      attributes: JSON.stringify(attributes),
+      attributes: JSON.stringify(filterParam.traits),
     });
     const newItems = response.items;
     const uniqueNewItems = newItems.filter(
@@ -92,8 +91,8 @@ function GuestCollection() {
     const newItemCount = response.count;
     setNfts([...nfts, ...uniqueNewItems]);
     setAttributes(response.attributes);
-    setItemCount(newItemCount);
-    setTotalCount(response.totalCount);
+    setFilteredCount(newItemCount);
+    setTotalCount(response.total);
     if (nfts.length >= newItemCount) {
       setHasMore(false);
     } else {
@@ -109,14 +108,22 @@ function GuestCollection() {
     setSearch(keyword);
   };
 
-  useEffect(() => {
+  const handleFilter = (filterParam) => {
+    console.log("///////////////////////////// handleFilter", filterParam);
+    setLoading(true);
     setNfts([]);
     setPage(1);
-    setTotalCount(0);
-    setItemCount(0);
-    setHasMore(true);
-    fetchNFTs(1);
-  }, [search]);
+    setFilterParam(filterParam);
+  };
+
+  // useEffect(() => {
+  //   setNfts([]);
+  //   setPage(1);
+  //   setTotalCount(0);
+  //   setFilteredCount(0);
+  //   setHasMore(true);
+  //   fetchNFTs();
+  // }, [search, filterParam]);
 
   useEffect(() => {
     if (collections.length > 0) {
@@ -391,20 +398,25 @@ function GuestCollection() {
             </Button>
           </Box>
 
-          {activeMenu === "collection" && !loading && (
-            <InfiniteScroll
-              dataLength={nfts.length}
-              next={fetchNFTs}
-              hasMore={hasMore}
-              loader={<h4>Loading...</h4>}
-            >
+          {activeMenu === "collection" && (
+            // <InfiniteScroll
+            //   dataLength={nfts.length}
+            //   next={fetchNFTs}
+            //   hasMore={hasMore}
+            //   loader={<h4>Loading...</h4>}
+            // >
               <NFTlist
-                nfts={nfts}
-                attributes={attributes}
+                // nfts={nfts}
+                // attributes={attributes}
+                address={selectedCollection.collectionAddress}
+                network={network}
                 view={view}
-                searchChanged={handleSearch}
+                // keyword={search}
+                // filterParam={filterParam}
+                // searchChanged={handleSearch}
+                // filterChanged={handleFilter}
               />
-            </InfiniteScroll>
+            // </InfiniteScroll>
           )}
           {activeMenu === "content" && (
             <Content activeListings={activeListings} view={view} />
