@@ -546,7 +546,7 @@ function DashboardHome() {
             <NFTlist activeListings={myNFTs} view={view} />
           )}
           {activeMenu === "inbox" && (
-            <Content activeListings={myNFTs} view={view} />
+            <Content activeListings={myNFTs} view={view}  />
           )}
         </Container>
       </Box>
