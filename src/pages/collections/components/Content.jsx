@@ -18,6 +18,118 @@ import thetaImage from "../../../assets/icon.png";
 import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
+import axios from 'axios'
+
+const styles = {
+  videoContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    my: 3,
+  },
+  videoBox: {
+    width: "100%",
+    height: "100%",
+    borderRadius: "1rem",
+    position: "relative",
+    overflow: "hidden",
+  },
+  playIconButton: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%,-50%)",
+    zIndex: 2,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    "&:hover": {
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+  },
+  playIcon: {
+    color: "#fff",
+    fontSize: "3rem",
+  },
+  descriptionContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 5,
+    color: "#f4f4f4",
+  },
+  textContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+  },
+  h1: {
+    fontWeight: 600,
+    fontSize: "1.75rem",
+  },
+  h2: {
+    fontWeight: 600,
+    fontSize: "0.875rem",
+  },
+  p: {
+    fontWeight: 400,
+    fontSize: "1rem",
+  },
+  pGray: {
+    fontWeight: 400,
+    fontSize: ".75rem",
+    color: "#6C6C6C",
+  },
+  pWhite: {
+    fontWeight: 400,
+    fontSize: ".75rem",
+    color: "#f4f4f4",
+  },
+  rContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+  },
+  ownerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 1,
+    border: "0.792651px solid #6C6C6C",
+    borderRadius: "0.594rem",
+  },
+  ownerBox: {
+    display: "flex",
+    flexDirection: "column",
+    width: "200px",
+    gap: 1,
+    px: 3,
+    py: 2,
+  },
+  orangeButton: {
+    backgroundColor: "#F78C09",
+    color: "#262626",
+    textTransform: "none",
+    fontWeight: 600,
+    fontSize: "1rem",
+    borderRadius: "0.594rem",
+    "&:hover": {
+      backgroundColor: "#f4f4f4",
+    },
+  },
+  formContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    gap: 3,
+    my: 3,
+    color: "#f4f4f4",
+  },
+  textInput: {
+    color: "#f4f4f4",
+    borderColor: "#f4f4f4",
+  },
+};
 
 function Content({ activeListings, view }) {
   const videoRef = useRef(null);
@@ -32,6 +144,9 @@ function Content({ activeListings, view }) {
     { key: 3, label: "480p" },
     { key: 4, label: "360p" },
   ]);
+  const [uploadData, setUploadData] = useState();
+  const [movie, setMovie] = useState();
+  const [videoUrl, setVideoUrl] = useState("");
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
@@ -39,127 +154,46 @@ function Content({ activeListings, view }) {
     );
   };
 
-  const styles = {
-    videoContainer: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-      my: 3,
-    },
-    videoBox: {
-      width: "100%",
-      height: "100%",
-      borderRadius: "1rem",
-      position: "relative",
-      overflow: "hidden",
-    },
-    playIconButton: {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%,-50%)",
-      zIndex: 2,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      "&:hover": {
-        backgroundColor: "rgba(0,0,0,0.5)",
-      },
-    },
-    playIcon: {
-      color: "#fff",
-      fontSize: "3rem",
-    },
-    descriptionContainer: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: 5,
-      color: "#f4f4f4",
-    },
-    textContainer: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-    },
-    h1: {
-      fontWeight: 600,
-      fontSize: "1.75rem",
-    },
-    h2: {
-      fontWeight: 600,
-      fontSize: "0.875rem",
-    },
-    p: {
-      fontWeight: 400,
-      fontSize: "1rem",
-    },
-    pGray: {
-      fontWeight: 400,
-      fontSize: ".75rem",
-      color: "#6C6C6C",
-    },
-    pWhite: {
-      fontWeight: 400,
-      fontSize: ".75rem",
-      color: "#f4f4f4",
-    },
-    rContainer: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-    },
-    ownerContainer: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: 1,
-      border: "0.792651px solid #6C6C6C",
-      borderRadius: "0.594rem",
-    },
-    ownerBox: {
-      display: "flex",
-      flexDirection: "column",
-      width: "200px",
-      gap: 1,
-      px: 3,
-      py: 2,
-    },
-    orangeButton: {
-      backgroundColor: "#F78C09",
-      color: "#262626",
-      textTransform: "none",
-      fontWeight: 600,
-      fontSize: "1rem",
-      borderRadius: "0.594rem",
-      "&:hover": {
-        backgroundColor: "#f4f4f4",
-      },
-    },
-    formContainer: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      textAlign: "center",
-      gap: 3,
-      my: 3,
-      color: "#f4f4f4",
-    },
-    textInput: {
-      color: "#f4f4f4",
-      borderColor: "#f4f4f4",
-    },
-  };
-
   const onDrop = (acceptedFiles) => {
     // Handle dropped files logic here
     console.log(acceptedFiles);
+    let files;
+    if (acceptedFiles != null) {
+      files = acceptedFiles[0];
+    }
+    if (files != null) {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(files);
+      setMovie(files);
+      // fileReader.addEventListener('load', function () {
+      //   const video = this.result;
+      // });
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission logic here
+    console.log("Save");
+    if(uploadData == null) return;
+    const formData = new FormData();
+    if (movie != null || movie !== '') {
+      formData.append('file', movie);
+      console.log("movie:", movie);
+    }
+    const headers = {
+      'Content-type': 'application/octet-stream'
+    }
+    try {
+      console.log("presigned_url: ", uploadData.presigned_url );
+      const response = await axios.put(uploadData.presigned_url, formData, { headers: headers });
+      const data = response.data;
+      console.log("Submit: ", data);
+    } catch (err) {
+      console.log("Submitting Error: ", err);
+    }
   };
 
   const handlePlayVideo = () => {
@@ -171,6 +205,31 @@ function Content({ activeListings, view }) {
       setIsPlaying(false);
     }
   };
+
+  const handleChangeURL = (e) => {
+    console.log(e);
+    const url = e.target.value;
+    setVideoUrl(url);
+  }
+
+  const getPreSignedUrl = async () => {
+    const headers = {
+      'x-tva-sa-id': 'srvacc_fp72dqw4ix8r6ad6vr9evm68d',
+      'x-tva-sa-secret': 'xn0xqh78s04e0n67vkbwwztq2zvp7scg'
+    }
+    try {
+      const response = await axios.post("https://api.thetavideoapi.com/upload", undefined, { headers: headers });
+      const data = response.data;
+      const uploadsData = data.body.uploads[0];
+      setUploadData(uploadsData);
+    } catch (err) {
+      console.log("Pre-Signed URL Error: ", err)
+    }
+  }
+
+  useEffect(() => {
+    getPreSignedUrl();
+  }, [])
 
   return (
     <Container>
@@ -203,6 +262,8 @@ function Content({ activeListings, view }) {
                 size: "small",
                 placeholder: "| Enter URL",
               }}
+              value={videoUrl}
+              onChange={handleChangeURL}
             />
 
             <Typography sx={styles.h1}>or</Typography>
@@ -223,6 +284,7 @@ function Content({ activeListings, view }) {
               {isDragActive ? (
                 <p>Drop the files here...</p>
               ) : (
+                movie != null ? movie.name : 
                 <p>Drag &amp; Drop Input (Video File)</p>
               )}
             </div>
@@ -297,10 +359,10 @@ function Content({ activeListings, view }) {
                   }}
                   value={""}
                 >
-                  <MenuItem value="">Select an option</MenuItem>
-                  <MenuItem value="option1">Option 1</MenuItem>
-                  <MenuItem value="option2">Option 2</MenuItem>
-                  <MenuItem value="option3">Option 3</MenuItem>
+                  {/* <MenuItem value="">Select an option</MenuItem> */}
+                  <MenuItem value="Theta Mainnet">Theta Mainnet</MenuItem>
+                  <MenuItem value="Theta Testnet">Theta Testnet</MenuItem>
+                  <MenuItem value="Ethereum Mainnet">Ethereum Mainnet</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -493,6 +555,7 @@ function Content({ activeListings, view }) {
               {isOwner ? (
                 <Button
                   onClick={() => setOpenAddVideo(true)}
+                  disabled={true}
                   sx={styles.orangeButton}
                 >
                   Add Video

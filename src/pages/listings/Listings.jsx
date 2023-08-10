@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Divider, Paper, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
-import TabsUnstyled from "@mui/base/TabsUnstyled";
-import TabUnstyled from "@mui/base/TabUnstyled";
-import TabsListUnstyled from "@mui/base/TabsListUnstyled";
-import TabPanelUnstyled from "@mui/base/TabPanelUnstyled";
+import TabsUnstyled from "@mui/base/Tabs";
+import TabUnstyled from "@mui/base/Tab";
+import TabsListUnstyled from "@mui/base/TabsList";
+import TabPanelUnstyled from "@mui/base/TabPanel";
 import { Container, Row, Col } from "react-bootstrap";
 import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";

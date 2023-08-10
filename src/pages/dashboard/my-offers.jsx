@@ -5,10 +5,10 @@ import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setMyOffers } from "../../redux/slices/my-nft-slice";
-import TabsUnstyled from "@mui/base/TabsUnstyled";
-import TabUnstyled from "@mui/base/TabUnstyled";
-import TabsListUnstyled from "@mui/base/TabsListUnstyled";
-import TabPanelUnstyled from "@mui/base/TabPanelUnstyled";
+import TabsUnstyled from "@mui/base/Tabs";
+import TabUnstyled from "@mui/base/Tab";
+import TabsListUnstyled from "@mui/base/TabsList";
+import TabPanelUnstyled from "@mui/base/TabPanel";
 import { styled } from "@mui/system";
 import { MyOfferItem } from "./components/my-offer-item";
 
