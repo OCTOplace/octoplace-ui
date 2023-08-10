@@ -44,7 +44,10 @@ export function PopularCollections({ title }) {
 
   const handleNextClick = () => {
     const nextIndex = currentIndex + 1;
-    if (nextIndex >= popularCollections.length) {
+    if (
+      nextIndex >=
+      popularCollections.length - (numItemsToShow == 1 ? 1 : numItemsToShow - 1)
+    ) {
       setCurrentIndex(0);
     } else {
       setCurrentIndex(nextIndex);

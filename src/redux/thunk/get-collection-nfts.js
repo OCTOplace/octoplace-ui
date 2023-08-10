@@ -10,3 +10,11 @@ export const getAllCollectionNFTs = createAsyncThunk(
     return result.data;
   }
 );
+
+export const getNFTsOfCollection = async (address, params) => {
+  let items = [];
+  const result = await axios.get(`${apiUrl}/nft/get-collection-items/${address}`, {
+    params,
+  });
+  return result.data;
+};

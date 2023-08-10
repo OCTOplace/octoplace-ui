@@ -9,6 +9,7 @@ import broken from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
 
 export const NFTCard = ({ view, nft }) => {
+  const [title, setTitle] = useState(nft.metadata.name);
   const [imgUrl, setImgUrl] = useState(broken);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -63,12 +64,12 @@ export const NFTCard = ({ view, nft }) => {
 
   const handleImageLoad = () => {
     setImageLoaded(true);
-    console.log("handleImageLoad");
+    // console.log("handleImageLoad");
   };
 
   const handleImageError = () => {
     setImgUrl(broken);
-    console.log("handleImageError");
+    // console.log("handleImageError");
   };
 
   const fetchImage = async (url) => {
@@ -83,29 +84,23 @@ export const NFTCard = ({ view, nft }) => {
   };
 
   useEffect(() => {
-    let fetchUrl = broken;
-    if (nft && nft.metadata) {
+    setImgUrl(broken);
+    if (nft && nft.metadata && nft.metadata.image) {
       try {
         if (nft.metadata.image.includes("ipfs://")) {
           let url = nft.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(newUrl);
-          fetchUrl = newUrl;
         } else {
           setImgUrl(nft.metadata.image);
-          fetchUrl = nft.metadata.image;
         }
-
-        // fetchImage(fetchUrl);
       } catch {
-        // setImgUrl("https://thereisnoimage.com/image");
         setImgUrl(broken);
       }
     } else {
-      // setImgUrl("https://thereisnoimage.com/image");
       setImgUrl(broken);
     }
-  }, []);
+  }, [nft]);
 
   return (
     <>
@@ -147,7 +142,9 @@ export const NFTCard = ({ view, nft }) => {
                 )}
                 <img src={verifiedLogo} alt="verified" />
               </Box>
-              <Typography sx={styles.network}>{`#${nft.network}`}</Typography>
+              <Typography sx={styles.network}>{`#${
+                nft.network ? nft.network : "theta"
+              }`}</Typography>
               <Box style={styles.meta}>
                 <Typography>#{Number(nft.token_id)}</Typography>
               </Box>

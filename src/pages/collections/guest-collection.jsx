@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
+import InfiniteScroll from "react-infinite-scroll-component";
 import {
   FacebookRounded,
   Facebook,
@@ -19,7 +20,7 @@ import { CollectionDiscussions } from "../../components/discussions/collection-d
 import { useNavigate, useParams } from "react-router-dom";
 import { setSelectedCollection } from "../../redux/slices/collections-slice";
 import { getCollectionDiscussions } from "../../redux/thunk/get-nft-discussions";
-import { getAllCollectionNFTs } from "../../redux/thunk/get-collection-nfts";
+import { getNFTsOfCollection } from "../../redux/thunk/get-collection-nfts";
 import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
@@ -40,7 +41,7 @@ function GuestCollection() {
   // const isSettingsLoading = useSelector(
   //   (state) => state.collection.selectedCollectionSetting.isLoading
   // );
-  const isNFTsLoading = useSelector((state) => state.collection.isLoading);
+  // const isNFTsLoading = useSelector((state) => state.collection.isLoading);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
@@ -56,6 +57,74 @@ function GuestCollection() {
   const [bannerUrl, setBannerUrl] = useState();
   const [avatarUrl, setAvatarUrl] = useState();
 
+  const [nfts, setNfts] = useState([]);
+  const [attributes, setAttributes] = useState([]);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [filterParam, setFilterParam] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+    traits: [],
+  });
+  const [totalCount, setTotalCount] = useState(0);
+  const [filteredCount, setFilteredCount] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  const fetchNFTs = async () => {
+    const response = await getNFTsOfCollection(collectionSlug, {
+      page: page,
+      limit: 24,
+      search,
+      attributes: JSON.stringify(filterParam.traits),
+    });
+    const newItems = response.items;
+    const uniqueNewItems = newItems.filter(
+      (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
+    );
+    const newItemCount = response.count;
+    setNfts([...nfts, ...uniqueNewItems]);
+    setAttributes(response.attributes);
+    setFilteredCount(newItemCount);
+    setTotalCount(response.total);
+    if (nfts.length >= newItemCount) {
+      setHasMore(false);
+    } else {
+      setPage(page + 1);
+    }
+    setLoading(false);
+  };
+
+  const handleSearch = (keyword) => {
+    setLoading(true);
+    setNfts([]);
+    setPage(1);
+    setSearch(keyword);
+  };
+
+  const handleFilter = (filterParam) => {
+    console.log("///////////////////////////// handleFilter", filterParam);
+    setLoading(true);
+    setNfts([]);
+    setPage(1);
+    setFilterParam(filterParam);
+  };
+
+  // useEffect(() => {
+  //   setNfts([]);
+  //   setPage(1);
+  //   setTotalCount(0);
+  //   setFilteredCount(0);
+  //   setHasMore(true);
+  //   fetchNFTs();
+  // }, [search, filterParam]);
+
   useEffect(() => {
     if (collections.length > 0) {
       const result = collections.find(
@@ -70,7 +139,9 @@ function GuestCollection() {
       );
 
       dispatch(setSelectedCollection(result));
-      dispatch(getAllCollectionNFTs(result.collectionAddress));
+
+      // dispatch(getAllCollectionNFTs(result.collectionAddress));
+      fetchNFTs();
 
       // dispatch(
       //   getCollectionSettings({
@@ -247,11 +318,7 @@ function GuestCollection() {
           >
             <Box sx={styles.statsRow}>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>
-                  {selectedCollection.totalItems
-                    ? selectedCollection.totalItems
-                    : 0}
-                </Typography>
+                <Typography sx={styles.h2}>{totalCount}</Typography>
                 <Typography sx={styles.h3}>Items</Typography>
               </Box>
               {/* <Box sx={styles.statsCol}>
@@ -331,8 +398,25 @@ function GuestCollection() {
             </Button>
           </Box>
 
-          {activeMenu === "collection" && !isNFTsLoading && (
-            <NFTlist nfts={selectedCollection.nfts} view={view} />
+          {activeMenu === "collection" && (
+            // <InfiniteScroll
+            //   dataLength={nfts.length}
+            //   next={fetchNFTs}
+            //   hasMore={hasMore}
+            //   loader={<h4>Loading...</h4>}
+            // >
+              <NFTlist
+                // nfts={nfts}
+                // attributes={attributes}
+                address={selectedCollection.collectionAddress}
+                network={network}
+                view={view}
+                // keyword={search}
+                // filterParam={filterParam}
+                // searchChanged={handleSearch}
+                // filterChanged={handleFilter}
+              />
+            // </InfiniteScroll>
           )}
           {activeMenu === "content" && (
             <Content activeListings={activeListings} view={view} />

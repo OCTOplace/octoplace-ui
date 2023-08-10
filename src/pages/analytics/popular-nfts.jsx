@@ -48,7 +48,10 @@ export function PopularNFTs({ title }) {
 
   const handleNextClick = () => {
     const nextIndex = currentIndex + 1;
-    if (nextIndex >= popularNFTs.length) {
+    if (
+      nextIndex >=
+      popularNFTs.length - (numItemsToShow == 1 ? 1 : numItemsToShow - 1)
+    ) {
       setCurrentIndex(0);
     } else {
       setCurrentIndex(nextIndex);
