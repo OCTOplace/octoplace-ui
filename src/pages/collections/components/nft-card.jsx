@@ -9,6 +9,7 @@ import broken from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
 
 export const NFTCard = ({ view, nft }) => {
+  const [title, setTitle] = useState(nft.metadata.name);
   const [imgUrl, setImgUrl] = useState(broken);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -83,6 +84,7 @@ export const NFTCard = ({ view, nft }) => {
   };
 
   useEffect(() => {
+    setImgUrl(broken);
     if (nft && nft.metadata && nft.metadata.image) {
       try {
         if (nft.metadata.image.includes("ipfs://")) {
@@ -98,7 +100,7 @@ export const NFTCard = ({ view, nft }) => {
     } else {
       setImgUrl(broken);
     }
-  }, []);
+  }, [nft]);
 
   return (
     <>
