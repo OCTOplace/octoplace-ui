@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Divider, Paper, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
-import TabsUnstyled from "@mui/base/Tabs";
-import TabUnstyled from "@mui/base/Tab";
-import TabsListUnstyled from "@mui/base/TabsList";
-import TabPanelUnstyled from "@mui/base/TabPanel";
+import { Tabs, Tab, TabsList, TabPanel } from "@mui/base"
 import { Container, Row, Col } from "react-bootstrap";
 import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
@@ -15,7 +12,7 @@ import { Refresh } from "@mui/icons-material";
 import { ActiveListings } from "./components/active";
 import { setSelectedTab } from "../../redux/slices/listing-slice";
 import { CompletedSwaps } from "./components/done-trades";
-const Tab = styled(TabUnstyled)`
+const StyledTab = styled(Tab)`
   color: #6c6c6c;
   cursor: pointer;
   font-size: 12px;
@@ -33,11 +30,11 @@ const Tab = styled(TabUnstyled)`
   }
 `;
 
-const TabPanel = styled(TabPanelUnstyled)`
+const StyledTabPanel = styled(TabPanel)`
   width: 100%;
 `;
 
-const TabsList = styled(TabsListUnstyled)`
+const StyledTabsList = styled(TabsList)`
   background-color: #262626;
   padding: 0 8px 0 8px;
   margin-bottom: 10px;
@@ -70,16 +67,16 @@ export const Listings = () => {
     <Container>
       <Row>
         <Col>
-          <TabsUnstyled defaultValue={selectedTab}>
+          <Tabs defaultValue={selectedTab}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
-              <TabsList>
-                <Tab onClick={() => dispatch(setSelectedTab(0))}>
+              <StyledTabsList>
+                <StyledTab onClick={() => dispatch(setSelectedTab(0))}>
                   Active Listings
-                </Tab>
-                <Tab onClick={() => dispatch(setSelectedTab(1))}>
+                </StyledTab>
+                <StyledTab onClick={() => dispatch(setSelectedTab(1))}>
                   Swap Completed
-                </Tab>
-              </TabsList>
+                </StyledTab>
+              </StyledTabsList>
               <Box
                 sx={{
                   width: "100%",
@@ -124,7 +121,7 @@ export const Listings = () => {
                 )}
               </Box>
             </Box>
-            <TabPanel sx={{ minHeight: "60vh" }} value={0}>
+            <StyledTabPanel sx={{ minHeight: "60vh" }} value={0}>
               <Fragment>
                 {listings && listings.length > 0 && (
                   <ActiveListings view={view} />
@@ -141,13 +138,13 @@ export const Listings = () => {
                   </div>
                 )}
               </Fragment>
-            </TabPanel>
-            <TabPanel sx={{ minHeight: "60vh" }} value={1}>
+            </StyledTabPanel>
+            <StyledTabPanel sx={{ minHeight: "60vh" }} value={1}>
               <Fragment>
                 <CompletedSwaps />
               </Fragment>
-            </TabPanel>
-          </TabsUnstyled>
+            </StyledTabPanel>
+          </Tabs>
         </Col>
         <Row>
           <Col></Col>

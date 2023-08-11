@@ -13,6 +13,7 @@ import { PopularCollections } from "./analytics/popular-collections";
 import Market from "./market/Market";
 import Swap from "./market/Swap";
 import Auction from "./market/Auction";
+import TableComponent from "../components/TableComponent";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export const Home = () => {
       <CarouselHome />
       <PopularCollections title="Popular Collections" />
       <PopularNFTs title="Popular NFTs" />
-      {/* <TableComponent list={activeListings} /> */}
+      <TableComponent list={activeListings} />
       <Container>
         <Box className="market-menu">
           <Button

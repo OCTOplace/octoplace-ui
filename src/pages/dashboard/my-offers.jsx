@@ -5,10 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setMyOffers } from "../../redux/slices/my-nft-slice";
-import TabsUnstyled from "@mui/base/Tabs";
-import TabUnstyled from "@mui/base/Tab";
-import TabsListUnstyled from "@mui/base/TabsList";
-import TabPanelUnstyled from "@mui/base/TabPanel";
+import { Tabs, Tab, TabsList, TabPanel } from "@mui/base";
 import { styled } from "@mui/system";
 import { MyOfferItem } from "./components/my-offer-item";
 
@@ -52,14 +49,14 @@ export const MyOffers = (props) => {
         <>
           <Grid sx={{ m: 2 }} container>
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <TabsUnstyled value={value} onChange={handleChange}>
+              <Tabs value={value} onChange={handleChange}>
                 <Box sx={{ display: "flex", marginBottom: "24px", mt: -1 }}>
-                  <TabsList>
-                    <Tab>Received</Tab>
-                    <Tab>Sent</Tab>
-                  </TabsList>
+                  <StyledTabsList>
+                    <StyledTab>Received</StyledTab>
+                    <StyledTab>Sent</StyledTab>
+                  </StyledTabsList>
                 </Box>
-                <TabPanel value={0}>
+                <StyledTabPanel value={0}>
                   <Grid container>
                     {myOffers
                       .filter((x) => x.listingTokenOwner === account)
@@ -81,8 +78,8 @@ export const MyOffers = (props) => {
                         </Grid>
                       ))}
                   </Grid>
-                </TabPanel>
-                <TabPanel value={1}>
+                </StyledTabPanel>
+                <StyledTabPanel value={1}>
                   <Grid container>
                     {myOffers
                       .filter((x) => x.offerTokenOwner === account)
@@ -104,8 +101,8 @@ export const MyOffers = (props) => {
                         </Grid>
                       ))}
                   </Grid>
-                </TabPanel>
-              </TabsUnstyled>
+                </StyledTabPanel>
+              </Tabs>
             </Grid>
           </Grid>
         </>
@@ -119,7 +116,7 @@ export const MyOffers = (props) => {
   );
 };
 
-const Tab = styled(TabUnstyled)`
+const StyledTab = styled(Tab)`
   color: #6c6c6c;
   cursor: pointer;
   font-size: 12px;
@@ -137,11 +134,11 @@ const Tab = styled(TabUnstyled)`
   }
 `;
 
-const TabPanel = styled(TabPanelUnstyled)`
+const StyledTabPanel = styled(TabPanel)`
   width: 100%;
 `;
 
-const TabsList = styled(TabsListUnstyled)`
+const StyledTabsList = styled(TabsList)`
   background-color: #262626;
   padding: 0 8px 0 8px;
   margin-bottom: 10px;

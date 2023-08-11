@@ -503,16 +503,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 )}
               </IconButton>
             )}
-            <video
-              muted
-              playsInline
-              width="100%"
-              height={800}
-              controls
-              ref={videoRef}
-              src={videoUrl}
-              // "https://d21ozv67drxbfu.cloudfront.net/appietoday.test/media/2017/09/04/asset-1175875-1504515710530864.mp4"
-            ></video>
+            <iframe width="100%" height={800} src={videoUrl} />
           </Box>
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
