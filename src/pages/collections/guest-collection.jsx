@@ -56,11 +56,14 @@ function GuestCollection() {
   const { account } = useWeb3React();
   const [bannerUrl, setBannerUrl] = useState();
   const [avatarUrl, setAvatarUrl] = useState();
-
+  
   const [nfts, setNfts] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoDesc, setVideoDesc] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [filterParam, setFilterParam] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -174,6 +177,18 @@ function GuestCollection() {
         setAvatarUrl(newUrl);
       } else {
         setAvatarUrl(result.bannerUrl);
+      }
+
+      if(result.videoDesc != null) {
+        setVideoDesc(result.videoDesc);
+      }
+
+      if(result.videoTitle != null) {
+        setVideoTitle(result.videoTitle);
+      }
+
+      if(result.videoUrl != null) {
+        setVideoUrl(result.videoUrl);
       }
     }
   }, [collections]);
@@ -383,6 +398,8 @@ function GuestCollection() {
                   ? styles.activeButton
                   : styles.regularButton
               }
+              style={{ color: videoUrl === "" ? "#6d6c6c" : "#FFFFFF" }}
+              disabled={videoUrl === ""}
             >
               Content
             </Button>
@@ -419,7 +436,7 @@ function GuestCollection() {
             // </InfiniteScroll>
           )}
           {activeMenu === "content" && (
-            <Content activeListings={activeListings} view={view} />
+            <Content activeListings={activeListings} view={view} videoTitle={videoTitle} videoDesc={videoDesc} videoUrl={videoUrl} />
           )}
           {activeMenu === "discussion" && (
             <CollectionDiscussions

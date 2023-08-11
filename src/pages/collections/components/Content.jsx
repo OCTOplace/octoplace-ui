@@ -131,7 +131,7 @@ const styles = {
   },
 };
 
-function Content({ activeListings, view }) {
+function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
   const videoRef = useRef(null);
   const [isOwner, setIsOwner] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -146,7 +146,6 @@ function Content({ activeListings, view }) {
   ]);
   const [uploadData, setUploadData] = useState();
   const [movie, setMovie] = useState();
-  const [videoUrl, setVideoUrl] = useState("");
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
@@ -209,7 +208,6 @@ function Content({ activeListings, view }) {
   const handleChangeURL = (e) => {
     console.log(e);
     const url = e.target.value;
-    setVideoUrl(url);
   }
 
   const getPreSignedUrl = async () => {
@@ -262,8 +260,6 @@ function Content({ activeListings, view }) {
                 size: "small",
                 placeholder: "| Enter URL",
               }}
-              value={videoUrl}
-              onChange={handleChangeURL}
             />
 
             <Typography sx={styles.h1}>or</Typography>
@@ -514,14 +510,15 @@ function Content({ activeListings, view }) {
               height={800}
               controls
               ref={videoRef}
-              src="https://d21ozv67drxbfu.cloudfront.net/appietoday.test/media/2017/09/04/asset-1175875-1504515710530864.mp4"
+              src={videoUrl}
+              // "https://d21ozv67drxbfu.cloudfront.net/appietoday.test/media/2017/09/04/asset-1175875-1504515710530864.mp4"
             ></video>
           </Box>
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
-              <Typography sx={styles.h1}>Video Title</Typography>
+              <Typography sx={styles.h1}>{videoTitle}</Typography>
               <Typography sx={styles.p}>
-                MATRËSHKA (Matryoshka) dollhouse is an NFT-based project
+                {/* MATRËSHKA (Matryoshka) dollhouse is an NFT-based project
                 revolving around storytelling and a series of tasks to be
                 completed by the holders to acquire a prize with a real-life
                 value in the end. The collection aims to entertain the
@@ -530,7 +527,8 @@ function Content({ activeListings, view }) {
                 need for progression. Lore-friendly breeding-like mechanic,
                 advantages for completing a set, unique merchandise, blockchain
                 DRM technologies and various tangible utilities - expect these
-                and many more perks!
+                and many more perks! */}
+                {videoDesc}
               </Typography>
             </Box>
             <Box sx={styles.rContainer}>
@@ -555,8 +553,8 @@ function Content({ activeListings, view }) {
               {isOwner ? (
                 <Button
                   onClick={() => setOpenAddVideo(true)}
-                  disabled={true}
                   sx={styles.orangeButton}
+                  disabled={true}
                 >
                   Add Video
                 </Button>
