@@ -494,15 +494,6 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-            {showButton && (
-              <IconButton sx={styles.playIconButton} onClick={handlePlayVideo}>
-                {isPlaying ? (
-                  <PauseRounded sx={styles.playIcon} />
-                ) : (
-                  <PlayArrowRounded sx={styles.playIcon} />
-                )}
-              </IconButton>
-            )}
             <iframe width="100%" height={800} src={videoUrl} />
           </Box>
           <Box sx={styles.descriptionContainer}>
