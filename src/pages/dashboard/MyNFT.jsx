@@ -8,10 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import TabsUnstyled from "@mui/base/Tabs";
-import TabUnstyled from "@mui/base/Tab";
-import TabsListUnstyled from "@mui/base/TabsList";
-import TabPanelUnstyled from "@mui/base/TabPanel";
+import { Tabs, Tab, TabsList, TabPanel } from "@mui/base"
 import { Container, Row, Col } from "react-bootstrap";
 import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
@@ -26,7 +23,7 @@ import { MyListedNFT } from "./my-listed-nft";
 import { MyOffers } from "./my-offers";
 import { setSelectedTab } from "../../redux/slices/my-nft-slice";
 
-const Tab = styled(TabUnstyled)`
+const StyledTab = styled(Tab)`
   color: #6c6c6c;
   cursor: pointer;
   font-size: 12px;
@@ -44,11 +41,11 @@ const Tab = styled(TabUnstyled)`
   }
 `;
 
-const TabPanel = styled(TabPanelUnstyled)`
+const StyledTabPanel = styled(TabPanel)`
   width: 100%;
 `;
 
-const TabsList = styled(TabsListUnstyled)`
+const StyledTabsList = styled(TabsList)`
   background-color: #262626;
   padding: 0 8px 0 8px;
   margin-bottom: 10px;
@@ -91,13 +88,13 @@ export const MyNFT = () => {
     <Container>
       <Row>
         <Col>
-          <TabsUnstyled defaultValue={selectedTab}>
+          <Tabs defaultValue={selectedTab}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
-              <TabsList>
-                <Tab onClick={() => dispatch(setSelectedTab(0))}>My NFTs</Tab>
-                <Tab onClick={() => dispatch(setSelectedTab(1))}>Listed</Tab>
-                <Tab onClick={() => dispatch(setSelectedTab(2))}>Offers</Tab>
-              </TabsList>
+              <StyledTabsList>
+                <StyledTab onClick={() => dispatch(setSelectedTab(0))}>My NFTs</StyledTab>
+                <StyledTab onClick={() => dispatch(setSelectedTab(1))}>Listed</StyledTab>
+                <StyledTab onClick={() => dispatch(setSelectedTab(2))}>Offers</StyledTab>
+              </StyledTabsList>
               <Box
                 sx={{
                   width: "100%",
@@ -138,7 +135,7 @@ export const MyNFT = () => {
                 </Paper>
               </Box>
             </Box>
-            <TabPanel sx={{ minHeight: "60vh" }} value={0}>
+            <StyledTabPanel sx={{ minHeight: "60vh" }} value={0}>
               <Grid container spacing={2}>
                 {!account && (
                   <div
@@ -198,14 +195,14 @@ export const MyNFT = () => {
                   </div>
                 )}
               </Grid>
-            </TabPanel>
-            <TabPanel sx={{ minHeight: "60vh" }} value={1}>
+            </StyledTabPanel>
+            <StyledTabPanel sx={{ minHeight: "60vh" }} value={1}>
               <MyListedNFT view={view} />
-            </TabPanel>
-            <TabPanel sx={{ minHeight: "60vh" }} value={2}>
+            </StyledTabPanel>
+            <StyledTabPanel sx={{ minHeight: "60vh" }} value={2}>
               <MyOffers view={view} />
-            </TabPanel>
-          </TabsUnstyled>
+            </StyledTabPanel>
+          </Tabs>
         </Col>
         <Row>
           <Col></Col>
