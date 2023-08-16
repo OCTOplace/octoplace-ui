@@ -494,7 +494,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-            <iframe width="100%" height={800} src={videoUrl} />
+          <iframe sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation' width="100%" height={800} src={videoUrl} allowFullScreen />
           </Box>
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
