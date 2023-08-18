@@ -34,8 +34,8 @@ export const Home = () => {
   }, [listings]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
-        return;
+    if (typeof window === "undefined") {
+      return;
     }
     contractInteraction.gatherSpots();
   }, []);
@@ -45,7 +45,7 @@ export const Home = () => {
       <CarouselHome />
       <PopularCollections title="Popular Collections" />
       <PopularNFTs title="Popular NFTs" />
-      <TableComponent list={activeListings} />
+      {/* <TableComponent list={activeListings} /> */}
       <NFTMillion />
       <Container>
         <Box className="market-menu">
