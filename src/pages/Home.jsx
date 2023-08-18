@@ -14,6 +14,8 @@ import Market from "./market/Market";
 import Swap from "./market/Swap";
 import Auction from "./market/Auction";
 import TableComponent from "../components/TableComponent";
+import { NFTMillion } from "./NFTMillion";
+import contractInteraction from "../contracts";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -31,12 +33,20 @@ export const Home = () => {
     }
   }, [listings]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+        return;
+    }
+    contractInteraction.gatherSpots();
+  }, []);
+
   return (
     <Box>
       <CarouselHome />
       <PopularCollections title="Popular Collections" />
       <PopularNFTs title="Popular NFTs" />
       <TableComponent list={activeListings} />
+      <NFTMillion />
       <Container>
         <Box className="market-menu">
           <Button
