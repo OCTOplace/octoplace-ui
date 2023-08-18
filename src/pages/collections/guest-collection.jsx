@@ -436,7 +436,14 @@ function GuestCollection() {
             // </InfiniteScroll>
           )}
           {activeMenu === "content" && (
-            <Content activeListings={activeListings} view={view} videoTitle={videoTitle} videoDesc={videoDesc} videoUrl={videoUrl} />
+            <Content 
+              address={selectedCollection.collectionAddress} 
+              activeListings={activeListings} 
+              view={view} 
+              videoTitle={videoTitle} 
+              videoDesc={videoDesc} 
+              videoUrl={videoUrl} 
+            />
           )}
           {activeMenu === "discussion" && (
             <CollectionDiscussions

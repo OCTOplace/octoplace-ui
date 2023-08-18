@@ -1,15 +1,12 @@
-import { PauseRounded, PlayArrowRounded } from "@mui/icons-material";
 import {
   Box,
   Button,
-  IconButton,
   Typography,
   TextField,
   Chip,
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Paper,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,7 +15,7 @@ import thetaImage from "../../../assets/icon.png";
 import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
-import axios from 'axios'
+import axios from "axios";
 
 const styles = {
   videoContainer: {
@@ -176,18 +173,20 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     e.preventDefault();
     // Handle form submission logic here
     console.log("Save");
-    if(uploadData == null) return;
+    if (uploadData == null) return;
     const formData = new FormData();
-    if (movie != null || movie !== '') {
-      formData.append('file', movie);
+    if (movie != null || movie !== "") {
+      formData.append("file", movie);
       console.log("movie:", movie);
     }
     const headers = {
-      'Content-type': 'application/octet-stream'
-    }
+      "Content-type": "application/octet-stream",
+    };
     try {
-      console.log("presigned_url: ", uploadData.presigned_url );
-      const response = await axios.put(uploadData.presigned_url, formData, { headers: headers });
+      console.log("presigned_url: ", uploadData.presigned_url);
+      const response = await axios.put(uploadData.presigned_url, formData, {
+        headers: headers,
+      });
       const data = response.data;
       console.log("Submit: ", data);
     } catch (err) {
@@ -208,26 +207,30 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
   const handleChangeURL = (e) => {
     console.log(e);
     const url = e.target.value;
-  }
+  };
 
   const getPreSignedUrl = async () => {
     const headers = {
-      'x-tva-sa-id': 'srvacc_fp72dqw4ix8r6ad6vr9evm68d',
-      'x-tva-sa-secret': 'xn0xqh78s04e0n67vkbwwztq2zvp7scg'
-    }
+      "x-tva-sa-id": "srvacc_fp72dqw4ix8r6ad6vr9evm68d",
+      "x-tva-sa-secret": "xn0xqh78s04e0n67vkbwwztq2zvp7scg",
+    };
     try {
-      const response = await axios.post("https://api.thetavideoapi.com/upload", undefined, { headers: headers });
+      const response = await axios.post(
+        "https://api.thetavideoapi.com/upload",
+        undefined,
+        { headers: headers }
+      );
       const data = response.data;
       const uploadsData = data.body.uploads[0];
       setUploadData(uploadsData);
     } catch (err) {
-      console.log("Pre-Signed URL Error: ", err)
+      console.log("Pre-Signed URL Error: ", err);
     }
-  }
+  };
 
   useEffect(() => {
     getPreSignedUrl();
-  }, [])
+  }, []);
 
   return (
     <Container>
@@ -279,8 +282,9 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here...</p>
+              ) : movie != null ? (
+                movie.name
               ) : (
-                movie != null ? movie.name : 
                 <p>Drag &amp; Drop Input (Video File)</p>
               )}
             </div>
@@ -494,24 +498,18 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-          <iframe sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation' width="100%" height={800} src={videoUrl} allowFullScreen />
+            <iframe
+              sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
+              width="100%"
+              height={800}
+              src={videoUrl}
+              allowFullScreen
+            />
           </Box>
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
               <Typography sx={styles.h1}>{videoTitle}</Typography>
-              <Typography sx={styles.p}>
-                {/* MATRËSHKA (Matryoshka) dollhouse is an NFT-based project
-                revolving around storytelling and a series of tasks to be
-                completed by the holders to acquire a prize with a real-life
-                value in the end. The collection aims to entertain the
-                supporters, while pushing the boundaries of classic
-                straightforward lore development by adding interactivity and the
-                need for progression. Lore-friendly breeding-like mechanic,
-                advantages for completing a set, unique merchandise, blockchain
-                DRM technologies and various tangible utilities - expect these
-                and many more perks! */}
-                {videoDesc}
-              </Typography>
+              <Typography sx={styles.p}>{videoDesc}</Typography>
             </Box>
             <Box sx={styles.rContainer}>
               <Box sx={styles.ownerContainer}>
