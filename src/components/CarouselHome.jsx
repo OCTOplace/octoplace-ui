@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button } from "@mui/material";
+import { styled } from "@mui/system";
 
 function Item(props) {
   function isUrl(str) {
@@ -16,7 +17,7 @@ function Item(props) {
     ); // fragment locator
     return pattern.test(str);
   }
-
+  
   const handleImageClick = (url) => {
     if (isUrl(url)) {
       window.open(url, "_blank");
@@ -24,24 +25,37 @@ function Item(props) {
   };
 
   return (
-    <Paper
-      style={{
-        backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${props.item.filename})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        padding: "2rem",
-        height: "50vh",
-        cursor: "grab",
-      }}
+    <CarouselPaper
+      image={props.item.filename}
       onClick={() => handleImageClick(props.item.url, "_blank")}
     >
       {/* <h2>{props.item.name}</h2>
       <p>{props.item.url}</p>
       <Button className="CheckButton">Check it out!</Button> */}
-    </Paper>
+    </CarouselPaper>
   );
 }
+
+const CarouselPaper = styled(Paper)(({ theme, image }) => ({
+  backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${image})`,
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+  padding: "2rem",
+  cursor: "grab",
+  width: "100%",
+  height: '450px',
+  [theme.breakpoints.down(1120)]: {
+    height: '360px'
+  },
+  [theme.breakpoints.down(768)]: {
+    height: '280px'
+  },
+  [theme.breakpoints.down(540)]: {
+    height: '220px'
+  }
+}))
+
 
 function CarouselHome() {
   const [items, setItems] = useState([]);
