@@ -15,7 +15,6 @@ import Swap from "./market/Swap";
 import Auction from "./market/Auction";
 import TableComponent from "../components/TableComponent";
 import { NFTMillion } from "./NFTMillion";
-import contractInteraction from "../contracts";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -32,13 +31,6 @@ export const Home = () => {
       dispatch(setActiveListings(active));
     }
   }, [listings]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    contractInteraction.gatherSpots();
-  }, []);
 
   return (
     <Box>

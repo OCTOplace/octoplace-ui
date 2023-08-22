@@ -48,6 +48,7 @@ import { getAllCollections } from "./redux/thunk/getAllCollections";
 import DashboardHome from "./pages/dashboard/dashboardHome";
 import DashboardGuest from "./pages/dashboard/dashboardGuest";
 import DashboardSettings from "./pages/dashboard/dashboardSettings";
+import contractInteraction from "./contracts";
 
 function App() {
   const { account, chainId, library, activate } = useWeb3React();
@@ -88,6 +89,15 @@ function App() {
       //}
     }
   }, [loggedAddress]);
+
+  useEffect(() => {
+    console.log("Gethering prepare");
+    if (typeof window === "undefined") {
+      return;
+    }
+    console.log("Getering started");
+    contractInteraction.gatherSpots();
+  }, []);
 
   const getTxCharge = async () => {
     const provider = new JsonRpcProvider(rpc);

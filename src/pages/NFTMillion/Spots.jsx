@@ -125,8 +125,8 @@ export default React.memo(function Spots(props) {
         const combineStyle = { ...styles[0], ...props.style };
 
         return (
-          <ALink href={props.href} target={props.target}>
-            <Tooltip key={i} componentsProps={props} title={tooltipText}>
+          <ALink href={props.href} target={props.target} key={props["data-tokenid"]}>
+            <Tooltip key={props["data-tokenid"]} componentsProps={props} title={tooltipText}>
               <img src={src} alt="" style={combineStyle} />
             </Tooltip>
           </ALink>
