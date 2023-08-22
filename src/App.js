@@ -101,7 +101,7 @@ function App() {
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
     dispatch(getAllMarketItems());
-    dispatch(getAllCollections({ page: 1, limit: 5000 }));
+    // dispatch(getAllCollections({ page: 1, limit: 5000 }));
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");
@@ -131,7 +131,7 @@ function App() {
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
           <Route
-            path="collections/:network/:collectionSlug"
+            path="items/:address"
             element={<GuestCollection />}
           />
           <Route

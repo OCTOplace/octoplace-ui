@@ -19,22 +19,28 @@ export const getAllCollections = createAsyncThunk(
   }
 );
 
-export const getVisibleCollections = async (params) => {
+export const getCollections = async (params) => {
   let items = [];
-  const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
+  const result = await axios.get(`${apiUrl}/collections`, {
     params,
   });
-  items = result.data.items.map((item) => {
-    let slug = slugify(item.collectionName);
+
+  items = result.data.collections.map((item) => {
+    let slug = slugify(item.name);
     return { ...item, slug };
   });
 
   return {
-    items,
+    collections: items,
     totalPages: result.data.totalPages,
     currentPage: result.data.currentPage,
-    totalCount: result.data.totalCount,
+    totalCounts: result.data.totalCounts,
   };
+};
+
+export const getCollection = async (address) => {
+  const result = await axios.get(`${apiUrl}/collections/${address}`);
+  return result.data;
 };
 
 const slugify = (str) =>

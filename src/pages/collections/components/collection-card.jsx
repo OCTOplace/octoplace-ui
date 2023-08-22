@@ -97,61 +97,66 @@ export const CollectionCard = (props) => {
   };
 
   useEffect(() => {
-    if (collectionItem && collectionItem.bannerUrl) {
-      try {
-        if (collectionItem.bannerImage) {
-          setImgUrl(process.env.REACT_APP_API_URL + collectionItem.bannerImage);
-        } else if (collectionItem.bannerUrl.includes("ipfs://")) {
-          let url = collectionItem.bannerUrl;
-          const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(newUrl);
-        } else {
-          setImgUrl(collectionItem.bannerUrl);
-        }
-      } catch {
-        setImgUrl(broken);
-      }
-    } else {
-      setImgUrl(broken);
-    }
+    setImgUrl(collectionItem.image);
   }, [props.collectionItem]);
 
   return (
     <>
-      {props.collectionItem && (
-        <Link
-          className="nft-card-link"
-          to={`/collections/${collectionItem.network}/${collectionItem.collectionAddress}`}
-        >
+      {props.collectionItem &&
+        props.collectionItem.contractAddress !== "none" && (
+          <Link
+            className="nft-card-link"
+            to={`/items/${collectionItem.contractAddress}`}
+          >
+            <Box ref={boxRef} sx={styles.root}>
+              <img
+                src={imgUrl}
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                style={{
+                  borderTopLeftRadius: "0.75rem",
+                  borderTopRightRadius: "0.75rem",
+                  objectFit: "cover",
+                  width: view === 3 ? "200px" : "100%",
+                  aspectRatio: "1/1",
+                }}
+                alt="nft_image"
+                loading="lazy"
+              />
+              <Box sx={styles.content}>
+                <Box style={styles.meta}>
+                  <Typography className="strokeme" sx={styles.title}>
+                    {truncate(collectionItem.name, 15)}
+                  </Typography>
+                  <img src={verifiedLogo} alt="verified" />
+                </Box>
+                {/* <Typography
+                sx={styles.network}
+              >{`#${collectionItem.network}`}</Typography> */}
+              </Box>
+            </Box>
+          </Link>
+        )}
+      {props.collectionItem &&
+        props.collectionItem.contractAddress === "none" && (
           <Box ref={boxRef} sx={styles.root}>
             <img
-              src={imgUrl}
+              src={broken}
               onLoad={handleImageLoad}
               onError={handleImageError}
               style={{
-                borderTopLeftRadius: "0.75rem",
-                borderTopRightRadius: "0.75rem",
+                // borderTopLeftRadius: "0.75rem",
+                // borderTopRightRadius: "0.75rem",
+                borderRadius: "0.75rem",
                 objectFit: "cover",
                 width: view === 3 ? "200px" : "100%",
-                aspectRatio: "1/1",
+                aspectRatio: "1/1.3",
               }}
               alt="nft_image"
               loading="lazy"
             />
-            <Box sx={styles.content}>
-              <Box style={styles.meta}>
-                <Typography className="strokeme" sx={styles.title}>
-                  {truncate(collectionItem.collectionName, 15)}
-                </Typography>
-                <img src={verifiedLogo} alt="verified" />
-              </Box>
-              <Typography
-                sx={styles.network}
-              >{`#${collectionItem.network}`}</Typography>
-            </Box>
           </Box>
-        </Link>
-      )}
+        )}
     </>
   );
 };

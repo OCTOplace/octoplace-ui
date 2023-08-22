@@ -6,14 +6,15 @@ const apiUrl = process.env.REACT_APP_API_URL;
 export const getAllCollectionNFTs = createAsyncThunk(
   "collections/getAllCollectionNFTs",
   async (address, thunkAPI) => {
-    const result = await axios.get(`${apiUrl}/nft/get-collection-items/${address}`);
+    const result = await axios.get(
+      `${apiUrl}/nft/get-collection-items/${address}`
+    );
     return result.data;
   }
 );
 
-export const getNFTsOfCollection = async (address, params) => {
-  let items = [];
-  const result = await axios.get(`${apiUrl}/nft/get-collection-items/${address}`, {
+export const getNFTsForCollection = async (address, params) => {
+  const result = await axios.get(`${apiUrl}/items/${address}`, {
     params,
   });
   return result.data;

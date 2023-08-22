@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NFTCard } from "./nft-card";
-import { getNFTsOfCollection } from "../../../redux/thunk/get-collection-nfts";
+import { getNFTsForCollection } from "../../../redux/thunk/get-collection-nfts";
 import FilterComponent from "../../../components/FilterComponent";
 import Searchbox from "../../../components/searchbox";
 import TuneIcon from "@mui/icons-material/Tune";
@@ -54,8 +54,8 @@ function NFTlist({ address, network, view }) {
   const [loading, setLoading] = useState(true);
 
   const fetchNFTs = async () => {
-    // console.log("///////////////////////////////// fetchNTFs", filterParam);
-    const response = await getNFTsOfCollection(address, {
+    console.log("///////////////////////////////// fetchNTFs", filterParam);
+    const response = await getNFTsForCollection(address, {
       page: page,
       limit: 24,
       search,

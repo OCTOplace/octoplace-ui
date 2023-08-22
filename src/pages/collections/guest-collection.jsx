@@ -19,9 +19,9 @@ import Content from "./components/Content";
 import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import { useNavigate, useParams } from "react-router-dom";
 import { setSelectedCollection } from "../../redux/slices/collections-slice";
+import { getCollection } from "../../redux/thunk/getAllCollections";
+import { getNFTsForCollection } from "../../redux/thunk/get-collection-nfts";
 import { getCollectionDiscussions } from "../../redux/thunk/get-nft-discussions";
-import { getNFTsOfCollection } from "../../redux/thunk/get-collection-nfts";
-import { getCollectionSettings } from "../../redux/thunk/get-collection-setting";
 import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
 import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
@@ -30,7 +30,7 @@ import RecentMessages from "./components/RecentMessages";
 
 function GuestCollection() {
   const dispatch = useDispatch();
-  const { network, collectionSlug } = useParams();
+  const { address } = useParams();
   const collections = useSelector((state) => state.collection.collections);
   const selectedCollection = useSelector(
     (state) => state.collection.selectedCollection
@@ -56,7 +56,7 @@ function GuestCollection() {
   const { account } = useWeb3React();
   const [bannerUrl, setBannerUrl] = useState();
   const [avatarUrl, setAvatarUrl] = useState();
-  
+
   const [nfts, setNfts] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [page, setPage] = useState(1);
@@ -80,28 +80,10 @@ function GuestCollection() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const fetchNFTs = async () => {
-    const response = await getNFTsOfCollection(collectionSlug, {
-      page: page,
-      limit: 24,
-      search,
-      attributes: JSON.stringify(filterParam.traits),
-    });
-    const newItems = response.items;
-    const uniqueNewItems = newItems.filter(
-      (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
-    );
-    const newItemCount = response.count;
-    setNfts([...nfts, ...uniqueNewItems]);
-    setAttributes(response.attributes);
-    setFilteredCount(newItemCount);
-    setTotalCount(response.total);
-    if (nfts.length >= newItemCount) {
-      setHasMore(false);
-    } else {
-      setPage(page + 1);
-    }
-    setLoading(false);
+  const getCollectionSettings = async () => {
+    const collectionSettings = await getCollection(address);
+    
+    setAttributes(collectionSettings.attributes);
   };
 
   const handleSearch = (keyword) => {
@@ -129,68 +111,69 @@ function GuestCollection() {
   // }, [search, filterParam]);
 
   useEffect(() => {
-    if (collections.length > 0) {
-      const result = collections.find(
-        (item) => item.collectionAddress === collectionSlug
-      );
+    // if (collections.length > 0) {
+    //   const result = collections.find(
+    //     (item) => item.contractAddress === address
+    //   );
 
-      dispatch(
-        getCollectionDiscussions({
-          address: result.collectionAddress,
-          network: result.network,
-        })
-      );
+    //   // dispatch(
+    //   //   getCollectionDiscussions({
+    //   //     address: result.collectionAddress,
+    //   //     network: result.network,
+    //   //   })
+    //   // );
 
-      dispatch(setSelectedCollection(result));
+    //   // dispatch(setSelectedCollection(result));
 
-      // dispatch(getAllCollectionNFTs(result.collectionAddress));
-      fetchNFTs();
+    //   // dispatch(getAllCollectionNFTs(result.collectionAddress));
+    //   // fetchNFTs();
 
-      // dispatch(
-      //   getCollectionSettings({
-      //     address: result.collectionAddress,
-      //     network: network,
-      //   })
-      // );
-      // dispatch(
-      //   getCollectionOwner({
-      //     address: result.collectionAddress,
-      //     network: result.network,
-      //   })
-      // );
+    //   // dispatch(
+    //   //   getCollectionSettings({
+    //   //     address: result.collectionAddress,
+    //   //     network: network,
+    //   //   })
+    //   // );
+    //   // dispatch(
+    //   //   getCollectionOwner({
+    //   //     address: result.collectionAddress,
+    //   //     network: result.network,
+    //   //   })
+    //   // );
 
-      if (result.bannerImage) {
-        setBannerUrl(process.env.REACT_APP_API_URL + result.bannerImage);
-      } else if (result.bannerUrl.includes("ipfs://")) {
-        let url = result.bannerUrl;
-        const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-        setBannerUrl(newUrl);
-      } else {
-        setBannerUrl(result.bannerUrl);
-      }
+    //   if (result.bannerImage) {
+    //     setBannerUrl(process.env.REACT_APP_API_URL + result.bannerImage);
+    //   } else if (result.bannerUrl.includes("ipfs://")) {
+    //     let url = result.bannerUrl;
+    //     const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+    //     setBannerUrl(newUrl);
+    //   } else {
+    //     setBannerUrl(result.bannerUrl);
+    //   }
 
-      if (result.avatarImage) {
-        setAvatarUrl(process.env.REACT_APP_API_URL + result.avatarImage);
-      } else if (result.bannerUrl.includes("ipfs://")) {
-        let url = result.bannerUrl;
-        const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-        setAvatarUrl(newUrl);
-      } else {
-        setAvatarUrl(result.bannerUrl);
-      }
+    //   if (result.avatarImage) {
+    //     setAvatarUrl(process.env.REACT_APP_API_URL + result.avatarImage);
+    //   } else if (result.bannerUrl.includes("ipfs://")) {
+    //     let url = result.bannerUrl;
+    //     const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+    //     setAvatarUrl(newUrl);
+    //   } else {
+    //     setAvatarUrl(result.bannerUrl);
+    //   }
 
-      if(result.videoDesc != null) {
-        setVideoDesc(result.videoDesc);
-      }
+    //   if (result.videoDesc != null) {
+    //     setVideoDesc(result.videoDesc);
+    //   }
 
-      if(result.videoTitle != null) {
-        setVideoTitle(result.videoTitle);
-      }
+    //   if (result.videoTitle != null) {
+    //     setVideoTitle(result.videoTitle);
+    //   }
 
-      if(result.videoUrl != null) {
-        setVideoUrl(result.videoUrl);
-      }
-    }
+    //   if (result.videoUrl != null) {
+    //     setVideoUrl(result.videoUrl);
+    //   }
+    // }
+    getCollectionSettings();
   }, [collections]);
 
   return (
@@ -422,33 +405,33 @@ function GuestCollection() {
             //   hasMore={hasMore}
             //   loader={<h4>Loading...</h4>}
             // >
-              <NFTlist
-                // nfts={nfts}
-                // attributes={attributes}
-                address={selectedCollection.collectionAddress}
-                network={network}
-                view={view}
-                // keyword={search}
-                // filterParam={filterParam}
-                // searchChanged={handleSearch}
-                // filterChanged={handleFilter}
-              />
+            <NFTlist
+              // nfts={nfts}
+              // attributes={attributes}
+              address={selectedCollection.collectionAddress}
+              // network={network}
+              view={view}
+              // keyword={search}
+              // filterParam={filterParam}
+              // searchChanged={handleSearch}
+              // filterChanged={handleFilter}
+            />
             // </InfiniteScroll>
           )}
           {activeMenu === "content" && (
-            <Content 
-              address={selectedCollection.collectionAddress} 
-              activeListings={activeListings} 
-              view={view} 
-              videoTitle={videoTitle} 
-              videoDesc={videoDesc} 
-              videoUrl={videoUrl} 
+            <Content
+              address={selectedCollection.collectionAddress}
+              activeListings={activeListings}
+              view={view}
+              videoTitle={videoTitle}
+              videoDesc={videoDesc}
+              videoUrl={videoUrl}
             />
           )}
           {activeMenu === "discussion" && (
             <CollectionDiscussions
               address={selectedCollection.collectionAddress}
-              network={network}
+              // network={network}
               discussions={messages}
               isAccordion={false}
             />
