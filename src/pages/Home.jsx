@@ -39,7 +39,7 @@ export const Home = () => {
       <PopularNFTs title="Popular NFTs" />
       {/* <TableComponent list={activeListings} /> */}
       <NFTMillion />
-      <Container>
+      {/* <Container>
         <Box className="market-menu">
           <Button
             onClick={() => {
@@ -71,7 +71,7 @@ export const Home = () => {
         {activeTab === "Market" && <Market isHome={true} />}
         {activeTab === "Swap" && <Swap isHome={true} />}
         {activeTab === "Auction" && <Auction isHome={true} />}
-      </Container>
+      </Container> */}
     </Box>
   );
 };

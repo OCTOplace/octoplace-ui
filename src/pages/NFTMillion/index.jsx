@@ -190,6 +190,10 @@ const NFTMillionContainer = styled(Box)(({ theme }) => ({
   background: `#eee url(${GridPng})`,
   boxShadow: "0 0 4px 1px rgba(0, 0, 0, 0.5)",
   userSelect: "none",
+  marginBottom: '40px',
+  [theme.breakpoints.down(1076)]: {
+    display: 'none'
+  }
 }));
 
 const LoaderContainer = styled(Box)(({ theme }) => ({
