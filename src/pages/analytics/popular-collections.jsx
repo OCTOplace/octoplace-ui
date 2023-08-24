@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import Carousel from "react-material-ui-carousel";
 import Tooltip from "@mui/material/Tooltip";
 import { Container } from "react-bootstrap";
 import infoIcon from "../../assets/Infrormation_button.svg";
@@ -10,6 +9,15 @@ import { Grid, Box, useMediaQuery } from "@mui/material";
 import { CollectionCard } from "../collections/components/collection-card";
 import { useDispatch, useSelector } from "react-redux";
 import { getPopularCollections } from "../../redux/thunk/get-analytics";
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
+import { FreeMode, Navigation, Autoplay, EffectFlip } from "swiper";
+
+import 'swiper/swiper.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/modules/pagination/pagination.min.css';
+import 'swiper/modules/scrollbar/scrollbar.min.css';
+import 'swiper/modules/grid/grid.min.css';
+import 'swiper/modules/autoplay/autoplay.min.css'
 
 export function PopularCollections({ title }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -90,51 +98,43 @@ export function PopularCollections({ title }) {
           </Tooltip>
         </Box>
       </Container>
-      <Carousel
-        autoPlay={false}
-        animation="slide"
-        cycleNavigation={true}
-        indicators={true}
-        showArrows={true}
-        navButtonsAlwaysVisible={true}
-        navButtonsProps={{
-          style: {
-            margin: "1rem 5vw",
-            backgroundColor: "transparent",
-          },
-        }}
-        NextIcon={<img src={nextIcon} alt="next icon" width={24} height={24} />}
-        PrevIcon={<img src={prevIcon} alt="prev icon" width={24} height={24} />}
-        next={handleNextClick}
-        prev={handlePrevClick}
-      >
-        <Container
+      <Container
           style={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "flex-start",
             gap: 10,
             minHeight: "300px",
+            position: "relative"
           }}
         >
-          {popularCollections
-            .slice(
-              currentIndex -
-                Math.max(
-                  currentIndex + numItemsToShow - popularCollections.length,
-                  0
-                ),
-              currentIndex + numItemsToShow
-            )
-            .map((item, i) => {
-              return (
-                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
-                  <CollectionCard collectionItem={item} view={3} />
-                </Grid>
-              );
-            })}
-        </Container>
-      </Carousel>
+        <Swiper
+          spaceBetween={16}
+          slidesPerView={6}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          freeMode={true}
+          navigation={{
+              prevEl: '.prevBtn',
+              nextEl: '.nextBtn'
+          }}
+          modules={[ FreeMode, Navigation, Autoplay, EffectFlip ]}
+        >
+            {popularCollections
+              .map((item, i) => {
+                return (
+                  <SwiperSlide key={`index_${i}`}>
+                    <Grid  item xs={12} sm={6} md={4} lg={2}>
+                      <CollectionCard collectionItem={item} view={3} />
+                    </Grid>
+                  </SwiperSlide>
+                );
+              })}
+        </Swiper>
+        <img src={nextIcon} alt="next icon" className="nextIcon nextBtn" width={24} height={24} />
+        <img src={prevIcon} alt="prev icon" className="prevIcon prevBtn" width={24} height={24} />
+      </Container>
     </Box>
   );
 }

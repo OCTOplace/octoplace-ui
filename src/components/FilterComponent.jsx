@@ -27,20 +27,20 @@ function FilterComponent({
   const myNFTs = useSelector((state) => state.myNFT.nfts);
   const collections = useSelector((state) => state.collection.collections);
 
-  const [minPrice, setMinPrice] = useState(filterParam.minPrice);
-  const [maxPrice, setMaxPrice] = useState(filterParam.maxPrice);
-  const [blockchain, setBlockchain] = useState(filterParam.blockchain);
-  const [collection, setCollection] = useState(filterParam.collection);
+  const [minPrice, setMinPrice] = useState(filterParam?.minPrice ?? 0);
+  const [maxPrice, setMaxPrice] = useState(filterParam?.maxPrice ?? 0);
+  const [blockchain, setBlockchain] = useState(filterParam?.blockchain ?? "empty");
+  const [collection, setCollection] = useState(filterParam?.collection ?? "empty");
   // const [selectedTraits, setSelectedTraits] = useState(
   //   filterParam.traits
   // );
-  const selectedTraits = filterParam.traits;
-  const [saleOnly, setSaleOnly] = useState(filterParam.saleOnly);
-  const [auctionOnly, setAuctionOnly] = useState(filterParam.auctionOnly);
+  const selectedTraits = filterParam?.traits;
+  const [saleOnly, setSaleOnly] = useState(filterParam?.saleOnly ?? false);
+  const [auctionOnly, setAuctionOnly] = useState(filterParam?.auctionOnly ?? false);
   const [offersReceived, setOffersReceived] = useState(
-    filterParam.offersReceived
+    filterParam?.offersReceived ?? 0
   );
-  const [includeBurned, setIncludeBurned] = useState(filterParam.includeBurned);
+  const [includeBurned, setIncludeBurned] = useState(filterParam?.includeBurned ?? 0);
   const marketItems = useSelector((state) => state.market.markets);
   const activeListings = useSelector((state) => state.listings.activeListings);
 
