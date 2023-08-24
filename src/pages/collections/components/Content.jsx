@@ -511,7 +511,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               <Typography sx={styles.h1}>{videoTitle}</Typography>
               <Typography sx={styles.p}>{videoDesc}</Typography>
             </Box>
-            <Box sx={styles.rContainer}>
+            {/* <Box sx={styles.rContainer}>
               <Box sx={styles.ownerContainer}>
                 <Box sx={styles.ownerBox}>
                   <Typography sx={styles.h2}>Theta Punks</Typography>
@@ -539,11 +539,11 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                   Add Video
                 </Button>
               ) : null}
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       )}
-      <NFTlist activeListings={activeListings.slice(0, 6)} view={view} />
+      {/* <NFTlist activeListings={activeListings.slice(0, 6)} view={view} /> */}
     </Container>
   );
 }
