@@ -38,7 +38,7 @@ export const Home = () => {
       <PopularCollections title="Popular Collections" />
       <PopularNFTs title="Popular NFTs" />
       {/* <TableComponent list={activeListings} /> */}
-      <NFTMillion />
+      {/* <NFTMillion /> */}
       {/* <Container>
         <Box className="market-menu">
           <Button

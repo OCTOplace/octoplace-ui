@@ -267,14 +267,14 @@ function FilterComponent({
                 },
                 "& .MuiInputBase-input": {
                   textAlign: "center",
-                  color: "#262626!important",
                   padding: "0",
                 },
               }}
               InputProps={{
                 style: {
-                  backgroundColor: "#F78C09",
-                  border: "1px solid #262626",
+                  color: "#6C6C6C",
+                  border: "1px solid #6C6C6C",
+                  textAlign: "center",
                   borderRadius: "0.594rem",
                   padding: "0.5rem",
                 },
@@ -507,7 +507,7 @@ function FilterComponent({
           <Box sx={styles.checkboxRow}>
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
-              <Typography sx={styles.p}>0</Typography>
+              <Typography sx={styles.p}></Typography>
               <Checkbox
                 sx={styles.checkbox}
                 checked={saleOnly}
@@ -584,14 +584,14 @@ function FilterComponent({
                 },
                 "& .MuiInputBase-input": {
                   textAlign: "center",
-                  color: "#262626!important",
                   padding: "0",
                 },
               }}
               InputProps={{
                 style: {
-                  backgroundColor: "#F78C09",
-                  border: "1px solid #262626",
+                  color: "#6C6C6C",
+                  border: "1px solid #6C6C6C",
+                  textAlign: "center",
                   borderRadius: "0.594rem",
                   padding: "0.5rem",
                 },
@@ -659,7 +659,7 @@ function FilterComponent({
           <Box sx={styles.checkboxRow}>
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
-              <Typography sx={styles.p}>0</Typography>
+              <Typography sx={styles.p}></Typography>
               <Checkbox
                 sx={styles.checkbox}
                 checked={saleOnly}

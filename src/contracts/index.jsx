@@ -123,7 +123,7 @@ const contractInteraction = {
         }
         (async (i) => {
           const spotWithOwner = await contract.getSpot(i);
-        console.log('Second Time: ', timer);
+        // console.log('Second Time: ', timer);
         updateSpotData({
           x: spotWithOwner.spot.x,
           y: spotWithOwner.spot.y,

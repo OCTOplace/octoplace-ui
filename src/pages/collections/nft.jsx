@@ -36,6 +36,7 @@ const NFTPage = () => {
   const fetchCollectionSetting = async () => {
     const result = await getCollection(address);
     setCollection(result.collection);
+    setDiscussions(result.discussions);
     setAsset(result.asset);
     setNftCounts(result.nftCounts);
   };
@@ -252,7 +253,7 @@ const NFTPage = () => {
                 network={network}
                 isAccordion={false}
               /> */}
-                {/* <RecentMessages messages={discussions} /> */}
+                <RecentMessages messages={discussions} />
               </Box>
             </Box>
             <Box sx={styles.menu}>
@@ -291,10 +292,7 @@ const NFTPage = () => {
             </Box>
 
             {activeMenu === "collection" && (
-              <NFTlist
-                address={collection.contractAddress}
-                view={view}
-              />
+              <NFTlist address={collection.contractAddress} view={view} />
             )}
             {activeMenu === "content" && (
               <Content

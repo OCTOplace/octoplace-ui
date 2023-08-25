@@ -15,7 +15,7 @@ export const getCollectionDiscussions = createAsyncThunk(
     };
 
     const result = await axios.get(
-      `${apiUrl}/discussions/collection-discussions`,
+      `${apiUrl}/discussions/collection`,
       { params }
     );
     return result.data;
