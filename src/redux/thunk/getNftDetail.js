@@ -7,7 +7,7 @@ export const getMarketNFTDetail = createAsyncThunk(
   "market/getMarketNFTDetails",
   async (nftDetails, thunkAPI) => {
     let items = [];
-    const result = await axios.get(`${apiUrl}/nft/get-nft-details/${nftDetails.contractAddress}/${nftDetails.tokenId}`);
+    const result = await axios.get(`${apiUrl}/items/${nftDetails.contractAddress}/${nftDetails.tokenId}`);
     items = result.data;
     items = {...items, listingId: nftDetails.listingId}
     return items;

@@ -36,13 +36,13 @@ import {
 } from "./connectors/injected-connector";
 import { TxDialog } from "./components/dialogs/txdialog";
 import { FaucetPage } from "./pages/faucet/faucet";
-import { CollectionsPage } from "./pages/collections/collection";
+import CollectionsPage from "./pages/collections/collection";
+import NFTPage from "./pages/collections/nft";
 
 import Market from "./pages/market/Market";
 import Swap from "./pages/market/Swap";
 import Auction from "./pages/market/Auction";
 import { getAllMarketItems } from "./redux/thunk/get-all-market-items";
-import GuestCollection from "./pages/collections/guest-collection";
 import CollectionSettings from "./pages/collections/collectionSettings";
 import { getAllCollections } from "./redux/thunk/getAllCollections";
 import DashboardHome from "./pages/dashboard/dashboardHome";
@@ -111,7 +111,7 @@ function App() {
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
     dispatch(getAllMarketItems());
-    dispatch(getAllCollections({ page: 1, limit: 5000 }));
+    // dispatch(getAllCollections({ page: 1, limit: 5000 }));
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");
@@ -128,7 +128,7 @@ function App() {
           <Route path="/market/swap" element={<Swap />} />
           <Route path="/market/auction" element={<Auction />} />
           <Route path="my-nft" element={<MyNFT />} />
-          <Route path="nft/:network/:address/:tokenId" element={<NFTView />} />
+          <Route path="nft/:address/:tokenId" element={<NFTView />} />
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
           <Route path="swap/:network/:offerId" element={<SingleSwapOffer />} />
@@ -140,10 +140,7 @@ function App() {
           <Route path="swap/done" element={<SwapComplete />} />
           <Route path="faucet" element={<FaucetPage />} />
           <Route path="collections" element={<CollectionsPage />} />
-          <Route
-            path="collections/:network/:collectionSlug"
-            element={<GuestCollection />}
-          />
+          <Route path="collection/:address" element={<NFTPage />} />
           <Route
             path="collections/settings/:network/:collectionAddress"
             element={<CollectionSettings />}

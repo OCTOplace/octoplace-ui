@@ -10,9 +10,9 @@ import CardList from "../../components/CardList";
 import RowSlider from "../../components/RowSlider";
 import CarouselCollection from "../../components/CarouselCollection";
 import Searchbox from "../../components/searchbox";
-import { getVisibleCollections } from "../../redux/thunk/getAllCollections";
+import { getCollections } from "../../redux/thunk/getAllCollections";
 
-export const CollectionsPage = () => {
+const CollectionsPage = () => {
   const dispatch = useDispatch();
   // const collections = useSelector((state) => {
   //   console.log(state.collection.collections.slice(0,49));
@@ -24,28 +24,72 @@ export const CollectionsPage = () => {
   const [collections, setCollections] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCounts, setTotalCounts] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
+  const defaultCollections = [
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+  ];
+
   const fetchCollections = async () => {
-    const response = await getVisibleCollections({
+    const response = await getCollections({
       page: page,
       limit: 24,
-      search,
+      name: search,
+      visible: 1,
     });
-    const newItems = response.items;
-    const uniqueNewItems = newItems.filter(
-      (newItem) => !collections.some((item) => item.id === newItem.id)
-    );
-    const newTotalCount = response.totalCount;
-    setCollections([...collections, ...uniqueNewItems]);
-    setTotalCount(newTotalCount);
-    if (collections.length >= newTotalCount) {
+
+    const newItems = response.collections;
+    // const uniqueNewItems = newItems.filter(
+    //   (newItem) => !collections.some((item) => item.id === newItem.id)
+    // );
+    // console.log("/////////////////////// ", uniqueNewItems)
+    const newTotalCounts = response.totalCounts;
+    setCollections([...collections, ...newItems]);
+
+    setTotalCounts(newTotalCounts);
+    if (collections.length >= newTotalCounts) {
       setHasMore(false);
     } else {
       setPage(page + 1);
     }
+
     setLoading(false);
   };
 
@@ -59,9 +103,9 @@ export const CollectionsPage = () => {
   useEffect(() => {
     setCollections([]);
     setPage(1);
-    setTotalCount(0);
+    setTotalCounts(0);
     setHasMore(true);
-    fetchCollections(1);
+    fetchCollections();
   }, [search]);
 
   return (
@@ -97,7 +141,7 @@ export const CollectionsPage = () => {
               Collections
             </h3>
             <Tooltip
-              title={`Found a total of ${totalCount} collections.`}
+              title={`Found a total of ${totalCounts} collections.`}
               placement="right"
             >
               <img src={infoIcon} alt="" width={16} height={16} />
@@ -112,8 +156,8 @@ export const CollectionsPage = () => {
             />
           </Box>
         </Box>
-        {/* {collections && <CardList list={collections} view={view} />} */}
-        {collections && (
+        {loading && <CardList list={defaultCollections} view={view} />}
+        {!loading && collections && (
           <InfiniteScroll
             dataLength={collections.length}
             next={fetchCollections}
@@ -139,3 +183,5 @@ export const CollectionsPage = () => {
     </Box>
   );
 };
+
+export default CollectionsPage;
