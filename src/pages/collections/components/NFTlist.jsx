@@ -5,12 +5,12 @@ import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import TuneIcon from "@mui/icons-material/Tune";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { NFTCard } from "./nft-card";
+import NFTCard from "./nft-card";
 import { getNFTsForCollection } from "../../../redux/thunk/get-collection-nfts";
 import FilterComponent from "../../../components/FilterComponent";
 import Searchbox from "../../../components/searchbox";
-import TuneIcon from "@mui/icons-material/Tune";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -53,23 +53,61 @@ function NFTlist({ address, network, view }) {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
+  const defaultNFTs = [
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+    {
+      contractAddress: "none",
+    },
+  ];
+
   const fetchNFTs = async () => {
-    console.log("///////////////////////////////// fetchNTFs", filterParam);
     const response = await getNFTsForCollection(address, {
       page: page,
       limit: 24,
-      search,
+      name: search,
       attributes: JSON.stringify(filterParam.traits),
     });
-    const newItems = response.items;
-    const uniqueNewItems = newItems.filter(
-      (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
-    );
+    const newItems = response.nfts;
+    // const uniqueNewItems = newItems.filter(
+    //   (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
+    // );
     const newItemCount = response.count;
-    setNfts([...nfts, ...uniqueNewItems]);
+    setNfts([...nfts, ...newItems]);
     setAttributes(response.attributes);
     setFilteredCount(newItemCount);
-    setTotalCount(response.total);
+    setTotalCount(response.totalCounts);
     if (nfts.length >= newItemCount) {
       setHasMore(false);
     } else {
@@ -194,17 +232,10 @@ function NFTlist({ address, network, view }) {
               handleFilter={handleFilter}
             />
           )}
-          <InfiniteScroll
-            dataLength={nfts.length}
-            next={fetchNFTs}
-            hasMore={hasMore}
-            loader={<h4>Loading...</h4>}
-          >
+          {loading && (
             <Grid container spacing={2}>
               {view !== 1 &&
-                nfts &&
-                nfts.length > 0 &&
-                nfts.map((item, index) => {
+                defaultNFTs.map((item, index) => {
                   return (
                     <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
                       <NFTCard nft={item} view={view} />
@@ -212,7 +243,47 @@ function NFTlist({ address, network, view }) {
                   );
                 })}
             </Grid>
-          </InfiniteScroll>
+          )}
+          {!loading && nfts && nfts.length > 0 && (
+            <InfiniteScroll
+              dataLength={nfts.length}
+              next={fetchNFTs}
+              hasMore={hasMore}
+              loader={<h4>Loading...</h4>}
+            >
+              <Grid container spacing={1}>
+                {view !== 1 &&
+                  nfts &&
+                  nfts.length > 0 &&
+                  nfts.map((item, index) => {
+                    return (
+                      <Grid
+                        key={`index_${index}`}
+                        item
+                        xs={12}
+                        sm={6}
+                        md={view}
+                      >
+                        <NFTCard nft={item} view={view} />
+                      </Grid>
+                    );
+                  })}
+              </Grid>
+            </InfiniteScroll>
+          )}
+          {!loading && nfts.length === 0 && (
+            <Typography
+              sx={{
+                width: "100%",
+                m: 8,
+                fontSize: "1.8em",
+                color: "#f4f4f4",
+                textAlign: "center",
+              }}
+            >
+              NO NFTS FOUND
+            </Typography>
+          )}
         </Box>
       </Fragment>
     </Box>

@@ -106,7 +106,7 @@ export const CollectionCard = (props) => {
         props.collectionItem.contractAddress !== "none" && (
           <Link
             className="nft-card-link"
-            to={`/items/${collectionItem.contractAddress}`}
+            to={`/collection/${collectionItem.contractAddress}`}
           >
             <Box ref={boxRef} sx={styles.root}>
               <img
@@ -130,9 +130,9 @@ export const CollectionCard = (props) => {
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
-                {/* <Typography
-                sx={styles.network}
-              >{`#${collectionItem.network}`}</Typography> */}
+                <Typography
+                  sx={styles.network}
+                >{`#${collectionItem.network}`}</Typography>
               </Box>
             </Box>
           </Link>

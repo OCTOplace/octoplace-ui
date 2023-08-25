@@ -12,7 +12,7 @@ import CarouselCollection from "../../components/CarouselCollection";
 import Searchbox from "../../components/searchbox";
 import { getCollections } from "../../redux/thunk/getAllCollections";
 
-export const CollectionsPage = () => {
+const CollectionsPage = () => {
   const dispatch = useDispatch();
   // const collections = useSelector((state) => {
   //   console.log(state.collection.collections.slice(0,49));
@@ -183,3 +183,5 @@ export const CollectionsPage = () => {
     </Box>
   );
 };
+
+export default CollectionsPage;
