@@ -7,7 +7,7 @@ import { FaDiscord } from "react-icons/fa";
 import { MailLockOutlined } from "@mui/icons-material";
 
 export const Footer = () => {
-  const styles = {
+  const styles =  {
     nav: {
       backgroundColor: "#262626",
       position: "relative",
@@ -23,6 +23,7 @@ export const Footer = () => {
       color: "white",
       width: "100%",
       fontSize: "1rem",
+      textWrap: 'nowrap'
     },
     legal: {
       display: "flex",
@@ -36,10 +37,24 @@ export const Footer = () => {
       fontSize: ".75rem",
       cursor: "pointer",
     },
+    legalTextContainer: (theme) => ({
+        display: 'flex',
+        alignItems: 'center',
+        gap: '24px',
+        [theme.breakpoints.down(840)]: {
+          display: 'none'
+        }
+    }),
     legalText: {
+      textWrap: "nowrap",
       "&:hover": {
         color: "#F4F4F4",
       },
+    },
+    iconContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px'
     },
     icon: {
       color: "#fff",
@@ -54,18 +69,19 @@ export const Footer = () => {
         <Container>
           <Row>
             <Col lg={12} sm={12} md={12}>
-              <Box flexDirection="row" display="flex">
+              <Box display="flex">
                 <Box sx={styles.row}>
-                  <Typography>&#169; 2023</Typography>
-                  <Typography>OCTO</Typography>
+                  <Typography>&#169; 2023 OCTO</Typography>
                 </Box>
                 <Box sx={styles.legal}>
-                  <Typography sx={styles.legalText}>Privacy Policy</Typography>
-                  <Typography sx={styles.legalText}>
-                    Terms of Service
-                  </Typography>
-                  <Typography sx={styles.legalText}>Risks Disclamer</Typography>
-                  <Box>
+                  <Box sx={styles.legalTextContainer}>
+                    <Typography sx={styles.legalText}>Privacy Policy</Typography>
+                    <Typography sx={styles.legalText}>
+                      Terms of Service
+                    </Typography>
+                    <Typography sx={styles.legalText}>Risks Disclamer</Typography>
+                  </Box>
+                  <Box sx={styles.iconContainer}>
                     <IconButton
                       href="https://twitter.com/octoplace"
                       target="_blank"

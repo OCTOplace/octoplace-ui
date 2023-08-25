@@ -7,6 +7,8 @@ import broken from "./../../../assets/broken.png";
 
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
+import ThetaLogo from '../../../assets/chains/thetaLogo.svg'
+import KavaLogo from '../../../assets/chains/kavaLogo.svg'
 
 export const CollectionCard = (props) => {
   const { collectionItem, view } = props;
@@ -50,11 +52,11 @@ export const CollectionCard = (props) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
+      textWrap: 'nowrap'
     },
     network: {
-      fontSize: ".625em",
-      fontWeight: "400",
-      color: "#6C6C6C",
+      width: '24px',
+      height: '24px'
     },
   };
 
@@ -117,7 +119,7 @@ export const CollectionCard = (props) => {
                   borderTopLeftRadius: "0.75rem",
                   borderTopRightRadius: "0.75rem",
                   objectFit: "cover",
-                  width: view === 3 ? "200px" : "100%",
+                  width: "100%",
                   aspectRatio: "1/1",
                 }}
                 alt="nft_image"
@@ -130,9 +132,10 @@ export const CollectionCard = (props) => {
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
-                <Typography
+                {/* <Typography
                   sx={styles.network}
-                >{`#${collectionItem.network}`}</Typography>
+                >{`#${collectionItem.network}`}</Typography> */}
+                <img style={styles.network}  src={collectionItem.network === "kava"? KavaLogo : ThetaLogo} alt="network" />
               </Box>
             </Box>
           </Link>

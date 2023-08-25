@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import brokenImage from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
+import ThetaLogo from '../../../assets/chains/thetaLogo.svg'
+import KavaLogo from '../../../assets/chains/kavaLogo.svg'
 
 export const NFTCard = ({ view, nft }) => {
   const truncate = (text, maxLength) => {
@@ -44,7 +46,7 @@ export const NFTCard = ({ view, nft }) => {
                   borderTopLeftRadius: "0.75rem",
                   borderTopRightRadius: "0.75rem",
                   objectFit: "cover",
-                  width: view === 3 ? "200px" : "100%",
+                  width: "100%",
                   aspectRatio: "1/1",
                 }}
               />
@@ -56,9 +58,10 @@ export const NFTCard = ({ view, nft }) => {
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
-              <Typography sx={styles.network}>{`#${
+              {/* <Typography sx={styles.network}>{`#${
                 nft.network ? nft.network : "theta"
-              }`}</Typography>
+              }`}</Typography> */}
+              <img style={styles.network}  src={nft.network === "kava"? KavaLogo : ThetaLogo} alt="network" />
               <Box style={styles.meta}>
                 <Typography>#{Number(nft.tokenId)}</Typography>
               </Box>
@@ -77,7 +80,7 @@ export const NFTCard = ({ view, nft }) => {
               borderTopLeftRadius: "0.75rem",
               borderTopRightRadius: "0.75rem",
               backgroundSize: "cover",
-              width: view === 3 ? "200px" : "100%",
+              width: "100%",
               aspectRatio: "1/1",
               backgroundImage: `url(${brokenImage})`,
             }}
@@ -88,7 +91,7 @@ export const NFTCard = ({ view, nft }) => {
                 borderTopLeftRadius: "0.75rem",
                 borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
-                width: view === 3 ? "200px" : "100%",
+                width: "100%",
                 aspectRatio: "1/1",
               }}
             />
@@ -112,7 +115,7 @@ const styles = {
     cursor: "pointer",
     width: "100%",
     boxSizing: "border-box",
-    mb: 1,
+    mb: 2,
     border: "1px solid transparent", // Add transparent border
     "&:hover": {
       border: "1px solid #F78C09",
@@ -139,11 +142,11 @@ const styles = {
     fontWeight: "500",
     fontSize: ".875em",
     letterSpacing: "1px",
+    textWrap: "nowrap"
   },
   network: {
-    fontSize: ".625em",
-    fontWeight: "400",
-    color: "#6C6C6C",
+    width: '24px',
+    height: '24px'
   },
   verified: {
     display: "flex",

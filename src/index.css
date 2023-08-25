@@ -39,17 +39,20 @@ code {
   z-index: 100;
   cursor: pointer;
   position: absolute;
-  top: 50%;
-  right: -100px;
+  top: 40%;
+  right: 25px;
   left: auto;
-
 }
 
 .prevIcon {
   z-index: 100;
   cursor: pointer;
   position: absolute;
-  top: 50%;
-  left: -100px;
+  top: 40%;
+  left: 25px;
   right: auto;
+}
+
+.swiper-button-disabled {
+  display: none;
 }

@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
+import ThetaLogo from '../../../assets/chains/thetaLogo.svg'
+import KavaLogo from '../../../assets/chains/kavaLogo.svg'
 
 export const NFTListingCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
@@ -48,11 +50,11 @@ export const NFTListingCard = (props) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
+      textWrap: "nowrap"
     },
     network: {
-      fontSize: ".625em",
-      fontWeight: "400",
-      color: "#6C6C6C",
+      width: '24px',
+      height: '24px'
     },
   };
 
@@ -113,9 +115,10 @@ export const NFTListingCard = (props) => {
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
-              <Typography
+              {/* <Typography
                 sx={styles.network}
-              >{`#${props.listingItem.listingNFT.network}`}</Typography>
+              >{`#${props.listingItem.listingNFT.network}`}</Typography> */}
+              <img style={styles.network}  src={props.listingItem.listingNFT.network === "kava"? KavaLogo : ThetaLogo} alt="network" />
               <Box style={styles.meta}>
                 <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
               </Box>

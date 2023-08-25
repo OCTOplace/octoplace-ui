@@ -56,7 +56,7 @@ export const AppNavbar = () => {
   };
 
   return (
-    <Navbar collapseOnSelect expand="lg" sticky="top" variant="dark">
+    <Navbar collapseOnSelect expand="lg" sticky="top" variant="dark" style={{ zIndex: '50000000' }}>
       <Container
         style={{
           display: "flex",

@@ -107,43 +107,33 @@ const contractInteraction = {
     }
   },
   gatherSpots: async () => {
-    let timer = 0;
-    console.log('initial-time: ', timer);
-    const calcTime = setInterval(() => {
-      timer++;
-    }, [100])
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, staticProvider);
     const spotsLength = 571; // (await contract.getSpotsLength() as BigNumber).toNumber();
     setSpotsCount(spotsLength);
     // load the data in parallel
     let doneCount = 0;
     for (let i = 0; i < spotsLength; i += 1) {
-      if (i % 200 === 0 && i !== 0) {
+      if (i % 50 === 0 && i !== 0) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
         }
         (async (i) => {
           const spotWithOwner = await contract.getSpot(i);
-        // console.log('Second Time: ', timer);
-        updateSpotData({
-          x: spotWithOwner.spot.x,
-          y: spotWithOwner.spot.y,
-          width: spotWithOwner.spot.width,
-          height: spotWithOwner.spot.height,
-          title: spotWithOwner.spot.title,
-          image: spotWithOwner.spot.image,
-          link: spotWithOwner.spot.link,
-          owner: spotWithOwner.owner,
-          _index: i,
-        });
-        doneCount += 1;
-        console.log({ doneCount });
-        if (doneCount === spotsLength) {
-          console.log({ timer });
-          clearInterval(calcTime);
-          const info = getGlobalState("info");
-          console.log("doneCount === spotsLength");
-          setGlobalState("info", { ...info, isGridLoading: false });
-        }
+          updateSpotData({
+            x: spotWithOwner.spot.x,
+            y: spotWithOwner.spot.y,
+            width: spotWithOwner.spot.width,
+            height: spotWithOwner.spot.height,
+            title: spotWithOwner.spot.title,
+            image: spotWithOwner.spot.image,
+            link: spotWithOwner.spot.link,
+            owner: spotWithOwner.owner,
+            _index: i,
+          });
+          doneCount += 1;
+          if (doneCount === spotsLength) {
+            const info = getGlobalState("info");
+            setGlobalState("info", { ...info, isGridLoading: false });
+          }
       })(i);
     }
   },
