@@ -15,6 +15,7 @@ import Swap from "./market/Swap";
 import Auction from "./market/Auction";
 import TableComponent from "../components/TableComponent";
 import { NFTMillion } from "./NFTMillion";
+import { styled } from '@mui/system'
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -35,10 +36,12 @@ export const Home = () => {
   return (
     <Box>
       <CarouselHome />
-      <PopularCollections title="Popular Collections" />
-      <PopularNFTs title="Popular NFTs" />
-      {/* <TableComponent list={activeListings} /> */}
-      <NFTMillion />
+      <NFTDataContainer>
+        <PopularCollections title="Popular Collections" />
+        <PopularNFTs title="Popular NFTs" />
+        {/* <TableComponent list={activeListings} /> */}
+        <NFTMillion />
+      </NFTDataContainer>
       {/* <Container>
         <Box className="market-menu">
           <Button
@@ -75,3 +78,9 @@ export const Home = () => {
     </Box>
   );
 };
+
+const NFTDataContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '10px'
+}))
