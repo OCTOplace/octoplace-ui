@@ -50,79 +50,6 @@ export const CollectionDiscussions = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const styles = {
-    accordion2: {
-      backgroundColor: "transparent",
-      color: expanded ? "#f4f4f4" : "#6c6c6c",
-      border: "1px solid  #6C6C6C",
-      borderRadius: ".5rem",
-      marginBottom: "1rem",
-    },
-    accordionHeader: {
-      fontWeight: 400,
-      fontsize: "1.125rem",
-      lineHeight: "105.02%",
-    },
-    accordionBody: {
-      backgroundColor: "#151515",
-      display: "flex",
-      flexDirection: "column",
-      gap: 1,
-      maxHeight: "470px",
-      overflowY: "scroll",
-      borderRadius: ".5rem",
-    },
-    detailsBox: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      maxHeight: "470px",
-      overflowY: "scroll",
-      justifyContent: "flex-start",
-    },
-    row: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      width: "100%",
-      marginBottom: "8px",
-    },
-    comments: {
-      width: "100%",
-    },
-    address: {
-      fontWeight: 600,
-      fontSize: ".875rem",
-      color: "#FF9719",
-      textTransform: "none",
-      display: "flex",
-      alignItems: "center",
-    },
-    copyButton: {
-      color: "#6C6C6C",
-      fontSize: ".75rem",
-    },
-    message: {
-      color: "white",
-      fontSize: ".875rem",
-      fontWeight: 400,
-    },
-    textContainer: {
-      width: "80%",
-      pt: 2,
-      pr: 1,
-    },
-    sendButton: {
-      background: "#F78C09",
-      borderRadius: ".375rem",
-      color: "#262626",
-      fontWeight: 600,
-      width: "20%",
-      textTransform: "none",
-    },
-  };
-
   const handleChange = (event, isExpanded) => {
     setExpanded(isExpanded);
   };
@@ -187,7 +114,7 @@ export const CollectionDiscussions = ({
 
   useEffect(() => {
     if (address) {
-      // getMessages();
+      getMessages();
     }
   }, [address]);
 
@@ -281,9 +208,9 @@ export const CollectionDiscussions = ({
       );
       const txResult = await contract.addComment_erc20(address, message);
       dispatch(setTxDialogHash(txResult.hash));
-      
+
       await txResult.wait();
-      
+
       dispatch(
         createCollectionDiscussion({
           address,
@@ -292,10 +219,10 @@ export const CollectionDiscussions = ({
           message,
         })
       );
-      
+
       toast.success("Comment Posted Successfuly!");
       setMessage("");
-      
+
       setOpenSendDlg(false);
       setMessage("");
       getAllowance();
@@ -433,4 +360,77 @@ export const CollectionDiscussions = ({
       </AccordionDetails>
     </Accordion>
   );
+};
+
+const styles = {
+  accordion2: {
+    backgroundColor: "transparent",
+    color: expanded ? "#f4f4f4" : "#6c6c6c",
+    border: "1px solid  #6C6C6C",
+    borderRadius: ".5rem",
+    marginBottom: "1rem",
+  },
+  accordionHeader: {
+    fontWeight: 400,
+    fontsize: "1.125rem",
+    lineHeight: "105.02%",
+  },
+  accordionBody: {
+    backgroundColor: "#151515",
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    maxHeight: "470px",
+    overflowY: "scroll",
+    borderRadius: ".5rem",
+  },
+  detailsBox: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    maxHeight: "470px",
+    overflowY: "scroll",
+    justifyContent: "flex-start",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: "8px",
+  },
+  comments: {
+    width: "100%",
+  },
+  address: {
+    fontWeight: 600,
+    fontSize: ".875rem",
+    color: "#FF9719",
+    textTransform: "none",
+    display: "flex",
+    alignItems: "center",
+  },
+  copyButton: {
+    color: "#6C6C6C",
+    fontSize: ".75rem",
+  },
+  message: {
+    color: "white",
+    fontSize: ".875rem",
+    fontWeight: 400,
+  },
+  textContainer: {
+    width: "80%",
+    pt: 2,
+    pr: 1,
+  },
+  sendButton: {
+    background: "#F78C09",
+    borderRadius: ".375rem",
+    color: "#262626",
+    fontWeight: 600,
+    width: "20%",
+    textTransform: "none",
+  },
 };
