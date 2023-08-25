@@ -4,7 +4,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import infoIcon from "../../assets/Infrormation_button.svg";
 import nextIcon from "../../assets/next.svg";
 import prevIcon from "../../assets/prev.svg";
-import { Paper, Button, Grid, Box, useMediaQuery } from "@mui/material";
+import { Paper, Button, Grid, Box, useMediaQuery, Fab } from "@mui/material";
 import { NFTCard } from "../collections/components/nft-card";
 import { NFTListingCard } from "../../pages/listings/components/ListingCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,7 @@ import 'swiper/modules/pagination/pagination.min.css';
 import 'swiper/modules/scrollbar/scrollbar.min.css';
 import 'swiper/modules/grid/grid.min.css';
 import 'swiper/modules/autoplay/autoplay.min.css'
+import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 
 export function PopularNFTs({ title }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -108,13 +109,30 @@ export function PopularNFTs({ title }) {
             justifyContent: "center",
             alignItems: "flex-start",
             gap: 10,
-            minHeight: "300px",
+            minHeight: "320px",
             position: "relative"
           }}
         >
         <Swiper
           spaceBetween={16}
-          slidesPerView={6}
+          slidesPerView={1}
+          breakpoints={{
+            370: {
+              slidesPerView: 2
+            },
+            768: {
+              slidesPerView: 3
+            },
+            1024: {
+              slidesPerView: 4
+            },
+            1280: {
+              slidesPerView: 5
+            },
+            1536: {
+              slidesPerView: 6
+            }
+          }}
           autoplay={{
             delay: 4000,
             disableOnInteraction: false,
@@ -131,15 +149,23 @@ export function PopularNFTs({ title }) {
                 let obj = { ...item, network: item.Network };
                 return (
                   <SwiperSlide key={`index_${i}`}>
-                    <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
+                    {/* <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}> */}
                       <NFTCard nft={obj} view={3} />
-                    </Grid>
+                    {/* </Grid> */}
                   </SwiperSlide>
                 );
               })}
         </Swiper>
-        <img src={nextIcon} alt="next icon" className="nextIcon navNext" width={24} height={24} />
-        <img src={prevIcon} alt="prev icon" className="prevIcon navPrev" width={24} height={24} />
+        <div className="nextIcon navPrev">
+          <Fab aria-label="next" color="default" size="small">
+              <NavigateNext />
+          </Fab>
+        </div>
+        <div className="prevIcon navNext">
+          <Fab aria-label="prev" color="default" size="small">
+              <NavigateBefore />
+          </Fab>
+        </div>
       </Container>
     </Box>
   );

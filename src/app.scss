@@ -346,6 +346,18 @@ body > iframe {
     padding-bottom: 0.5rem;
   }
 
+  .regular-btn-disabled {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 105.02%;
+    color: #f4f4f4;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    cursor: default;
+  }
+
   .regular-btn::after {
     content: "";
     position: absolute;
