@@ -14,15 +14,6 @@ export const NFTMillion = () => {
   let { grid, spots, receivedSpots, totalSpots, pixelsUsed, isGridLoading } =
     useGrid();
 
-  console.log({
-    grid,
-    spots,
-    receivedSpots,
-    totalSpots,
-    pixelsUsed,
-    isGridLoading,
-  });
-
   const [dim, setDim] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [buying, setBuying] = useState(false);
   const [isInfoVisible, setIsInfoVisible] = useState(true);
@@ -166,7 +157,7 @@ export const NFTMillion = () => {
 
   return (
     <NFTMillionContainer>
-      {isGridLoading ? (
+      {isGridLoading || totalSpots === -1 || isLoading ? (
         <LoaderContainer>
           <CircularProgress
             style={{ width: "100px", height: "100px", color: "#1976d2" }}
@@ -199,6 +190,10 @@ const NFTMillionContainer = styled(Box)(({ theme }) => ({
   background: `#eee url(${GridPng})`,
   boxShadow: "0 0 4px 1px rgba(0, 0, 0, 0.5)",
   userSelect: "none",
+  marginBottom: '40px',
+  [theme.breakpoints.down(1076)]: {
+    display: 'none'
+  }
 }));
 
 const LoaderContainer = styled(Box)(({ theme }) => ({

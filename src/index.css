@@ -34,3 +34,22 @@ code {
   border-radius: 5px;
   border: 0px solid #454545;
 }
+
+.nextIcon {
+  z-index: 100;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  right: -100px;
+  left: auto;
+
+}
+
+.prevIcon {
+  z-index: 100;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  left: -100px;
+  right: auto;
+}

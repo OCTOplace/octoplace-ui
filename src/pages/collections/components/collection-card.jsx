@@ -149,8 +149,8 @@ export const CollectionCard = (props) => {
                 // borderTopRightRadius: "0.75rem",
                 borderRadius: "0.75rem",
                 objectFit: "cover",
-                width: view === 3 ? "200px" : "100%",
-                aspectRatio: "1/1.3",
+                width: "100%",
+                aspectRatio: "1/1",
               }}
               alt="nft_image"
               loading="lazy"

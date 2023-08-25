@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Carousel from "react-material-ui-carousel";
 import Tooltip from "@mui/material/Tooltip";
 import { Container, Row, Col } from "react-bootstrap";
 import infoIcon from "../../assets/Infrormation_button.svg";
@@ -12,6 +11,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
 import { getActiveListings } from "../../utils/format-listings";
 import { getPopularNFTs } from "../../redux/thunk/get-analytics";
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
+import { Autoplay, EffectFlip, FreeMode, Navigation } from "swiper";
+
+import 'swiper/swiper.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/modules/pagination/pagination.min.css';
+import 'swiper/modules/scrollbar/scrollbar.min.css';
+import 'swiper/modules/grid/grid.min.css';
+import 'swiper/modules/autoplay/autoplay.min.css'
 
 export function PopularNFTs({ title }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -94,62 +102,45 @@ export function PopularNFTs({ title }) {
           </Tooltip>
         </Box>
       </Container>
-      <Carousel
-        autoPlay={false}
-        animation="slide"
-        cycleNavigation={true}
-        indicators={true}
-        showArrows={true}
-        navButtonsAlwaysVisible={true}
-        navButtonsProps={{
-          style: {
-            margin: "1rem 5vw",
-            backgroundColor: "transparent",
-          },
-        }}
-        NextIcon={<img src={nextIcon} alt="next icon" width={24} height={24} />}
-        PrevIcon={<img src={prevIcon} alt="prev icon" width={24} height={24} />}
-        next={handleNextClick}
-        prev={handlePrevClick}
-      >
-        <Container
+      <Container
           style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",
             gap: 10,
             minHeight: "300px",
+            position: "relative"
           }}
         >
-          {/* {list
-            .slice(
-              currentIndex -
-                Math.max(currentIndex + numItemsToShow - list.length, 0),
-              currentIndex + numItemsToShow
-            )
-            .map((item, i) => {
-              return (
-                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
-                  <MediaCard item={item} key={i} view={3} />
-                </Grid>
-              );
-            })} */}
-          {popularNFTs
-            .slice(
-              currentIndex -
-                Math.max(currentIndex + numItemsToShow - popularNFTs.length, 0),
-              currentIndex + numItemsToShow
-            )
-            .map((item, i) => {
-              let obj = { ...item, network: item.Network };
-              return (
-                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
-                  <NFTCard nft={obj} view={3} />
-                </Grid>
-              );
-            })}
-        </Container>
-      </Carousel>
+        <Swiper
+          spaceBetween={16}
+          slidesPerView={6}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          freeMode={true}
+          navigation={{
+              prevEl: '.navPrev',
+              nextEl: '.navNext'
+          }}
+          modules={[ FreeMode, Navigation, Autoplay, EffectFlip ]}
+        >
+            {popularNFTs
+              .map((item, i) => {
+                let obj = { ...item, network: item.Network };
+                return (
+                  <SwiperSlide key={`index_${i}`}>
+                    <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
+                      <NFTCard nft={obj} view={3} />
+                    </Grid>
+                  </SwiperSlide>
+                );
+              })}
+        </Swiper>
+        <img src={nextIcon} alt="next icon" className="nextIcon navNext" width={24} height={24} />
+        <img src={prevIcon} alt="prev icon" className="prevIcon navPrev" width={24} height={24} />
+      </Container>
     </Box>
   );
 }

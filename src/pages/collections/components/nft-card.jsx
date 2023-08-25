@@ -31,8 +31,8 @@ export const NFTCard = ({ view, nft }) => {
               style={{
                 borderTopLeftRadius: "0.75rem",
                 borderTopRightRadius: "0.75rem",
-                backgroundSize: "cover",
-                width: view === 3 ? "200px" : "100%",
+                objectFit: "cover",
+                width: "100%",
                 aspectRatio: "1/1",
                 backgroundImage: `url(${brokenImage})`,
               }}
