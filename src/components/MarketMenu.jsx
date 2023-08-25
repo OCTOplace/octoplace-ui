@@ -67,6 +67,7 @@ function MarketMenu({ activeTabRef }) {
       </Link>
       <Link
         to="/market/auction"
+        style={{ color: "rgb(108, 108, 108)" }}
         className={
           location.pathname === "/market/auction"
             ? "active-button"

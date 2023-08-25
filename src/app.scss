@@ -353,11 +353,11 @@ body > iframe {
     bottom: 0;
     width: 100%;
     height: 2px;
-    background-color: #f78c09;
     transform: translateX(-100%);
     transition: transform 300ms ease;
   }
   .regular-btn:hover::after {
+    background-color: #f78c09;
     transform: translateX(0);
   }
 }
