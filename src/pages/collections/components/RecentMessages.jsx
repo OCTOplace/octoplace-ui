@@ -14,8 +14,6 @@ function RecentMessages({ messages }) {
     }
   }, [discussions]);
 
-  console.log("///////////////////// discussions ", recentMessages);
-
   return (
     <Box sx={styles.container}>
       {recentMessages &&
