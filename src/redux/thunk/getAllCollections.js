@@ -7,11 +7,9 @@ export const getAllCollections = createAsyncThunk(
   "collections/getAllCollections",
   async (params, thunkAPI) => {
     let items = [];
-    const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
-      params,
-    });
+    const result = await axios.get(`${apiUrl}/collections/categories`);
     items = result.data.items.map((item) => {
-      let slug = slugify(item.collectionName);
+      let slug = slugify(item.name);
       return { ...item, slug };
     });
     // items =items.filter(item => item.site !== "thetadrop");

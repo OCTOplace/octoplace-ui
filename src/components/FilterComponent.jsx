@@ -43,7 +43,7 @@ function FilterComponent({
   const [includeBurned, setIncludeBurned] = useState(filterParam?.includeBurned ?? 0);
   const marketItems = useSelector((state) => state.market.markets);
   const activeListings = useSelector((state) => state.listings.activeListings);
-
+console.log("////////////////////////// categories ", collections);
   const onlyCollections = collections.filter(
     (item, index, self) =>
       index === self.findIndex((t) => t.collectionId === item.collectionId)

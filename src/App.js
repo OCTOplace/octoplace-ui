@@ -111,7 +111,7 @@ function App() {
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
     dispatch(getAllMarketItems());
-    // dispatch(getAllCollections({ page: 1, limit: 5000 }));
+    dispatch(getAllCollections());
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");
