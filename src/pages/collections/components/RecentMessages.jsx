@@ -1,11 +1,25 @@
 import { Box } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 function RecentMessages({ messages }) {
+  const [recentMessages, setRecentMessages] = useState(messages);
+  const discussions = useSelector(
+    (state) => state.discussion.selectedCollectionDiscussions
+  );
+
+  useEffect(() => {
+    if (discussions.length > 0) {
+      setRecentMessages(discussions.slice(-3));
+    }
+  }, [discussions]);
+
+  console.log("///////////////////// discussions ", recentMessages);
+
   return (
     <Box sx={styles.container}>
-      {messages &&
-        messages.map((message) => (
+      {recentMessages &&
+        recentMessages.map((message) => (
           <Box key={message._id} sx={styles.messageRow}>
             <Box sx={styles.avatar}>
               {message.avatarImage && (

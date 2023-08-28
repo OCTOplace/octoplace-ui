@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
@@ -15,6 +16,7 @@ import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
 import { useWeb3React } from "@web3-react/core";
 import { getCollection } from "../../redux/thunk/getAllCollections";
+import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import RecentMessages from "./components/RecentMessages";
@@ -25,6 +27,7 @@ const NFTPage = () => {
   const { address } = useParams();
   const navigate = useNavigate();
   const { account } = useWeb3React();
+  const dispatch = useDispatch();
   const [collection, setCollection] = useState(null);
   const [asset, setAsset] = useState(null);
   const [nftCounts, setNftCounts] = useState(0);
@@ -42,6 +45,7 @@ const NFTPage = () => {
   };
 
   useEffect(() => {
+    dispatch(setCollectionDiscussions([]));
     fetchCollectionSetting();
   }, []);
 
@@ -248,11 +252,6 @@ const NFTPage = () => {
               </Box>
               <Box sx={styles.aboutContent}>
                 <Typography sx={styles.h2}>Recent messages</Typography>
-                {/* <CollectionDiscussions
-                address={selectedCollection.collectionAddress}
-                network={network}
-                isAccordion={false}
-              /> */}
                 <RecentMessages messages={discussions} />
               </Box>
             </Box>
@@ -308,7 +307,7 @@ const NFTPage = () => {
               <CollectionDiscussions
                 address={collection.contractAddress}
                 // network={network}
-                discussions={discussions}
+                // discussions={discussions}
                 isAccordion={false}
               />
             )}

@@ -40,12 +40,12 @@ import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
 import {
   createCollectionDiscussion,
   getCollectionDiscussions,
-} from "../../redux/thunk/get-nft-discussions";
+} from "../../redux/thunk/get-discussions";
 
 export const CollectionDiscussions = ({
   address,
   network,
-  discussions,
+  // discussions,
   isAccordion,
 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -63,13 +63,13 @@ export const CollectionDiscussions = ({
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
-  // const ownerMessages = useSelector(
-  //   (state) => state.discussion.selectedCollectionDiscussions
-  // );
-
-  const ownerMessages = discussions.filter(
-    (message) => message.senderAddress === account
+  const discussions = useSelector(
+    (state) => state.discussion.selectedCollectionDiscussions
   );
+
+  // const ownerMessages = discussions.filter(
+  //   (message) => message.senderAddress === account
+  // );
 
   const dispatch = useDispatch();
   const format = (x) => {
@@ -108,13 +108,13 @@ export const CollectionDiscussions = ({
     getAllowance();
   };
 
-  const getMessages = async () => {
+  const getDiscussions = async () => {
     dispatch(getCollectionDiscussions({ address, network, owner: account }));
   };
 
   useEffect(() => {
     if (address) {
-      getMessages();
+      getDiscussions();
     }
   }, [address]);
 
@@ -148,6 +148,8 @@ export const CollectionDiscussions = ({
       setExpanded(true);
     }
   }, [account]);
+
+  useEffect(() => {}, [discussions]);
 
   const handleFeeApprove = async () => {
     const netInfo = getNetworkInfo("theta");
@@ -236,6 +238,7 @@ export const CollectionDiscussions = ({
       dispatch(setTxDialogFailed(true));
     }
 
+    // For test without auth
     // dispatch(
     //   createCollectionDiscussion({
     //     address,
@@ -244,193 +247,201 @@ export const CollectionDiscussions = ({
     //     message,
     //   })
     // );
+    // toast.success("Comment Posted Successfuly!");
     // setMessage("");
   };
 
+  const styles = {
+    accordion2: {
+      backgroundColor: "transparent",
+      color: expanded ? "#f4f4f4" : "#6c6c6c",
+      border: "1px solid  #6C6C6C",
+      borderRadius: ".5rem",
+      marginBottom: "1rem",
+    },
+    accordionHeader: {
+      fontWeight: 400,
+      fontsize: "1.125rem",
+      lineHeight: "105.02%",
+    },
+    accordionBody: {
+      backgroundColor: "#151515",
+      display: "flex",
+      flexDirection: "column",
+      gap: 1,
+      maxHeight: "470px",
+      overflowY: "scroll",
+      borderRadius: ".5rem",
+    },
+    detailsBox: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      maxHeight: "470px",
+      overflowY: "scroll",
+      justifyContent: "flex-start",
+    },
+    row: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+      marginTop: "15px",
+      marginBottom: "8px",
+    },
+    comments: {
+      width: "100%",
+    },
+    address: {
+      fontWeight: 600,
+      fontSize: ".875rem",
+      color: "#FF9719",
+      textTransform: "none",
+      display: "flex",
+      alignItems: "center",
+    },
+    copyButton: {
+      color: "#6C6C6C",
+      fontSize: ".75rem",
+    },
+    message: {
+      color: "white",
+      fontSize: ".875rem",
+      fontWeight: 400,
+    },
+    textContainer: {
+      width: "80%",
+      pt: 2,
+      pr: 1,
+    },
+    sendButton: {
+      background: "#F78C09",
+      borderRadius: ".375rem",
+      color: "#262626",
+      fontWeight: 600,
+      width: "20%",
+      textTransform: "none",
+    },
+  };
+
   return (
-    <Accordion
-      sx={styles.accordion2}
-      expanded={expanded}
-      onChange={handleChange}
-    >
-      {isAccordion ? (
-        <AccordionSummary
-          expandIcon={
-            <ExpandMore sx={{ color: expanded ? "#f4f4f4" : "#6c6c6c" }} />
-          }
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography sx={styles.accordionHeader}>
-            <QuestionAnswer /> &nbsp;&nbsp;Discussion
-          </Typography>
-        </AccordionSummary>
-      ) : (
-        <div></div>
-      )}
-      <AccordionDetails sx={styles.accordionBody}>
-        <Box sx={styles.detailsBox}>
-          {ownerMessages.map((item) => {
-            return (
-              <Box key={item.id} sx={styles.comments}>
-                <Typography sx={styles.address}>
-                  {shortenAddress(item.senderAddress)}
-                  <IconButton
-                    onClick={() => {
-                      copy(item.senderAddress);
-                      toast.success("Address copied!");
-                    }}
-                    sx={styles.copyButton}
-                  >
-                    <ContentCopy fontSize="small" />
-                  </IconButton>
-                </Typography>
-                <Typography sx={styles.message} variant="body1">
-                  {item.message}
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
-        <Box sx={styles.row}>
-          <Box sx={styles.textContainer}>
-            <TextField
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              multiline
-              maxRows={5}
-              autoComplete="no"
-              autofill="no"
-              sx={{ color: "white" }}
-              variant="standard"
-              fullWidth
-              placeholder="Enter your message here"
-              InputProps={{
-                disableUnderline: true,
-              }}
-            />
+    <Box sx={{ marginBottom: "30px" }}>
+      <Accordion
+        sx={styles.accordion2}
+        expanded={expanded}
+        onChange={handleChange}
+      >
+        {isAccordion ? (
+          <AccordionSummary
+            expandIcon={
+              <ExpandMore sx={{ color: expanded ? "#f4f4f4" : "#6c6c6c" }} />
+            }
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography sx={styles.accordionHeader}>
+              <QuestionAnswer /> &nbsp;&nbsp;Discussion
+            </Typography>
+          </AccordionSummary>
+        ) : (
+          <div></div>
+        )}
+        <AccordionDetails sx={styles.accordionBody}>
+          <Box sx={styles.detailsBox}>
+            {discussions.map((item) => {
+              return (
+                <Box key={item._id} sx={styles.comments}>
+                  <Typography sx={styles.address}>
+                    {shortenAddress(item.senderAddress)}
+                    <IconButton
+                      onClick={() => {
+                        copy(item.senderAddress);
+                        toast.success("Address copied!");
+                      }}
+                      sx={styles.copyButton}
+                    >
+                      <ContentCopy fontSize="small" />
+                    </IconButton>
+                  </Typography>
+                  <Typography sx={styles.message} variant="body1">
+                    {item.message}
+                  </Typography>
+                </Box>
+              );
+            })}
           </Box>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => {
-              if (message) setOpenSendDlg(true);
-            }}
-            sx={styles.sendButton}
-          >
-            Send
-          </Button>
-        </Box>
-        <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
-          <DialogTitle
-            sx={{ color: "white", textTransform: "uppercase", fontWeight: 700 }}
-            className="tx-dialog"
-          >
-            Add Comment
-          </DialogTitle>
-          <DialogContent className="tx-dialog">
-            <Typography>
-              Your {feeSymbol} Balance: {`${feeBalance} ${feeSymbol}`}
-            </Typography>
-            <Typography>
-              {feeSymbol} Required: &nbsp; &nbsp; {`${commentFee} ${feeSymbol}`}
-            </Typography>
-          </DialogContent>
-          <DialogActions sx={{ pb: 2, pr: 2 }} className="tx-dialog">
-            {/* {feeAllowance >= commentFee ? ( */}
-            {true ? (
-              <Button onClick={handleSendMessage} variant="contained">
-                Send Message
-              </Button>
-            ) : (
-              <Button onClick={handleFeeApprove} variant="contained">
-                Approve
-              </Button>
-            )}
-
+          <Box sx={styles.row}>
+            <Box sx={styles.textContainer}>
+              <TextField
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                multiline
+                maxRows={5}
+                autoComplete="no"
+                autofill="no"
+                sx={{ color: "white" }}
+                variant="standard"
+                fullWidth
+                placeholder="Enter your message here"
+                InputProps={{
+                  disableUnderline: true,
+                }}
+              />
+            </Box>
             <Button
-              color="error"
+              fullWidth
               variant="contained"
-              onClick={() => setOpenSendDlg(false)}
+              onClick={() => {
+                if (message) setOpenSendDlg(true);
+              }}
+              sx={styles.sendButton}
             >
-              Cancel
+              Send
             </Button>
-          </DialogActions>
-        </Dialog>
-      </AccordionDetails>
-    </Accordion>
-  );
-};
+          </Box>
+          <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
+            <DialogTitle
+              sx={{
+                color: "white",
+                textTransform: "uppercase",
+                fontWeight: 700,
+              }}
+              className="tx-dialog"
+            >
+              Add Comment
+            </DialogTitle>
+            <DialogContent className="tx-dialog">
+              <Typography>
+                Your {feeSymbol} Balance: {`${feeBalance} ${feeSymbol}`}
+              </Typography>
+              <Typography>
+                {feeSymbol} Required: &nbsp; &nbsp;{" "}
+                {`${commentFee} ${feeSymbol}`}
+              </Typography>
+            </DialogContent>
+            <DialogActions sx={{ pb: 2, pr: 2 }} className="tx-dialog">
+              {feeAllowance >= commentFee ? (
+                <Button onClick={handleSendMessage} variant="contained">
+                  Send Message
+                </Button>
+              ) : (
+                <Button onClick={handleFeeApprove} variant="contained">
+                  Approve
+                </Button>
+              )}
 
-const styles = {
-  accordion2: {
-    backgroundColor: "transparent",
-    color: expanded ? "#f4f4f4" : "#6c6c6c",
-    border: "1px solid  #6C6C6C",
-    borderRadius: ".5rem",
-    marginBottom: "1rem",
-  },
-  accordionHeader: {
-    fontWeight: 400,
-    fontsize: "1.125rem",
-    lineHeight: "105.02%",
-  },
-  accordionBody: {
-    backgroundColor: "#151515",
-    display: "flex",
-    flexDirection: "column",
-    gap: 1,
-    maxHeight: "470px",
-    overflowY: "scroll",
-    borderRadius: ".5rem",
-  },
-  detailsBox: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    maxHeight: "470px",
-    overflowY: "scroll",
-    justifyContent: "flex-start",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: "8px",
-  },
-  comments: {
-    width: "100%",
-  },
-  address: {
-    fontWeight: 600,
-    fontSize: ".875rem",
-    color: "#FF9719",
-    textTransform: "none",
-    display: "flex",
-    alignItems: "center",
-  },
-  copyButton: {
-    color: "#6C6C6C",
-    fontSize: ".75rem",
-  },
-  message: {
-    color: "white",
-    fontSize: ".875rem",
-    fontWeight: 400,
-  },
-  textContainer: {
-    width: "80%",
-    pt: 2,
-    pr: 1,
-  },
-  sendButton: {
-    background: "#F78C09",
-    borderRadius: ".375rem",
-    color: "#262626",
-    fontWeight: 600,
-    width: "20%",
-    textTransform: "none",
-  },
+              <Button
+                color="error"
+                variant="contained"
+                onClick={() => setOpenSendDlg(false)}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </AccordionDetails>
+      </Accordion>
+    </Box>
+  );
 };
