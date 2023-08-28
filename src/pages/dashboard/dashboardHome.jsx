@@ -220,7 +220,7 @@ function DashboardHome() {
     regularButton: {
       fontWeight: 400,
       fontSize: "1.5rem",
-      color: "#6C6C6C",
+      color: "#6C6C6C !important",
       textTransform: "none",
       "&:hover": {
         backgroundColor: "transparent",
@@ -546,7 +546,7 @@ function DashboardHome() {
             <NFTlist activeListings={myNFTs} view={view} />
           )}
           {activeMenu === "inbox" && (
-            <Content activeListings={myNFTs} view={view}  />
+            <Content activeListings={myNFTs} view={view} />
           )}
         </Container>
       </Box>
