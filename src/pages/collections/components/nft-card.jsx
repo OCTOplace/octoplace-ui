@@ -7,8 +7,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import brokenImage from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
-import ThetaLogo from '../../../assets/chains/thetaLogo.svg'
-import KavaLogo from '../../../assets/chains/kavaLogo.svg'
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const NFTCard = ({ view, nft }) => {
   const truncate = (text, maxLength) => {
@@ -61,9 +61,13 @@ export const NFTCard = ({ view, nft }) => {
               {/* <Typography sx={styles.network}>{`#${
                 nft.network ? nft.network : "theta"
               }`}</Typography> */}
-              <img style={styles.network}  src={nft.network === "kava"? KavaLogo : ThetaLogo} alt="network" />
+              <img
+                style={styles.network}
+                src={nft.network === "kava" ? KavaLogo : ThetaLogo}
+                alt="network"
+              />
               <Box style={styles.meta}>
-                <Typography>#{Number(nft.tokenId)}</Typography>
+                <Typography>{Number(nft.tokenId)}</Typography>
               </Box>
               {/* <Box style={styles.verified}>
                 <img src={verifiedLogo} alt="verified" />
@@ -142,11 +146,11 @@ const styles = {
     fontWeight: "500",
     fontSize: ".875em",
     letterSpacing: "1px",
-    textWrap: "nowrap"
+    textWrap: "nowrap",
   },
   network: {
-    width: '24px',
-    height: '24px'
+    width: "24px",
+    height: "24px",
   },
   verified: {
     display: "flex",

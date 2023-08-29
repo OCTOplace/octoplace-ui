@@ -291,10 +291,7 @@ const NFTPage = () => {
             </Box>
 
             {activeMenu === "collection" && (
-              <NFTlist
-                address={collection.contractAddress}
-                view={view}
-              />
+              <NFTlist address={collection.contractAddress} view={view} />
             )}
             {activeMenu === "content" && (
               <Content
@@ -336,12 +333,17 @@ const styles = {
     alignItems: "flex-end",
     zIndex: 3,
   },
-  imageContainer: {
+  imageContainer: (theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-end",
     gap: 3,
-  },
+    [theme.breakpoints.down(768)]: {
+      flexDirection: "column",
+      gap: 1,
+      alignItems: "flex-start",
+    },
+  }),
   image: {
     width: "180px",
     height: "180px",
@@ -366,36 +368,49 @@ const styles = {
     fontWeight: 700,
     fontSize: "1rem",
   },
-  column: {
+  column: (theme) => ({
     display: "flex",
     flexDirection: "column",
     gap: 1,
-  },
+    [theme.breakpoints.down(768)]: {
+      marginLeft: "0.5rem",
+      gap: "4px",
+    },
+  }),
   row: {
     display: "flex",
     gap: 0.25,
   },
-  h1: {
+  h1: (theme) => ({
     fontWeight: 600,
     fontSize: "2.25rem",
     lineHeight: "2.5rem",
     color: "#F4F4F4",
-  },
+    [theme.breakpoints.down(768)]: {
+      fontSize: "1.25rem",
+      lineHeight: "1.25rem",
+      paddingTop: "1.25rem",
+    },
+  }),
   h2: {
     fontWeight: 600,
     fontSize: "1.5rem",
     color: "#F4F4F4",
+    lineHeight: "1.5rem",
   },
   h5: {
     fontWeight: 400,
     fontSize: "1.125rem",
     color: "#F4F4F4",
   },
-  h3: {
+  h3: (theme) => ({
     fontWeight: 400,
     fontSize: "1.125rem",
     color: "#6C6C6C",
-  },
+    [theme.breakpoints.down(768)]: {
+      fontSize: "0.875rem",
+    },
+  }),
   icon: {
     color: "#f4f4f4",
     fontSize: "1.625rem",
@@ -405,12 +420,15 @@ const styles = {
     height: "2.1rem",
     width: "2.1rem",
   },
-  statsRow: {
+  statsRow: (theme) => ({
     display: "flex",
     gap: 2,
     ml: "3rem",
     my: 2,
-  },
+    [theme.breakpoints.down(768)]: {
+      ml: "0.5rem",
+    },
+  }),
   statsCol: {
     display: "flex",
     flexDirection: "column",

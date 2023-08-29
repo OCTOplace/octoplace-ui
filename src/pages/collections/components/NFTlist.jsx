@@ -1,6 +1,6 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { Fragment, useEffect, useState, memo } from "react";
-import { styled } from "@mui/material/styles";
+import { styled } from "@mui/system";
 import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -237,7 +237,14 @@ function NFTlist({ address, network, view }) {
               {view !== 1 &&
                 defaultNFTs.map((item, index) => {
                   return (
-                    <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
+                    <Grid
+                      key={`index_${index}`}
+                      item
+                      xs={12}
+                      md={8}
+                      lg={6}
+                      xl={view}
+                    >
                       <NFTCard nft={item} view={view} />
                     </Grid>
                   );
@@ -252,22 +259,20 @@ function NFTlist({ address, network, view }) {
               loader={<h4>Loading...</h4>}
             >
               <Grid container spacing={1}>
-                {view !== 1 &&
-                  nfts &&
-                  nfts.length > 0 &&
-                  nfts.map((item, index) => {
-                    return (
-                      <Grid
-                        key={`index_${index}`}
-                        item
-                        xs={12}
-                        sm={6}
-                        md={view}
-                      >
-                        <NFTCard nft={item} view={view} />
-                      </Grid>
-                    );
-                  })}
+                <CollectionCardContainer>
+                  {view !== 1 &&
+                    nfts &&
+                    nfts.length > 0 &&
+                    nfts.map((item, index) => {
+                      return (
+                        <NFTCard
+                          nft={item}
+                          view={view}
+                          key={`index_${index}`}
+                        />
+                      );
+                    })}
+                </CollectionCardContainer>
               </Grid>
             </InfiniteScroll>
           )}
@@ -289,5 +294,26 @@ function NFTlist({ address, network, view }) {
     </Box>
   );
 }
+
+const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(6, 1fr)",
+  gap: "16px",
+  [theme.breakpoints.down(1420)]: {
+    gridTemplateColumns: "repeat(5, 1fr)",
+  },
+  [theme.breakpoints.down(1200)]: {
+    gridTemplateColumns: "repeat(4, 1fr)",
+  },
+  [theme.breakpoints.down(992)]: {
+    gridTemplateColumns: "repeat(3, 1fr)",
+  },
+  [theme.breakpoints.down(768)]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+  },
+  [theme.breakpoints.down(450)]: {
+    gridTemplateColumns: "repeat(1, 1fr)",
+  },
+}));
 
 export default memo(NFTlist);
