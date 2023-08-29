@@ -20,9 +20,9 @@ function RecentMessages({ messages }) {
         recentMessages.map((message) => (
           <Box key={message._id} sx={styles.messageRow}>
             <Box sx={styles.avatar}>
-              {message.avatarImage && (
+              {message.user && message.user.avatarImage && (
                 <img
-                  src={process.env.REACT_APP_API_URL + message.avatarImage}
+                  src={process.env.REACT_APP_API_URL + message.user.avatarImage}
                   alt="collection-avatar"
                   style={{
                     width: "50px",
@@ -35,7 +35,7 @@ function RecentMessages({ messages }) {
             </Box>
             <Box sx={styles.textCol}>
               <Box sx={styles.name}>
-                {message.title ? message.title : message.senderAddress}
+                {(message.user && message.user.title) || message.senderAddress}
               </Box>
               <Box sx={styles.message}>
                 {message.message.length > 80

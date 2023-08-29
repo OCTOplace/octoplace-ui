@@ -53,22 +53,18 @@ function Market({ isHome }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [filterObj, setFilterObj] = useState(
-    {
-      minPrice: 0,
-      maxPrice: 0,
-      blockchain: "empty",
-      collection: "empty",
-      saleOnly: false,
-      auctionOnly: false,
-      offersReceived: false,
-      includeBurned: false,
-    }
-  );
+  const [filterObj, setFilterObj] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+  });
 
-  useEffect(() => {
-    // console.log(marketItems);
-  }, [marketItems]);
+  useEffect(() => {}, [marketItems]);
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -83,23 +79,38 @@ function Market({ isHome }) {
   };
 
   const filteredMarketItems = marketItems.filter((item) => {
-    if (item.TokenName && !item.TokenName.toLowerCase().includes(keyword.toLowerCase())) {
+    if (
+      item.TokenName &&
+      !item.TokenName.toLowerCase().includes(keyword.toLowerCase())
+    ) {
       return false;
     }
 
-    if (filterObj.minPrice !== 0 && parseInt(item.Price, 10) < filterObj.minPrice) {
+    if (
+      filterObj.minPrice !== 0 &&
+      parseInt(item.Price, 10) < filterObj.minPrice
+    ) {
       return false;
     }
 
-    if (filterObj.maxPrice !== 0 && parseInt(item.Price, 10) > filterObj.maxPrice) {
+    if (
+      filterObj.maxPrice !== 0 &&
+      parseInt(item.Price, 10) > filterObj.maxPrice
+    ) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && item.Network.toLowerCase() !== filterObj.blockchain) {
+    if (
+      filterObj.blockchain !== "empty" &&
+      item.Network.toLowerCase() !== filterObj.blockchain
+    ) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && item.NFTContractAddress !== filterObj.collection) {
+    if (
+      filterObj.collection !== "empty" &&
+      item.NFTContractAddress !== filterObj.collection
+    ) {
       return false;
     }
 
@@ -169,7 +180,14 @@ function Market({ isHome }) {
             />
           </IconButton>
         </Box>
-        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
+        <Box>
+          <Searchbox
+            value={keyword}
+            onChange={handleSearch}
+            className="search-nav"
+            type="text"
+          />
+        </Box>
       </Box>
       <Fragment>
         <Box
@@ -180,26 +198,32 @@ function Market({ isHome }) {
             gap: 2,
           }}
         >
-          {openFilterMenu && <FilterComponent filterPage={"Market"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
+          {openFilterMenu && (
+            <FilterComponent
+              filterPage={"Market"}
+              filterParam={filterObj}
+              handleFilter={(obj) => handleFilter(obj)}
+            />
+          )}
           <Grid container spacing={2}>
-          {view !== 1 &&
-            filteredMarketItems.length > 0 &&
-            filteredMarketItems.map((item, index) => {
-              return (
-                <Grid
-                  key={`index_${index}`}
-                  item
-                  xs={12}
-                  sm={6}
-                  md={view}
-                  sx={{
-                    my: 2,
-                  }}
-                >
-                  <NFTMarketCard marketItem={item} view={view} />
-                </Grid>
-              );
-            })}
+            {view !== 1 &&
+              filteredMarketItems.length > 0 &&
+              filteredMarketItems.map((item, index) => {
+                return (
+                  <Grid
+                    key={`index_${index}`}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={view}
+                    sx={{
+                      my: 2,
+                    }}
+                  >
+                    <NFTMarketCard marketItem={item} view={view} />
+                  </Grid>
+                );
+              })}
           </Grid>
         </Box>
       </Fragment>

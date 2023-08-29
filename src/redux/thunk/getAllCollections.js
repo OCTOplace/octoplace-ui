@@ -8,7 +8,7 @@ export const getAllCollections = createAsyncThunk(
   async (params, thunkAPI) => {
     let items = [];
     const result = await axios.get(`${apiUrl}/collections/categories`);
-    items = result.data.items.map((item) => {
+    items = result.data.categories.map((item) => {
       let slug = slugify(item.name);
       return { ...item, slug };
     });

@@ -247,7 +247,7 @@ function NFTSelectlist({ nftListings, view, onSelect }) {
           {openFilterMenu && (
             <FilterComponent
               filterPage={"Dashboard"}
-              filterObject={filterObj}
+              filterParam={filterObj}
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
