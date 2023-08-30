@@ -26,7 +26,7 @@ function Item(props) {
 
   return (
     <CarouselPaper
-      image={props.item.filename}
+      image={props.item.bannerImage}
       onClick={() => handleImageClick(props.item.url, "_blank")}
     >
       {/* <h2>{props.item.name}</h2>
@@ -81,11 +81,11 @@ function CarouselHome() {
   const downloadBanners = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
-      const response = await fetch(apiUrl + "/banners/lists");
+      const response = await fetch(apiUrl + "/banners/home/lists");
 
       if (response.ok) {
         let bannerInfos = await response.json();
-        bannerInfos = bannerInfos.filter((item) => item.filename);
+        bannerInfos = bannerInfos.filter((item) => item.bannerImage);
         setItems(bannerInfos);
       } else {
         console.error("Failed to get banner file");

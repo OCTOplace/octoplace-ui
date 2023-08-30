@@ -595,10 +595,13 @@ function FilterComponent({
                 <AccordionDetails sx={styles.accordionBody}>
                   {item.value &&
                     item.value.length > 0 &&
+                    item.trait_type !== "Rank" &&
                     item.value.map((value, index) => {
                       return (
                         <Box key={`index_${index}`} sx={styles.checkboxRow}>
-                          <Typography sx={styles.p}>{value.value}</Typography>
+                          <Typography sx={styles.p}>
+                            {value.value === "" ? "None" : value.value}
+                          </Typography>
                           <Box sx={styles.boxRow}>
                             <Typography sx={styles.p}>
                               {value.count || ""}

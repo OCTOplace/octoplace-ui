@@ -8,7 +8,7 @@ import { Container } from "react-bootstrap";
 
 function CarouselCollection() {
   const [items, setItems] = useState([]);
-    
+
   const defaultItems = [
     {
       name: "Banner1",
@@ -30,19 +30,19 @@ function CarouselCollection() {
   const downloadBanners = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
-      const response = await fetch(apiUrl + '/banners/lists');
+      const response = await fetch(apiUrl + "/banners/collection/lists");
 
       if (response.ok) {
         let bannerInfos = await response.json();
-        bannerInfos = bannerInfos.filter((item) => item.filename);
+        bannerInfos = bannerInfos.filter((item) => item.bannerImage);
         setItems(bannerInfos);
       } else {
-        console.error('Failed to get banner file');
-        setItems(defaultItems)
+        console.error("Failed to get banner file");
+        setItems(defaultItems);
       }
     } catch (error) {
-      console.error('Error downloading banner file:', error);
-      setItems(defaultItems)
+      console.error("Error downloading banner file:", error);
+      setItems(defaultItems);
     }
   };
 
@@ -100,19 +100,22 @@ function CarouselCollection() {
   };
 
   function isUrl(str) {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    const pattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // fragment locator
     return pattern.test(str);
   }
 
   const handleImageClick = (url) => {
     if (isUrl(url)) {
-      window.open(url, '_blank');
-    }    
+      window.open(url, "_blank");
+    }
   };
 
   return (
@@ -141,7 +144,7 @@ function CarouselCollection() {
         <Box key={`index_${index}`}>
           <Paper
             style={{
-              backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${item.filename})`,
+              backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${item.bannerImage})`,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -149,7 +152,6 @@ function CarouselCollection() {
               height: "50vh",
               cursor: "grab",
             }}
-            onClick={() => handleImageClick(item.url, '_blank')}
           >
             <Box
               sx={{
@@ -160,15 +162,20 @@ function CarouselCollection() {
               <Container style={styles.overlayContainer}>
                 <Box sx={styles.imageContainer}>
                   <img
-                    src={profileImage}
+                    src={`${process.env.REACT_APP_API_URL}/assets/banners/${item.avatarImage}`}
                     alt="profileImage"
-                    sx={styles.image}
+                    // sx={styles.image}
+                    className="octagon-image"
                     width="180px"
                     height="180px"
                   />
-                  <Typography sx={styles.h1}>{item?.name}</Typography>
+                  <Typography sx={styles.h1}>{item?.title}</Typography>
                 </Box>
-                <Button sx={styles.whiteButton} variant="contained">
+                <Button
+                  sx={styles.whiteButton}
+                  variant="contained"
+                  onClick={() => handleImageClick(item.url, "_blank")}
+                >
                   View Collection
                 </Button>
               </Container>
