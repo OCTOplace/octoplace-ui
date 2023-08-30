@@ -9,15 +9,15 @@ import { Grid, Box, useMediaQuery, Fab } from "@mui/material";
 import { CollectionCard } from "../collections/components/collection-card";
 import { useDispatch, useSelector } from "react-redux";
 import { getPopularCollections } from "../../redux/thunk/get-analytics";
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
 import { FreeMode, Navigation, Autoplay, EffectFlip } from "swiper";
 
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
-import 'swiper/modules/pagination/pagination.min.css';
-import 'swiper/modules/scrollbar/scrollbar.min.css';
-import 'swiper/modules/grid/grid.min.css';
-import 'swiper/modules/autoplay/autoplay.min.css'
+import "swiper/swiper.min.css";
+import "swiper/modules/navigation/navigation.min.css";
+import "swiper/modules/pagination/pagination.min.css";
+import "swiper/modules/scrollbar/scrollbar.min.css";
+import "swiper/modules/grid/grid.min.css";
+import "swiper/modules/autoplay/autoplay.min.css";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 
 export function PopularCollections({ title }) {
@@ -100,33 +100,33 @@ export function PopularCollections({ title }) {
         </Box>
       </Container>
       <Container
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 10,
-            minHeight: "320px",
-            position: "relative"
-          }}
-        >
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 10,
+          minHeight: "320px",
+          position: "relative",
+        }}
+      >
         <Swiper
           spaceBetween={16}
           slidesPerView={1}
           breakpoints={{
             370: {
-              slidesPerView: 2
+              slidesPerView: 2,
             },
             768: {
-              slidesPerView: 3
+              slidesPerView: 3,
             },
             1024: {
-              slidesPerView: 4
+              slidesPerView: 4,
             },
             1280: {
-              slidesPerView: 5
+              slidesPerView: 5,
             },
             1536: {
-              slidesPerView: 6
-            }
+              slidesPerView: 6,
+            },
           }}
           autoplay={{
             delay: 4000,
@@ -134,30 +134,27 @@ export function PopularCollections({ title }) {
           }}
           freeMode={true}
           navigation={{
-              prevEl: '.prevBtn',
-              nextEl: '.nextBtn'
+            prevEl: ".prevBtn",
+            nextEl: ".nextBtn",
           }}
-          modules={[ FreeMode, Navigation, Autoplay, EffectFlip ]}
+          modules={[FreeMode, Navigation, Autoplay, EffectFlip]}
         >
-            {popularCollections
-              .map((item, i) => {
-                return (
-                  <SwiperSlide key={`index_${i}`}>
-                    {/* <Grid  item xs={12} sm={6} md={4} lg={2}> */}
-                      <CollectionCard collectionItem={item} view={3} />
-                    {/* </Grid> */}
-                  </SwiperSlide>
-                );
-              })}
+          {popularCollections.map((item, i) => {
+            return (
+              <SwiperSlide key={`index_${i}`}>
+                <CollectionCard collectionItem={item} isSwiper={true} />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         <div className="nextIcon nextBtn">
           <Fab aria-label="next" color="default" size="small">
-              <NavigateNext />
+            <NavigateNext />
           </Fab>
         </div>
         <div className="prevIcon prevBtn">
           <Fab aria-label="prev" color="default" size="small">
-              <NavigateBefore />
+            <NavigateBefore />
           </Fab>
         </div>
       </Container>

@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
-import ThetaLogo from '../../../assets/chains/thetaLogo.svg'
-import KavaLogo from '../../../assets/chains/kavaLogo.svg'
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const NFTListingCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
@@ -50,20 +50,23 @@ export const NFTListingCard = (props) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
-      textWrap: "nowrap"
+      textWrap: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
     },
     network: {
-      width: '24px',
-      height: '24px'
+      width: "24px",
+      height: "24px",
     },
   };
 
-  const truncate = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
-  };
+  // const truncate = (text, maxLength) => {
+  //   if (text.length > maxLength) {
+  //     return text.substring(0, maxLength) + "...";
+  //   }
+  //   return text;
+  // };
 
   useEffect(() => {
     if (props.listingItem && props.listingItem.listingNFT.metadata) {
@@ -106,19 +109,24 @@ export const NFTListingCard = (props) => {
             <Box sx={styles.content}>
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {truncate(
-                    props.listingItem.listingNFT.metadata
-                      ? props.listingItem.listingNFT.metadata.name
-                      : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`,
-                    10
-                  )}
+                  {props.listingItem.listingNFT.metadata
+                    ? props.listingItem.listingNFT.metadata.name
+                    : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
               {/* <Typography
                 sx={styles.network}
               >{`#${props.listingItem.listingNFT.network}`}</Typography> */}
-              <img style={styles.network}  src={props.listingItem.listingNFT.network === "kava"? KavaLogo : ThetaLogo} alt="network" />
+              <img
+                style={styles.network}
+                src={
+                  props.listingItem.listingNFT.network === "kava"
+                    ? KavaLogo
+                    : ThetaLogo
+                }
+                alt="network"
+              />
               <Box style={styles.meta}>
                 <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
               </Box>

@@ -56,7 +56,7 @@ function App() {
   const loggedAddress = useSelector((state) => state.account.address);
   const myNftOwner = useSelector((state) => state.myNFT.nftOwner);
   const txDialogState = useSelector((state) => state.app.txDialog);
-  
+
   const getBalance = async () => {
     const bal = await library.getBalance(account);
     dispatch(setBalance(getFormattedEther(bal)));

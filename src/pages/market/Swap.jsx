@@ -269,34 +269,33 @@ function Swap({ isHome }) {
           {openFilterMenu && (
             <FilterComponent
               filterPage={"Swap"}
-              filterParam={filterObj}
+              filterObject={filterObj}
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
-          <Grid container spacing={2}>
+          <CollectionCardContainer>
             {view !== 1 &&
               filteredSwapItems.length > 0 &&
               filteredSwapItems.map((item, index) => {
                 return (
-                  <Grid
+                  <NFTListingCard
+                    listingItem={item}
+                    view={view}
                     key={`index_${index}`}
-                    item
-                    xs={12}
-                    sm={6}
-                    md={view}
-                    sx={{
-                      my: 2,
-                    }}
-                  >
-                    <NFTListingCard listingItem={item} view={view} />
-                  </Grid>
+                  />
                 );
               })}
-          </Grid>
+          </CollectionCardContainer>
         </Box>
       </Fragment>
     </Container>
   );
 }
+
+const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+  gap: "16px",
+}));
 
 export default Swap;
