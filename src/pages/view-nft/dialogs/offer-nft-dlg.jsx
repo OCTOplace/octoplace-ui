@@ -355,7 +355,7 @@ export const OfferNFTDialog = (props) => {
             {openFilterMenu && (
               <FilterComponent
                 filterPage={"Market"}
-                filterObject={filterObj}
+                filterParam={filterObj}
                 handleFilter={(obj) => handleFilter(obj)}
               />
             )}

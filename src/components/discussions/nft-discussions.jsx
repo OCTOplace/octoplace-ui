@@ -40,7 +40,7 @@ import { setNFTDiscussions } from "../../redux/slices/discussions-slice";
 import {
   createNFTDiscussion,
   getNftDiscussions,
-} from "../../redux/thunk/get-nft-discussions";
+} from "../../redux/thunk/get-discussions";
 export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const [expanded, setExpanded] = useState(false);
   const styles = {
@@ -136,7 +136,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
   const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
-  const messages = useSelector(
+  const discussions = useSelector(
     (state) => state.discussion.selectedNFTDiscussions
   );
 
@@ -150,6 +150,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       dispatch(setNFTDiscussions([]));
     };
   }, []);
+
   const getFeeToken = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
@@ -177,13 +178,13 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     getAllowance();
   };
 
-  const getAllMessages = async () => {
+  const getDiscussions = async () => {
     dispatch(getNftDiscussions({ address, tokenId, network }));
   };
 
   useEffect(() => {
     if (address && tokenId) {
-      getAllMessages();
+      getDiscussions();
     }
   }, [address, tokenId]);
 
@@ -217,6 +218,8 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       setExpanded(true);
     }
   }, [account]);
+
+  useEffect(() => {}, [discussions]);
 
   const handleFeeApprove = async () => {
     const netInfo = getNetworkInfo("theta");
@@ -255,6 +258,10 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   };
 
   const handleSendMessage = async () => {
+    if (!message) {
+      return;
+    }
+
     const netInfo = getNetworkInfo("theta");
     dispatch(showTxDialog());
     try {
@@ -300,6 +307,19 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
     }
+
+    // For test without auth
+    // dispatch(
+    //   createNFTDiscussion({
+    //     address,
+    //     tokenId,
+    //     network,
+    //     sender: account,
+    //     message,
+    //   })
+    // );
+    // toast.success("Comment Posted Successfuly!");
+    // setMessage("");
   };
 
   return (
@@ -325,14 +345,14 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       )}
       <AccordionDetails sx={styles.accordionBody}>
         <Box sx={styles.detailsBox}>
-          {messages.map((item) => {
+          {discussions.map((item) => {
             return (
-              <Box key={item.Id} sx={styles.comments}>
+              <Box key={item._id} sx={styles.comments}>
                 <Typography sx={styles.address}>
-                  {shortenAddress(item.SenderAddress)}
+                  {shortenAddress(item.senderAddress)}
                   <IconButton
                     onClick={() => {
-                      copy(item.SenderAddress);
+                      copy(item.senderAddress);
                       toast.success("Address copied!");
                     }}
                     sx={styles.copyButton}
@@ -341,7 +361,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
                   </IconButton>
                 </Typography>
                 <Typography sx={styles.message} variant="body1">
-                  {item.Message}
+                  {item.message}
                 </Typography>
               </Box>
             );
@@ -368,7 +388,9 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
           <Button
             fullWidth
             variant="contained"
-            onClick={() => setOpenSendDlg(true)}
+            onClick={() => {
+              if (message) setOpenSendDlg(true);
+            }}
             sx={styles.sendButton}
           >
             Send

@@ -26,6 +26,8 @@ export const Home = () => {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [activeTab, setActiveTab] = useState("Market");
 
+  const collections = useSelector((state) => state.listings.collections);
+// console.log("////////////////////// collections", collections)
   useEffect(() => {
     if (listings.length > 0) {
       const active = getActiveListings(listings);

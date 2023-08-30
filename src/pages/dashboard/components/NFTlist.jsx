@@ -177,7 +177,7 @@ function NFTlist({ activeListings, view }) {
           {openFilterMenu && (
             <FilterComponent
               filterPage={"Dashboard"}
-              filterObject={filterObj}
+              filterParam={filterObj}
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}

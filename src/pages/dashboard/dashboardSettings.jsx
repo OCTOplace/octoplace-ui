@@ -16,7 +16,6 @@ import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import {
   registerOrFetchUserSetting,
-  fetchUserTopNFTs,
   updateUserSetting,
 } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
@@ -25,20 +24,19 @@ import PickDialog from "./components/pickDialog";
 function DashboardSettings() {
   const { account, chainId } = useWeb3React();
   const [userSetting, setUserSetting] = useState({});
-  const [topNFTs, setTopNFTs] = useState({});
 
-  const [title, setTitle] = useState(null);
-  const [about, setAbout] = useState(null);
-  const [telegram, setTelegram] = useState(null);
-  const [twitter, setTwitter] = useState(null);
-  const [discord, setDiscord] = useState(null);
-  const [youtube, setYT] = useState(null);
-  const [tiktok, setTiktok] = useState(null);
-  const [medium, setMedium] = useState(null);
-  const [insta, setInsta] = useState(null);
-  const [facebook, setFacebook] = useState(null);
-  const [bannerSrc, setBannerSrc] = useState(null);
-  const [avatarSrc, setAvatarSrc] = useState(null);
+  const [title, setTitle] = useState("");
+  const [about, setAbout] = useState("");
+  const [telegram, setTelegram] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [discord, setDiscord] = useState("");
+  const [youtube, setYT] = useState("");
+  const [tiktok, setTiktok] = useState("");
+  const [medium, setMedium] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [bannerSrc, setBannerSrc] = useState("");
+  const [avatarSrc, setAvatarSrc] = useState("");
   const [isAvatarUpdated, avatarUpdated] = useState(false);
   const [isBannerUpdated, bannerUpdated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -224,23 +222,17 @@ function DashboardSettings() {
         const fetchedData = await registerOrFetchUserSetting(account, "theta");
         setUserSetting(fetchedData);
 
-        const topNFTs = await fetchUserTopNFTs(account);
-        setTopNFTs(topNFTs);
-
-        // const fetchedData = await fetchOne(network, collectionAddress);
-        //
-
         if (fetchedData !== undefined && fetchedData !== {}) {
-          setTitle(fetchedData.title);
-          setAbout(fetchedData.description);
-          setTelegram(fetchedData.telegram);
-          setTwitter(fetchedData.twitter);
-          setDiscord(fetchedData.discord);
-          setInsta(fetchedData.instagram);
-          setFacebook(fetchedData.facebook);
-          setYT(fetchedData.youtube);
-          setMedium(fetchedData.medium);
-          setTiktok(fetchedData.tikTok);
+          setTitle(fetchedData.title || "");
+          setAbout(fetchedData.description || "");
+          setTelegram(fetchedData.telegram || "");
+          setTwitter(fetchedData.twitter || "");
+          setDiscord(fetchedData.discord || "");
+          setInstagram(fetchedData.instagram || "");
+          setFacebook(fetchedData.facebook || "");
+          setYT(fetchedData.youtube || "");
+          setMedium(fetchedData.medium || "");
+          setTiktok(fetchedData.tikTok || "");
         }
 
         setLoading(false);
@@ -314,7 +306,7 @@ function DashboardSettings() {
       description: about,
       facebook: facebook,
       twitter: twitter,
-      instagram: insta,
+      instagram: instagram,
       discord: discord,
       tikTok: tiktok,
       youtube: youtube,
@@ -346,8 +338,8 @@ function DashboardSettings() {
 
   const onClosePickDialog = async () => {
     try {
-      const topNFTs = await fetchUserTopNFTs(account);
-      setTopNFTs(topNFTs);
+      const fetchedData = await registerOrFetchUserSetting(account, "theta");
+      setUserSetting(fetchedData);
     } catch (error) {
       // Handle error here, e.g. show an error message
       console.log("Error loading data:", error);
@@ -501,7 +493,12 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={topNFTs.bannerImage1 ? topNFTs.bannerImage1 : bgImage}
+                  src={
+                    (userSetting &&
+                      userSetting.nft1 &&
+                      userSetting.nft1.bannerImage) ||
+                    bgImage
+                  }
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -526,7 +523,12 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={topNFTs.bannerImage2 ? topNFTs.bannerImage2 : bgImage}
+                  src={
+                    (userSetting &&
+                      userSetting.nft2 &&
+                      userSetting.nft2.bannerImage) ||
+                    bgImage
+                  }
                   alt="bg-image"
                   style={{
                     width: "150px",
@@ -551,7 +553,12 @@ function DashboardSettings() {
                 style={styles.container}
               >
                 <img
-                  src={topNFTs.bannerImage3 ? topNFTs.bannerImage3 : bgImage}
+                  src={
+                    (userSetting &&
+                      userSetting.nft3 &&
+                      userSetting.nft3.bannerImage) ||
+                    bgImage
+                  }
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -707,8 +714,8 @@ function DashboardSettings() {
                     WebkitTextFillColor: "#6c6c6c",
                   },
                 }}
-                value={insta}
-                onChange={(e) => setInsta(e.target.value)}
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
                 InputProps={{
                   style: {
                     backgroundColor: "#151515",

@@ -1,4 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../utils/format-listings";
 import { setActiveListings } from "../../redux/slices/listing-slice";
@@ -13,10 +14,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import BuildIcon from "@mui/icons-material/Build";
-import {
-  fetchUserSetting,
-  fetchUserTopNFTs,
-} from "../../redux/thunk/user-setting";
+import { fetchUserSetting } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import ppImage from "../../assets/pp.png";
 import NFTlist from "./components/NFTlist";
@@ -27,10 +25,11 @@ import { Link } from "react-router-dom";
 
 function DashboardHome() {
   const dispatch = useDispatch();
+  const acctDetails = useSelector((state) => state.account);
+  const [balance, setBalance] = useState(null);
   const listings = useSelector((state) => state.listings.allListings);
   const activeListings = useSelector((state) => state.listings.activeListings);
   const myNFTs = useSelector((state) => state.myNFT.nfts);
-  const [topNFTs, setTopNFTs] = useState({});
   const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
   const [isOwner, setIsOwner] = useState(false);
@@ -38,59 +37,6 @@ function DashboardHome() {
   const { account, chainId } = useWeb3React();
   const [userSetting, setUserSetting] = useState({});
   const [loading, setLoading] = useState(true);
-
-  const metadata = {
-    name: "E.R.V Gandalf #54",
-    description: "E.R.V Gandalf 2930 Unique NFT Collection.",
-    image:
-      "https://ipfs.io/ipfs/bafybeieo45rmgccoldjv6mq426zb5xnpqmvoifp2z4xfzwmq2hkffnmpje/54.png",
-    dna: "88553cc70d9f4eaea8e3d7380fe3e160458a1458",
-    edition: 54,
-    date: 1656787121637,
-    attributes: [
-      {
-        trait_type: "Background",
-        value: "Blue Lightning ",
-      },
-      {
-        trait_type: "Base",
-        value: "Base ",
-      },
-      {
-        trait_type: "Robe",
-        value: "Robe 2 Purple ",
-      },
-      {
-        trait_type: "Familiar",
-        value: "Lizard Bright Green ",
-      },
-      {
-        trait_type: "Beard",
-        value: "Red Wide Beard ",
-      },
-      {
-        trait_type: "Eyebrows",
-        value: "White Eyebrows ",
-      },
-      {
-        trait_type: "Eyes",
-        value: "Normal Eyes ",
-      },
-      {
-        trait_type: "Hat",
-        value: "Black ",
-      },
-      {
-        trait_type: "Staff",
-        value: "Crystal Purple ",
-      },
-      {
-        trait_type: "Mouth",
-        value: "Normal ",
-      },
-    ],
-    compiler: "HashLips Art Engine",
-  };
 
   const styles = {
     container: {},
@@ -107,12 +53,16 @@ function DashboardHome() {
       alignItems: "flex-end",
       zIndex: 3,
     },
-    imageContainer: {
+    imageContainer: (theme) => ({
       display: "flex",
       justifyContent: "center",
       alignItems: "flex-end",
       gap: 3,
-    },
+      [theme.breakpoints.down(1240)]: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+      },
+    }),
     image: {
       width: "160px",
       height: "160px",
@@ -166,6 +116,9 @@ function DashboardHome() {
       fontWeight: 400,
       fontSize: "1.125rem",
       color: "#6C6C6C",
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
     },
     icon: {
       color: "#f4f4f4",
@@ -175,7 +128,6 @@ function DashboardHome() {
     statsRow: {
       display: "flex",
       gap: 2,
-      ml: "3rem",
       my: 2,
     },
     statsCol: {
@@ -233,12 +185,15 @@ function DashboardHome() {
       alignItems: "flex-end",
       gap: 1,
     },
-    rightRow: {
+    rightRow: (theme) => ({
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       gap: 1,
-    },
+      [theme.breakpoints.down(992)]: {
+        display: "none",
+      },
+    }),
     orangeText: {
       color: "#F78C09",
       fontSize: "1.5rem",
@@ -250,15 +205,25 @@ function DashboardHome() {
     },
   };
 
+  // Convert 1 TFUEL to USD using the CoinGecko API
+  const setTFUELtoUSD = async (tfuelAmount) => {
+    try {
+      const response = await axios.get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=theta-fuel&vs_currencies=usd"
+      );
+      const exchangeRate = response.data["theta-fuel"].usd;
+      const usdAmount = tfuelAmount * exchangeRate;
+      setBalance(usdAmount.toFixed(2));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const fetchedData = await fetchUserSetting(account);
         setUserSetting(fetchedData);
-
-        const topNFTs = await fetchUserTopNFTs(account);
-        setTopNFTs(topNFTs);
-
         setLoading(false);
       } catch (error) {
         // Handle error here, e.g. show an error message
@@ -268,6 +233,9 @@ function DashboardHome() {
     };
 
     loadData();
+
+    // Calc balance
+    setTFUELtoUSD(acctDetails.balance);
 
     // if (myNFTs.length > 0) {
     //   setMyNFTListings(transformData(myNFTs));
@@ -297,6 +265,14 @@ function DashboardHome() {
       return item;
     });
   }
+
+  const getAccountString = (_hash) => {
+    const hash = String(_hash);
+    const first = hash.substring(0, 3);
+    const len = hash.length;
+    const last = hash.substring(len - 4, len);
+    return `${first}...${last}`;
+  };
 
   return (
     <Box>
@@ -336,10 +312,10 @@ function DashboardHome() {
               <Box sx={styles.column}>
                 <Typography sx={styles.h1}>{userSetting.title}</Typography>
                 <Typography sx={styles.h3}>
-                  0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b
+                  {getAccountString(acctDetails.address)}
                   <IconButton
                     onClick={() => {
-                      copy(0xa366c1e80642abcaa190ed4fd7c9ba642228053b);
+                      copy(acctDetails.address);
                       toast.success("Address copied!");
                     }}
                     sx={styles.copyButton}
@@ -352,7 +328,12 @@ function DashboardHome() {
             <Box sx={styles.rightColumn}>
               <Box sx={styles.rightRow}>
                 <img
-                  src={topNFTs.bannerImage1 ? topNFTs.bannerImage1 : bgImage}
+                  src={
+                    (userSetting &&
+                      userSetting.nft1 &&
+                      userSetting.nft1.bannerImage) ||
+                    bgImage
+                  }
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -363,7 +344,12 @@ function DashboardHome() {
                   }}
                 />
                 <img
-                  src={topNFTs.bannerImage2 ? topNFTs.bannerImage2 : bgImage}
+                  src={
+                    (userSetting &&
+                      userSetting.nft2 &&
+                      userSetting.nft2.bannerImage) ||
+                    bgImage
+                  }
                   alt="bg-image"
                   style={{
                     width: "150px",
@@ -374,7 +360,12 @@ function DashboardHome() {
                   }}
                 />
                 <img
-                  src={topNFTs.bannerImage3 ? topNFTs.bannerImage3 : bgImage}
+                  src={
+                    (userSetting &&
+                      userSetting.nft3 &&
+                      userSetting.nft3.bannerImage) ||
+                    bgImage
+                  }
                   alt="bg-image"
                   style={{
                     width: "120px",
@@ -387,7 +378,7 @@ function DashboardHome() {
               </Box>
               <Box sx={styles.row}>
                 {userSetting.facebook && (
-                  <a href={userSetting.facebook}>
+                  <a href={userSetting.facebook} target="_blank">
                     <IconButton>
                       <FacebookRounded sx={styles.icon} />
                     </IconButton>
@@ -395,7 +386,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.telegram && (
-                  <a href={userSetting.telegram}>
+                  <a href={userSetting.telegram} target="_blank">
                     <IconButton>
                       <TelegramIcon sx={styles.icon} />
                     </IconButton>
@@ -403,7 +394,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.twitter && (
-                  <a href={userSetting.twitter}>
+                  <a href={userSetting.twitter} target="_blank">
                     <IconButton>
                       <TwitterIcon sx={styles.icon} />
                     </IconButton>
@@ -411,7 +402,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.instagram && (
-                  <a href={userSetting.instagram}>
+                  <a href={userSetting.instagram} target="_blank">
                     <IconButton>
                       <FaInstagram style={styles.icon} />
                     </IconButton>
@@ -427,7 +418,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.tikTok && (
-                  <a href={userSetting.tikTok}>
+                  <a href={userSetting.tikTok} target="_blank">
                     <IconButton>
                       <FaTiktok style={styles.icon} />
                     </IconButton>
@@ -435,7 +426,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.youtube && (
-                  <a href={userSetting.youtube}>
+                  <a href={userSetting.youtube} target="_blank">
                     <IconButton>
                       <YouTubeIcon sx={styles.icon} />
                     </IconButton>
@@ -443,7 +434,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.medium && (
-                  <a href={userSetting.medium}>
+                  <a href={userSetting.medium} target="_blank">
                     <IconButton>
                       <BsMedium style={styles.icon} />
                     </IconButton>
@@ -461,13 +452,15 @@ function DashboardHome() {
           >
             <Box sx={styles.statsRow}>
               <Box sx={styles.statsCol}>
-                <Typography sx={styles.h2}>$7,183</Typography>
+                <Typography sx={styles.h2}>
+                  {balance ? `$${balance}` : "Loading..."}
+                </Typography>
                 <Typography sx={styles.h3}>Balance</Typography>
               </Box>
-              <Box sx={styles.statsCol}>
+              {/* <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>11</Typography>
                 <Typography sx={styles.h3}>Currencies</Typography>
-              </Box>
+              </Box> */}
               <Box sx={styles.statsCol}>
                 <Typography sx={styles.h2}>
                   {myNFTs && myNFTs.length > 0 ? myNFTs.length : "0"}

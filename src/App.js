@@ -56,6 +56,7 @@ function App() {
   const loggedAddress = useSelector((state) => state.account.address);
   const myNftOwner = useSelector((state) => state.myNFT.nftOwner);
   const txDialogState = useSelector((state) => state.app.txDialog);
+
   const getBalance = async () => {
     const bal = await library.getBalance(account);
     dispatch(setBalance(getFormattedEther(bal)));
@@ -111,7 +112,7 @@ function App() {
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());
     dispatch(getAllMarketItems());
-    dispatch(getAllCollections({ page: 1, limit: 5000 }));
+    dispatch(getAllCollections());
     getTxCharge();
     try {
       activateInjectedProvider("MetaMask");
