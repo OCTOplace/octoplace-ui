@@ -53,12 +53,16 @@ function DashboardHome() {
       alignItems: "flex-end",
       zIndex: 3,
     },
-    imageContainer: {
+    imageContainer: (theme) => ({
       display: "flex",
       justifyContent: "center",
       alignItems: "flex-end",
       gap: 3,
-    },
+      [theme.breakpoints.down(1240)]: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+      },
+    }),
     image: {
       width: "160px",
       height: "160px",
@@ -112,6 +116,9 @@ function DashboardHome() {
       fontWeight: 400,
       fontSize: "1.125rem",
       color: "#6C6C6C",
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
     },
     icon: {
       color: "#f4f4f4",
@@ -121,7 +128,6 @@ function DashboardHome() {
     statsRow: {
       display: "flex",
       gap: 2,
-      ml: "3rem",
       my: 2,
     },
     statsCol: {
@@ -179,12 +185,15 @@ function DashboardHome() {
       alignItems: "flex-end",
       gap: 1,
     },
-    rightRow: {
+    rightRow: (theme) => ({
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       gap: 1,
-    },
+      [theme.breakpoints.down(992)]: {
+        display: "none",
+      },
+    }),
     orangeText: {
       color: "#F78C09",
       fontSize: "1.5rem",
@@ -257,6 +266,14 @@ function DashboardHome() {
     });
   }
 
+  const getAccountString = (_hash) => {
+    const hash = String(_hash);
+    const first = hash.substring(0, 3);
+    const len = hash.length;
+    const last = hash.substring(len - 4, len);
+    return `${first}...${last}`;
+  };
+
   return (
     <Box>
       <img
@@ -295,10 +312,10 @@ function DashboardHome() {
               <Box sx={styles.column}>
                 <Typography sx={styles.h1}>{userSetting.title}</Typography>
                 <Typography sx={styles.h3}>
-                  0xA366C1E80642Abcaa190Ed4Fd7C9bA642228053b
+                  {getAccountString(acctDetails.address)}
                   <IconButton
                     onClick={() => {
-                      copy(0xa366c1e80642abcaa190ed4fd7c9ba642228053b);
+                      copy(acctDetails.address);
                       toast.success("Address copied!");
                     }}
                     sx={styles.copyButton}
@@ -361,7 +378,7 @@ function DashboardHome() {
               </Box>
               <Box sx={styles.row}>
                 {userSetting.facebook && (
-                  <a href={userSetting.facebook}>
+                  <a href={userSetting.facebook} target="_blank">
                     <IconButton>
                       <FacebookRounded sx={styles.icon} />
                     </IconButton>
@@ -369,7 +386,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.telegram && (
-                  <a href={userSetting.telegram}>
+                  <a href={userSetting.telegram} target="_blank">
                     <IconButton>
                       <TelegramIcon sx={styles.icon} />
                     </IconButton>
@@ -377,7 +394,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.twitter && (
-                  <a href={userSetting.twitter}>
+                  <a href={userSetting.twitter} target="_blank">
                     <IconButton>
                       <TwitterIcon sx={styles.icon} />
                     </IconButton>
@@ -385,7 +402,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.instagram && (
-                  <a href={userSetting.instagram}>
+                  <a href={userSetting.instagram} target="_blank">
                     <IconButton>
                       <FaInstagram style={styles.icon} />
                     </IconButton>
@@ -401,7 +418,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.tikTok && (
-                  <a href={userSetting.tikTok}>
+                  <a href={userSetting.tikTok} target="_blank">
                     <IconButton>
                       <FaTiktok style={styles.icon} />
                     </IconButton>
@@ -409,7 +426,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.youtube && (
-                  <a href={userSetting.youtube}>
+                  <a href={userSetting.youtube} target="_blank">
                     <IconButton>
                       <YouTubeIcon sx={styles.icon} />
                     </IconButton>
@@ -417,7 +434,7 @@ function DashboardHome() {
                 )}
 
                 {userSetting.medium && (
-                  <a href={userSetting.medium}>
+                  <a href={userSetting.medium} target="_blank">
                     <IconButton>
                       <BsMedium style={styles.icon} />
                     </IconButton>

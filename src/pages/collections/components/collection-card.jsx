@@ -7,11 +7,11 @@ import broken from "./../../../assets/broken.png";
 
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
-import ThetaLogo from '../../../assets/chains/thetaLogo.svg'
-import KavaLogo from '../../../assets/chains/kavaLogo.svg'
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const CollectionCard = (props) => {
-  const { collectionItem, view } = props;
+  const { collectionItem, isSwiper } = props;
   const boxRef = useRef(null);
   const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
   const [titleLength, setTitleLength] = useState(0);
@@ -52,11 +52,14 @@ export const CollectionCard = (props) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
-      textWrap: 'nowrap'
+      textWrap: "nowrap",
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
     },
     network: {
-      width: '24px',
-      height: '24px'
+      width: "24px",
+      height: "24px",
     },
   };
 
@@ -76,19 +79,6 @@ export const CollectionCard = (props) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const truncate = (text, maxLength) => {
-    let realLength = titleLength;
-    if (realLength === 0) {
-      realLength = boxRef.current
-        ? Math.floor(boxRef.current.offsetWidth / 15)
-        : 15;
-    }
-    if (text.length > realLength) {
-      return text.substring(0, realLength) + "...";
-    }
-    return text;
-  };
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -128,14 +118,18 @@ export const CollectionCard = (props) => {
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
-                    {truncate(collectionItem.name, 15)}
+                    {collectionItem.name}
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
                 {/* <Typography
                   sx={styles.network}
                 >{`#${collectionItem.network}`}</Typography> */}
-                <img style={styles.network}  src={collectionItem.network === "kava"? KavaLogo : ThetaLogo} alt="network" />
+                <img
+                  style={styles.network}
+                  src={collectionItem.network === "kava" ? KavaLogo : ThetaLogo}
+                  alt="network"
+                />
               </Box>
             </Box>
           </Link>
