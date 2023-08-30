@@ -1,10 +1,16 @@
 import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import React from "react";
-import logo from "../assets/Logo-beta.png";
-import { styled } from "@mui/material/styles";
-import { Button, IconButton, Menu, MenuItem, ButtonProps } from "@mui/material";
+import LogoBeta from "../assets/Logo-beta.png";
+import Logo from "../assets/logo.png";
+import { styled } from "@mui/system";
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  ButtonProps,
+  Box,
+} from "@mui/material";
 import { useNavigate, useRoutes } from "react-router-dom";
 import { ConnectWalletDlg } from "./connnect-wallet-dlg";
 import { useState } from "react";
@@ -15,8 +21,12 @@ import { useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
+import CollectionsIcon from "@mui/icons-material/Collections";
+import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
 import faucetImg from "../assets/faucet.png";
-// import Searchbox from "./searchbox";
+// import Searchbox from "./searchbox"
 
 const WalletButton = styled(Button)({
   boxShadow: "none",
@@ -44,8 +54,10 @@ export const AppNavbar = () => {
 
   useEffect(() => {}, [acctDetails]);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl1, setAnchorEl1] = useState(null);
   const openMenu = Boolean(anchorEl);
+  const isOpen = Boolean(anchorEl1);
 
   const handleBtnClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,8 +67,16 @@ export const AppNavbar = () => {
     setAnchorEl(null);
   };
 
+  const handleMenuClose1 = () => {
+    setAnchorEl1(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl1(event.currentTarget);
+  };
+
   return (
-    <Navbar collapseOnSelect expand="lg" sticky="top" variant="dark">
+    <NavBarContainer>
       <Container
         style={{
           display: "flex",
@@ -64,32 +84,55 @@ export const AppNavbar = () => {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Navbar.Brand onClick={() => navigate("/")}>
-            <img src={logo} alt="logo icon" height="66px" />
-          </Navbar.Brand>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <Img alt="logo icon" onClick={() => navigate("/")} />
           {/* <IconButton onClick={() => navigate("/faucet")}>
             <img src={faucetImg} alt="faucet" />
           </IconButton> */}
+          <MobileNavBarItemContainer>
+            <IconButton aria-label="delete" size="large" onClick={handleClick}>
+              <MenuIcon fontSize="inherit" sx={{ color: "#FFFFFF" }} />
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl1}
+              open={isOpen}
+              onClose={handleMenuClose1}
+              sx={{ marginTop: "8px" }}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  navigate("/market");
+                  handleMenuClose1();
+                }}
+              >
+                <LocalGroceryStoreIcon /> &nbsp;Market
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/collections");
+                  handleMenuClose1();
+                }}
+              >
+                <CollectionsIcon /> &nbsp;Collections
+              </MenuItem>
+              <MenuItem sx={{ color: "#808080" }}>
+                <ForwardToInboxIcon /> &nbsp;Inbox
+              </MenuItem>
+            </Menu>
+          </MobileNavBarItemContainer>
         </div>
-
-        <div
-          style={{ display: "flex", justifyContent: "", alignItems: "center" }}
-        >
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            {/* <Nav className="me-auto">
-              <Searchbox className="search-nav" type="text" />
-            </Nav> */}
-            <span style={{ flex: "1 auto" }}></span>
-            <Nav>
-              <Nav.Link onClick={() => navigate("/market")}>Market</Nav.Link>
-              <Nav.Link onClick={() => navigate("/collections")}>
-                Collections
-              </Nav.Link>
-              <Nav.Link disabled>Inbox</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
+        <div style={{ display: "flex", alignItems: "center", gap: "56px" }}>
+          <NavBarItemContainer>
+            <NavItem onClick={() => navigate("/market")}>Market</NavItem>
+            <NavItem onClick={() => navigate("/collections")}>
+              Collections
+            </NavItem>
+            <NavItem disabled={true}>Inbox</NavItem>
+          </NavBarItemContainer>
           {acctDetails && !acctDetails.isLoggedIn && (
             <WalletButton
               className="connect-btn"
@@ -117,6 +160,7 @@ export const AppNavbar = () => {
         anchorEl={anchorEl}
         open={openMenu}
         onClose={handleMenuClose}
+        sx={{ marginTop: "8px" }}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
@@ -146,7 +190,7 @@ export const AppNavbar = () => {
           <LogoutIcon /> &nbsp;Logout
         </MenuItem>
       </Menu>
-    </Navbar>
+    </NavBarContainer>
   );
 };
 
@@ -156,3 +200,79 @@ const getAccountString = (hash) => {
   const last = hash.substring(len - 4, len);
   return `${first}...${last}`;
 };
+
+const Img = styled("img")(({ theme }) => ({
+  content: `url(${LogoBeta})`,
+  height: "66px",
+  cursor: "pointer",
+  [theme.breakpoints.down(768)]: {
+    content: `url(${Logo})`,
+    height: "40px",
+  },
+}));
+
+const NavBarContainer = styled(Box)(({ theme }) => ({
+  width: "100%",
+  height: "92px",
+  backgroundColor: "#262626",
+  padding: "8px 0px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+}));
+
+const NavBarItemContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: "56px",
+  [theme.breakpoints.down(992)]: {
+    display: "none",
+  },
+}));
+
+const NavItem = styled(Box)(({ theme, disabled }) => ({
+  fontWeight: "700",
+  color: disabled === true ? "#808080" : "#FFFFFF",
+  fontSize: "16px",
+}));
+
+const MobileNavBarItemContainer = styled(Box)(({ theme }) => ({
+  display: "none",
+  [theme.breakpoints.down(992)]: {
+    display: "flex",
+  },
+}));
+
+// {/* <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+//           <Navbar.Collapse id="responsive-navbar-nav">
+//             {/* <Nav className="me-auto">
+//               <Searchbox className="search-nav" type="text" />
+//             </Nav> */}
+//             <span style={{ flex: "1 auto" }}></span>
+//             <Nav>
+//               <Nav.Link onClick={() => navigate("/market")}>Market</Nav.Link>
+//               <Nav.Link onClick={() => navigate("/collections")}>
+//                 Collections
+//               </Nav.Link>
+//               <Nav.Link disabled>Inbox</Nav.Link>
+//             </Nav>
+//           </Navbar.Collapse>
+//           {acctDetails && !acctDetails.isLoggedIn && (
+//             <WalletButton
+//               className="connect-btn"
+//               onClick={() => setDlgOpen(true)}
+//               variant="contained"
+//             >
+//               Connect Wallet
+//             </WalletButton>
+//           )}
+//           {acctDetails && acctDetails.isLoggedIn && (
+//             <Button
+//               className="connect-btn"
+//               onClick={handleBtnClick}
+//               variant="contained"
+//             >
+//               {getAccountString(acctDetails.address)} &nbsp;|{" "}
+//               {acctDetails.balance} {chainId === 361 ? "TFUEL" : "KAVA"}
+//             </Button>
+//           )} */}

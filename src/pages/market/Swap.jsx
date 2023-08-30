@@ -44,18 +44,16 @@ function Swap({ isHome }) {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
-  const [filterObj, setFilterObj] = useState(
-    {
-      minPrice: 0,
-      maxPrice: 0,
-      blockchain: "empty",
-      collection: "empty",
-      saleOnly: false,
-      auctionOnly: false,
-      offersReceived: false,
-      includeBurned: false,
-    }
-  );
+  const [filterObj, setFilterObj] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    blockchain: "empty",
+    collection: "empty",
+    saleOnly: false,
+    auctionOnly: false,
+    offersReceived: false,
+    includeBurned: false,
+  });
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -124,15 +122,25 @@ function Swap({ isHome }) {
   const filteredSwapItems = activeListings.filter((item, index) => {
     const selItem = item.listingNFT;
 
-    if (selItem.name && !selItem.name.toLowerCase().includes(keyword.toLowerCase())) {
+    if (
+      selItem.name &&
+      !selItem.name.toLowerCase().includes(keyword.toLowerCase())
+    ) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && selItem.network.toLowerCase() !== filterObj.blockchain) {
+    if (
+      filterObj.blockchain !== "empty" &&
+      selItem.network.toLowerCase() !== filterObj.blockchain
+    ) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && selItem.contractAddress.toLowerCase() !== filterObj.collection.toLowerCase()) {
+    if (
+      filterObj.collection !== "empty" &&
+      selItem.contractAddress.toLowerCase() !==
+        filterObj.collection.toLowerCase()
+    ) {
       return false;
     }
 
@@ -204,7 +212,14 @@ function Swap({ isHome }) {
             />
           </IconButton>
         </Box>
-        <Box><Searchbox value={keyword} onChange={handleSearch} className="search-nav" type="text" /></Box>
+        <Box>
+          <Searchbox
+            value={keyword}
+            onChange={handleSearch}
+            className="search-nav"
+            type="text"
+          />
+        </Box>
       </Box>
       {/* <InfiniteScroll
         dataLength={activeListings.length} //This is important field to render the next data
@@ -251,31 +266,36 @@ function Swap({ isHome }) {
             gap: 2,
           }}
         >
-          {openFilterMenu && <FilterComponent filterPage={"Swap"} filterObject={filterObj} handleFilter={(obj) => handleFilter(obj)} />}
-          <Grid container spacing={2}>
+          {openFilterMenu && (
+            <FilterComponent
+              filterPage={"Swap"}
+              filterObject={filterObj}
+              handleFilter={(obj) => handleFilter(obj)}
+            />
+          )}
+          <CollectionCardContainer>
             {view !== 1 &&
               filteredSwapItems.length > 0 &&
               filteredSwapItems.map((item, index) => {
                 return (
-                  <Grid
+                  <NFTListingCard
+                    listingItem={item}
+                    view={view}
                     key={`index_${index}`}
-                    item
-                    xs={12}
-                    sm={6}
-                    md={view}
-                    sx={{
-                      my: 2,
-                    }}
-                  >
-                    <NFTListingCard listingItem={item} view={view} />
-                  </Grid>
+                  />
                 );
               })}
-          </Grid>
+          </CollectionCardContainer>
         </Box>
       </Fragment>
     </Container>
   );
 }
+
+const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+  gap: "16px",
+}));
 
 export default Swap;

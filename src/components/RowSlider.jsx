@@ -11,15 +11,15 @@ import MediaCard from "./MediaCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../redux/slices/listing-slice";
 import { getActiveListings } from "../utils/format-listings";
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
 import { Autoplay, EffectFlip, FreeMode, Navigation } from "swiper";
 
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
-import 'swiper/modules/pagination/pagination.min.css';
-import 'swiper/modules/scrollbar/scrollbar.min.css';
-import 'swiper/modules/grid/grid.min.css';
-import 'swiper/modules/autoplay/autoplay.min.css'
+import "swiper/swiper.min.css";
+import "swiper/modules/navigation/navigation.min.css";
+import "swiper/modules/pagination/pagination.min.css";
+import "swiper/modules/scrollbar/scrollbar.min.css";
+import "swiper/modules/grid/grid.min.css";
+import "swiper/modules/autoplay/autoplay.min.css";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 
 function RowSlider({ title }) {
@@ -107,33 +107,33 @@ function RowSlider({ title }) {
         </Box>
       </Container>
       <Container
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 10,
-            minHeight: "320px",
-            position: "relative"
-          }}
-        >
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 10,
+          minHeight: "320px",
+          position: "relative",
+        }}
+      >
         <Swiper
           spaceBetween={16}
           slidesPerView={1}
           breakpoints={{
             370: {
-              slidesPerView: 2
+              slidesPerView: 2,
             },
             768: {
-              slidesPerView: 3
+              slidesPerView: 3,
             },
             1024: {
-              slidesPerView: 4
+              slidesPerView: 4,
             },
             1280: {
-              slidesPerView: 5
+              slidesPerView: 5,
             },
             1536: {
-              slidesPerView: 6
-            }
+              slidesPerView: 6,
+            },
           }}
           freeMode={true}
           autoplay={{
@@ -141,30 +141,27 @@ function RowSlider({ title }) {
             disableOnInteraction: false,
           }}
           navigation={{
-              prevEl: '.prevBtn',
-              nextEl: '.nextBtn'
+            prevEl: ".prevBtn",
+            nextEl: ".nextBtn",
           }}
-          modules={[ FreeMode, Navigation, Autoplay, EffectFlip ]}
+          modules={[FreeMode, Navigation, Autoplay, EffectFlip]}
         >
-            {activeListings
-              .map((item, i) => {
-                return (
-                  <SwiperSlide key={`index_${i}`}>
-                    {/* <Grid item xs={12} sm={6} md={4} lg={2}> */}
-                      <NFTListingCard listingItem={item} view={3} />
-                    {/* </Grid> */}
-                  </SwiperSlide>
-                );
-              })}
+          {activeListings.map((item, i) => {
+            return (
+              <SwiperSlide key={`index_${i}`}>
+                <NFTListingCard listingItem={item} view={3} />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         <div className="nextIcon nextBtn">
           <Fab aria-label="next" color="default" size="small">
-              <NavigateNext />
+            <NavigateNext />
           </Fab>
         </div>
         <div className="prevIcon prevBtn">
           <Fab aria-label="prev" color="default" size="small">
-              <NavigateBefore />
+            <NavigateBefore />
           </Fab>
         </div>
       </Container>

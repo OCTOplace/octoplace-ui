@@ -10,16 +10,66 @@ import verifiedLogo from "../../../assets/verified.svg";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
-export const NFTCard = ({ view, nft }) => {
-  const truncate = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
+export const NFTCard = ({ view, nft, isSwiper }) => {
+  const styles = {
+    root: {
+      boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
+      borderRadius: "12px",
+      cursor: "pointer",
+      width: "100%",
+      boxSizing: "border-box",
+      mb: 2,
+      border: "1px solid transparent", // Add transparent border
+      "&:hover": {
+        border: "1px solid #F78C09",
+        boxSizing: "border-box",
+      },
+    },
+    content: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      padding: "1rem",
+      backgroundColor: "#262626",
+      borderBottomLeftRadius: ".75rem",
+      borderBottomRightRadius: ".75rem",
+      width: "100%",
+    },
+    meta: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      gap: ".5rem",
+    },
+    title: {
+      fontWeight: "500",
+      fontSize: ".875em",
+      letterSpacing: "1px",
+      textWrap: "nowrap",
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
+    },
+    network: {
+      width: "24px",
+      height: "24px",
+    },
+    verified: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: ".5rem",
+      paddingTop: "10px",
+    },
+    loading: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      fontWeight: "500",
+      fontSize: ".875em",
+      letterSpacing: "1px",
+    },
   };
-
-  useEffect(() => {}, [nft]);
-
   return (
     <>
       {nft && nft.name && nft.contractAddress !== "none" && (
@@ -54,7 +104,7 @@ export const NFTCard = ({ view, nft }) => {
             <Box sx={styles.content}>
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {truncate(nft.name, 15)}
+                  {nft.name}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
@@ -81,12 +131,12 @@ export const NFTCard = ({ view, nft }) => {
         <Box sx={styles.root}>
           <Box
             style={{
-              borderTopLeftRadius: "0.75rem",
-              borderTopRightRadius: "0.75rem",
-              backgroundSize: "cover",
+              // borderTopLeftRadius: "0.75rem",
+              // borderTopRightRadius: "0.75rem",
+              // backgroundSize: "cover",
               width: "100%",
               aspectRatio: "1/1",
-              backgroundImage: `url(${brokenImage})`,
+              // backgroundImage: `url(${brokenImage})`,
             }}
           >
             <img
@@ -110,63 +160,6 @@ export const NFTCard = ({ view, nft }) => {
       )}
     </>
   );
-};
-
-const styles = {
-  root: {
-    boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
-    borderRadius: "12px",
-    cursor: "pointer",
-    width: "100%",
-    boxSizing: "border-box",
-    mb: 2,
-    border: "1px solid transparent", // Add transparent border
-    "&:hover": {
-      border: "1px solid #F78C09",
-      boxSizing: "border-box",
-    },
-  },
-  content: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    padding: "1rem",
-    backgroundColor: "#262626",
-    borderBottomLeftRadius: ".75rem",
-    borderBottomRightRadius: ".75rem",
-    width: "100%",
-  },
-  meta: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: ".5rem",
-  },
-  title: {
-    fontWeight: "500",
-    fontSize: ".875em",
-    letterSpacing: "1px",
-    textWrap: "nowrap",
-  },
-  network: {
-    width: "24px",
-    height: "24px",
-  },
-  verified: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: ".5rem",
-    paddingTop: "10px",
-  },
-  loading: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    fontWeight: "500",
-    fontSize: ".875em",
-    letterSpacing: "1px",
-  },
 };
 
 export default NFTCard;

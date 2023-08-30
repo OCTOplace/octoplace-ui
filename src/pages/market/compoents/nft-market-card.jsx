@@ -23,7 +23,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
       borderRadius: ".75rem",
       cursor: "pointer",
-      width: "100%",
+      width: "200px",
       "&:hover": {
         border: "1px solid #F78C09",
         boxSizing: "border-box",
@@ -49,6 +49,9 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
     },
     network: {
       fontSize: ".625em",
@@ -57,12 +60,12 @@ export const NFTMarketCard = ({ view, marketItem }) => {
     },
   };
 
-  const truncate = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
-  };
+  // const truncate = (text, maxLength) => {
+  //   if (text.length > maxLength) {
+  //     return text.substring(0, maxLength) + "...";
+  //   }
+  //   return text;
+  // };
 
   useEffect(() => {
     dispatch(
@@ -118,12 +121,9 @@ export const NFTMarketCard = ({ view, marketItem }) => {
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
-                    {truncate(
-                      marketItem.nftDetails.metadata
-                        ? marketItem.nftDetails.metadata.name
-                        : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`,
-                      15
-                    )}
+                    {marketItem.nftDetails.metadata
+                      ? marketItem.nftDetails.metadata.name
+                      : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`}
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
