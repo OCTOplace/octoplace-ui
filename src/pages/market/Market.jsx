@@ -238,9 +238,9 @@ const NFTContentContainer = styled(Box)(({ theme }) => ({
 }));
 
 const CollectionCardContainer = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-  gap: "16px",
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
 }));
 
 export default Market;

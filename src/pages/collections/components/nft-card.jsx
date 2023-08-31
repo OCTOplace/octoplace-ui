@@ -77,7 +77,6 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
           className="nft-card-link"
           to={`/nft/${nft.contractAddress}/${Number(nft.tokenId)}`}
         >
-          {/* <Box sx={styles.root}> */}
           <Box sx={styles.root}>
             <Box
               style={{
@@ -116,15 +115,11 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
                 src={nft.network === "kava" ? KavaLogo : ThetaLogo}
                 alt="network"
               />
-              <Box style={styles.meta}>
-                <Typography>{Number(nft.tokenId)}</Typography>
-              </Box>
               {/* <Box style={styles.verified}>
                 <img src={verifiedLogo} alt="verified" />
               </Box> */}
             </Box>
           </Box>
-          {/* </Box> */}
         </Link>
       )}
       {nft && nft.contractAddress === "none" && (

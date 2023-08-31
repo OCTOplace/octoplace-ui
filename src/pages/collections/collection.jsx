@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -11,6 +11,7 @@ import RowSlider from "../../components/RowSlider";
 import CarouselCollection from "../../components/CarouselCollection";
 import Searchbox from "../../components/searchbox";
 import { getCollections } from "../../redux/thunk/getAllCollections";
+import { styled } from "@mui/system";
 
 const CollectionsPage = () => {
   const dispatch = useDispatch();
@@ -156,7 +157,13 @@ const CollectionsPage = () => {
             />
           </Box>
         </Box>
-        {loading && <CardList list={defaultCollections} view={view} />}
+        {loading && (
+          <SkeletonContainer>
+            {[...Array(12)].map((e, i) => (
+              <Skeleton variant="rounded" width={"100%"} height={270} key={i} />
+            ))}
+          </SkeletonContainer>
+        )}
         {!loading && collections && (
           <InfiniteScroll
             dataLength={collections.length}
@@ -183,5 +190,11 @@ const CollectionsPage = () => {
     </Box>
   );
 };
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "16px",
+}));
 
 export default CollectionsPage;

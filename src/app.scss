@@ -226,6 +226,17 @@
 
 .nft-card-link {
   text-decoration: none;
+  width: 16.6667%;
+  padding: 16px 16px 0 0;
+  @media screen and (max-width: 1200px) {
+    width: 25%;
+  }
+  @media screen and (max-width: 768px) {
+    width: 33.333%;
+  }
+  @media screen and (max-width: 480px) {
+    width: 50%;
+  }
 }
 
 .nft-list-dlg {
@@ -385,6 +396,6 @@ input[type="text"]:disabled {
   color: #fff;
 }
 
-.infinite-scroll-component__outerdiv{
-  width:100%;
+.infinite-scroll-component__outerdiv {
+  width: 100%;
 }
