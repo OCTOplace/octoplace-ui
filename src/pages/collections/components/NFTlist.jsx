@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Skeleton, Typography } from "@mui/material";
 import React, { Fragment, useEffect, useState, memo } from "react";
 import { styled } from "@mui/system";
 import InputBase from "@mui/material/InputBase";
@@ -233,14 +233,16 @@ function NFTlist({ address, network, view }) {
             />
           )}
           {loading && (
-            <CollectionCardContainer>
-              {view !== 1 &&
-                defaultNFTs.map((item, index) => {
-                  return (
-                    <NFTCard nft={item} view={view} key={`index_${index}`} />
-                  );
-                })}
-            </CollectionCardContainer>
+            <SkeletonContainer>
+              {[...Array(12)].map((e, i) => (
+                <Skeleton
+                  variant="rounded"
+                  width={"100%"}
+                  height={270}
+                  key={i}
+                />
+              ))}
+            </SkeletonContainer>
           )}
           {!loading && nfts && nfts.length > 0 && (
             <InfiniteScroll
@@ -281,8 +283,14 @@ function NFTlist({ address, network, view }) {
 }
 
 const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
+}));
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
   gap: "16px",
 }));
 

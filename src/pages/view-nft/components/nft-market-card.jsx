@@ -101,16 +101,16 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         >
           <Box sx={styles.root}>
             <img
-                src={imgUrl}
-                style={{
-                  borderTopLeftRadius: ".75rem",
-                  borderTopRightRadius: ".75rem",
-                  objectFit: "cover",
-                  width: view === 3 ? "200px" : "100%",
-                  aspectRatio: "1/1",
-                }}
-                loading="lazy"
-                alt="nft-image"
+              src={imgUrl}
+              style={{
+                borderTopLeftRadius: ".75rem",
+                borderTopRightRadius: ".75rem",
+                objectFit: "cover",
+                width: view === 3 ? "200px" : "100%",
+                aspectRatio: "1/1",
+              }}
+              loading="lazy"
+              alt="nft-image"
             />
             {marketItem.metadata && (
               <Box sx={styles.content}>

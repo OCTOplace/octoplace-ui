@@ -25,6 +25,7 @@ export const CollectionCard = (props) => {
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
       borderRadius: ".75rem",
       cursor: "pointer",
+      flex: "0 0 auto",
       width: "100%",
       border: "1px solid transparent", // Add transparent border
       "&:hover": {

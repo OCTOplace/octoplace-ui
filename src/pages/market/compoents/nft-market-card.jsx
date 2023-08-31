@@ -23,7 +23,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
       borderRadius: ".75rem",
       cursor: "pointer",
-      width: "200px",
+      width: "100%",
       "&:hover": {
         border: "1px solid #F78C09",
         boxSizing: "border-box",

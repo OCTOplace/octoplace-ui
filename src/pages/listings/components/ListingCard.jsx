@@ -23,7 +23,6 @@ export const NFTListingCard = (props) => {
       borderRadius: ".75rem",
       cursor: "pointer",
       width: "100%",
-      maxWidth: view > 1 ? "inherit" : "240px",
       border: "1px solid transparent", // Add transparent border
       marginBottom: "1rem",
       "&:hover": {
@@ -128,9 +127,6 @@ export const NFTListingCard = (props) => {
                 }
                 alt="network"
               />
-              <Box style={styles.meta}>
-                <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
-              </Box>
             </Box>
           </Box>
         </Link>

@@ -3,7 +3,14 @@ import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
 import { getActiveListings, sortListigs } from "../../utils/format-listings";
-import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
@@ -44,6 +51,7 @@ function Swap({ isHome }) {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(true);
   const [filterObj, setFilterObj] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -117,6 +125,7 @@ function Swap({ isHome }) {
 
   const handleFilter = (filterObj) => {
     setFilterObj(filterObj);
+    setLoading(false);
   };
 
   const filteredSwapItems = activeListings.filter((item, index) => {
@@ -143,7 +152,6 @@ function Swap({ isHome }) {
     ) {
       return false;
     }
-
     return true;
   });
 
@@ -257,6 +265,19 @@ function Swap({ isHome }) {
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
+          {/* {loading && (
+            <SkeletonContainer>
+              {[...Array(12)].map((e, i) => (
+                <Skeleton
+                  variant="rounded"
+                  width={"100%"}
+                  height={270}
+                  key={i}
+                />
+              ))}
+            </SkeletonContainer>
+          )} */}
+          {/* {!loading && ( */}
           <CollectionCardContainer>
             {view !== 1 &&
               filteredSwapItems.length > 0 &&
@@ -270,6 +291,7 @@ function Swap({ isHome }) {
                 );
               })}
           </CollectionCardContainer>
+          {/* )} */}
         </NFTContentContainer>
       </NFTListContainer>
     </Container>
@@ -296,9 +318,9 @@ const NFTSettingContainer = styled(Box)(({ theme }) => ({
 }));
 
 const CollectionCardContainer = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-  gap: "16px",
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
 }));
 
 const NFTContentContainer = styled(Box)(({ theme }) => ({
@@ -309,6 +331,12 @@ const NFTContentContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down(992)]: {
     flexDirection: "column",
   },
+}));
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "16px",
 }));
 
 export default Swap;
