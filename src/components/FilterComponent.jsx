@@ -258,7 +258,7 @@ function FilterComponent({
                 size: "small",
                 placeholder: "Max",
               }}
-            />{" "}
+            />
           </Box>
         </Box>
         <Divider />
@@ -399,7 +399,7 @@ function FilterComponent({
                 size: "small",
                 placeholder: "Max",
               }}
-            />{" "}
+            />
           </Box>
         </Box> */}
         <Box sx={styles.column}>
@@ -575,7 +575,7 @@ function FilterComponent({
                 size: "small",
                 placeholder: "Max",
               }}
-            />{" "}
+            />
           </Box>
         </Box>
         <Divider />
@@ -593,7 +593,8 @@ function FilterComponent({
                   <Typography sx={styles.attr}>{item.trait_type}</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={styles.accordionBody}>
-                  {item.value &&
+                  {!item.trait_type.toUpperCase().includes("RANK") &&
+                    item.value &&
                     item.value.length > 0 &&
                     item.trait_type !== "Rank" &&
                     item.value.map((value, index) => {
@@ -622,6 +623,71 @@ function FilterComponent({
                         </Box>
                       );
                     })}
+                  {item.trait_type.toUpperCase().includes("RANK") &&
+                    item.value &&
+                    item.value.length > 0 && (
+                      <Box sx={styles.row}>
+                        <TextField
+                          type="number"
+                          variant="standard"
+                          value={minPrice === 0 ? "" : minPrice}
+                          onChange={(e) => handleMinProceChange(e.target.value)}
+                          hiddenLabel
+                          className="input-wo-padding"
+                          sx={{
+                            "& .MuiInputBase-input.Mui-disabled": {
+                              WebkitTextFillColor: "#6c6c6c",
+                            },
+                            "& .MuiInputBase-input": {
+                              textAlign: "center",
+                              padding: "0",
+                            },
+                          }}
+                          InputProps={{
+                            style: {
+                              color: "#6C6C6C",
+                              border: "1px solid #6C6C6C",
+                              textAlign: "center",
+                              borderRadius: "0.594rem",
+                              padding: "0.5rem",
+                            },
+                            disableUnderline: true,
+                            size: "small",
+                          }}
+                          placeholder={`${Math.min(...item.value.map(item => item.value))}`}
+                        />
+                        <Typography variant="p">to</Typography>
+                        <TextField
+                          type="number"
+                          variant="standard"
+                          value={maxPrice === 0 ? "" : maxPrice}
+                          onChange={(e) => handleMaxPriceChange(e.target.value)}
+                          hiddenLabel
+                          className="input-wo-padding"
+                          sx={{
+                            "& .MuiInputBase-input.Mui-disabled": {
+                              WebkitTextFillColor: "#6c6c6c",
+                            },
+                            "& .MuiInputBase-input": {
+                              textAlign: "center",
+                              padding: "0",
+                            },
+                          }}
+                          InputProps={{
+                            style: {
+                              color: "#6C6C6C",
+                              border: "1px solid #6C6C6C",
+                              textAlign: "center",
+                              borderRadius: "0.594rem",
+                              padding: "0.5rem",
+                            },
+                            disableUnderline: true,
+                            size: "small",
+                          }}
+                          placeholder={`${Math.max(...item.value.map(item => item.value))}`}
+                        />
+                      </Box>
+                    )}
                 </AccordionDetails>
               </Accordion>
             );
