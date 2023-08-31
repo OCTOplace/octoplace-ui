@@ -266,7 +266,7 @@ function FilterComponent({
           <Typography variant="h6">Blockchain</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -297,7 +297,7 @@ function FilterComponent({
           <Typography variant="h6">Collection</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -406,7 +406,7 @@ function FilterComponent({
           <Typography variant="h6">Blockchain</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -437,7 +437,7 @@ function FilterComponent({
           <Typography variant="h6">Collection</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -670,7 +670,7 @@ function FilterComponent({
           <Typography variant="h6">Blockchain</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -701,7 +701,7 @@ function FilterComponent({
           <Typography variant="h6">Collection</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -741,7 +741,7 @@ function FilterComponent({
 }
 
 const styles = {
-  container: {
+  container: (theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -751,19 +751,23 @@ const styles = {
     flex: "0 0 250px",
     maxWidth: "250px",
     height: "100%",
-    minHeight: "100vh",
     padding: "1.5rem",
     backgroundColor: "#151515",
     color: "#f4f4f4",
     boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
     borderRadius: ".75rem",
-  },
+    [theme.breakpoints.down(992)]: {
+      maxWidth: "inherit",
+      width: "100%",
+    },
+  }),
   column: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     gap: "1rem",
+    width: "100%",
   },
   columnShort: {
     display: "flex",

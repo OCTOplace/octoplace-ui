@@ -154,6 +154,7 @@ function DashboardHome() {
       gap: 2,
       width: "100%",
       my: 2,
+      flexWrap: "wrap",
     },
     activeButton: {
       fontWeight: 400,

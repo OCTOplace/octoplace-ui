@@ -233,23 +233,14 @@ function NFTlist({ address, network, view }) {
             />
           )}
           {loading && (
-            <Grid container spacing={2}>
+            <CollectionCardContainer>
               {view !== 1 &&
                 defaultNFTs.map((item, index) => {
                   return (
-                    <Grid
-                      key={`index_${index}`}
-                      item
-                      xs={12}
-                      md={8}
-                      lg={6}
-                      xl={view}
-                    >
-                      <NFTCard nft={item} view={view} />
-                    </Grid>
+                    <NFTCard nft={item} view={view} key={`index_${index}`} />
                   );
                 })}
-            </Grid>
+            </CollectionCardContainer>
           )}
           {!loading && nfts && nfts.length > 0 && (
             <InfiniteScroll
@@ -258,22 +249,16 @@ function NFTlist({ address, network, view }) {
               hasMore={hasMore}
               loader={<h4>Loading...</h4>}
             >
-              <Grid container spacing={1}>
-                <CollectionCardContainer>
-                  {view !== 1 &&
-                    nfts &&
-                    nfts.length > 0 &&
-                    nfts.map((item, index) => {
-                      return (
-                        <NFTCard
-                          nft={item}
-                          view={view}
-                          key={`index_${index}`}
-                        />
-                      );
-                    })}
-                </CollectionCardContainer>
-              </Grid>
+              <CollectionCardContainer>
+                {view !== 1 &&
+                  nfts &&
+                  nfts.length > 0 &&
+                  nfts.map((item, index) => {
+                    return (
+                      <NFTCard nft={item} view={view} key={`index_${index}`} />
+                    );
+                  })}
+              </CollectionCardContainer>
             </InfiniteScroll>
           )}
           {!loading && nfts.length === 0 && (

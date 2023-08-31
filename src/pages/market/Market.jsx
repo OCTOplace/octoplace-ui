@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
-import { styled } from "@mui/material/styles";
+import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -119,85 +119,69 @@ function Market({ isHome }) {
 
   return (
     <Container>
-      {!isHome && <MarketMenu />}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          color: "#f4f4f4",
-          mb: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Typography
+      <NFTListContainer>
+        {!isHome && <MarketMenu />}
+        <NFTSettingContainer>
+          <Box
             sx={{
-              fontSize: "2rem",
-              fontWeight: 600,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: 1,
             }}
           >
-            NFT
-          </Typography>
-          <FormControl sx={{ m: 1 }} variant="standard" size="small">
-            <Select
-              value={orderMethod}
-              onChange={handleOrder}
-              input={<BootstrapInput />}
+            <Typography
               sx={{
-                "& .MuiSelect-icon": {
-                  color: "white",
-                },
+                fontSize: "2rem",
+                fontWeight: 600,
               }}
             >
-              <MenuItem value="Price: High to Low">High to Low</MenuItem>
-              <MenuItem value="Price: Low to High">Low to High</MenuItem>
-              <MenuItem value="Newest">Newest</MenuItem>
-              <MenuItem value="Oldest">Oldest</MenuItem>
-            </Select>
-          </FormControl>
-          <IconButton
-            sx={{
-              border: "1px solid #c6c6c6",
-              borderRadius: ".75rem",
-              color: "#f4f4f4",
-            }}
-            // toggle filter menu
-            onClick={() => setOpenFilterMenu(!openFilterMenu)}
-          >
-            <TuneIcon
+              NFT
+            </Typography>
+            <FormControl sx={{ m: 1 }} variant="standard" size="small">
+              <Select
+                value={orderMethod}
+                onChange={handleOrder}
+                input={<BootstrapInput />}
+                sx={{
+                  "& .MuiSelect-icon": {
+                    color: "white",
+                  },
+                }}
+              >
+                <MenuItem value="Price: High to Low">High to Low</MenuItem>
+                <MenuItem value="Price: Low to High">Low to High</MenuItem>
+                <MenuItem value="Newest">Newest</MenuItem>
+                <MenuItem value="Oldest">Oldest</MenuItem>
+              </Select>
+            </FormControl>
+            <IconButton
               sx={{
-                fontSize: "1rem",
+                border: "1px solid #c6c6c6",
+                borderRadius: ".75rem",
+                color: "#f4f4f4",
               }}
+              // toggle filter menu
+              onClick={() => setOpenFilterMenu(!openFilterMenu)}
+            >
+              <TuneIcon
+                sx={{
+                  fontSize: "1rem",
+                }}
+              />
+            </IconButton>
+          </Box>
+          <Box>
+            <Searchbox
+              value={keyword}
+              onChange={handleSearch}
+              className="search-nav"
+              type="text"
             />
-          </IconButton>
-        </Box>
-        <Box>
-          <Searchbox
-            value={keyword}
-            onChange={handleSearch}
-            className="search-nav"
-            type="text"
-          />
-        </Box>
-      </Box>
-      <Fragment>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: 2,
-          }}
-        >
+          </Box>
+        </NFTSettingContainer>
+        <NFTContentContainer>
           {openFilterMenu && (
             <FilterComponent
               filterPage={"Market"}
@@ -205,30 +189,58 @@ function Market({ isHome }) {
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
-          <Grid container spacing={2}>
+          <CollectionCardContainer>
             {view !== 1 &&
               filteredMarketItems.length > 0 &&
               filteredMarketItems.map((item, index) => {
                 return (
-                  <Grid
+                  <NFTMarketCard
+                    marketItem={item}
+                    view={view}
                     key={`index_${index}`}
-                    item
-                    xs={12}
-                    sm={6}
-                    md={view}
-                    sx={{
-                      my: 2,
-                    }}
-                  >
-                    <NFTMarketCard marketItem={item} view={view} />
-                  </Grid>
+                  />
                 );
               })}
-          </Grid>
-        </Box>
-      </Fragment>
+          </CollectionCardContainer>
+        </NFTContentContainer>
+      </NFTListContainer>
     </Container>
   );
 }
+
+const NFTListContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+}));
+
+const NFTSettingContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  gap: "16px",
+  alignItems: "center",
+  color: "#f4f4f4",
+  mb: 2,
+  [theme.breakpoints.down(490)]: {
+    flexDirection: "column",
+  },
+}));
+
+const NFTContentContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  gap: "16px",
+  [theme.breakpoints.down(992)]: {
+    flexDirection: "column",
+  },
+}));
+
+const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+  gap: "16px",
+}));
 
 export default Market;
