@@ -234,6 +234,7 @@ const NavItem = styled(Box)(({ theme, disabled }) => ({
   fontWeight: "700",
   color: disabled === true ? "#808080" : "#FFFFFF",
   fontSize: "16px",
+  cursor: "pointer",
 }));
 
 const MobileNavBarItemContainer = styled(Box)(({ theme }) => ({

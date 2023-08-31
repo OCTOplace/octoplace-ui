@@ -7,13 +7,14 @@ import { FaDiscord } from "react-icons/fa";
 import { MailLockOutlined } from "@mui/icons-material";
 
 export const Footer = () => {
-  const styles =  {
+  const styles = {
     nav: {
       backgroundColor: "#262626",
       position: "relative",
       bottom: 0,
       width: "100%",
-      paddingTop: 2,
+      marginTop: "16px",
+      zIndex: 10,
     },
     row: {
       display: "flex",
@@ -23,7 +24,7 @@ export const Footer = () => {
       color: "white",
       width: "100%",
       fontSize: "1rem",
-      textWrap: 'nowrap'
+      textWrap: "nowrap",
     },
     legal: {
       display: "flex",
@@ -38,12 +39,12 @@ export const Footer = () => {
       cursor: "pointer",
     },
     legalTextContainer: (theme) => ({
-        display: 'flex',
-        alignItems: 'center',
-        gap: '24px',
-        [theme.breakpoints.down(840)]: {
-          display: 'none'
-        }
+      display: "flex",
+      alignItems: "center",
+      gap: "24px",
+      [theme.breakpoints.down(840)]: {
+        display: "none",
+      },
     }),
     legalText: {
       textWrap: "nowrap",
@@ -52,9 +53,9 @@ export const Footer = () => {
       },
     },
     iconContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4px'
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
     },
     icon: {
       color: "#fff",
@@ -75,11 +76,15 @@ export const Footer = () => {
                 </Box>
                 <Box sx={styles.legal}>
                   <Box sx={styles.legalTextContainer}>
-                    <Typography sx={styles.legalText}>Privacy Policy</Typography>
+                    <Typography sx={styles.legalText}>
+                      Privacy Policy
+                    </Typography>
                     <Typography sx={styles.legalText}>
                       Terms of Service
                     </Typography>
-                    <Typography sx={styles.legalText}>Risks Disclamer</Typography>
+                    <Typography sx={styles.legalText}>
+                      Risks Disclamer
+                    </Typography>
                   </Box>
                   <Box sx={styles.iconContainer}>
                     <IconButton
