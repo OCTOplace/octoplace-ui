@@ -215,69 +215,55 @@ function NFTlist({ address, network, view }) {
           />
         </Box>
       </Box>
-      <Fragment>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 2,
-            width: "100%",
-          }}
-        >
-          {openFilterMenu && (
-            <FilterComponent
-              filterPage={"Collection"}
-              unionTraits={attributes}
-              filterParam={filterParam}
-              handleFilter={handleFilter}
-            />
-          )}
-          {loading && (
-            <SkeletonContainer>
-              {[...Array(12)].map((e, i) => (
-                <Skeleton
-                  variant="rounded"
-                  width={"100%"}
-                  height={270}
-                  key={i}
-                />
-              ))}
-            </SkeletonContainer>
-          )}
-          {!loading && nfts && nfts.length > 0 && (
-            <InfiniteScroll
-              dataLength={nfts.length}
-              next={fetchNFTs}
-              hasMore={hasMore}
-              loader={<h4>Loading...</h4>}
-            >
-              <CollectionCardContainer>
-                {view !== 1 &&
-                  nfts &&
-                  nfts.length > 0 &&
-                  nfts.map((item, index) => {
-                    return (
-                      <NFTCard nft={item} view={view} key={`index_${index}`} />
-                    );
-                  })}
-              </CollectionCardContainer>
-            </InfiniteScroll>
-          )}
-          {!loading && nfts.length === 0 && (
-            <Typography
-              sx={{
-                width: "100%",
-                m: 8,
-                fontSize: "1.8em",
-                color: "#f4f4f4",
-                textAlign: "center",
-              }}
-            >
-              NO NFTS FOUND
-            </Typography>
-          )}
-        </Box>
-      </Fragment>
+      <NFTContentContainer>
+        {openFilterMenu && (
+          <FilterComponent
+            filterPage={"Collection"}
+            unionTraits={attributes}
+            filterParam={filterParam}
+            handleFilter={handleFilter}
+          />
+        )}
+        {loading && (
+          <SkeletonContainer>
+            {[...Array(12)].map((e, i) => (
+              <Skeleton variant="rounded" width={200} height={270} key={i} />
+            ))}
+          </SkeletonContainer>
+        )}
+        {!loading && nfts && nfts.length > 0 && (
+          <InfiniteScroll
+            dataLength={nfts.length}
+            next={fetchNFTs}
+            hasMore={hasMore}
+            loader={<h4>Loading...</h4>}
+          >
+            <CollectionCardContainer>
+              {view !== 1 &&
+                nfts &&
+                nfts.length > 0 &&
+                nfts.map((item, index) => {
+                  return (
+                    <NFTCard nft={item} view={view} key={`index_${index}`} />
+                  );
+                })}
+            </CollectionCardContainer>
+          </InfiniteScroll>
+        )}
+        {!loading && nfts.length === 0 && (
+          <Typography
+            sx={{
+              width: "100%",
+              m: 8,
+              fontSize: "1.8em",
+              color: "#f4f4f4",
+              textAlign: "center",
+            }}
+          >
+            NO NFTS FOUND
+          </Typography>
+        )}
+      </NFTContentContainer>
     </Box>
   );
 }
@@ -289,9 +275,19 @@ const CollectionCardContainer = styled(Box)(({ theme }) => ({
 }));
 
 const SkeletonContainer = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  display: "flex",
+  flexWrap: "wrap",
   gap: "16px",
+}));
+
+const NFTContentContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  gap: "16px",
+  [theme.breakpoints.down(992)]: {
+    flexDirection: "column",
+  },
 }));
 
 export default memo(NFTlist);

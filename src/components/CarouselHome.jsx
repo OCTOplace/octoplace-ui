@@ -17,7 +17,7 @@ function Item(props) {
     ); // fragment locator
     return pattern.test(str);
   }
-  
+
   const handleImageClick = (url) => {
     if (isUrl(url)) {
       window.open(url, "_blank");
@@ -44,18 +44,17 @@ const CarouselPaper = styled(Paper)(({ theme, image }) => ({
   padding: "2rem",
   cursor: "grab",
   width: "100%",
-  height: '450px',
+  height: "450px",
   [theme.breakpoints.down(1120)]: {
-    height: '360px'
+    height: "360px",
   },
   [theme.breakpoints.down(768)]: {
-    height: '280px'
+    height: "280px",
   },
   [theme.breakpoints.down(540)]: {
-    height: '220px'
-  }
-}))
-
+    height: "220px",
+  },
+}));
 
 function CarouselHome() {
   const [items, setItems] = useState([]);
