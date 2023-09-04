@@ -11,6 +11,8 @@ import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 import { formatEther, parseEther } from "@ethersproject/units";
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
@@ -54,9 +56,8 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       whiteSpace: "nowrap",
     },
     network: {
-      fontSize: ".625em",
-      fontWeight: "400",
-      color: "#6C6C6C",
+      width: "24px",
+      height: "24px",
     },
   };
 
@@ -127,16 +128,21 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
-                <Typography
+                <img
+                  style={styles.network}
+                  src={marketItem.network === "kava" ? KavaLogo : ThetaLogo}
+                  alt="network"
+                />
+                {/* <Typography
                   sx={styles.network}
-                >{`#${marketItem.Network}`}</Typography>
-                <Box style={styles.meta}>
+                >{`#${marketItem.Network}`}</Typography> */}
+                {/* <Box style={styles.meta}>
                   <Typography>#{marketItem.TokenId}</Typography>
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
                     <Typography>{marketItem.Price}</Typography>
                   </Box>
-                </Box>
+                </Box> */}
               </Box>
             )}
           </Box>
