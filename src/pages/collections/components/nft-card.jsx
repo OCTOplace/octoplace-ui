@@ -85,7 +85,7 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
                 objectFit: "cover",
                 width: "100%",
                 aspectRatio: "1/1",
-                backgroundImage: `url(${brokenImage})`,
+                // backgroundImage: `url(${brokenImage})`,
               }}
             >
               <img

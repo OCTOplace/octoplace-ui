@@ -12,6 +12,7 @@ import CarouselCollection from "../../components/CarouselCollection";
 import Searchbox from "../../components/searchbox";
 import { getCollections } from "../../redux/thunk/getAllCollections";
 import { styled } from "@mui/system";
+import { PopularCollections } from "../analytics/popular-collections";
 
 const CollectionsPage = () => {
   const dispatch = useDispatch();
@@ -112,7 +113,8 @@ const CollectionsPage = () => {
   return (
     <Box>
       <CarouselCollection />
-      <RowSlider title="Popular Collections" />
+      {/* <RowSlider title="Popular Collections" /> */}
+      <PopularCollections title="Popular Collections" />
       <Container>
         <Box
           sx={{
