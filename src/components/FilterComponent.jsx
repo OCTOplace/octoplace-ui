@@ -597,11 +597,16 @@ function FilterComponent({
                     item.value &&
                     item.value.length > 0 &&
                     item.trait_type !== "Rank" &&
-                    item.value.map((value, index) => {
+                    item.value.slice(0, 50).map((value, index) => {
                       return (
                         <Box key={`index_${index}`} sx={styles.checkboxRow}>
                           <Typography sx={styles.p}>
-                            {value.value === "" ? "None" : value.value}
+                            {typeof value.value === "object" &&
+                            value.value !== null
+                              ? value.value[0]
+                              : value.value === "" || value.value === null
+                              ? "None"
+                              : value.value}
                           </Typography>
                           <Box sx={styles.boxRow}>
                             <Typography sx={styles.p}>
@@ -654,7 +659,9 @@ function FilterComponent({
                             disableUnderline: true,
                             size: "small",
                           }}
-                          placeholder={`${Math.min(...item.value.map(item => item.value))}`}
+                          placeholder={`${Math.min(
+                            ...item.value.map((item) => item.value)
+                          )}`}
                         />
                         <Typography variant="p">to</Typography>
                         <TextField
@@ -684,7 +691,9 @@ function FilterComponent({
                             disableUnderline: true,
                             size: "small",
                           }}
-                          placeholder={`${Math.max(...item.value.map(item => item.value))}`}
+                          placeholder={`${Math.max(
+                            ...item.value.map((item) => item.value)
+                          )}`}
                         />
                       </Box>
                     )}
