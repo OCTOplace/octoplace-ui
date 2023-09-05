@@ -11,6 +11,7 @@ import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 import { formatEther, parseEther } from "@ethersproject/units";
+import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
@@ -84,15 +85,15 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         if (marketItem.nftDetails.metadata.image.includes("ipfs://")) {
           let url = marketItem.nftDetails.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(newUrl);
+          setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
-          setImgUrl(marketItem.nftDetails.metadata.image);
+          setImgUrl(`https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`);
         }
       } catch {
-        setImgUrl("https://thereisnoimage.com/image");
+        setImgUrl(broken);
       }
     } else {
-      setImgUrl("https://thereisnoimage.com/image");
+      setImgUrl(broken);
     }
   }, [marketItem]);
 

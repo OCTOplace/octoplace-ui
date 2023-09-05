@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
+import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
@@ -69,20 +70,21 @@ export const NFTListingCard = (props) => {
   // };
 
   useEffect(() => {
+    console.log(props.listingItem);
     if (props.listingItem && props.listingItem.listingNFT.metadata) {
       try {
         if (props.listingItem.listingNFT.metadata.image.includes("ipfs://")) {
           let url = props.listingItem.listingNFT.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(newUrl);
+          setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
-          setImgUrl(props.listingItem.listingNFT.metadata.image);
+          setImgUrl(`https://wsrv.nl/?url=${props.listingItem.listingNFT.metadata.image}&w=200&h=200&fit=outside`);
         }
       } catch {
-        setImgUrl("https://thereisnoimage.com/image");
+        setImgUrl(broken);
       }
     } else {
-      setImgUrl("https://thereisnoimage.com/image");
+      setImgUrl(broken);
     }
   }, [props.listingItem]);
 
