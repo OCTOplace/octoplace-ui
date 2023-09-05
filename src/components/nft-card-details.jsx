@@ -17,7 +17,6 @@ export const NFTCardDetails = (props) => {
       width: "100%",
       maxWidth: "100%",
       bgcolor: "#262626",
-      borderRadius: ".75rem",
       border: "1px solid #6C6C6C",
       display: "flex",
       flexDirection: "column",
@@ -28,8 +27,6 @@ export const NFTCardDetails = (props) => {
       height: "100%",
       maxHeight: "500px",
       objectFit: "cover",
-      borderTopLeftRadius: ".75rem",
-      borderTopRightRadius: ".75rem",
       display: `${imgLoaded ? "block" : "none"}`,
     },
     imgBox: {
@@ -127,8 +124,6 @@ export const NFTCardDetails = (props) => {
                 height: "100%",
                 maxHeight: "500px",
                 objectFit: "cover",
-                borderTopLeftRadius: ".75rem",
-                borderTopRightRadius: ".75rem",
               }}
               onLoad={() => setImgLoaded(true)}
             />
