@@ -90,7 +90,7 @@ export const CollectionCard = (props) => {
   };
 
   useEffect(() => {
-    setImgUrl(collectionItem.image);
+    setImgUrl(`https://wsrv.nl/?url=${collectionItem.image}&w=400&h=400&fit=outside`);
   }, [props.collectionItem]);
 
   return (

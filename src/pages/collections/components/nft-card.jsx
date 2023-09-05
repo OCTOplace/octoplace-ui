@@ -89,7 +89,7 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
               }}
             >
               <img
-                src={nft.imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/")} //const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+                src={`https://wsrv.nl/?url=${nft.imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/")}&w=200&h=200&fit=outside`} //const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
                 onError={(event) => (event.target.style.display = "none")}
                 style={{
                   borderTopLeftRadius: "0.75rem",
