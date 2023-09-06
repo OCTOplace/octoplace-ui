@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 
 import verifiedLogo from "../assets/verified.svg";
 import { ContentCopy } from "@mui/icons-material";
+import { styled } from "@mui/system";
+
 export const NFTCardDetails = (props) => {
   const { metadata, tokenId, owner } = props;
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -13,16 +15,19 @@ export const NFTCardDetails = (props) => {
   const [imgUrl, setUrl] = useState("");
 
   const styles = {
-    card: {
-      width: "100%",
-      maxWidth: "100%",
+    card: (theme) => ({
+      width: "50%",
+      height: "100%",
       bgcolor: "#262626",
       borderRadius: ".75rem",
       border: "1px solid #6C6C6C",
       display: "flex",
       flexDirection: "column",
       gap: "1rem",
-    },
+      [theme.breakpoints.down(992)]: {
+        width: "100%",
+      },
+    }),
     nftImg: {
       width: "100%",
       height: "100%",
@@ -35,6 +40,8 @@ export const NFTCardDetails = (props) => {
     imgBox: {
       width: "100%",
       height: "500px",
+      borderTopLeftRadius: ".75rem",
+      borderTopRightRadius: ".75rem",
       backgroundColor: "#3c3c3c",
     },
     textContainer: {
@@ -117,34 +124,20 @@ export const NFTCardDetails = (props) => {
   return (
     <>
       <Box sx={styles.card}>
-        <Box>
-          {metadata && (
-            <img
-              alt="kjbhv"
-              src={imgUrl}
-              style={{
-                width: "100%",
-                height: "100%",
-                maxHeight: "500px",
-                objectFit: "contain",
-                borderTopLeftRadius: ".75rem",
-                borderTopRightRadius: ".75rem",
-              }}
-              onLoad={() => setImgLoaded(true)}
-            />
-          )}
-          {!imgLoaded && (
-            <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-              sx={styles.imgBox}
-            >
-              <CircularProgress color="primary" />
-            </Box>
-          )}
-        </Box>
+        {metadata && (
+          <Img alt="kjbhv" src={imgUrl} onLoad={() => setImgLoaded(true)} />
+        )}
+        {!imgLoaded && (
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            sx={styles.imgBox}
+          >
+            <CircularProgress color="primary" />
+          </Box>
+        )}
         <Box sx={styles.textContainer}>
           <Box sx={styles.metabox}>
             <Typography sx={styles.title}>
@@ -181,3 +174,15 @@ export const NFTCardDetails = (props) => {
     </>
   );
 };
+
+const Img = styled("img")(({ theme }) => ({
+  height: "100%",
+  width: "100%",
+  maxHeight: "636.02px",
+  objectFit: "contain",
+  borderTopLeftRadius: ".75rem",
+  borderTopRightRadius: ".75rem",
+  [theme.breakpoints.down(992)]: {
+    maxHeight: "694px",
+  },
+}));

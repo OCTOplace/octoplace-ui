@@ -31,6 +31,8 @@ import { SellNFT } from "./dialogs/nft-sell";
 import { cancelListing } from "../../redux/thunk/cancel-sale";
 import { executeSale } from "../../redux/thunk/execute-sale";
 import { formatUnits, parseUnits } from "@ethersproject/units";
+import { Container } from "react-bootstrap";
+import { styled } from "@mui/system";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -304,24 +306,15 @@ export const NFTView = () => {
 
   return (
     <Fragment>
-      <Box
-        sx={{
-          maxWidth: "1280px",
-          m: "16px auto",
-          height: "100%",
-          color: "#f4f4f4",
-        }}
-      >
-        <Grid container spacing={5}>
-          <Grid item xs={12} md={6}>
-            <NFTCardDetails
-              metadata={metadata}
-              tokenId={tokenId}
-              owner={owner}
-              name={collectionName}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+      <Container>
+        <NFTCardContainer>
+          <NFTCardDetails
+            metadata={metadata}
+            tokenId={tokenId}
+            owner={owner}
+            name={collectionName}
+          />
+          <NFTCardActionContaniner>
             {!loading && account && account === owner && !isListed && (
               <Box sx={styles.row}>
                 <Button
@@ -435,9 +428,9 @@ export const NFTView = () => {
               network={network}
               isAccordion={true}
             />
-          </Grid>
-        </Grid>
-      </Box>
+          </NFTCardActionContaniner>
+        </NFTCardContainer>
+      </Container>
       <ListNFTDialog
         metadata={metadata}
         tokenId={tokenId}
@@ -502,3 +495,20 @@ const metaUrl = (url) => {
   }
   return url;
 };
+
+const NFTCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: "20px",
+  [theme.breakpoints.down(992)]: {
+    flexDirection: "column",
+  },
+}));
+
+const NFTCardActionContaniner = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "50%",
+  [theme.breakpoints.down(992)]: {
+    width: "100%",
+  },
+}));
