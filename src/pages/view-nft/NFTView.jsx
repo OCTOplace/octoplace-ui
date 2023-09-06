@@ -25,6 +25,8 @@ import {
 } from "../../redux/slices/app-slice";
 import { SendNFT } from "./dialogs/send-nft";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+
+import { getCommonNFTDetail } from "../../redux/thunk/getNftDetail";
 import { SellNFT } from "./dialogs/nft-sell";
 import { cancelListing } from "../../redux/thunk/cancel-sale";
 import { executeSale } from "../../redux/thunk/execute-sale";
@@ -40,7 +42,7 @@ function useForceUpdate() {
 }
 
 export const NFTView = () => {
-  const { address, tokenId, network } = useParams();
+  const { address, tokenId } = useParams();
   const [market, setMarket] = useState();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
@@ -48,6 +50,7 @@ export const NFTView = () => {
   const marketItems = useSelector((state) => state.market.markets);
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
+  const [network, setNetwork] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
   const { account, chainId } = useWeb3React();
@@ -78,7 +81,7 @@ export const NFTView = () => {
     },
   };
 
-  const getDetails = async () => {
+  const getDetailsFromContract = async () => {
     try {
       const netDetails = getNetworkInfo(network);
       const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
@@ -105,8 +108,24 @@ export const NFTView = () => {
     } catch {}
   };
 
+  const getDetailsFromSite = async () => {
+    const nftDetails = await getCommonNFTDetail({
+      contractAddress: address,
+      tokenId: tokenId,
+    });
+
+    if (nftDetails) {
+      setOwner(nftDetails.wallet_address || "");
+      setCollectionName(nftDetails.collection_name || "");
+      setMetadata(nftDetails.metadata);
+      setNetwork(nftDetails.network || "");
+    } else {
+      getDetailsFromContract();
+    }
+  };
+
   useEffect(() => {
-    getDetails();
+    getDetailsFromSite();
   }, []);
 
   useEffect(() => {
@@ -454,7 +473,7 @@ export const NFTView = () => {
         network={network}
         onCloseDlg={() => {
           setSendOpen(false);
-          getDetails();
+          getDetailsFromSite();
         }}
       />
       <SellNFT
@@ -469,7 +488,7 @@ export const NFTView = () => {
         listingId={market ? market.Id : 0}
         onCloseDlg={() => {
           setSellOpen(false);
-          getDetails();
+          getDetailsFromSite();
           setIsUpdatePrice(false);
         }}
       />
