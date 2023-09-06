@@ -89,7 +89,9 @@ export default React.memo(function Spots(props) {
 
         let src = e.image;
         if (editIndex === e._index) {
-          src = editImageUrl;
+          src = `https://wsrv.nl/?url=${editImageUrl}&w=${
+            e.width * SPACE_WIDTH
+          }&h=${e.height * SPACE_WIDTH}&fit=outside`;
         } else {
           // mappedImages example -> Array<['https://...super-big-image.jpg', '1.jpg'] (contains "original" -> minified version)
           // the mapped image is only used if the image in [0] is the image that is actually given
@@ -99,6 +101,9 @@ export default React.memo(function Spots(props) {
             src = require(`../../assets/spots/${mappedImage[1]}`).default;
           }
         }
+        //   `https://wsrv.nl/?url=${
+        //     metadata.image
+        //   }&w=400&h=400&fit=outside`
         if (src === "https://" || src === "") {
           src = TransparentPng;
           styles.concat(customStyle.noimage);
@@ -125,8 +130,16 @@ export default React.memo(function Spots(props) {
         const combineStyle = { ...styles[0], ...props.style };
 
         return (
-          <ALink href={props.href} target={props.target} key={props["data-tokenid"]}>
-            <Tooltip key={props["data-tokenid"]} componentsProps={props} title={tooltipText}>
+          <ALink
+            href={props.href}
+            target={props.target}
+            key={props["data-tokenid"]}
+          >
+            <Tooltip
+              key={props["data-tokenid"]}
+              componentsProps={props}
+              title={tooltipText}
+            >
               <img src={src} alt="" style={combineStyle} />
             </Tooltip>
           </ALink>
