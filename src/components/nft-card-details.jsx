@@ -104,10 +104,10 @@ export const NFTCardDetails = (props) => {
     if (metadata) {
       try {
         if (metadata.image) {
-          setUrl(getImageUrl(metadata.image));
+          setUrl(`https://wsrv.nl/?url=${getImageUrl(metadata.image)}&w=400&h=400&fit=outside`);
         } else if (metadata.aimation_url) {
           setAnimation(true);
-          setUrl(getImageUrl(metadata.animation_url));
+          setUrl(`https://wsrv.nl/?url=${getImageUrl(metadata.animation_url)}&w=400&h=400&fit=outside`);
         }
       } catch (e) {
         setUrl("");
