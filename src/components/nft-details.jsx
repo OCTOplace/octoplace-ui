@@ -67,6 +67,7 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
       fontSize: "1rem",
       fontWeight: 400,
       borderRadius: ".75rem",
+      textAlign: "center",
     },
     detailsBox: {
       display: "flex",
@@ -114,8 +115,16 @@ export const NFTDetails = ({ metadata, address, tokenId, chainId }) => {
         <Typography sx={styles.h1}>Attributes</Typography>
         <Box sx={styles.row}>
           {metadata?.attributes?.map((item) => (
-            <Box key={item?.value} sx={styles.chip}>
-              {item?.value}
+            <Box key={item.trait_type} sx={styles.chip}>
+              <small style={{ fontSize: "11.2px" }}>
+                {item.trait_type.toUpperCase()}
+              </small>
+              <br />
+              {!item.value
+                ? "None"
+                : item.value && typeof item.value !== "object"
+                ? item.value
+                : JSON.stringify(item.value)}
             </Box>
           ))}
         </Box>
