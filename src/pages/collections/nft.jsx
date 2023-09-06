@@ -22,6 +22,7 @@ import Content from "./components/Content";
 import RecentMessages from "./components/RecentMessages";
 import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import defaultImage from "../../assets/GrayBackground.jpeg";
+import { styled } from "@mui/system";
 
 const NFTPage = () => {
   const { address } = useParams();
@@ -60,19 +61,14 @@ const NFTPage = () => {
             backgroundImage: `url(${defaultImage})`,
           }}
         >
-          <img
+          <Img
             src={
               collection.bannerImage.startsWith("https://")
                 ? collection.bannerImage
                 : process.env.REACT_APP_API_URL + collection.bannerImage
             }
             onError={(event) => (event.target.style.display = "none")}
-            // alt="Collection banner"
-            style={{
-              width: "100vw",
-              height: "45vh",
-              objectFit: "cover",
-            }}
+            alt="Collection banner"
           />
         </Box>
         <Box
@@ -435,11 +431,14 @@ const styles = {
     alignItems: "center",
     gap: 0.5,
   },
-  rowAbout: {
+  rowAbout: (theme) => ({
     display: "flex",
     gap: 5,
     my: 2,
-  },
+    [theme.breakpoints.down(768)]: {
+      flexDirection: "column",
+    },
+  }),
   aboutContent: {
     flex: 1,
     display: "flex",
@@ -454,7 +453,7 @@ const styles = {
     width: "100%",
     my: 2,
   },
-  activeButton: {
+  activeButton: (theme) => ({
     fontWeight: 400,
     fontSize: "1.5rem",
     color: "#F4F4F4",
@@ -467,8 +466,11 @@ const styles = {
       backgroundColor: "transparent",
       color: "#f78c09",
     },
-  },
-  regularButton: {
+    [theme.breakpoints.down(480)]: {
+      fontSize: "1.25rem",
+    },
+  }),
+  regularButton: (theme) => ({
     fontWeight: 400,
     fontSize: "1.5rem",
     color: "#F4F4F4",
@@ -477,7 +479,16 @@ const styles = {
       backgroundColor: "transparent",
       color: "#f78c09",
     },
-  },
+    [theme.breakpoints.down(480)]: {
+      fontSize: "1.25rem",
+    },
+  }),
 };
+
+const Img = styled("img")(({ theme }) => ({
+  width: "100%",
+  height: "45vh",
+  objectFit: "cover",
+}));
 
 export default NFTPage;

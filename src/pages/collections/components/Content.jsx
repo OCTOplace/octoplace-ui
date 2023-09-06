@@ -16,6 +16,7 @@ import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { styled } from "@mui/system";
 
 const styles = {
   videoContainer: {
@@ -46,13 +47,15 @@ const styles = {
     color: "#fff",
     fontSize: "3rem",
   },
-  descriptionContainer: {
+  descriptionContainer: (theme) => ({
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
     gap: 5,
     color: "#f4f4f4",
-  },
+    [theme.breakpoints.down(768)]: {
+      flexDirection: "column",
+    },
+  }),
   textContainer: {
     display: "flex",
     flexDirection: "column",
@@ -93,14 +96,17 @@ const styles = {
     border: "0.792651px solid #6C6C6C",
     borderRadius: "0.594rem",
   },
-  ownerBox: {
+  ownerBox: (theme) => ({
     display: "flex",
     flexDirection: "column",
     width: "200px",
     gap: 1,
     px: 3,
     py: 2,
-  },
+    [theme.breakpoints.down(768)]: {
+      width: "100%",
+    },
+  }),
   orangeButton: {
     backgroundColor: "#F78C09",
     color: "#262626",
@@ -126,6 +132,32 @@ const styles = {
     color: "#f4f4f4",
     borderColor: "#f4f4f4",
   },
+  chainContainer: (theme) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 3,
+    [theme.breakpoints.down(1200)]: {
+      flexDirection: "column",
+    },
+  }),
+  chainPaper: (theme) => ({
+    display: "flex",
+    flex: 1,
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
+    listStyle: "none",
+    gap: 2,
+    py: 0.5,
+    px: 2,
+    m: 0,
+    backgroundColor: "transparent",
+    border: "1px solid white",
+    color: "white",
+    [theme.breakpoints.down(1200)]: {
+      width: "100%",
+    },
+  }),
 };
 
 function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
@@ -134,6 +166,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [openAddVideo, setOpenAddVideo] = useState(false);
+  const [chain, setChain] = useState("Theta Mainnet");
   const [chipData, setChipData] = useState([
     { key: 0, label: "2160p" },
     { key: 1, label: "1080p" },
@@ -148,6 +181,10 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
     );
+  };
+
+  const handleChainChange = (event) => {
+    setChain(event.target.value);
   };
 
   const onDrop = (acceptedFiles) => {
@@ -289,31 +326,8 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               )}
             </div>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  flex: 1,
-                  justifyContent: "flex-start",
-                  flexWrap: "wrap",
-                  listStyle: "none",
-                  gap: 2,
-                  py: 0.5,
-                  px: 2,
-                  m: 0,
-                  backgroundColor: "transparent",
-                  border: "1px solid white",
-                  color: "white",
-                }}
-                component="ul"
-              >
+            <Box sx={styles.chainContainer}>
+              <Paper sx={styles.chainPaper} component="ul">
                 {chipData.map((data) => {
                   return (
                     <Box key={data.key}>
@@ -336,7 +350,10 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                   );
                 })}
               </Paper>
-              <FormControl variant="standard" sx={{ display: "flex", flex: 1 }}>
+              <FormControl
+                variant="standard"
+                sx={{ display: "flex", flex: 1, width: "100%" }}
+              >
                 <Select
                   sx={{
                     color: "white",
@@ -357,7 +374,8 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                       color: "white",
                     },
                   }}
-                  value={""}
+                  onChange={handleChainChange}
+                  value={chain}
                 >
                   {/* <MenuItem value="">Select an option</MenuItem> */}
                   <MenuItem value="Theta Mainnet">Theta Mainnet</MenuItem>
@@ -498,10 +516,8 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-            <iframe
+            <IFrame
               sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
-              width="100%"
-              height={800}
               src={videoUrl}
               allowFullScreen
             />
@@ -511,7 +527,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               <Typography sx={styles.h1}>{videoTitle}</Typography>
               <Typography sx={styles.p}>{videoDesc}</Typography>
             </Box>
-            {/* <Box sx={styles.rContainer}>
+            <Box sx={styles.rContainer}>
               <Box sx={styles.ownerContainer}>
                 <Box sx={styles.ownerBox}>
                   <Typography sx={styles.h2}>Theta Punks</Typography>
@@ -534,12 +550,12 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 <Button
                   onClick={() => setOpenAddVideo(true)}
                   sx={styles.orangeButton}
-                  disabled={true}
+                  // disabled={true}
                 >
                   Add Video
                 </Button>
               ) : null}
-            </Box> */}
+            </Box>
           </Box>
         </Box>
       )}
@@ -547,5 +563,16 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     </Container>
   );
 }
+
+const IFrame = styled("iframe")(({ theme }) => ({
+  width: "100%",
+  height: "800px",
+  [theme.breakpoints.down(992)]: {
+    height: "640px",
+  },
+  [theme.breakpoints.down(575)]: {
+    height: "480px",
+  },
+}));
 
 export default Content;
