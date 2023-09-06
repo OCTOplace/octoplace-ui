@@ -101,9 +101,6 @@ export default React.memo(function Spots(props) {
             src = require(`../../assets/spots/${mappedImage[1]}`).default;
           }
         }
-        //   `https://wsrv.nl/?url=${
-        //     metadata.image
-        //   }&w=400&h=400&fit=outside`
         if (src === "https://" || src === "") {
           src = TransparentPng;
           styles.concat(customStyle.noimage);
