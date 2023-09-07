@@ -105,7 +105,13 @@ function NFTlist({ address, network, view }) {
     // );
     const newItemCount = response.count;
     setNfts([...nfts, ...newItems]);
-    setAttributes(response.attributes);
+
+    // save only when first loading
+    const currentPage = parseInt(response.currentPage);
+    if (currentPage === 1) {
+      setAttributes(response.attributes);
+    }
+
     setFilteredCount(newItemCount);
     setTotalCount(response.totalCounts);
     if (nfts.length >= newItemCount) {
