@@ -14,7 +14,7 @@ import { getCollections } from "../../redux/thunk/getAllCollections";
 import { styled } from "@mui/system";
 import { PopularCollections } from "../analytics/popular-collections";
 
-const CollectionsPage = () => {
+export const CollectionsPage = () => {
   const dispatch = useDispatch();
   // const collections = useSelector((state) => {
   //   console.log(state.collection.collections.slice(0,49));
@@ -198,5 +198,3 @@ const SkeletonContainer = styled(Box)(({ theme }) => ({
   gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
   gap: "16px",
 }));
-
-export default CollectionsPage;

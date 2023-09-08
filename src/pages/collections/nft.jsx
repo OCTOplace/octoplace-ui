@@ -22,6 +22,7 @@ import Content from "./components/Content";
 import RecentMessages from "./components/RecentMessages";
 import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import defaultImage from "../../assets/GrayBackground.jpeg";
+import { styled } from "@mui/system";
 
 const NFTPage = () => {
   const { address } = useParams();
@@ -60,19 +61,14 @@ const NFTPage = () => {
             backgroundImage: `url(${defaultImage})`,
           }}
         >
-          <img
+          <Img
             src={
               collection.bannerImage.startsWith("https://")
                 ? collection.bannerImage
                 : process.env.REACT_APP_API_URL + collection.bannerImage
             }
             onError={(event) => (event.target.style.display = "none")}
-            // alt="Collection banner"
-            style={{
-              width: "100vw",
-              height: "45vh",
-              objectFit: "cover",
-            }}
+            alt="Collection banner"
           />
         </Box>
         <Box
@@ -488,5 +484,11 @@ const styles = {
     },
   }),
 };
+
+const Img = styled("img")(({ theme }) => ({
+  width: "100%",
+  height: "45vh",
+  objectFit: "cover",
+}));
 
 export default NFTPage;
