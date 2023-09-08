@@ -435,11 +435,14 @@ const styles = {
     alignItems: "center",
     gap: 0.5,
   },
-  rowAbout: {
+  rowAbout: (theme) => ({
     display: "flex",
     gap: 5,
     my: 2,
-  },
+    [theme.breakpoints.down(992)]: {
+      flexDirection: "column",
+    },
+  }),
   aboutContent: {
     flex: 1,
     display: "flex",
@@ -454,7 +457,7 @@ const styles = {
     width: "100%",
     my: 2,
   },
-  activeButton: {
+  activeButton: (theme) => ({
     fontWeight: 400,
     fontSize: "1.5rem",
     color: "#F4F4F4",
@@ -467,8 +470,11 @@ const styles = {
       backgroundColor: "transparent",
       color: "#f78c09",
     },
-  },
-  regularButton: {
+    [theme.breakpoints.down(450)]: {
+      fontSize: "1.2rem",
+    },
+  }),
+  regularButton: (theme) => ({
     fontWeight: 400,
     fontSize: "1.5rem",
     color: "#F4F4F4",
@@ -477,7 +483,10 @@ const styles = {
       backgroundColor: "transparent",
       color: "#f78c09",
     },
-  },
+    [theme.breakpoints.down(450)]: {
+      fontSize: "1.2rem",
+    },
+  }),
 };
 
 export default NFTPage;

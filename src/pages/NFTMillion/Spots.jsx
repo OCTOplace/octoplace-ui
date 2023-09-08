@@ -88,6 +88,7 @@ export default React.memo(function Spots(props) {
         }
 
         let src = e.image;
+        console.log("e._index: ", e._index);
         if (editIndex === e._index) {
           src = editImageUrl;
         } else {
@@ -102,7 +103,10 @@ export default React.memo(function Spots(props) {
         if (src === "https://" || src === "") {
           src = TransparentPng;
           styles.concat(customStyle.noimage);
+        } else if (src.startsWith("http://") || src.startsWith("https://")) {
+          src = `https://wsrv.nl/?url=${src}&w=200&h=200&fit=outside`;
         }
+        console.log({ src });
 
         let element = "span";
         const props = {
@@ -125,8 +129,16 @@ export default React.memo(function Spots(props) {
         const combineStyle = { ...styles[0], ...props.style };
 
         return (
-          <ALink href={props.href} target={props.target} key={props["data-tokenid"]}>
-            <Tooltip key={props["data-tokenid"]} componentsProps={props} title={tooltipText}>
+          <ALink
+            href={props.href}
+            target={props.target}
+            key={props["data-tokenid"]}
+          >
+            <Tooltip
+              key={props["data-tokenid"]}
+              componentsProps={props}
+              title={tooltipText}
+            >
               <img src={src} alt="" style={combineStyle} />
             </Tooltip>
           </ALink>
