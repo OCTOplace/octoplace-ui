@@ -103,11 +103,7 @@ export default React.memo(function Spots(props) {
         if (src === "https://" || src === "") {
           src = TransparentPng;
           styles.concat(customStyle.noimage);
-        } else if (src.startsWith("http://") || src.startsWith("https://")) {
-          src = `https://wsrv.nl/?url=${src}&w=200&h=200&fit=outside`;
         }
-        console.log({ src });
-
         let element = "span";
         const props = {
           // className: classNames.join(' '),
