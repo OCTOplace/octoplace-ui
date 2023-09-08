@@ -435,7 +435,7 @@ const styles = {
     display: "flex",
     gap: 5,
     my: 2,
-    [theme.breakpoints.down(768)]: {
+    [theme.breakpoints.down(992)]: {
       flexDirection: "column",
     },
   }),
@@ -466,8 +466,8 @@ const styles = {
       backgroundColor: "transparent",
       color: "#f78c09",
     },
-    [theme.breakpoints.down(480)]: {
-      fontSize: "1.25rem",
+    [theme.breakpoints.down(450)]: {
+      fontSize: "1.2rem",
     },
   }),
   regularButton: (theme) => ({
@@ -479,8 +479,8 @@ const styles = {
       backgroundColor: "transparent",
       color: "#f78c09",
     },
-    [theme.breakpoints.down(480)]: {
-      fontSize: "1.25rem",
+    [theme.breakpoints.down(450)]: {
+      fontSize: "1.2rem",
     },
   }),
 };

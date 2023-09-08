@@ -105,7 +105,13 @@ function NFTlist({ address, network, view }) {
     // );
     const newItemCount = response.count;
     setNfts([...nfts, ...newItems]);
-    setAttributes(response.attributes);
+
+    // save only when first loading
+    const currentPage = parseInt(response.currentPage);
+    if (currentPage === 1) {
+      setAttributes(response.attributes);
+    }
+
     setFilteredCount(newItemCount);
     setTotalCount(response.totalCounts);
     if (nfts.length >= newItemCount) {
@@ -146,16 +152,7 @@ function NFTlist({ address, network, view }) {
 
   return (
     <Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          color: "#f4f4f4",
-          mb: 2,
-        }}
-      >
+      <NFTActionContainer>
         <Box
           sx={{
             display: "flex",
@@ -214,7 +211,7 @@ function NFTlist({ address, network, view }) {
             type="text"
           />
         </Box>
-      </Box>
+      </NFTActionContainer>
       <NFTContentContainer>
         {openFilterMenu && (
           <FilterComponent
@@ -267,6 +264,20 @@ function NFTlist({ address, network, view }) {
     </Box>
   );
 }
+
+const NFTActionContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  color: "#f4f4f4",
+  mb: 2,
+  gap: "8px",
+  [theme.breakpoints.down(540)]: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+}));
 
 const CollectionCardContainer = styled(Box)(({ theme }) => ({
   display: "flex",

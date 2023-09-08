@@ -516,7 +516,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-            <IFrame
+            <Iframe
               sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
               src={videoUrl}
               allowFullScreen
@@ -564,14 +564,16 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
   );
 }
 
-const IFrame = styled("iframe")(({ theme }) => ({
-  width: "100%",
+const Iframe = styled("iframe")(({ theme }) => ({
   height: "800px",
   [theme.breakpoints.down(992)]: {
-    height: "640px",
+    height: "672px",
   },
-  [theme.breakpoints.down(575)]: {
-    height: "480px",
+  [theme.breakpoints.down(768)]: {
+    height: "492px",
+  },
+  [theme.breakpoints.down(420)]: {
+    height: "400px",
   },
 }));
 

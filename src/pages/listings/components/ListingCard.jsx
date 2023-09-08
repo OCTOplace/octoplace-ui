@@ -5,6 +5,7 @@ import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
@@ -70,7 +71,7 @@ export const NFTListingCard = (props) => {
   // };
 
   useEffect(() => {
-    console.log(props.listingItem);
+    // console.log("////////////////// ListingCard ", props.listingItem);
     if (props.listingItem && props.listingItem.listingNFT.metadata) {
       try {
         if (props.listingItem.listingNFT.metadata.image.includes("ipfs://")) {

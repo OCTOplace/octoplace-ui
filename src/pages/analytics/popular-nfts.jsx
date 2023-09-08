@@ -153,12 +153,12 @@ export function PopularNFTs({ title }) {
             );
           })}
         </Swiper>
-        <div className="nextIcon navPrev">
+        <div className="nextIcon navNext">
           <Fab aria-label="next" color="default" size="small">
             <NavigateNext />
           </Fab>
         </div>
-        <div className="prevIcon navNext">
+        <div className="prevIcon navPrev">
           <Fab aria-label="prev" color="default" size="small">
             <NavigateBefore />
           </Fab>

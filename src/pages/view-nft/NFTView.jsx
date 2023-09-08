@@ -25,10 +25,14 @@ import {
 } from "../../redux/slices/app-slice";
 import { SendNFT } from "./dialogs/send-nft";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
+
+import { getCommonNFTDetail } from "../../redux/thunk/getNftDetail";
 import { SellNFT } from "./dialogs/nft-sell";
 import { cancelListing } from "../../redux/thunk/cancel-sale";
 import { executeSale } from "../../redux/thunk/execute-sale";
 import { formatUnits, parseUnits } from "@ethersproject/units";
+import { Container } from "react-bootstrap";
+import { styled } from "@mui/system";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -40,7 +44,7 @@ function useForceUpdate() {
 }
 
 export const NFTView = () => {
-  const { address, tokenId, network } = useParams();
+  const { address, tokenId } = useParams();
   const [market, setMarket] = useState();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
@@ -48,6 +52,7 @@ export const NFTView = () => {
   const marketItems = useSelector((state) => state.market.markets);
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
+  const [network, setNetwork] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
   const { account, chainId } = useWeb3React();
@@ -78,7 +83,7 @@ export const NFTView = () => {
     },
   };
 
-  const getDetails = async () => {
+  const getDetailsFromContract = async () => {
     try {
       const netDetails = getNetworkInfo(network);
       const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
@@ -105,8 +110,24 @@ export const NFTView = () => {
     } catch {}
   };
 
+  const getDetailsFromSite = async () => {
+    const nftDetails = await getCommonNFTDetail({
+      contractAddress: address,
+      tokenId: tokenId,
+    });
+
+    if (nftDetails) {
+      setOwner(nftDetails.wallet_address || "");
+      setCollectionName(nftDetails.collection_name || "");
+      setMetadata(nftDetails.metadata);
+      setNetwork(nftDetails.network || "");
+    } else {
+      getDetailsFromContract();
+    }
+  };
+
   useEffect(() => {
-    getDetails();
+    getDetailsFromSite();
   }, []);
 
   useEffect(() => {
@@ -285,24 +306,15 @@ export const NFTView = () => {
 
   return (
     <Fragment>
-      <Box
-        sx={{
-          maxWidth: "1280px",
-          m: "16px auto",
-          height: "100%",
-          color: "#f4f4f4",
-        }}
-      >
-        <Grid container spacing={5}>
-          <Grid item xs={12} md={6}>
-            <NFTCardDetails
-              metadata={metadata}
-              tokenId={tokenId}
-              owner={owner}
-              name={collectionName}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+      <Container>
+        <NFTCardContainer>
+          <NFTCardDetails
+            metadata={metadata}
+            tokenId={tokenId}
+            owner={owner}
+            name={collectionName}
+          />
+          <NFTCardActionContaniner>
             {!loading && account && account === owner && !isListed && (
               <Box sx={styles.row}>
                 <Button
@@ -416,9 +428,9 @@ export const NFTView = () => {
               network={network}
               isAccordion={true}
             />
-          </Grid>
-        </Grid>
-      </Box>
+          </NFTCardActionContaniner>
+        </NFTCardContainer>
+      </Container>
       <ListNFTDialog
         metadata={metadata}
         tokenId={tokenId}
@@ -454,7 +466,7 @@ export const NFTView = () => {
         network={network}
         onCloseDlg={() => {
           setSendOpen(false);
-          getDetails();
+          getDetailsFromSite();
         }}
       />
       <SellNFT
@@ -469,7 +481,7 @@ export const NFTView = () => {
         listingId={market ? market.Id : 0}
         onCloseDlg={() => {
           setSellOpen(false);
-          getDetails();
+          getDetailsFromSite();
           setIsUpdatePrice(false);
         }}
       />
@@ -483,3 +495,20 @@ const metaUrl = (url) => {
   }
   return url;
 };
+
+const NFTCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: "20px",
+  [theme.breakpoints.down(992)]: {
+    flexDirection: "column",
+  },
+}));
+
+const NFTCardActionContaniner = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "50%",
+  [theme.breakpoints.down(992)]: {
+    width: "100%",
+  },
+}));
