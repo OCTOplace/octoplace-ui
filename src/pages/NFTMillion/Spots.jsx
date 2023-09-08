@@ -89,9 +89,7 @@ export default React.memo(function Spots(props) {
 
         let src = e.image;
         if (editIndex === e._index) {
-          src = `https://wsrv.nl/?url=${editImageUrl}&w=${
-            e.width * SPACE_WIDTH
-          }&h=${e.height * SPACE_WIDTH}&fit=outside`;
+          src = editImageUrl;
         } else {
           // mappedImages example -> Array<['https://...super-big-image.jpg', '1.jpg'] (contains "original" -> minified version)
           // the mapped image is only used if the image in [0] is the image that is actually given
