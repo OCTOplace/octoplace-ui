@@ -88,6 +88,7 @@ export default React.memo(function Spots(props) {
         }
 
         let src = e.image;
+        console.log("e._index: ", e._index);
         if (editIndex === e._index) {
           src = editImageUrl;
         } else {
@@ -103,7 +104,6 @@ export default React.memo(function Spots(props) {
           src = TransparentPng;
           styles.concat(customStyle.noimage);
         }
-
         let element = "span";
         const props = {
           // className: classNames.join(' '),
@@ -125,8 +125,16 @@ export default React.memo(function Spots(props) {
         const combineStyle = { ...styles[0], ...props.style };
 
         return (
-          <ALink href={props.href} target={props.target} key={props["data-tokenid"]}>
-            <Tooltip key={props["data-tokenid"]} componentsProps={props} title={tooltipText}>
+          <ALink
+            href={props.href}
+            target={props.target}
+            key={props["data-tokenid"]}
+          >
+            <Tooltip
+              key={props["data-tokenid"]}
+              componentsProps={props}
+              title={tooltipText}
+            >
               <img src={src} alt="" style={combineStyle} />
             </Tooltip>
           </ALink>

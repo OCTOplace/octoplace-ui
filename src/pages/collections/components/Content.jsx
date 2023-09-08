@@ -16,6 +16,7 @@ import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { styled } from "@mui/system";
 
 const styles = {
   videoContainer: {
@@ -498,7 +499,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-            <iframe
+            <Iframe
               sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
               width="100%"
               height={800}
@@ -547,5 +548,18 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     </Container>
   );
 }
+
+const Iframe = styled("iframe")(({ theme }) => ({
+  height: "800px",
+  [theme.breakpoints.down(992)]: {
+    height: "672px",
+  },
+  [theme.breakpoints.down(768)]: {
+    height: "492px",
+  },
+  [theme.breakpoints.down(420)]: {
+    height: "400px",
+  },
+}));
 
 export default Content;
