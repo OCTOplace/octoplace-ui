@@ -84,6 +84,8 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
   //   }
   // }, [listings]);
 
+  const filteredMyNFTs = myNFTs.filter((item) => item.metadata);
+
   return (
     <Dialog
       fullWidth={true}
@@ -108,7 +110,7 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
     >
       <DialogTitle>Pick NFT</DialogTitle>
       <DialogContent>
-        <NFTSelectlist nftListings={myNFTs} view={2} onSelect={onSelect} />
+        <NFTSelectlist nftListings={filteredMyNFTs} view={2} onSelect={onSelect} />
       </DialogContent>
       <DialogActions>
         <Button
