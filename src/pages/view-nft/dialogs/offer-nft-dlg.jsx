@@ -149,6 +149,10 @@ export const OfferNFTDialog = (props) => {
   };
 
   const filteredMyNFTs = myNFTs.filter((item) => {
+    if (!item.metadata) {
+      return false;
+    }
+
     if (
       item.metadata &&
       item.metadata.name &&

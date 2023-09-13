@@ -57,6 +57,10 @@ function NFTlist({ activeListings, view }) {
   };
 
   const filteredNFTItems = activeListings.filter((item) => {
+    if (!item.metadata) {
+      return false;
+    }
+
     if (
       item.metadata &&
       item.metadata.name &&
