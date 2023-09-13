@@ -177,7 +177,7 @@ export const MyListingSwapOffer = () => {
     dispatch({ type: "LOAD_ALL_OFFERS" });
 
     navigate(
-      `/nft/${network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
+      `/nft/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
     );
   };
   return (
