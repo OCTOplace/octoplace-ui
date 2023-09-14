@@ -88,7 +88,6 @@ export default React.memo(function Spots(props) {
         }
 
         let src = e.image;
-        console.log("e._index: ", e._index);
         if (editIndex === e._index) {
           src = editImageUrl;
         } else {
