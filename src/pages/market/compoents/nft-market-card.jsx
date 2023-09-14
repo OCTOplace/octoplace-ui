@@ -60,6 +60,13 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       width: "24px",
       height: "24px",
     },
+    price: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      gap: ".5rem",
+      marginTop: ".5rem",
+    },
   };
 
   // const truncate = (text, maxLength) => {
@@ -87,7 +94,9 @@ export const NFTMarketCard = ({ view, marketItem }) => {
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
-          setImgUrl(`https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`);
+          setImgUrl(
+            `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
+          );
         }
       } catch {
         setImgUrl(broken);
@@ -129,21 +138,25 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
-                <img
+                {/* <img
                   style={styles.network}
                   src={marketItem.network === "kava" ? KavaLogo : ThetaLogo}
                   alt="network"
-                />
+                /> */}
                 {/* <Typography
                   sx={styles.network}
                 >{`#${marketItem.Network}`}</Typography> */}
-                {/* <Box style={styles.meta}>
-                  <Typography>#{marketItem.TokenId}</Typography>
+                <Box style={styles.price}>
+                  <img
+                    style={styles.network}
+                    src={marketItem.network === "kava" ? KavaLogo : ThetaLogo}
+                    alt="network"
+                  />
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
                     <Typography>{marketItem.Price}</Typography>
                   </Box>
-                </Box> */}
+                </Box>
               </Box>
             )}
           </Box>

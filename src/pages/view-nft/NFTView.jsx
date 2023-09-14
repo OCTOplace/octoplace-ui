@@ -146,6 +146,18 @@ export const NFTView = () => {
     }
   }, [listings, address, tokenId]);
 
+  useEffect(() => {
+    if (marketItems.length > 0) {
+      const index = marketItems.findIndex(
+        (obj) =>
+          obj.TokenId === Number(tokenId) &&
+          obj.NFTContractAddress === address &&
+          obj.Network === network
+      );
+      setMarket(marketItems[index]);
+    }
+  }, [network, marketItems]);
+
   const handleOfferSwap = () => {
     if (account) {
       setOfferDlgOpen(true);
@@ -290,20 +302,6 @@ export const NFTView = () => {
     forceUpdate();
   };
 
-  useEffect(() => {
-    if (marketItems.length > 0) {
-      const index = marketItems.findIndex(
-        (obj) =>
-          obj.TokenId === Number(tokenId) &&
-          obj.NFTContractAddress === address &&
-          obj.Network === network
-      );
-      setMarket(marketItems[index]);
-    }
-  }, [marketItems]);
-
-  // console.log("metadata", metadata, address, tokenId, network);
-
   return (
     <Fragment>
       <Container>
@@ -315,45 +313,52 @@ export const NFTView = () => {
             name={collectionName}
           />
           <NFTCardActionContaniner>
-            {!loading && account && account === owner && !isListed && (
-              <Box sx={styles.row}>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={() => setListDlgOpen(true)}
-                >
-                  Swap
-                </Button>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={() => setSendOpen(true)}
-                >
-                  Send
-                </Button>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={() => setSellOpen(true)}
-                >
-                  Sell
-                </Button>
-              </Box>
-            )}
-            {!loading && account && account === owner && isListed && (
-              <>
-                <Button
-                  sx={styles.orangeButton}
-                  color="error"
-                  variant="contained"
-                  onClick={handleRemoveNFT}
-                >
-                  Remove Listing
-                </Button>
-              </>
-            )}
+            {!loading &&
+              account &&
+              account.toLowerCase() === owner.toLowerCase() &&
+              !isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setListDlgOpen(true)}
+                  >
+                    LIST TO SWAP
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setSellOpen(true)}
+                  >
+                    LIST TO SELL
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setSendOpen(true)}
+                  >
+                    SEND NFT
+                  </Button>
+                </Box>
+              )}
+            {!loading &&
+              account &&
+              account.toLowerCase() === owner.toLowerCase() &&
+              isListed && (
+                <>
+                  <Button
+                    sx={styles.orangeButton}
+                    color="error"
+                    variant="contained"
+                    onClick={handleRemoveNFT}
+                  >
+                    Remove Listing
+                  </Button>
+                </>
+              )}
             {!loading &&
               market &&
+              account &&
               market.SellerAddress &&
               account.toUpperCase() === market.SellerAddress.toUpperCase() &&
               market.IsSold === false &&
@@ -378,6 +383,7 @@ export const NFTView = () => {
               )}
             {!loading &&
               market &&
+              account &&
               market.SellerAddress &&
               account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
               market.IsSold === false &&
@@ -392,19 +398,22 @@ export const NFTView = () => {
                   </Button>
                 </Box>
               )}
-            {!loading && account !== owner && isListed && (
-              <Box sx={styles.row}>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={handleOfferSwap}
-                >
-                  Offer SWAP
-                </Button>
-              </Box>
-            )}
+            {!loading &&
+              account &&
+              account.toLowerCase() !== owner.toLowerCase() &&
+              isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleOfferSwap}
+                  >
+                    Offer SWAP
+                  </Button>
+                </Box>
+              )}
             {market && market.Price && (
-              <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>
+              <Typography variant="h6" sx={{ mt: 2, mb: 2, color: "#FFFFFF" }}>
                 Price: {`${market.Price}`} TFUEL
               </Typography>
             )}
