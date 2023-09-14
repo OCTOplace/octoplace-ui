@@ -44,7 +44,7 @@ function useForceUpdate() {
 }
 
 export const NFTView = () => {
-  const { address, tokenId } = useParams();
+  const { network, address, tokenId } = useParams();
   const [market, setMarket] = useState();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
@@ -52,7 +52,7 @@ export const NFTView = () => {
   const marketItems = useSelector((state) => state.market.markets);
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
-  const [network, setNetwork] = useState("");
+  // const [network, setNetwork] = useState("");
   const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
   const { account, chainId } = useWeb3React();
@@ -120,7 +120,7 @@ export const NFTView = () => {
       setOwner(nftDetails.wallet_address || "");
       setCollectionName(nftDetails.collection_name || "");
       setMetadata(nftDetails.metadata);
-      setNetwork(nftDetails.network || "");
+      // setNetwork(nftDetails.network || "");
     } else {
       getDetailsFromContract();
     }

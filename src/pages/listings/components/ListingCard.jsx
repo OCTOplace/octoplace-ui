@@ -93,7 +93,7 @@ export const NFTListingCard = (props) => {
       {props.listingItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${props.listingItem.listingNFT.contractAddress}/${props.listingItem.listingNFT.tokenId}`}
+          to={`/nft/${props.listingItem.listingNFT.network}/${props.listingItem.listingNFT.contractAddress}/${props.listingItem.listingNFT.tokenId}`}
         >
           <Box sx={styles.root}>
             <img

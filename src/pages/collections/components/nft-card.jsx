@@ -70,12 +70,15 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
       letterSpacing: "1px",
     },
   };
+
   return (
     <>
       {nft && nft.name && nft.contractAddress !== "none" && (
         <Link
           className="nft-card-link"
-          to={`/nft/${nft.contractAddress}/${Number(nft.tokenId)}`}
+          to={`/nft/${nft.network ? nft.network : "theta"}/${
+            nft.contractAddress
+          }/${Number(nft.tokenId)}`}
         >
           <Box sx={styles.root}>
             <Box
@@ -89,7 +92,10 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
               }}
             >
               <img
-                src={`https://wsrv.nl/?url=${nft.imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/")}&w=200&h=200&fit=outside`} //const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+                src={`https://wsrv.nl/?url=${nft.imageUrl.replace(
+                  "ipfs://",
+                  "https://ipfs.io/ipfs/"
+                )}&w=200&h=200&fit=outside`} //const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
                 onError={(event) => (event.target.style.display = "none")}
                 style={{
                   borderTopLeftRadius: "0.75rem",
