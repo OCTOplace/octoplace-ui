@@ -93,7 +93,7 @@ export const NFTCard = (props) => {
     <>
       <Link
         className="nft-card-link"
-        to={`/nft/${contractAddress}/${tokenId}`}
+        to={`/nft/${network ? network : "theta"}/${contractAddress}/${tokenId}`}
       >
         <Box sx={styles.root}>
           <Box sx={styles.flex}>

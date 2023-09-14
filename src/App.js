@@ -129,7 +129,7 @@ function App() {
           <Route path="/market/swap" element={<Swap />} />
           <Route path="/market/auction" element={<Auction />} />
           <Route path="my-nft" element={<MyNFT />} />
-          <Route path="nft/:address/:tokenId" element={<NFTView />} />
+          <Route path="nft/:network/:address/:tokenId" element={<NFTView />} />
           <Route path="listing" element={<Listings />} />
           <Route path="listing/offers" element={<ListingOffers />} />
           <Route path="swap/:network/:offerId" element={<SingleSwapOffer />} />
