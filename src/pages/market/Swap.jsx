@@ -131,6 +131,10 @@ function Swap({ isHome }) {
   const filteredSwapItems = activeListings.filter((item, index) => {
     const selItem = item.listingNFT;
 
+    if (!selItem.metadata) {
+      return false;
+    }
+    
     if (
       selItem.name &&
       !selItem.name.toLowerCase().includes(keyword.toLowerCase())

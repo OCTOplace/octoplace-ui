@@ -71,7 +71,6 @@ export const NFTListingCard = (props) => {
   // };
 
   useEffect(() => {
-    // console.log("////////////////// ListingCard ", props.listingItem);
     if (props.listingItem && props.listingItem.listingNFT.metadata) {
       try {
         if (props.listingItem.listingNFT.metadata.image.includes("ipfs://")) {
