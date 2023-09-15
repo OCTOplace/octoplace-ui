@@ -127,6 +127,7 @@ export const NFTView = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getDetailsFromSite();
   }, []);
 

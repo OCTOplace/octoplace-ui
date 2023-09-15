@@ -111,10 +111,18 @@ export const NFTCardDetails = (props) => {
     if (metadata) {
       try {
         if (metadata.image) {
-          setUrl(`https://wsrv.nl/?url=${getImageUrl(metadata.image)}&w=400&h=400&fit=outside`);
+          setUrl(
+            `https://wsrv.nl/?url=${getImageUrl(
+              metadata.image
+            )}&w=400&h=400&fit=outside`
+          );
         } else if (metadata.aimation_url) {
           setAnimation(true);
-          setUrl(`https://wsrv.nl/?url=${getImageUrl(metadata.animation_url)}&w=400&h=400&fit=outside`);
+          setUrl(
+            `https://wsrv.nl/?url=${getImageUrl(
+              metadata.animation_url
+            )}&w=400&h=400&fit=outside`
+          );
         }
       } catch (e) {
         setUrl("");
@@ -125,7 +133,12 @@ export const NFTCardDetails = (props) => {
     <>
       <Box sx={styles.card}>
         {metadata && (
-          <Img alt="kjbhv" src={imgUrl} onLoad={() => setImgLoaded(true)} />
+          <Img
+            alt="kjbhv"
+            src={imgUrl}
+            style={{ display: imgLoaded ? "block" : "none" }}
+            onLoad={() => setImgLoaded(true)}
+          />
         )}
         {!imgLoaded && (
           <Box
