@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
@@ -11,54 +11,78 @@ import wc from "../assets/walletconnect.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import {  activateInjectedProvider, injectedConnector } from "../connectors/injected-connector";
+import { getNetworkInfo } from "../connectors/networks";
+import {
+  activateInjectedProvider,
+  injectedConnector,
+} from "../connectors/injected-connector";
 import { walletconnect } from "../connectors/wallet-connect";
 import { useWeb3React } from "@web3-react/core";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 export const ConnectWalletDlg = (props) => {
   const { onClose, open } = props;
-  const { activate, error, account} = useWeb3React();
+  const { activate, error, account } = useWeb3React();
   const handleClose = () => {
     onClose();
   };
 
   const handleMetamaskClick = async () => {
-    activateInjectedProvider("MetaMask")
+    activateInjectedProvider("MetaMask");
     await activate(injectedConnector);
     handleClose();
-}
+  };
 
-const handleWalletConnectClick = async () => {
-  await activate(walletconnect);
-  handleClose();
-}
+  const handleWalletConnectClick = async () => {
+    await activate(walletconnect);
+    handleClose();
+  };
 
-useEffect(()=> {
-  if(account && account !=="" && account.length > 0){
-    toast(`Wallet Connected! ${getAccountString(account)}`,{type:"success", position: "bottom-left"});
-  }
-}, [account]);
-
-useEffect(() => {
-  if (error) {
-    switch (error.name) {
-      case "UnsupportedChainIdError":
-        toast("Unsupported network, Switch to Theta Mainnet", {type: "error"})
-        // setSwitchNet(true);
-        break;
-      case "NoEthereumProviderError":
-        toast("Please Install metamask.", {type:"error"})
-        break;
-      case "UserRejectedRequestError":
-          toast("Connection request rejected.", { type: "warning"})
-        break;
-      default:
-        
-        break;
+  const switchNetwork = async () => {
+    if (window.ethereum) {
+      try {
+        const netInfo = getNetworkInfo("theta");
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [netInfo.switch],
+        });
+      } catch (error) {
+        console.error("Failed to switch network:", error);
+      }
+    } else {
+      toast("Metamask not detected. Please install Metamask.", {
+        type: "error",
+      });
     }
-  }
-}, [error]);
+  };
+
+  useEffect(() => {
+    if (account && account !== "" && account.length > 0) {
+      toast(`Wallet Connected! ${getAccountString(account)}`, {
+        type: "success",
+        position: "bottom-left",
+      });
+    }
+  }, [account]);
+
+  useEffect(() => {
+    if (error) {
+      switch (error.name) {
+        case "UnsupportedChainIdError":
+          // toast("Unsupported network, Switch to Theta Mainnet", {type: "error"})
+          switchNetwork();
+          break;
+        case "NoEthereumProviderError":
+          toast("Please Install metamask.", { type: "error" });
+          break;
+        case "UserRejectedRequestError":
+          toast("Connection request rejected.", { type: "warning" });
+          break;
+        default:
+          break;
+      }
+    }
+  }, [error]);
 
   return (
     <Dialog fullWidth onClose={handleClose} open={open} className="wallet-dlg">
@@ -77,13 +101,21 @@ useEffect(() => {
       <Divider />
       <DialogContent>
         <List sx={{ pt: 0 }}>
-          <ListItem button onClick={handleMetamaskClick} className="wallet-menu">
+          <ListItem
+            button
+            onClick={handleMetamaskClick}
+            className="wallet-menu"
+          >
             <ListItemAvatar>
               <img className="wallet-logo" src={mm} alt="metamask" />
             </ListItemAvatar>
             <ListItemText primary="Metamask" />
           </ListItem>
-          <ListItem button onClick={handleWalletConnectClick} className="wallet-menu">
+          <ListItem
+            button
+            onClick={handleWalletConnectClick}
+            className="wallet-menu"
+          >
             <ListItemAvatar>
               <img className="wallet-logo" src={wc} alt="metamask" />
             </ListItemAvatar>

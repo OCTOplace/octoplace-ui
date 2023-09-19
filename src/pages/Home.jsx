@@ -15,7 +15,7 @@ import Swap from "./market/Swap";
 import Auction from "./market/Auction";
 import TableComponent from "../components/TableComponent";
 import { NFTMillion } from "./NFTMillion";
-import { styled } from '@mui/system'
+import { styled } from "@mui/system";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export const Home = () => {
   const [activeTab, setActiveTab] = useState("Market");
 
   const collections = useSelector((state) => state.listings.collections);
-// console.log("////////////////////// collections", collections)
+  // console.log("////////////////////// collections", collections)
   useEffect(() => {
     if (listings.length > 0) {
       const active = getActiveListings(listings);
@@ -82,7 +82,7 @@ export const Home = () => {
 };
 
 const NFTDataContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '10px'
-}))
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+}));
