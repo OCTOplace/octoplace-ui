@@ -8,16 +8,17 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  ButtonProps,
+  Typography,
   Box,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate, useRoutes } from "react-router-dom";
-import { ConnectWalletDlg } from "./connnect-wallet-dlg";
+import { ConnectWalletDlg } from "./connect-wallet-dlg";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -25,8 +26,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
-import faucetImg from "../assets/faucet.png";
-// import Searchbox from "./searchbox"
+import { getNetworkInfo } from "../connectors/networks";
+import ThetaLogo from "../assets/chains/thetaLogo.svg";
+import KavaLogo from "../assets/chains/kavaLogo.svg";
 
 const WalletButton = styled(Button)({
   boxShadow: "none",
@@ -56,8 +58,42 @@ export const AppNavbar = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl1, setAnchorEl1] = useState(null);
+  const [anchorChainEl, setAnchorChainEl] = useState(null);
+  const [switchingChain, setSwitchingChain] = useState(false);
   const openMenu = Boolean(anchorEl);
   const isOpen = Boolean(anchorEl1);
+  const openChainMenu = Boolean(anchorChainEl);
+
+  const switchNetwork = async (chain) => {
+    if (window.ethereum) {
+      try {
+        setSwitchingChain(true);
+        const netInfo = getNetworkInfo(chain);
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [netInfo.switch],
+        });
+        setSwitchingChain(false);
+      } catch (error) {
+        console.error("Failed to switch network:", error);
+      }
+    } else {
+      toast("Metamask not detected. Please install Metamask.", {
+        type: "error",
+      });
+    }
+  };
+
+  const handleChainBtnClick = (event) => {
+    setAnchorChainEl(event.currentTarget);
+  };
+
+  const handleChainMenuClose = (chain) => {
+    setAnchorChainEl(null);
+    if (chain && typeof chain === "string") {
+      switchNetwork(chain);
+    }
+  };
 
   const handleBtnClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,6 +118,7 @@ export const AppNavbar = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          // display: "block",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -125,8 +162,8 @@ export const AppNavbar = () => {
             </Menu>
           </MobileNavBarItemContainer>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "56px" }}>
-          <NavBarItemContainer>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <NavBarItemContainer style={{ paddingRight: "40px" }}>
             <NavItem onClick={() => navigate("/market")}>Market</NavItem>
             <NavItem onClick={() => navigate("/collections")}>
               Collections
@@ -143,17 +180,105 @@ export const AppNavbar = () => {
             </WalletButton>
           )}
           {acctDetails && acctDetails.isLoggedIn && (
-            <Button
-              className="connect-btn"
-              onClick={handleBtnClick}
-              variant="contained"
-            >
-              {getAccountString(acctDetails.address)} &nbsp;|{" "}
-              {acctDetails.balance} {chainId === 361 ? "TFUEL" : "KAVA"}
-            </Button>
+            <>
+              <Button
+                // className="connect-btn"
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: "12px",
+                  height: "32px",
+                }}
+                onClick={handleChainBtnClick}
+                variant="contained"
+                disabled={switchingChain}
+              >
+                {switchingChain && (
+                  <Typography
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    <CircularProgress
+                      style={{
+                        color: "black",
+                        width: "20px",
+                        height: "20px",
+                        alignItems: "center",
+                      }}
+                    />
+                    &nbsp;Switching
+                  </Typography>
+                )}
+                {!switchingChain && (
+                  <Box
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <img
+                      style={{
+                        width: chainId === 361 ? "20px" : "15px",
+                        height: chainId === 361 ? "20px" : "15px",
+                      }}
+                      src={chainId === 361 ? ThetaLogo : KavaLogo}
+                      alt="network"
+                    />
+                    &nbsp;{chainId === 361 ? "THETA" : "KAVA"}
+                  </Box>
+                )}
+              </Button>
+              <Button
+                className="connect-btn"
+                onClick={handleBtnClick}
+                variant="contained"
+              >
+                {getAccountString(acctDetails.address)} &nbsp;|{" "}
+                {acctDetails.balance} {chainId === 361 ? "TFUEL" : "KAVA"}
+              </Button>
+            </>
           )}
         </div>
       </Container>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorChainEl}
+        open={openChainMenu}
+        onClose={handleChainMenuClose}
+        sx={{ marginTop: "8px" }}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem
+          style={{ fontSize: "0.9rem" }}
+          onClick={() => {
+            handleChainMenuClose("theta");
+          }}
+        >
+          <img
+            style={{ width: "20px", height: "20px" }}
+            src={ThetaLogo}
+            alt="network"
+          />
+          &nbsp;THETA
+        </MenuItem>
+        <MenuItem
+          style={{ fontSize: "0.9rem" }}
+          onClick={() => {
+            handleChainMenuClose("kava");
+          }}
+        >
+          <img
+            style={{ width: "15px", height: "15px", margin: "0 2px 0 4px" }}
+            src={KavaLogo}
+            alt="network"
+          />
+          &nbsp;KAVA
+        </MenuItem>
+      </Menu>
       <ConnectWalletDlg open={dlgOpen} onClose={() => setDlgOpen(false)} />
       <Menu
         id="basic-menu"
@@ -184,6 +309,7 @@ export const AppNavbar = () => {
         <MenuItem
           onClick={() => {
             deactivate();
+            navigate("/");
             handleMenuClose();
           }}
         >
