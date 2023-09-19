@@ -19,6 +19,11 @@ import {
 import { walletconnect } from "../connectors/wallet-connect";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-toastify";
+import { UnsupportedChainIdError } from "@web3-react/core";
+import {
+  UserRejectedRequestError,
+  NoEthereumProviderError,
+} from "@web3-react/injected-connector";
 
 export const ConnectWalletDlg = (props) => {
   const { onClose, open } = props;
@@ -67,19 +72,27 @@ export const ConnectWalletDlg = (props) => {
 
   useEffect(() => {
     if (error) {
-      switch (error.name) {
-        case "UnsupportedChainIdError":
-          // toast("Unsupported network, Switch to Theta Mainnet", {type: "error"})
-          switchNetwork();
-          break;
-        case "NoEthereumProviderError":
-          toast("Please Install metamask.", { type: "error" });
-          break;
-        case "UserRejectedRequestError":
-          toast("Connection request rejected.", { type: "warning" });
-          break;
-        default:
-          break;
+      console.log(error);
+      // switch (error.name) {
+      //   case "UnsupportedChainIdError":
+      //     // toast("Unsupported network, Switch to Theta Mainnet", {type: "error"})
+      //     switchNetwork();
+      //     break;
+      //   case "NoEthereumProviderError":
+      //     toast("Please Install metamask.", { type: "error" });
+      //     break;
+      //   case "UserRejectedRequestError":
+      //     toast("Connection request rejected.", { type: "warning" });
+      //     break;
+      //   default:
+      //     break;
+      // }
+      if (error instanceof UnsupportedChainIdError) {
+        switchNetwork();
+      } else if (error instanceof NoEthereumProviderError) {
+        toast("Please Install metamask.", { type: "error" });
+      } else if (error instanceof UserRejectedRequestError) {
+        toast("Connection request rejected.", { type: "warning" });
       }
     }
   }, [error]);
