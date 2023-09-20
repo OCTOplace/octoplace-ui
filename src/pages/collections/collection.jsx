@@ -24,7 +24,7 @@ export const CollectionsPage = () => {
   // const collections = useSelector((state) => state.collection.collections);
   const [view, setView] = useState(2);
   const [collections, setCollections] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [totalCounts, setTotalCounts] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -98,13 +98,13 @@ export const CollectionsPage = () => {
   const handleSearch = (event) => {
     setLoading(true);
     setCollections([]);
-    setPage(1);
+    setPage(0);
     setSearch(event.target.value);
   };
 
   useEffect(() => {
     setCollections([]);
-    setPage(1);
+    setPage(0);
     setTotalCounts(0);
     setHasMore(true);
     fetchCollections();
