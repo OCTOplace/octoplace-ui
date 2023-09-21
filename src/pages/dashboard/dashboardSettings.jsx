@@ -19,6 +19,8 @@ import {
   updateUserSetting,
 } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
+import avatarImage from "../../assets/default-user.jpg";
+import brokenImage from "../../assets/broken.png";
 import PickDialog from "./components/pickDialog";
 import { styled } from "@mui/system";
 
@@ -225,7 +227,7 @@ function DashboardSettings() {
         const fetchedData = await registerOrFetchUserSetting(account, "theta");
         setUserSetting(fetchedData);
 
-        if (fetchedData !== undefined && fetchedData !== {}) {
+        if (fetchedData !== undefined) {
           setTitle(fetchedData.title || "");
           setAbout(fetchedData.description || "");
           setTelegram(fetchedData.telegram || "");
@@ -399,7 +401,7 @@ function DashboardSettings() {
                 ? process.env.REACT_APP_API_URL + userSetting.bannerImage
                 : bgImage
             }
-            alt="bg-image"
+            alt="User Banner"
             style={{
               width: "100%",
               height: "45vh",
@@ -439,9 +441,9 @@ function DashboardSettings() {
                         : userSetting.avatarImage
                         ? process.env.REACT_APP_API_URL +
                           userSetting.avatarImage
-                        : bgImage
+                        : avatarImage
                     }
-                    alt="profileImage"
+                    alt="USer avatar"
                     style={styles.image}
                     width="180px"
                     height="180px"
@@ -491,7 +493,7 @@ function DashboardSettings() {
                       (userSetting &&
                         userSetting.nft1 &&
                         userSetting.nft1.bannerImage) ||
-                      bgImage
+                      brokenImage
                     }
                     alt="bg-image"
                   />
@@ -514,7 +516,7 @@ function DashboardSettings() {
                       (userSetting &&
                         userSetting.nft2 &&
                         userSetting.nft2.bannerImage) ||
-                      bgImage
+                      brokenImage
                     }
                     alt="bg-image"
                   />
@@ -537,7 +539,7 @@ function DashboardSettings() {
                       (userSetting &&
                         userSetting.nft3 &&
                         userSetting.nft3.bannerImage) ||
-                      bgImage
+                      brokenImage
                     }
                     alt="bg-image"
                   />

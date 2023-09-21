@@ -1,17 +1,19 @@
 import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
-import {
-  takeLatest,
-  put,
-  call
-} from "redux-saga/effects";
+import { takeLatest, put, call } from "redux-saga/effects";
 import { rpc } from "../../connectors/address";
 import abi from "../../abi/erc721.json";
 import { formatUnits } from "@ethersproject/units";
 import axios from "axios";
 import { metadataUrl } from "../../utils/format-listings";
-import { addNFT, addNFTCollection, resetCollections, setMyNftLoading, setOwner } from "../slices/my-nft-slice";
+import {
+  addNFT,
+  addNFTCollection,
+  resetCollections,
+  setMyNftLoading,
+  setOwner,
+} from "../slices/my-nft-slice";
 function* LoadMyNFTSagaWatcher() {
   yield takeLatest("LOAD_MY_NFTS", LoadMyNFTWorker);
 }
@@ -44,7 +46,7 @@ async function loadNFT(addresses, owner) {
     const collectionName = await contract.name();
     const colSymbol = await contract.symbol();
     const balance = await contract.balanceOf(owner);
-    
+
     collections.push({
       address: contract.address,
       name: collectionName,
@@ -57,15 +59,10 @@ async function loadNFT(addresses, owner) {
       for (let i = 0; i < collection.balance; i++) {
         let tokenId;
         let uri;
-        const contract = new Contract(collection.address, abi,provider);
+        const contract = new Contract(collection.address, abi, provider);
         try {
-          tokenId = await contract.tokenOfOwnerByIndex(
-            owner,
-            i
-          );
-          uri = await contract.tokenURI(
-            Number(formatUnits(tokenId, 0))
-          );
+          tokenId = await contract.tokenOfOwnerByIndex(owner, i);
+          uri = await contract.tokenURI(Number(formatUnits(tokenId, 0)));
           let tokenData;
           try {
             const result = await axios.get(metadataUrl(uri));
@@ -90,7 +87,7 @@ async function loadNFT(addresses, owner) {
             tokenId: Number(formatUnits(tokenId, 0)),
             url: uri,
             metadata: undefined,
-          })
+          });
         }
       }
     }
