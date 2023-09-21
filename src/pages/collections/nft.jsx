@@ -8,8 +8,6 @@ import {
   Telegram,
   Twitter,
   Instagram,
-  YouTube,
-  Edit,
   Settings,
 } from "@mui/icons-material";
 import { BsMedium } from "react-icons/bs";
@@ -85,6 +83,7 @@ const NFTPage = () => {
                   style={{ backgroundImage: `url(${defaultImage})` }}
                 >
                   <img
+                    alt="NFT Project"
                     src={
                       collection.projectImage.startsWith("https://")
                         ? collection.projectImage
@@ -92,7 +91,6 @@ const NFTPage = () => {
                           collection.projectImage
                     }
                     onError={(event) => (event.target.style.display = "none")}
-                    // alt="Profile Image"
                     // sx={styles.image}
                     className="octagon-image"
                     // width="180px"

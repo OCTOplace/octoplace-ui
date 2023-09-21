@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+// import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
 import verifiedLogo from "../../../assets/verified.svg";
-import flameLogo from "../../../assets/flame.svg";
+// import flameLogo from "../../../assets/flame.svg";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const NFTListingCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
-  const { view } = props;
+  // const { view } = props;
 
   const styles = {
     root: {
@@ -78,7 +78,9 @@ export const NFTListingCard = (props) => {
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
           setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
-          setImgUrl(`https://wsrv.nl/?url=${props.listingItem.listingNFT.metadata.image}&w=200&h=200&fit=outside`);
+          setImgUrl(
+            `https://wsrv.nl/?url=${props.listingItem.listingNFT.metadata.image}&w=200&h=200&fit=outside`
+          );
         }
       } catch {
         setImgUrl(broken);

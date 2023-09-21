@@ -13,26 +13,25 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
-import BuildIcon from "@mui/icons-material/Build";
 import { fetchUserSetting } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
-import ppImage from "../../assets/pp.png";
+import avatarImage from "../../assets/default-user.jpg";
+import brokenImage from "../../assets/broken.png";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { toast } from "react-toastify";
 import copy from "clipboard-copy";
-import { Link } from "react-router-dom";
 
 function DashboardHome() {
   const dispatch = useDispatch();
   const acctDetails = useSelector((state) => state.account);
   const [balance, setBalance] = useState(null);
   const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
+  // const activeListings = useSelector((state) => state.listings.activeListings);
   const myNFTs = useSelector((state) => state.myNFT.nfts);
-  const [myNFTListings, setMyNFTListings] = useState([]);
+  // const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
-  const [isOwner, setIsOwner] = useState(false);
+  // const [isOwner, setIsOwner] = useState(false);
   const [activeMenu, setActiveMenu] = useState("nft");
   const { account, chainId } = useWeb3React();
   const [userSetting, setUserSetting] = useState({});
@@ -250,23 +249,6 @@ function DashboardHome() {
     dispatch(getCollectionOwner({ address: account, network: "theta" }));
   }, [account]);
 
-  function transformData(nfts) {
-    return nfts.map((nft) => {
-      const item = {
-        listingNFT: {
-          collectionName: "",
-          collectionSymbol: "",
-          contractAddress: nft.contractAddress,
-          tokenId: Number(nft.tokenId),
-          metadata: nft.metadata ? nft.metadata : null,
-          url: nft.uri ? nft.uri : "",
-          network: nft.network,
-        },
-      };
-      return item;
-    });
-  }
-
   const getAccountString = (_hash) => {
     const hash = String(_hash);
     const first = hash.substring(0, 3);
@@ -283,7 +265,7 @@ function DashboardHome() {
             ? process.env.REACT_APP_API_URL + userSetting.bannerImage
             : bgImage
         }
-        alt="bg-image"
+        alt="User Banner"
         style={{
           width: "100%",
           height: "45vh",
@@ -303,9 +285,9 @@ function DashboardHome() {
                 src={
                   userSetting.avatarImage
                     ? process.env.REACT_APP_API_URL + userSetting.avatarImage
-                    : bgImage
+                    : avatarImage
                 }
-                alt="profileImage"
+                alt="User Avatar"
                 className="octagon-image"
                 width="180px"
                 height="180px"
@@ -333,9 +315,9 @@ function DashboardHome() {
                     (userSetting &&
                       userSetting.nft1 &&
                       userSetting.nft1.bannerImage) ||
-                    bgImage
+                    brokenImage
                   }
-                  alt="bg-image"
+                  alt="User NFT"
                   style={{
                     width: "120px",
                     height: "120px",
@@ -349,9 +331,9 @@ function DashboardHome() {
                     (userSetting &&
                       userSetting.nft2 &&
                       userSetting.nft2.bannerImage) ||
-                    bgImage
+                    brokenImage
                   }
-                  alt="bg-image"
+                  alt="User NFT"
                   style={{
                     width: "150px",
                     height: "150px",
@@ -365,9 +347,9 @@ function DashboardHome() {
                     (userSetting &&
                       userSetting.nft3 &&
                       userSetting.nft3.bannerImage) ||
-                    bgImage
+                    brokenImage
                   }
-                  alt="bg-image"
+                  alt="User NFT"
                   style={{
                     width: "120px",
                     height: "120px",

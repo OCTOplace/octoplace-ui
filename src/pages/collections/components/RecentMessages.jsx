@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import avatarImage from "../../../assets/default-user.jpg";
 
 function RecentMessages({ messages }) {
   const [recentMessages, setRecentMessages] = useState(messages);
@@ -20,9 +21,25 @@ function RecentMessages({ messages }) {
         recentMessages.map((message) => (
           <Box key={message._id} sx={styles.messageRow}>
             <Box sx={styles.avatar}>
-              {message.user && message.user.avatarImage && (
+              {message.user && (
                 <img
-                  src={process.env.REACT_APP_API_URL + message.user.avatarImage}
+                  src={
+                    message.user.avatarImage
+                      ? process.env.REACT_APP_API_URL + message.user.avatarImage
+                      : avatarImage
+                  }
+                  alt="collection-avatar"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+              {!message.user && (
+                <img
+                  src={avatarImage}
                   alt="collection-avatar"
                   style={{
                     width: "50px",
