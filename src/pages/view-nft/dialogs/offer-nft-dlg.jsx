@@ -24,7 +24,7 @@ import FilterComponent from "../../../components/FilterComponent";
 import Searchbox from "../../../components/searchbox";
 import { useSelector } from "react-redux";
 import { filterListedNFTs } from "../../../utils/filter";
-import { getImageUrl } from "../../../utils/string-util";
+// import { getImageUrl } from "../../../utils/string-util";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
@@ -70,7 +70,7 @@ export const OfferNFTDialog = (props) => {
     setOrderMethod(event.target.value);
   };
 
-  const [selectedIndex, setSelectedIndex] = React.useState(-1);
+  // const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [selectedNftOffer, setSelectedNftOffer] = useState();
   const [myNFTs, setMyNFTs] = useState([]);
 
@@ -390,7 +390,9 @@ export const OfferNFTDialog = (props) => {
                         selected={
                           selectedNftOffer &&
                           selectedNftOffer.contractAddress ===
-                            item.contractAddress
+                            item.contractAddress &&
+                          Number(selectedNftOffer.tokenId) ===
+                            Number(item.tokenId)
                         }
                       />
                     </Grid>
