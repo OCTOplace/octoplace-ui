@@ -108,7 +108,8 @@ export const NFTMarketCard = ({ view, marketItem, selected }) => {
       {marketItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${marketItem.network}/${marketItem.contractAddress}/${marketItem.tokenId}`}
+          // to={`/nft/${marketItem.network}/${marketItem.contractAddress}/${marketItem.tokenId}`}
+          to={""}
         >
           <Box
             // sx={styles.root}
