@@ -14,6 +14,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate, useRoutes } from "react-router-dom";
 import { ConnectWalletDlg } from "./connect-wallet-dlg";
+import { GoProDlg } from "./go-pro-dlg";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from "react-redux";
@@ -60,6 +61,7 @@ export const AppNavbar = () => {
   const [anchorEl1, setAnchorEl1] = useState(null);
   const [anchorChainEl, setAnchorChainEl] = useState(null);
   const [switchingChain, setSwitchingChain] = useState(false);
+  const [goProDlgOpen, setGoProDlgOpen] = useState(false);
   const openMenu = Boolean(anchorEl);
   const isOpen = Boolean(anchorEl1);
   const openChainMenu = Boolean(anchorChainEl);
@@ -111,6 +113,10 @@ export const AppNavbar = () => {
     setAnchorEl1(event.currentTarget);
   };
 
+  const handleGoPro = () => {
+    setGoProDlgOpen(true);
+  };
+
   return (
     <NavBarContainer>
       <Container
@@ -156,8 +162,11 @@ export const AppNavbar = () => {
               >
                 <CollectionsIcon /> &nbsp;Collections
               </MenuItem>
-              <MenuItem sx={{ color: "#808080" }}>
+              {/* <MenuItem sx={{ color: "#808080" }}>
                 <ForwardToInboxIcon /> &nbsp;Inbox
+              </MenuItem> */}
+              <MenuItem>
+                <ForwardToInboxIcon /> &nbsp;GO PRO
               </MenuItem>
             </Menu>
           </MobileNavBarItemContainer>
@@ -168,7 +177,10 @@ export const AppNavbar = () => {
             <NavItem onClick={() => navigate("/collections")}>
               Collections
             </NavItem>
-            <NavItem disabled={true}>Inbox</NavItem>
+            {/* <NavItem disabled={true}>Inbox</NavItem> */}
+            <NavItem sx={{ fontSize: "16px" }} onClick={handleGoPro}>
+              GO PRO
+            </NavItem>
           </NavBarItemContainer>
           {acctDetails && !acctDetails.isLoggedIn && (
             <WalletButton
@@ -280,6 +292,7 @@ export const AppNavbar = () => {
         </MenuItem>
       </Menu>
       <ConnectWalletDlg open={dlgOpen} onClose={() => setDlgOpen(false)} />
+      <GoProDlg open={goProDlgOpen} onClose={() => setGoProDlgOpen(false)} />
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
