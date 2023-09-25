@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@elgorditosalsero/react-gtm-hook": "^2.7.2",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@ethersproject/address": "^5.7.0",
