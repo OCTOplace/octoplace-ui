@@ -218,6 +218,25 @@
   }
 }
 
+.gopro-dlg {
+  .MuiPaper-root {
+    background-color: #262626;
+    color: white;
+  }
+  .spacer {
+    flex: 1 auto;
+  }
+  .icon {
+    color: white;
+  }
+
+  .title {
+    text-transform: uppercase;
+    align-items: center;
+    width: 100%;
+  }
+}
+
 .nft-card-img {
   width: 100%;
   height: 300px;
