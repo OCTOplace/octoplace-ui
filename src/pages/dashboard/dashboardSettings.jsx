@@ -24,6 +24,8 @@ import brokenImage from "../../assets/broken.png";
 import PickDialog from "./components/pickDialog";
 import { styled } from "@mui/system";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 const styles = {
   container: {
     position: "relative",
@@ -175,6 +177,8 @@ const styles = {
 };
 
 function DashboardSettings() {
+  const sendDataToGTM = useGTMDispatch();
+
   const { account, chainId } = useWeb3React();
   const [userSetting, setUserSetting] = useState({});
 
@@ -327,6 +331,12 @@ function DashboardSettings() {
 
       bannerUpdated(false);
       avatarUpdated(false);
+
+      sendDataToGTM({
+        event: "Save profile",
+        customData: `address: ${account}`,
+      });
+
       setLoading(false);
     } catch (error) {
       // Handle error here, e.g. show an error message

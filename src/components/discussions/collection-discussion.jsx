@@ -42,12 +42,15 @@ import {
   getCollectionDiscussions,
 } from "../../redux/thunk/get-discussions";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 export const CollectionDiscussions = ({
   address,
   network,
   // discussions,
   isAccordion,
 }) => {
+  const sendDataToGTM = useGTMDispatch();
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (event, isExpanded) => {
@@ -393,6 +396,10 @@ export const CollectionDiscussions = ({
               fullWidth
               variant="contained"
               onClick={() => {
+                sendDataToGTM({
+                  event: "Save Collection Discussion",
+                  customData: { address: address },
+                });
                 if (message) setOpenSendDlg(true);
               }}
               sx={styles.sendButton}

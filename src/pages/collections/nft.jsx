@@ -22,7 +22,11 @@ import { CollectionDiscussions } from "../../components/discussions/collection-d
 import defaultImage from "../../assets/GrayBackground.jpeg";
 import { styled } from "@mui/system";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 const NFTPage = () => {
+  const sendDataToGTM = useGTMDispatch();
+
   const { address } = useParams();
   const navigate = useNavigate();
   const { account } = useWeb3React();
@@ -273,7 +277,13 @@ const NFTPage = () => {
                 Content
               </Button>
               <Button
-                onClick={() => setActiveMenu("discussion")}
+                onClick={() => {
+                  sendDataToGTM({
+                    event: "Show Collection Discussion",
+                    customData: `address: ${collection.contractAddress}`,
+                  });
+                  setActiveMenu("discussion");
+                }}
                 sx={
                   activeMenu === "discussion"
                     ? styles.activeButton
