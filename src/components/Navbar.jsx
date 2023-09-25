@@ -30,6 +30,13 @@ import { getNetworkInfo } from "../connectors/networks";
 import ThetaLogo from "../assets/chains/thetaLogo.svg";
 import KavaLogo from "../assets/chains/kavaLogo.svg";
 
+const chainIds = {
+  THETA: 0x169,
+  THETA_TEST: 0x16d,
+  KAVA: 0x8ae,
+  KAVA_TEST: 0x8ad,
+};
+
 const WalletButton = styled(Button)({
   boxShadow: "none",
   textTransform: "none",
@@ -220,13 +227,30 @@ export const AppNavbar = () => {
                   >
                     <img
                       style={{
-                        width: chainId === 361 ? "20px" : "15px",
-                        height: chainId === 361 ? "20px" : "15px",
+                        width:
+                          chainId === chainIds.THETA ||
+                          chainId === chainIds.THETA_TEST
+                            ? "20px"
+                            : "15px",
+                        height:
+                          chainId === chainIds.THETA ||
+                          chainId === chainIds.THETA_TEST
+                            ? "20px"
+                            : "15px",
                       }}
-                      src={chainId === 361 ? ThetaLogo : KavaLogo}
+                      src={
+                        chainId === chainIds.THETA ||
+                        chainId === chainIds.THETA_TEST
+                          ? ThetaLogo
+                          : KavaLogo
+                      }
                       alt="network"
                     />
-                    &nbsp;{chainId === 361 ? "THETA" : "KAVA"}
+                    &nbsp;
+                    {chainId === chainIds.THETA ||
+                    chainId === chainIds.THETA_TEST
+                      ? "THETA"
+                      : "KAVA"}
                   </Box>
                 )}
               </Button>
@@ -236,7 +260,10 @@ export const AppNavbar = () => {
                 variant="contained"
               >
                 {getAccountString(acctDetails.address)} &nbsp;|{" "}
-                {acctDetails.balance} {chainId === 361 ? "TFUEL" : "KAVA"}
+                {acctDetails.balance}{" "}
+                {chainId === chainIds.THETA || chainId === chainIds.THETA_TEST
+                  ? "TFUEL"
+                  : "TKAVA"}
               </Button>
             </>
           )}
