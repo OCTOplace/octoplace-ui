@@ -14,6 +14,7 @@ function CardList({ list, view }) {
               <CollectionCard
                 key={`index_${index}`}
                 collectionItem={collectionItem}
+                where=""
               />
             );
           })}

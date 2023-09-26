@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Tooltip from "@mui/material/Tooltip";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import infoIcon from "../../assets/Infrormation_button.svg";
-import nextIcon from "../../assets/next.svg";
-import prevIcon from "../../assets/prev.svg";
-import { Paper, Button, Grid, Box, useMediaQuery, Fab } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import { NFTCard } from "../collections/components/nft-card";
-import { NFTListingCard } from "../../pages/listings/components/ListingCard";
+// import { NFTListingCard } from "../../pages/listings/components/ListingCard";
 import { useDispatch, useSelector } from "react-redux";
-import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings } from "../../utils/format-listings";
+// import { setActiveListings } from "../../redux/slices/listing-slice";
+// import { getActiveListings } from "../../utils/format-listings";
 import { getPopularNFTs } from "../../redux/thunk/get-analytics";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
 import { Autoplay, EffectFlip, FreeMode, Navigation } from "swiper";
@@ -23,49 +21,50 @@ import "swiper/modules/autoplay/autoplay.min.css";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 
 export function PopularNFTs({ title }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const windowWidth = window.innerWidth;
-  const isXSmallScreen = useMediaQuery("(max-width: 600px)");
-  const isSmallScreen = useMediaQuery(
-    "(min-width: 601px) and (max-width: 900px)"
-  );
-  const isMediumScreen = useMediaQuery(
-    "(min-width: 901px) and (max-width: 1200px)"
-  );
-  const isLargeScreen = useMediaQuery(
-    "(min-width: 1201px) and (max-width: 1535px)"
-  );
-  const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
+  // const [currentIndex, setCurrentIndex] = useState(0);
+  // const windowWidth = window.innerWidth;
+  // const isXSmallScreen = useMediaQuery("(max-width: 600px)");
+  // const isSmallScreen = useMediaQuery(
+  //   "(min-width: 601px) and (max-width: 900px)"
+  // );
+  // const isMediumScreen = useMediaQuery(
+  //   "(min-width: 901px) and (max-width: 1200px)"
+  // );
+  // const isLargeScreen = useMediaQuery(
+  //   "(min-width: 1201px) and (max-width: 1535px)"
+  // );
+  // const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
+
   const dispatch = useDispatch();
   const popularNFTs = useSelector((state) => state.analytics.popularNFTs);
 
-  let numItemsToShow = 3;
+  // let numItemsToShow = 3;
 
-  if (isXSmallScreen) {
-    numItemsToShow = 1;
-  } else if (isSmallScreen) {
-    numItemsToShow = 2;
-  } else if (isLargeScreen) {
-    numItemsToShow = 4;
-  } else if (isXLargeScreen) {
-    numItemsToShow = 6;
-  }
+  // if (isXSmallScreen) {
+  //   numItemsToShow = 1;
+  // } else if (isSmallScreen) {
+  //   numItemsToShow = 2;
+  // } else if (isLargeScreen) {
+  //   numItemsToShow = 4;
+  // } else if (isXLargeScreen) {
+  //   numItemsToShow = 6;
+  // }
 
-  const handlePrevClick = () => {
-    setCurrentIndex(Math.max(currentIndex - 1, 0));
-  };
+  // const handlePrevClick = () => {
+  //   setCurrentIndex(Math.max(currentIndex - 1, 0));
+  // };
 
-  const handleNextClick = () => {
-    const nextIndex = currentIndex + 1;
-    if (
-      nextIndex >=
-      popularNFTs.length - (numItemsToShow == 1 ? 1 : numItemsToShow - 1)
-    ) {
-      setCurrentIndex(0);
-    } else {
-      setCurrentIndex(nextIndex);
-    }
-  };
+  // const handleNextClick = () => {
+  //   const nextIndex = currentIndex + 1;
+  //   if (
+  //     nextIndex >=
+  //     popularNFTs.length - (numItemsToShow == 1 ? 1 : numItemsToShow - 1)
+  //   ) {
+  //     setCurrentIndex(0);
+  //   } else {
+  //     setCurrentIndex(nextIndex);
+  //   }
+  // };
 
   useEffect(() => {
     dispatch(getPopularNFTs());
@@ -148,7 +147,7 @@ export function PopularNFTs({ title }) {
             let obj = { ...item, network: item.Network };
             return (
               <SwiperSlide key={`index_${i}`}>
-                <NFTCard nft={obj} view={3} isSwiper={true} />
+                <NFTCard nft={obj} view={3} isSwiper={true} where="/popular" />
               </SwiperSlide>
             );
           })}

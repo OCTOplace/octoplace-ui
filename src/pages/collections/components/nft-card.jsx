@@ -1,16 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
-import { useEffect } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import brokenImage from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
-export const NFTCard = ({ view, nft, isSwiper }) => {
+export const NFTCard = ({ view, nft, isSwiper, where }) => {
+  const sendDataToGTM = useGTMDispatch();
+
+  const handleCardClick = (name, network, address, tokenId) => {
+    sendDataToGTM({
+      event: "Opened Popular NFT",
+      customData: {
+        name: name,
+        network: network,
+        contractAddress: address,
+        tokenId: tokenId,
+      },
+    });
+  };
+
   const styles = {
     root: {
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
@@ -76,9 +88,17 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
       {nft && nft.name && nft.contractAddress !== "none" && (
         <Link
           className="nft-card-link"
-          to={`/nft/${nft.network ? nft.network : "theta"}/${
+          to={`${where}/nft/${nft.network ? nft.network : "theta"}/${
             nft.contractAddress
           }/${Number(nft.tokenId)}`}
+          onClick={() =>
+            handleCardClick(
+              nft.name,
+              nft.network,
+              nft.contractAddress,
+              nft.tokenId
+            )
+          }
         >
           <Box sx={styles.root}>
             <Box
@@ -92,6 +112,7 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
               }}
             >
               <img
+                alt=""
                 src={`https://wsrv.nl/?url=${nft.imageUrl.replace(
                   "ipfs://",
                   "https://ipfs.io/ipfs/"
@@ -141,6 +162,7 @@ export const NFTCard = ({ view, nft, isSwiper }) => {
             }}
           >
             <img
+              alt=""
               src={brokenImage}
               style={{
                 borderTopLeftRadius: "0.75rem",

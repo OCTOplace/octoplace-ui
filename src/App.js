@@ -136,6 +136,10 @@ function App() {
             <Route path="/market/auction" element={<Auction />} />
             <Route path="my-nft" element={<MyNFT />} />
             <Route
+              path="popular/nft/:network/:address/:tokenId"
+              element={<NFTView />}
+            />
+            <Route
               path="nft/:network/:address/:tokenId"
               element={<NFTView />}
             />
@@ -152,6 +156,7 @@ function App() {
             <Route path="swap/mylist2" element={<MyListingSwapOffer2 />} />
             <Route path="swap/done" element={<SwapComplete />} />
             <Route path="faucet" element={<FaucetPage />} />
+            <Route path="popular/collection/:address" element={<NFTPage />} />
             <Route path="collections" element={<CollectionsPage />} />
             <Route path="collection/:address" element={<NFTPage />} />
             <Route

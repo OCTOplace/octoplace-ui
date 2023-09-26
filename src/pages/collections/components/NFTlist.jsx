@@ -241,7 +241,12 @@ function NFTlist({ address, network, view }) {
                 nfts.length > 0 &&
                 nfts.map((item, index) => {
                   return (
-                    <NFTCard nft={item} view={view} key={`index_${index}`} />
+                    <NFTCard
+                      nft={item}
+                      view={view}
+                      key={`index_${index}`}
+                      where=""
+                    />
                   );
                 })}
             </CollectionCardContainer>
