@@ -1,5 +1,5 @@
-import { Box, Grid, IconButton, Skeleton, Typography } from "@mui/material";
-import React, { Fragment, useEffect, useState, memo } from "react";
+import { Box, IconButton, Skeleton, Typography } from "@mui/material";
+import React, { useEffect, useState, memo } from "react";
 import { styled } from "@mui/system";
 import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
@@ -35,7 +35,7 @@ function NFTlist({ address, network, view }) {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [nfts, setNfts] = useState([]);
   const [attributes, setAttributes] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [filterParam, setFilterParam] = useState({
     minPrice: 0,
@@ -53,45 +53,6 @@ function NFTlist({ address, network, view }) {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const defaultNFTs = [
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-  ];
-
   const fetchNFTs = async () => {
     const response = await getNFTsForCollection(address, {
       page: page,
@@ -103,12 +64,12 @@ function NFTlist({ address, network, view }) {
     // const uniqueNewItems = newItems.filter(
     //   (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
     // );
-    const newItemCount = response.count;
+    const newItemCount = response.totalCounts;
     setNfts([...nfts, ...newItems]);
 
     // save only when first loading
     const currentPage = parseInt(response.currentPage);
-    if (currentPage === 1) {
+    if (currentPage === 0) {
       setAttributes(response.attributes);
     }
 
@@ -129,7 +90,7 @@ function NFTlist({ address, network, view }) {
   const handleSearch = (event) => {
     setLoading(true);
     setNfts([]);
-    setPage(1);
+    setPage(0);
     setSearch(event.target.value);
   };
 
@@ -137,13 +98,13 @@ function NFTlist({ address, network, view }) {
     // console.log("///////////////////////////// handleFilter", filterParam);
     setLoading(true);
     setNfts([]);
-    setPage(1);
+    setPage(0);
     setFilterParam(filterParam);
   };
 
   useEffect(() => {
     setNfts([]);
-    setPage(1);
+    setPage(0);
     setTotalCount(0);
     setFilteredCount(0);
     setHasMore(true);
