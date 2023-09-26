@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef } from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+// import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { Link } from "react-router-dom";
 import broken from "./../../../assets/broken.png";
 
 import verifiedLogo from "../../../assets/verified.svg";
-import flameLogo from "../../../assets/flame.svg";
+// import flameLogo from "../../../assets/flame.svg";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
@@ -90,7 +90,9 @@ export const CollectionCard = (props) => {
   };
 
   useEffect(() => {
-    setImgUrl(`https://wsrv.nl/?url=${collectionItem.image}&w=400&h=400&fit=outside`);
+    setImgUrl(
+      `https://wsrv.nl/?url=${collectionItem.projectImage}&w=400&h=400&fit=outside`
+    );
   }, [props.collectionItem]);
 
   return (
