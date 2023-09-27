@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { Tabs, Tab, TabsList, TabPanel } from "@mui/base"
+import { Tabs, Tab, TabsList, TabPanel } from "@mui/base";
 import { Container, Row, Col } from "react-bootstrap";
 import WindowOutlinedIcon from "@mui/icons-material/WindowOutlined";
 import GridOnOutlinedIcon from "@mui/icons-material/GridOnOutlined";
@@ -91,9 +91,15 @@ export const MyNFT = () => {
           <Tabs defaultValue={selectedTab}>
             <Box sx={{ display: "flex", marginBottom: "24px", mt: "48px" }}>
               <StyledTabsList>
-                <StyledTab onClick={() => dispatch(setSelectedTab(0))}>My NFTs</StyledTab>
-                <StyledTab onClick={() => dispatch(setSelectedTab(1))}>Listed</StyledTab>
-                <StyledTab onClick={() => dispatch(setSelectedTab(2))}>Offers</StyledTab>
+                <StyledTab onClick={() => dispatch(setSelectedTab(0))}>
+                  My NFTs
+                </StyledTab>
+                <StyledTab onClick={() => dispatch(setSelectedTab(1))}>
+                  Listed
+                </StyledTab>
+                <StyledTab onClick={() => dispatch(setSelectedTab(2))}>
+                  Offers
+                </StyledTab>
               </StyledTabsList>
               <Box
                 sx={{
@@ -179,7 +185,7 @@ export const MyNFT = () => {
                         sm={6}
                         md={view}
                       >
-                        {<NFTCard nft={item} view={view} />}
+                        {<NFTCard nft={item} view={view} where="" />}
                       </Grid>
                     );
                   })}

@@ -25,20 +25,32 @@ import {
   NoEthereumProviderError,
 } from "@web3-react/injected-connector";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 export const ConnectWalletDlg = (props) => {
   const { onClose, open } = props;
   const { activate, error, account } = useWeb3React();
+  const sendDataToGTM = useGTMDispatch();
+
   const handleClose = () => {
     onClose();
   };
 
   const handleMetamaskClick = async () => {
+    sendDataToGTM({
+      event: "Selected Metamask",
+    });
+
     activateInjectedProvider("MetaMask");
     await activate(injectedConnector);
     handleClose();
   };
 
   const handleWalletConnectClick = async () => {
+    sendDataToGTM({
+      event: "Selected Wallet Connect",
+    });
+
     await activate(walletconnect);
     handleClose();
   };

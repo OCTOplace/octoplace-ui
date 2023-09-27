@@ -9,9 +9,11 @@ import verifiedLogo from "../../../assets/verified.svg";
 // import flameLogo from "../../../assets/flame.svg";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const CollectionCard = (props) => {
-  const { collectionItem, isSwiper } = props;
+  const { collectionItem, isSwiper, where } = props;
+  const sendDataToGTM = useGTMDispatch();
   const boxRef = useRef(null);
   const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
   const [titleLength, setTitleLength] = useState(0);
@@ -81,6 +83,13 @@ export const CollectionCard = (props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleCardClick = (name, address) => {
+    sendDataToGTM({
+      event: "Opened Popular Collection",
+      customData: { name: name, contractAddress: address },
+    });
+  };
+
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
@@ -101,7 +110,13 @@ export const CollectionCard = (props) => {
         props.collectionItem.contractAddress !== "none" && (
           <Link
             className="nft-card-link"
-            to={`/collection/${collectionItem.contractAddress}`}
+            to={`${where}/collection/${collectionItem.contractAddress}`}
+            onClick={() =>
+              handleCardClick(
+                collectionItem.name,
+                collectionItem.contractAddress
+              )
+            }
           >
             <Box ref={boxRef} sx={styles.root}>
               <img

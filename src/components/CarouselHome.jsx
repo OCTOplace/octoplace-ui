@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";
-import { Paper, Button } from "@mui/material";
+import { Paper } from "@mui/material";
 import { styled } from "@mui/system";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 function Item(props) {
+  const sendDataToGTM = useGTMDispatch();
+
   function isUrl(str) {
     const pattern = new RegExp(
       "^(https?:\\/\\/)?" + // protocol
@@ -20,12 +23,18 @@ function Item(props) {
 
   const handleImageClick = (url) => {
     if (isUrl(url)) {
+      sendDataToGTM({
+        event: "Opened Home Banner",
+        customData: { url: url },
+      });
+
       window.open(url, "_blank");
     }
   };
 
   return (
     <CarouselPaper
+      className="home-banner"
       image={props.item.bannerImage}
       onClick={() => handleImageClick(props.item.url, "_blank")}
     >

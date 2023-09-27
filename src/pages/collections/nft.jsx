@@ -279,7 +279,7 @@ const NFTPage = () => {
               <Button
                 onClick={() => {
                   sendDataToGTM({
-                    event: "Show Collection Discussion",
+                    event: "Opened Collection Discussion",
                     customData: `address: ${collection.contractAddress}`,
                   });
                   setActiveMenu("discussion");

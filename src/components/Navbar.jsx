@@ -31,6 +31,8 @@ import { getNetworkInfo } from "../connectors/networks";
 import ThetaLogo from "../assets/chains/thetaLogo.svg";
 import KavaLogo from "../assets/chains/kavaLogo.svg";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 const WalletButton = styled(Button)({
   boxShadow: "none",
   textTransform: "none",
@@ -50,6 +52,7 @@ const WalletButton = styled(Button)({
 });
 
 export const AppNavbar = () => {
+  const sendDataToGTM = useGTMDispatch();
   const [dlgOpen, setDlgOpen] = useState(false);
   const { deactivate, chainId } = useWeb3React();
   const navigate = useNavigate();
@@ -113,8 +116,32 @@ export const AppNavbar = () => {
     setAnchorEl1(event.currentTarget);
   };
 
-  const handleGoPro = () => {
+  const handleGoProOpen = () => {
     setGoProDlgOpen(true);
+    sendDataToGTM({
+      event: "Opened Go Pro Popup",
+    });
+  };
+
+  const handleGoProClose = () => {
+    setGoProDlgOpen(false);
+    sendDataToGTM({
+      event: "Closed Go Pro Popup",
+    });
+  };
+
+  const handleWalletOpen = () => {
+    setDlgOpen(true);
+    sendDataToGTM({
+      event: "View Connect Wallet Popup",
+    });
+  };
+
+  const handleWalletClose = () => {
+    setDlgOpen(false);
+    sendDataToGTM({
+      event: "Closed Wallet Popup",
+    });
   };
 
   return (
@@ -178,14 +205,14 @@ export const AppNavbar = () => {
               Collections
             </NavItem>
             {/* <NavItem disabled={true}>Inbox</NavItem> */}
-            <NavItem sx={{ fontSize: "16px" }} onClick={handleGoPro}>
+            <NavItem sx={{ fontSize: "16px" }} onClick={handleGoProOpen}>
               GO PRO
             </NavItem>
           </NavBarItemContainer>
           {acctDetails && !acctDetails.isLoggedIn && (
             <WalletButton
               className="connect-btn"
-              onClick={() => setDlgOpen(true)}
+              onClick={handleWalletOpen}
               variant="contained"
             >
               Connect Wallet
@@ -291,8 +318,8 @@ export const AppNavbar = () => {
           &nbsp;KAVA
         </MenuItem>
       </Menu>
-      <ConnectWalletDlg open={dlgOpen} onClose={() => setDlgOpen(false)} />
-      <GoProDlg open={goProDlgOpen} onClose={() => setGoProDlgOpen(false)} />
+      <ConnectWalletDlg open={dlgOpen} onClose={handleWalletClose} />
+      <GoProDlg open={goProDlgOpen} onClose={handleGoProClose} />
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -305,6 +332,13 @@ export const AppNavbar = () => {
       >
         <MenuItem
           onClick={() => {
+            sendDataToGTM({
+              event: "Opened Dashboard",
+              customData: {
+                address: (acctDetails && acctDetails.address) || "",
+              },
+            });
+
             navigate("/dashboard");
             handleMenuClose();
           }}
@@ -313,6 +347,13 @@ export const AppNavbar = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
+            sendDataToGTM({
+              event: "Opened Settings",
+              customData: {
+                address: (acctDetails && acctDetails.address) || "",
+              },
+            });
+
             navigate("/dashboard/settings");
             handleMenuClose();
           }}
@@ -321,6 +362,13 @@ export const AppNavbar = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
+            sendDataToGTM({
+              event: "Logged Out",
+              customData: {
+                address: (acctDetails && acctDetails.address) || "",
+              },
+            });
+
             deactivate();
             navigate("/");
             handleMenuClose();
