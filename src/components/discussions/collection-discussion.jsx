@@ -396,11 +396,14 @@ export const CollectionDiscussions = ({
               fullWidth
               variant="contained"
               onClick={() => {
-                sendDataToGTM({
-                  event: "Save Collection Discussion",
-                  customData: { address: address },
-                });
-                if (message) setOpenSendDlg(true);
+                if (message) {
+                  sendDataToGTM({
+                    event: "Sent Collection Message",
+                    customData: { "Collection Address": address },
+                  });
+
+                  setOpenSendDlg(true);
+                }
               }}
               sx={styles.sendButton}
             >

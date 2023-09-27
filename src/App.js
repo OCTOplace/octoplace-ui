@@ -52,7 +52,10 @@ import DashboardSettings from "./pages/dashboard/dashboardSettings";
 import contractInteraction from "./contracts";
 
 const gtmParams = {
-  id: "GTM-WKNMDBS3",
+  id:
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_GTM_PRODUCT_ID
+      : process.env.REACT_APP_GTM_DEVELOP_ID,
 };
 
 function App() {
