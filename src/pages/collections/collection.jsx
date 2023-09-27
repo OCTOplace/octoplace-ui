@@ -2,12 +2,12 @@ import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch } from "react-redux";
 
 import infoIcon from "../../assets/Infrormation_button.svg";
 
 import CardList from "../../components/CardList";
-import RowSlider from "../../components/RowSlider";
+// import RowSlider from "../../components/RowSlider";
 import CarouselCollection from "../../components/CarouselCollection";
 import Searchbox from "../../components/searchbox";
 import { getCollections } from "../../redux/thunk/getAllCollections";
@@ -15,7 +15,7 @@ import { styled } from "@mui/system";
 import { PopularCollections } from "../analytics/popular-collections";
 
 export const CollectionsPage = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const collections = useSelector((state) => {
   //   console.log(state.collection.collections.slice(0,49));
   //   return state.collection.collections.slice(0,49)
@@ -29,45 +29,6 @@ export const CollectionsPage = () => {
   const [totalCounts, setTotalCounts] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
-
-  const defaultCollections = [
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-    {
-      contractAddress: "none",
-    },
-  ];
 
   const fetchCollections = async () => {
     const response = await getCollections({
