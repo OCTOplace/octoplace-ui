@@ -3,6 +3,7 @@ import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import CachedIcon from "@mui/icons-material/Cached";
 import { styled } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import ercAbi from "../../abi/erc721.json";
@@ -63,7 +64,7 @@ export const MyListingSwapOffer = () => {
     const netDetails = getNetworkInfo(network);
     const found = myNfts.find(
       (x) =>
-        x.tokenId === offerTokenId &&
+        Number(x.tokenId) === Number(offerTokenId) &&
         x.contractAddress === offerNft &&
         x.network === network
     );
@@ -168,16 +169,16 @@ export const MyListingSwapOffer = () => {
       offerNft,
       listingId
     );
-    dispatch(setTxDialogHash(txResult.hash))
+    dispatch(setTxDialogHash(txResult.hash));
     await txResult.wait();
     dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
+    dispatch(setTxDialogPending(false));
+    dispatch(setTxDialogFailed(false));
     toast.success("Swap offer sent successfully!");
     dispatch({ type: "LOAD_ALL_OFFERS" });
 
     navigate(
-      `/nft/${network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
+      `/nft/${listingNFT.listingDetails.network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
     );
   };
   return (
@@ -191,7 +192,18 @@ export const MyListingSwapOffer = () => {
         marginTop: "32px",
       }}
     >
-      <Typography sx={{ cursor: "pointer" }}>{"<"} Back</Typography>
+      <Typography sx={{ cursor: "pointer" }}>
+        <Link
+          className="nft-card-link"
+          to={
+            listingNFT
+              ? `/nft/${network}/${listingNFT.listingNFT.contractAddress}/${listingNFT.listingNFT.tokenId}`
+              : ""
+          }
+        >
+          {"<"} Back
+        </Link>
+      </Typography>
       <Typography sx={{ fontSize: "20px", mt: 4, fontWeight: "bold", mb: 2 }}>
         SWAP OFFER{" "}
         {listingNFT

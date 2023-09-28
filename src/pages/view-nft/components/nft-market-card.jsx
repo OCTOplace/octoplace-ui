@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+// import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,9 +10,9 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
-import { formatEther, parseEther } from "@ethersproject/units";
+// import { formatEther, parseEther } from "@ethersproject/units";
 
-export const NFTMarketCard = ({ view, marketItem }) => {
+export const NFTMarketCard = ({ view, marketItem, selected }) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
 
@@ -28,6 +28,17 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         border: "1px solid #F78C09",
         boxSizing: "border-box",
       },
+    },
+    selected: {
+      boxSizing: "border-box",
+      color: "#fff",
+      boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
+      borderRadius: ".75rem",
+      cursor: "pointer",
+      width: "100%",
+      // border: "1px solid transparent", // Add transparent border
+      marginBottom: "1rem",
+      border: "3px solid #F78C09",
     },
     content: {
       display: "flex",
@@ -97,20 +108,24 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       {marketItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${marketItem.Network}/${marketItem.contractAddress}/${marketItem.tokenId}`}
+          // to={`/nft/${marketItem.network}/${marketItem.contractAddress}/${marketItem.tokenId}`}
+          to={""}
         >
-          <Box sx={styles.root}>
+          <Box
+            // sx={styles.root}
+            sx={selected ? styles.selected : styles.root}
+          >
             <img
-                src={imgUrl}
-                style={{
-                  borderTopLeftRadius: ".75rem",
-                  borderTopRightRadius: ".75rem",
-                  objectFit: "cover",
-                  width: view === 3 ? "200px" : "100%",
-                  aspectRatio: "1/1",
-                }}
-                loading="lazy"
-                alt="nft-image"
+              src={imgUrl}
+              style={{
+                borderTopLeftRadius: ".75rem",
+                borderTopRightRadius: ".75rem",
+                objectFit: "cover",
+                width: view === 3 ? "200px" : "100%",
+                aspectRatio: "1/1",
+              }}
+              loading="lazy"
+              alt="NFT Market Card"
             />
             {marketItem.metadata && (
               <Box sx={styles.content}>

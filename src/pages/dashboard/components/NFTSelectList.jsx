@@ -1,7 +1,8 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { Fragment, useState } from "react";
-import { NFTListingCard } from "../../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
+import { useWeb3React } from "@web3-react/core";
+// import { NFTListingCard } from "../../listings/components/ListingCard";
+// import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -32,6 +33,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 function NFTSelectlist({ nftListings, view, onSelect }) {
+  const { chainId } = useWeb3React();
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -77,7 +79,6 @@ function NFTSelectlist({ nftListings, view, onSelect }) {
       // border: "1px solid transparent", // Add transparent border
       marginBottom: "1rem",
       border: "3px solid #F78C09",
-      boxSizing: "border-box",
     },
     content: {
       display: "flex",
@@ -247,7 +248,7 @@ function NFTSelectlist({ nftListings, view, onSelect }) {
           {openFilterMenu && (
             <FilterComponent
               filterPage={"Dashboard"}
-              filterObject={filterObj}
+              filterParam={filterObj}
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
@@ -315,6 +316,39 @@ function NFTSelectlist({ nftListings, view, onSelect }) {
                   </Grid>
                 );
               })}
+            {view !== 1 && filteredNFTItems.length === 0 && (
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: "100%",
+                  height: "200px",
+                }}
+              >
+                <Typography style={{ width: "100%" }}>
+                  It seems that you don’t have any NFT on THETA and KAVA
+                  <br />
+                  You can find and get NFT at{" "}
+                  <a
+                    href="https://www.thetadrop.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    THETA
+                  </a>{" "}
+                  or{" "}
+                  <a
+                    href="https://www.kava.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    KAVA
+                  </a>
+                  .
+                </Typography>
+              </Box>
+            )}
           </Grid>
         </Box>
       </Fragment>

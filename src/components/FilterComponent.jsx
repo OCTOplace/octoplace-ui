@@ -25,46 +25,47 @@ function FilterComponent({
   handleFilter,
 }) {
   const myNFTs = useSelector((state) => state.myNFT.nfts);
-  const collections = useSelector((state) => state.collection.collections);
+  const categories = useSelector((state) => state.collection.collections);
 
-  const [minPrice, setMinPrice] = useState(filterParam.minPrice);
-  const [maxPrice, setMaxPrice] = useState(filterParam.maxPrice);
-  const [blockchain, setBlockchain] = useState(filterParam.blockchain);
-  const [collection, setCollection] = useState(filterParam.collection);
-  // const [selectedTraits, setSelectedTraits] = useState(
-  //   filterParam.traits
-  // );
-  const selectedTraits = filterParam.traits;
-  const [saleOnly, setSaleOnly] = useState(filterParam.saleOnly);
-  const [auctionOnly, setAuctionOnly] = useState(filterParam.auctionOnly);
-  const [offersReceived, setOffersReceived] = useState(
-    filterParam.offersReceived
+  const [minPrice, setMinPrice] = useState(filterParam?.minPrice ?? 0);
+  const [maxPrice, setMaxPrice] = useState(filterParam?.maxPrice ?? 0);
+  const [blockchain, setBlockchain] = useState(
+    filterParam?.blockchain ?? "empty"
   );
-  const [includeBurned, setIncludeBurned] = useState(filterParam.includeBurned);
+  const [collection, setCollection] = useState(
+    filterParam?.collection ?? "empty"
+  );
+  const [selectedTraits, setSelectedTraits] = useState(filterParam?.traits);
+  // const selectedTraits = filterParam?.traits;
+  const [saleOnly, setSaleOnly] = useState(filterParam?.saleOnly ?? false);
+  const [auctionOnly, setAuctionOnly] = useState(
+    filterParam?.auctionOnly ?? false
+  );
+  const [offersReceived, setOffersReceived] = useState(
+    filterParam?.offersReceived ?? 0
+  );
+  const [includeBurned, setIncludeBurned] = useState(
+    filterParam?.includeBurned ?? 0
+  );
   const marketItems = useSelector((state) => state.market.markets);
   const activeListings = useSelector((state) => state.listings.activeListings);
 
-  const onlyCollections = collections.filter(
-    (item, index, self) =>
-      index === self.findIndex((t) => t.collectionId === item.collectionId)
-  );
-
-  let filterCollections = onlyCollections.filter((collection) =>
-    myNFTs.some((nft) => nft.contractAddress === collection.collectionAddress)
+  let filterCollections = categories.filter((collection) =>
+    myNFTs.some((nft) => nft.contractAddress === collection.contractAddress)
   );
 
   if (filterPage === "Market") {
-    filterCollections = onlyCollections.filter((collection) =>
+    filterCollections = categories.filter((collection) =>
       marketItems.some(
-        (nft) => nft.NFTContractAddress === collection.collectionAddress
+        (nft) => nft.NFTContractAddress === collection.contractAddress
       )
     );
   } else if (filterPage === "Swap") {
-    filterCollections = onlyCollections.filter((collection) =>
+    filterCollections = categories.filter((collection) =>
       activeListings.some(
         (nft) =>
           nft.listingNFT.contractAddress.toLowerCase() ===
-          collection.collectionAddress.toLowerCase()
+          collection.contractAddress.toLowerCase()
       )
     );
   }
@@ -107,107 +108,82 @@ function FilterComponent({
       ];
     }
 
-    handleChange(updatedTraits);
-  };
+    // handleChange(updatedTraits);
+    setSelectedTraits(updatedTraits);
 
-  const styles = {
-    container: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-      gap: "1rem",
-      width: "250px",
-      minWidth: "250px",
-      height: "100%",
-      minHeight: "100vh",
-      padding: "1.5rem",
-      backgroundColor: "#151515",
-      color: "#f4f4f4",
-      boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
-      borderRadius: ".75rem",
-    },
-    column: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-      gap: "1rem",
-    },
-    columnShort: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-      gap: ".1rem",
-      width: "100%",
-    },
-    row: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: ".5rem",
-    },
-    checkboxRow: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-    },
-    boxRow: {
-      display: "flex",
-      paddingLeft: "10px",
-      justifyContent: "flex-end",
-      alignItems: "center",
-      gap: ".1rem",
-    },
-    checkbox: {
-      color: "#6C6C6C",
-      "&.Mui-checked": {
-        color: "#F78C09",
-      },
-      // paddingLeft: "5px",
-      // paddingRight: "0px",
-      padding: "3px 0 3px 5px",
-    },
-    attr: {
-      fontSize: "1.3rem",
-      fontWeight: 400,
-      margin: "0px",
-    },
-    p: {
-      fontSize: ".9rem",
-      fontWeight: 400,
-      paddingLeft: "0px",
-    },
-    accordion: {
-      backgroundColor: "transparent",
-      color: "#f4f4f4",
-      border: "none",
-      boxShadow: "none",
-      width: "100%",
-    },
-    accordionHeader: {
-      fontWeight: 400,
-      fontsize: "1rem",
-      px: 0,
-    },
-    accordionBody: {
-      backgroundColor: "#151515",
-      display: "flex",
-      flexDirection: "column",
-      padding: "0",
-      gap: 1,
-    },
-  };
-
-  const handleChange = (selectedTraits) => {
     const filterObj = {
       minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
       maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
       blockchain: blockchain,
       collection: collection,
+      saleOnly: saleOnly,
+      auctionOnly: auctionOnly,
+      offersReceived: offersReceived,
+      includeBurned: includeBurned,
+      traits: updatedTraits,
+    };
+
+    handleFilter(filterObj);
+  };
+
+  const handleMaxPriceChange = (selMax) => {
+    setMaxPrice(selMax);
+    const filterObj = {
+      minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
+      maxPrice: isNaN(selMax) ? 0 : parseInt(selMax, 10),
+      blockchain: blockchain,
+      collection: collection,
+      saleOnly: saleOnly,
+      auctionOnly: auctionOnly,
+      offersReceived: offersReceived,
+      includeBurned: includeBurned,
+      traits: selectedTraits,
+    };
+
+    handleFilter(filterObj);
+  };
+
+  const handleMinProceChange = (selMin) => {
+    setMinPrice(selMin);
+    const filterObj = {
+      minPrice: isNaN(selMin) ? 0 : parseInt(selMin, 10),
+      maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
+      blockchain: blockchain,
+      collection: collection,
+      saleOnly: saleOnly,
+      auctionOnly: auctionOnly,
+      offersReceived: offersReceived,
+      includeBurned: includeBurned,
+      traits: selectedTraits,
+    };
+
+    handleFilter(filterObj);
+  };
+
+  const handleChainChange = (selChain) => {
+    setBlockchain(selChain);
+    const filterObj = {
+      minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
+      maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
+      blockchain: selChain,
+      collection: collection,
+      saleOnly: saleOnly,
+      auctionOnly: auctionOnly,
+      offersReceived: offersReceived,
+      includeBurned: includeBurned,
+      traits: selectedTraits,
+    };
+
+    handleFilter(filterObj);
+  };
+
+  const handleCategoryChange = (selCollection) => {
+    setCollection(selCollection);
+    const filterObj = {
+      minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
+      maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
+      blockchain: blockchain,
+      collection: selCollection,
       saleOnly: saleOnly,
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
@@ -228,7 +204,7 @@ function FilterComponent({
               type="number"
               variant="standard"
               value={minPrice === 0 ? "" : minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
+              onChange={(e) => handleMinProceChange(e.target.value)}
               hiddenLabel
               className="input-wo-padding"
               sx={{
@@ -258,7 +234,7 @@ function FilterComponent({
               type="number"
               variant="standard"
               value={maxPrice === 0 ? "" : maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
+              onChange={(e) => handleMaxPriceChange(e.target.value)}
               hiddenLabel
               className="input-wo-padding"
               sx={{
@@ -267,14 +243,14 @@ function FilterComponent({
                 },
                 "& .MuiInputBase-input": {
                   textAlign: "center",
-                  color: "#262626!important",
                   padding: "0",
                 },
               }}
               InputProps={{
                 style: {
-                  backgroundColor: "#F78C09",
-                  border: "1px solid #262626",
+                  color: "#6C6C6C",
+                  border: "1px solid #6C6C6C",
+                  textAlign: "center",
                   borderRadius: "0.594rem",
                   padding: "0.5rem",
                 },
@@ -282,7 +258,7 @@ function FilterComponent({
                 size: "small",
                 placeholder: "Max",
               }}
-            />{" "}
+            />
           </Box>
         </Box>
         <Divider />
@@ -290,7 +266,7 @@ function FilterComponent({
           <Typography variant="h6">Blockchain</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -299,7 +275,7 @@ function FilterComponent({
           >
             <Select
               value={blockchain}
-              onChange={(e) => setBlockchain(e.target.value)}
+              onChange={(e) => handleChainChange(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -321,7 +297,7 @@ function FilterComponent({
           <Typography variant="h6">Collection</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -330,7 +306,7 @@ function FilterComponent({
           >
             <Select
               value={collection}
-              onChange={(e) => setCollection(e.target.value)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -346,9 +322,9 @@ function FilterComponent({
                 return (
                   <MenuItem
                     key={`index_${index}`}
-                    value={collection.collectionAddress}
+                    value={collection.contractAddress}
                   >
-                    {collection.collectionName}
+                    {collection.name}
                   </MenuItem>
                 );
               })}
@@ -423,14 +399,14 @@ function FilterComponent({
                 size: "small",
                 placeholder: "Max",
               }}
-            />{" "}
+            />
           </Box>
         </Box> */}
         <Box sx={styles.column}>
           <Typography variant="h6">Blockchain</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -439,7 +415,7 @@ function FilterComponent({
           >
             <Select
               value={blockchain}
-              onChange={(e) => setBlockchain(e.target.value)}
+              onChange={(e) => handleChainChange(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -461,7 +437,7 @@ function FilterComponent({
           <Typography variant="h6">Collection</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -470,7 +446,7 @@ function FilterComponent({
           >
             <Select
               value={collection}
-              onChange={(e) => setCollection(e.target.value)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -486,9 +462,9 @@ function FilterComponent({
                 return (
                   <MenuItem
                     key={`index_${index}`}
-                    value={collection.collectionAddress}
+                    value={collection.contractAddress}
                   >
-                    {collection.collectionName}
+                    {collection.name}
                   </MenuItem>
                 );
               })}
@@ -507,7 +483,7 @@ function FilterComponent({
           <Box sx={styles.checkboxRow}>
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
-              <Typography sx={styles.p}>0</Typography>
+              <Typography sx={styles.p}></Typography>
               <Checkbox
                 sx={styles.checkbox}
                 checked={saleOnly}
@@ -545,7 +521,7 @@ function FilterComponent({
               type="number"
               variant="standard"
               value={minPrice === 0 ? "" : minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
+              onChange={(e) => handleMinProceChange(e.target.value)}
               hiddenLabel
               className="input-wo-padding"
               sx={{
@@ -575,7 +551,7 @@ function FilterComponent({
               type="number"
               variant="standard"
               value={maxPrice === 0 ? "" : maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
+              onChange={(e) => handleMaxPriceChange(e.target.value)}
               hiddenLabel
               className="input-wo-padding"
               sx={{
@@ -584,14 +560,14 @@ function FilterComponent({
                 },
                 "& .MuiInputBase-input": {
                   textAlign: "center",
-                  color: "#262626!important",
                   padding: "0",
                 },
               }}
               InputProps={{
                 style: {
-                  backgroundColor: "#F78C09",
-                  border: "1px solid #262626",
+                  color: "#6C6C6C",
+                  border: "1px solid #6C6C6C",
+                  textAlign: "center",
                   borderRadius: "0.594rem",
                   padding: "0.5rem",
                 },
@@ -599,7 +575,7 @@ function FilterComponent({
                 size: "small",
                 placeholder: "Max",
               }}
-            />{" "}
+            />
           </Box>
         </Box>
         <Divider />
@@ -617,12 +593,21 @@ function FilterComponent({
                   <Typography sx={styles.attr}>{item.trait_type}</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={styles.accordionBody}>
-                  {item.value &&
+                  {!item.trait_type.toUpperCase().includes("RANK") &&
+                    item.value &&
                     item.value.length > 0 &&
-                    item.value.map((value, index) => {
+                    item.trait_type !== "Rank" &&
+                    item.value.slice(0, 50).map((value, index) => {
                       return (
                         <Box key={`index_${index}`} sx={styles.checkboxRow}>
-                          <Typography sx={styles.p}>{value.value}</Typography>
+                          <Typography sx={styles.p}>
+                            {typeof value.value === "object" &&
+                            value.value !== null
+                              ? value.value[0]
+                              : value.value === "" || value.value === null
+                              ? "None"
+                              : value.value}
+                          </Typography>
                           <Box sx={styles.boxRow}>
                             <Typography sx={styles.p}>
                               {value.count || ""}
@@ -643,6 +628,75 @@ function FilterComponent({
                         </Box>
                       );
                     })}
+                  {item.trait_type.toUpperCase().includes("RANK") &&
+                    item.value &&
+                    item.value.length > 0 && (
+                      <Box sx={styles.row}>
+                        <TextField
+                          type="number"
+                          variant="standard"
+                          value={minPrice === 0 ? "" : minPrice}
+                          onChange={(e) => handleMinProceChange(e.target.value)}
+                          hiddenLabel
+                          className="input-wo-padding"
+                          sx={{
+                            "& .MuiInputBase-input.Mui-disabled": {
+                              WebkitTextFillColor: "#6c6c6c",
+                            },
+                            "& .MuiInputBase-input": {
+                              textAlign: "center",
+                              padding: "0",
+                            },
+                          }}
+                          InputProps={{
+                            style: {
+                              color: "#6C6C6C",
+                              border: "1px solid #6C6C6C",
+                              textAlign: "center",
+                              borderRadius: "0.594rem",
+                              padding: "0.5rem",
+                            },
+                            disableUnderline: true,
+                            size: "small",
+                          }}
+                          placeholder={`${Math.min(
+                            ...item.value.map((item) => item.value)
+                          )}`}
+                        />
+                        <Typography variant="p">to</Typography>
+                        <TextField
+                          type="number"
+                          variant="standard"
+                          value={maxPrice === 0 ? "" : maxPrice}
+                          onChange={(e) => handleMaxPriceChange(e.target.value)}
+                          hiddenLabel
+                          className="input-wo-padding"
+                          sx={{
+                            "& .MuiInputBase-input.Mui-disabled": {
+                              WebkitTextFillColor: "#6c6c6c",
+                            },
+                            "& .MuiInputBase-input": {
+                              textAlign: "center",
+                              padding: "0",
+                            },
+                          }}
+                          InputProps={{
+                            style: {
+                              color: "#6C6C6C",
+                              border: "1px solid #6C6C6C",
+                              textAlign: "center",
+                              borderRadius: "0.594rem",
+                              padding: "0.5rem",
+                            },
+                            disableUnderline: true,
+                            size: "small",
+                          }}
+                          placeholder={`${Math.max(
+                            ...item.value.map((item) => item.value)
+                          )}`}
+                        />
+                      </Box>
+                    )}
                 </AccordionDetails>
               </Accordion>
             );
@@ -659,7 +713,7 @@ function FilterComponent({
           <Box sx={styles.checkboxRow}>
             <Typography sx={styles.p}>For Sale Only</Typography>
             <Box sx={styles.boxRow}>
-              <Typography sx={styles.p}>0</Typography>
+              <Typography sx={styles.p}></Typography>
               <Checkbox
                 sx={styles.checkbox}
                 checked={saleOnly}
@@ -694,7 +748,7 @@ function FilterComponent({
           <Typography variant="h6">Blockchain</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -703,7 +757,7 @@ function FilterComponent({
           >
             <Select
               value={blockchain}
-              onChange={(e) => setBlockchain(e.target.value)}
+              onChange={(e) => handleChainChange(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -725,7 +779,7 @@ function FilterComponent({
           <Typography variant="h6">Collection</Typography>
           <FormControl
             sx={{
-              width: "203px",
+              width: "100%",
               color: "#f4f4f4",
               border: "1px solid #ced4da",
               borderRadius: ".5rem",
@@ -734,7 +788,7 @@ function FilterComponent({
           >
             <Select
               value={collection}
-              onChange={(e) => setCollection(e.target.value)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
               sx={{
                 color: "#f4f4f4",
                 fontSize: ".75rem",
@@ -750,9 +804,9 @@ function FilterComponent({
                 return (
                   <MenuItem
                     key={`index_${index}`}
-                    value={collection.collectionAddress}
+                    value={collection.contractAddress}
                   >
-                    {collection.collectionName}
+                    {collection.name}
                   </MenuItem>
                 );
               })}
@@ -763,5 +817,104 @@ function FilterComponent({
     );
   }
 }
+
+const styles = {
+  container: (theme) => ({
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: "1rem",
+    // width: "300px",
+    flex: "0 0 250px",
+    maxWidth: "250px",
+    height: "100%",
+    padding: "1.5rem",
+    backgroundColor: "#151515",
+    color: "#f4f4f4",
+    boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
+    borderRadius: ".75rem",
+    [theme.breakpoints.down(992)]: {
+      maxWidth: "inherit",
+      width: "100%",
+    },
+  }),
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: "1rem",
+    width: "100%",
+  },
+  columnShort: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: ".1rem",
+    width: "100%",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: ".5rem",
+  },
+  checkboxRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  boxRow: {
+    display: "flex",
+    paddingLeft: "10px",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: ".1rem",
+  },
+  checkbox: {
+    color: "#6C6C6C",
+    "&.Mui-checked": {
+      color: "#F78C09",
+    },
+    // paddingLeft: "5px",
+    // paddingRight: "0px",
+    padding: "3px 0 3px 5px",
+  },
+  attr: {
+    fontSize: "1.3rem",
+    fontWeight: 400,
+    margin: "0px",
+  },
+  p: {
+    fontSize: ".9rem",
+    fontWeight: 400,
+    paddingLeft: "0px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  accordion: {
+    backgroundColor: "transparent",
+    color: "#f4f4f4",
+    border: "none",
+    boxShadow: "none",
+    width: "100%",
+  },
+  accordionHeader: {
+    fontWeight: 400,
+    fontsize: "1rem",
+    px: 0,
+  },
+  accordionBody: {
+    backgroundColor: "#151515",
+    display: "flex",
+    flexDirection: "column",
+    padding: "0",
+    gap: 1,
+  },
+};
 
 export default FilterComponent;

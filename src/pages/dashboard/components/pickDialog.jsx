@@ -40,10 +40,16 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
           : selectedItem.metadata.image
         : "";
 
-    const saveObj = { walletAddress: wallet };
-    saveObj[`nftAddress${nftIndex}`] = selectedItem.contractAddress;
-    saveObj[`tokenId${nftIndex}`] = selectedItem.tokenId;
-    saveObj[`bannerImage${nftIndex}`] = bannerImage;
+    // const saveObj = { walletAddress: wallet };
+    // saveObj[`nftAddress${nftIndex}`] = selectedItem.contractAddress;
+    // saveObj[`tokenId${nftIndex}`] = selectedItem.tokenId;
+    // saveObj[`bannerImage${nftIndex}`] = bannerImage;
+
+    let saveObj = { walletAddress: wallet };
+    saveObj[`nft${nftIndex}`] = {};
+    saveObj[`nft${nftIndex}`].contractAddress = selectedItem.contractAddress;
+    saveObj[`nft${nftIndex}`].tokenId = selectedItem.tokenId;
+    saveObj[`nft${nftIndex}`].bannerImage = bannerImage;
 
     try {
       const fetchedData = await updateUserTopNFT(saveObj);
@@ -78,6 +84,8 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
   //   }
   // }, [listings]);
 
+  const filteredMyNFTs = myNFTs.filter((item) => item.metadata);
+
   return (
     <Dialog
       fullWidth={true}
@@ -102,7 +110,7 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
     >
       <DialogTitle>Pick NFT</DialogTitle>
       <DialogContent>
-        <NFTSelectlist nftListings={myNFTs} view={2} onSelect={onSelect} />
+        <NFTSelectlist nftListings={filteredMyNFTs} view={2} onSelect={onSelect} />
       </DialogContent>
       <DialogActions>
         <Button

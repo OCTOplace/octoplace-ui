@@ -3,22 +3,24 @@ export function filterListedNFTs(nfts, activeListings, activeOffers) {
   nfts.forEach((nft) => {
     const found = activeListings.find(
       (x) =>
-        x.listingDetails.tokenId === nft.tokenId &&
-        x.listingDetails.tokenAddress.toLowerCase() === nft.contractAddress.toLowerCase() &&
+        Number(x.listingDetails.tokenId) === Number(nft.tokenId) &&
+        x.listingDetails.tokenAddress.toLowerCase() ===
+          nft.contractAddress.toLowerCase() &&
         x.network === nft.network &&
         !x.listingDetails.isCompleted &&
         !x.listingDetails.isCancelled
     );
     const found2 = activeOffers.find(
       (x) =>
-        x.isCompleted ===false &&
-        x.isCancelled ===false &&
+        x.isCompleted === false &&
+        x.isCancelled === false &&
         Number(x.offerTokenId) === Number(nft.tokenId) &&
-        x.offerTokenAddress.toLowerCase() === nft.contractAddress.toLowerCase()  &&
+        x.offerTokenAddress.toLowerCase() ===
+          nft.contractAddress.toLowerCase() &&
         x.network === nft.network
     );
-    if (!found ) {
-      if(!found2){
+    if (!found) {
+      if (!found2) {
         result.push(nft);
       }
     }

@@ -1,15 +1,12 @@
-import { PauseRounded, PlayArrowRounded } from "@mui/icons-material";
 import {
   Box,
   Button,
-  IconButton,
   Typography,
   TextField,
   Chip,
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Paper,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,7 +15,8 @@ import thetaImage from "../../../assets/icon.png";
 import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
-import axios from 'axios'
+import axios from "axios";
+import { styled } from "@mui/system";
 
 const styles = {
   videoContainer: {
@@ -49,13 +47,15 @@ const styles = {
     color: "#fff",
     fontSize: "3rem",
   },
-  descriptionContainer: {
+  descriptionContainer: (theme) => ({
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
     gap: 5,
     color: "#f4f4f4",
-  },
+    [theme.breakpoints.down(768)]: {
+      flexDirection: "column",
+    },
+  }),
   textContainer: {
     display: "flex",
     flexDirection: "column",
@@ -96,14 +96,17 @@ const styles = {
     border: "0.792651px solid #6C6C6C",
     borderRadius: "0.594rem",
   },
-  ownerBox: {
+  ownerBox: (theme) => ({
     display: "flex",
     flexDirection: "column",
     width: "200px",
     gap: 1,
     px: 3,
     py: 2,
-  },
+    [theme.breakpoints.down(768)]: {
+      width: "100%",
+    },
+  }),
   orangeButton: {
     backgroundColor: "#F78C09",
     color: "#262626",
@@ -129,14 +132,41 @@ const styles = {
     color: "#f4f4f4",
     borderColor: "#f4f4f4",
   },
+  chainContainer: (theme) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 3,
+    [theme.breakpoints.down(1200)]: {
+      flexDirection: "column",
+    },
+  }),
+  chainPaper: (theme) => ({
+    display: "flex",
+    flex: 1,
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
+    listStyle: "none",
+    gap: 2,
+    py: 0.5,
+    px: 2,
+    m: 0,
+    backgroundColor: "transparent",
+    border: "1px solid white",
+    color: "white",
+    [theme.breakpoints.down(1200)]: {
+      width: "100%",
+    },
+  }),
 };
 
-function Content({ activeListings, view }) {
+function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
   const videoRef = useRef(null);
   const [isOwner, setIsOwner] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [openAddVideo, setOpenAddVideo] = useState(false);
+  const [chain, setChain] = useState("Theta Mainnet");
   const [chipData, setChipData] = useState([
     { key: 0, label: "2160p" },
     { key: 1, label: "1080p" },
@@ -146,12 +176,15 @@ function Content({ activeListings, view }) {
   ]);
   const [uploadData, setUploadData] = useState();
   const [movie, setMovie] = useState();
-  const [videoUrl, setVideoUrl] = useState("");
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
     );
+  };
+
+  const handleChainChange = (event) => {
+    setChain(event.target.value);
   };
 
   const onDrop = (acceptedFiles) => {
@@ -177,18 +210,20 @@ function Content({ activeListings, view }) {
     e.preventDefault();
     // Handle form submission logic here
     console.log("Save");
-    if(uploadData == null) return;
+    if (uploadData == null) return;
     const formData = new FormData();
-    if (movie != null || movie !== '') {
-      formData.append('file', movie);
+    if (movie != null || movie !== "") {
+      formData.append("file", movie);
       console.log("movie:", movie);
     }
     const headers = {
-      'Content-type': 'application/octet-stream'
-    }
+      "Content-type": "application/octet-stream",
+    };
     try {
-      console.log("presigned_url: ", uploadData.presigned_url );
-      const response = await axios.put(uploadData.presigned_url, formData, { headers: headers });
+      console.log("presigned_url: ", uploadData.presigned_url);
+      const response = await axios.put(uploadData.presigned_url, formData, {
+        headers: headers,
+      });
       const data = response.data;
       console.log("Submit: ", data);
     } catch (err) {
@@ -209,27 +244,30 @@ function Content({ activeListings, view }) {
   const handleChangeURL = (e) => {
     console.log(e);
     const url = e.target.value;
-    setVideoUrl(url);
-  }
+  };
 
   const getPreSignedUrl = async () => {
     const headers = {
-      'x-tva-sa-id': 'srvacc_fp72dqw4ix8r6ad6vr9evm68d',
-      'x-tva-sa-secret': 'xn0xqh78s04e0n67vkbwwztq2zvp7scg'
-    }
+      "x-tva-sa-id": "srvacc_fp72dqw4ix8r6ad6vr9evm68d",
+      "x-tva-sa-secret": "xn0xqh78s04e0n67vkbwwztq2zvp7scg",
+    };
     try {
-      const response = await axios.post("https://api.thetavideoapi.com/upload", undefined, { headers: headers });
+      const response = await axios.post(
+        "https://api.thetavideoapi.com/upload",
+        undefined,
+        { headers: headers }
+      );
       const data = response.data;
       const uploadsData = data.body.uploads[0];
       setUploadData(uploadsData);
     } catch (err) {
-      console.log("Pre-Signed URL Error: ", err)
+      console.log("Pre-Signed URL Error: ", err);
     }
-  }
+  };
 
   useEffect(() => {
     getPreSignedUrl();
-  }, [])
+  }, []);
 
   return (
     <Container>
@@ -262,8 +300,6 @@ function Content({ activeListings, view }) {
                 size: "small",
                 placeholder: "| Enter URL",
               }}
-              value={videoUrl}
-              onChange={handleChangeURL}
             />
 
             <Typography sx={styles.h1}>or</Typography>
@@ -283,37 +319,15 @@ function Content({ activeListings, view }) {
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here...</p>
+              ) : movie != null ? (
+                movie.name
               ) : (
-                movie != null ? movie.name : 
                 <p>Drag &amp; Drop Input (Video File)</p>
               )}
             </div>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  flex: 1,
-                  justifyContent: "flex-start",
-                  flexWrap: "wrap",
-                  listStyle: "none",
-                  gap: 2,
-                  py: 0.5,
-                  px: 2,
-                  m: 0,
-                  backgroundColor: "transparent",
-                  border: "1px solid white",
-                  color: "white",
-                }}
-                component="ul"
-              >
+            <Box sx={styles.chainContainer}>
+              <Paper sx={styles.chainPaper} component="ul">
                 {chipData.map((data) => {
                   return (
                     <Box key={data.key}>
@@ -336,7 +350,10 @@ function Content({ activeListings, view }) {
                   );
                 })}
               </Paper>
-              <FormControl variant="standard" sx={{ display: "flex", flex: 1 }}>
+              <FormControl
+                variant="standard"
+                sx={{ display: "flex", flex: 1, width: "100%" }}
+              >
                 <Select
                   sx={{
                     color: "white",
@@ -357,7 +374,8 @@ function Content({ activeListings, view }) {
                       color: "white",
                     },
                   }}
-                  value={""}
+                  onChange={handleChainChange}
+                  value={chain}
                 >
                   {/* <MenuItem value="">Select an option</MenuItem> */}
                   <MenuItem value="Theta Mainnet">Theta Mainnet</MenuItem>
@@ -498,40 +516,17 @@ function Content({ activeListings, view }) {
       ) : (
         <Box sx={styles.videoContainer}>
           <Box sx={styles.videoBox}>
-            {showButton && (
-              <IconButton sx={styles.playIconButton} onClick={handlePlayVideo}>
-                {isPlaying ? (
-                  <PauseRounded sx={styles.playIcon} />
-                ) : (
-                  <PlayArrowRounded sx={styles.playIcon} />
-                )}
-              </IconButton>
-            )}
-            <video
-              muted
-              playsInline
+            <Iframe
+              sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
+              src={videoUrl}
+              allowFullScreen
               width="100%"
-              height={800}
-              controls
-              ref={videoRef}
-              src="https://d21ozv67drxbfu.cloudfront.net/appietoday.test/media/2017/09/04/asset-1175875-1504515710530864.mp4"
-            ></video>
+            />
           </Box>
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
-              <Typography sx={styles.h1}>Video Title</Typography>
-              <Typography sx={styles.p}>
-                MATRËSHKA (Matryoshka) dollhouse is an NFT-based project
-                revolving around storytelling and a series of tasks to be
-                completed by the holders to acquire a prize with a real-life
-                value in the end. The collection aims to entertain the
-                supporters, while pushing the boundaries of classic
-                straightforward lore development by adding interactivity and the
-                need for progression. Lore-friendly breeding-like mechanic,
-                advantages for completing a set, unique merchandise, blockchain
-                DRM technologies and various tangible utilities - expect these
-                and many more perks!
-              </Typography>
+              <Typography sx={styles.h1}>{videoTitle}</Typography>
+              <Typography sx={styles.p}>{videoDesc}</Typography>
             </Box>
             <Box sx={styles.rContainer}>
               <Box sx={styles.ownerContainer}>
@@ -555,8 +550,8 @@ function Content({ activeListings, view }) {
               {isOwner ? (
                 <Button
                   onClick={() => setOpenAddVideo(true)}
-                  disabled={true}
                   sx={styles.orangeButton}
+                  // disabled={true}
                 >
                   Add Video
                 </Button>
@@ -565,9 +560,22 @@ function Content({ activeListings, view }) {
           </Box>
         </Box>
       )}
-      <NFTlist activeListings={activeListings.slice(0, 6)} view={view} />
+      {/* <NFTlist activeListings={activeListings.slice(0, 6)} view={view} /> */}
     </Container>
   );
 }
+
+const Iframe = styled("iframe")(({ theme }) => ({
+  height: "800px",
+  [theme.breakpoints.down(992)]: {
+    height: "672px",
+  },
+  [theme.breakpoints.down(768)]: {
+    height: "492px",
+  },
+  [theme.breakpoints.down(420)]: {
+    height: "400px",
+  },
+}));
 
 export default Content;

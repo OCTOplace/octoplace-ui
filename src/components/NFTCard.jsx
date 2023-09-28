@@ -15,7 +15,8 @@ export const NFTCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
   const { view } = props;
-  const { metadata, collectionName, tokenId, contractAddress , url, network} = props.nft;
+  const { metadata, collectionName, tokenId, contractAddress, url, network } =
+    props.nft;
   const styles = {
     root: {
       width: "100%",
@@ -23,7 +24,7 @@ export const NFTCard = (props) => {
       borderRadius: "12px",
       position: "relative",
       color: "white",
-      height: view === 3 ? "300px" : "500px",
+      width: "100%",
       backgroundImage: `url(${imgUrl})`,
       backgroundSize: "cover",
       cursor: "pointer",
@@ -47,22 +48,33 @@ export const NFTCard = (props) => {
 
   useEffect(() => {
     const getMetadata = async () => {
-      try{
+      try {
         const result = await axios.get(getImageUrl(url));
-        dispatch(updateNFT({address: contractAddress, tokenId: tokenId, metadata: result.data}))
-      }catch{
-        dispatch(updateNFT({address: contractAddress, tokenId: tokenId, metadata: {
-          name: "Unnamed Collection",
-          image: defaultImage
-        }}))
+        dispatch(
+          updateNFT({
+            address: contractAddress,
+            tokenId: tokenId,
+            metadata: result.data,
+          })
+        );
+      } catch {
+        dispatch(
+          updateNFT({
+            address: contractAddress,
+            tokenId: tokenId,
+            metadata: {
+              name: "Unnamed Collection",
+              image: defaultImage,
+            },
+          })
+        );
       }
-    }
-    if(!metadata){
+    };
+    if (!metadata) {
       getMetadata();
     }
-    
-  },[metadata])
-  
+  }, [metadata]);
+
   useEffect(() => {
     if (metadata !== undefined && metadata !== null) {
       if (metadata.image && metadata.image.includes("ipfs://")) {
@@ -79,7 +91,10 @@ export const NFTCard = (props) => {
 
   return (
     <>
-      <Link className="nft-card-link" to={`/nft/${network}/${contractAddress}/${tokenId}`}>
+      <Link
+        className="nft-card-link"
+        to={`/nft/${network ? network : "theta"}/${contractAddress}/${tokenId}`}
+      >
         <Box sx={styles.root}>
           <Box sx={styles.flex}>
             <div style={styles.meta}>

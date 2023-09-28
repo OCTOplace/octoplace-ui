@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button, Box, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 
 import profileImage from "../assets/pp.png";
 import { Container } from "react-bootstrap";
 
 function CarouselCollection() {
   const [items, setItems] = useState([]);
-    
+
   const defaultItems = [
     {
       name: "Banner1",
@@ -30,19 +31,19 @@ function CarouselCollection() {
   const downloadBanners = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
-      const response = await fetch(apiUrl + '/banners/lists');
+      const response = await fetch(apiUrl + "/banners/collection/lists");
 
       if (response.ok) {
         let bannerInfos = await response.json();
-        bannerInfos = bannerInfos.filter((item) => item.filename);
+        bannerInfos = bannerInfos.filter((item) => item.bannerImage);
         setItems(bannerInfos);
       } else {
-        console.error('Failed to get banner file');
-        setItems(defaultItems)
+        console.error("Failed to get banner file");
+        setItems(defaultItems);
       }
     } catch (error) {
-      console.error('Error downloading banner file:', error);
-      setItems(defaultItems)
+      console.error("Error downloading banner file:", error);
+      setItems(defaultItems);
     }
   };
 
@@ -54,28 +55,14 @@ function CarouselCollection() {
     container: {
       // position: "relative",
     },
-    overlayContainer: {
-      // position: "absolute",
-      // top: 0,
-      // left: 0,
-      height: "45vh",
+    imageContainer: {
       display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      zIndex: 3,
+      flexDirection: "column",
+      gap: "12px",
     },
-    imageContainer: {},
     image: {
       width: "150px",
       height: "150px",
-    },
-    h1: {
-      fontWeight: 600,
-      fontSize: "2.5rem",
-      lineHeight: "3rem",
-      color: "#F4F4F4",
-      WebkitTextStroke: "1.5px black",
-      WebkitTextFillColor: "white",
     },
     whiteButton: {
       backgroundColor: "#f4f4f4",
@@ -100,19 +87,22 @@ function CarouselCollection() {
   };
 
   function isUrl(str) {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    const pattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // fragment locator
     return pattern.test(str);
   }
 
   const handleImageClick = (url) => {
     if (isUrl(url)) {
-      window.open(url, '_blank');
-    }    
+      window.open(url, "_blank");
+    }
   };
 
   return (
@@ -139,17 +129,10 @@ function CarouselCollection() {
     >
       {items.map((item, index) => (
         <Box key={`index_${index}`}>
-          <Paper
+          <CarouselBanner
             style={{
-              backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${item.filename})`,
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              padding: "2rem",
-              height: "50vh",
-              cursor: "grab",
+              backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${item.bannerImage})`,
             }}
-            onClick={() => handleImageClick(item.url, '_blank')}
           >
             <Box
               sx={{
@@ -157,27 +140,111 @@ function CarouselCollection() {
                 justifyContent: "center",
               }}
             >
-              <Container style={styles.overlayContainer}>
+              <OverlayContainer>
                 <Box sx={styles.imageContainer}>
-                  <img
-                    src={profileImage}
+                  <Img
+                    src={`${process.env.REACT_APP_API_URL}/assets/banners/${item.avatarImage}`}
                     alt="profileImage"
-                    sx={styles.image}
-                    width="180px"
-                    height="180px"
+                    // sx={styles.image}
+                    className="octagon-image"
                   />
-                  <Typography sx={styles.h1}>{item?.name}</Typography>
+                  <ThetaTitle>{item?.title}</ThetaTitle>
                 </Box>
-                <Button sx={styles.whiteButton} variant="contained">
+                <ViewCollectionButton
+                  variant="contained"
+                  onClick={() => handleImageClick(item.url, "_blank")}
+                >
                   View Collection
-                </Button>
-              </Container>
+                </ViewCollectionButton>
+              </OverlayContainer>
             </Box>
-          </Paper>
+          </CarouselBanner>
         </Box>
       ))}
     </Carousel>
   );
 }
+
+const CarouselBanner = styled(Paper)(({ theme }) => ({
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+  cursor: "grab",
+  height: "450px",
+  // [theme.breakpoints.down(1120)]: {
+  //   height: "360px",
+  // },
+  // [theme.breakpoints.down(768)]: {
+  //   height: "280px",
+  // },
+  // [theme.breakpoints.down(540)]: {
+  //   height: "220px",
+  // },
+  [theme.breakpoints.down(480)]: {
+    padding: "1rem",
+  },
+}));
+
+const Img = styled("img")(({ theme }) => ({
+  width: "180px",
+  height: "180px",
+  [theme.breakpoints.down(640)]: {
+    width: "120px",
+    height: "120px",
+  },
+}));
+
+const OverlayContainer = styled(Container)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  zIndex: 3,
+  height: "434px",
+  // [theme.breakpoints.down(1120)]: {
+  //   height: "344px",
+  // },
+  // [theme.breakpoints.down(768)]: {
+  //   height: "264px",
+  // },
+  // [theme.breakpoints.down(540)]: {
+  //   height: "204px",
+  // },
+  [theme.breakpoints.down(480)]: {
+    height: "404px",
+  },
+  [theme.breakpoints.down(450)]: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "flex-end",
+    gap: "16px",
+  },
+}));
+
+const ThetaTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: 600,
+  fontSize: "2.5rem",
+  lineHeight: "3rem",
+  color: "#F4F4F4",
+  WebkitTextStroke: "1.5px black",
+  WebkitTextFillColor: "white",
+  [theme.breakpoints.down(640)]: {
+    fontSize: "2rem",
+    lineHeight: "1.5rem",
+    WebkitTextStroke: "1px black",
+  },
+}));
+
+const ViewCollectionButton = styled(Button)(({ theme }) => ({
+  backgroundColor: "#f4f4f4",
+  color: "#262626",
+  textTransform: "none",
+  fontWeight: 700,
+  fontSize: "1rem",
+  "&:hover": {
+    backgroundColor: "#f4f4f4",
+    color: "#262626",
+    cursor: "pointer",
+  },
+}));
 
 export default CarouselCollection;

@@ -2,7 +2,7 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { Fragment, useState } from "react";
 import { NFTListingCard } from "../../listings/components/ListingCard";
 import { Col, Container, Row } from "react-bootstrap";
-import { styled } from "@mui/material/styles";
+import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -57,6 +57,10 @@ function NFTlist({ activeListings, view }) {
   };
 
   const filteredNFTItems = activeListings.filter((item) => {
+    if (!item.metadata) {
+      return false;
+    }
+    
     if (
       item.metadata &&
       item.metadata.name &&
@@ -95,17 +99,8 @@ function NFTlist({ activeListings, view }) {
   });
 
   return (
-    <Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          color: "#f4f4f4",
-          mb: 2,
-        }}
-      >
+    <NFTListContainer>
+      <NFTSettingContainer>
         <Box
           sx={{
             display: "flex",
@@ -164,41 +159,66 @@ function NFTlist({ activeListings, view }) {
             type="text"
           />
         </Box>
-      </Box>
-      <Fragment>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: 2,
-          }}
-        >
-          {openFilterMenu && (
-            <FilterComponent
-              filterPage={"Dashboard"}
-              filterObject={filterObj}
-              handleFilter={(obj) => handleFilter(obj)}
-            />
-          )}
-          <Grid container spacing={2}>
-            {view !== 1 &&
-              filteredNFTItems.length > 0 &&
-              filteredNFTItems.map((item, index) => {
-                return (
-                  <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                    <NFTListingCard
-                      listingItem={{ listingNFT: item }}
-                      view={view}
-                    />
-                  </Grid>
-                );
-              })}
-          </Grid>
-        </Box>
-      </Fragment>
-    </Box>
+      </NFTSettingContainer>
+      <NFTContentContainer>
+        {openFilterMenu && (
+          <FilterComponent
+            filterPage={"Dashboard"}
+            filterParam={filterObj}
+            handleFilter={(obj) => handleFilter(obj)}
+          />
+        )}
+        <CollectionCardContainer>
+          {view !== 1 &&
+            filteredNFTItems.length > 0 &&
+            filteredNFTItems.map((item, index) => {
+              return (
+                <NFTListingCard
+                  listingItem={{ listingNFT: item }}
+                  view={filteredNFTItems.length}
+                  key={`index_${index}`}
+                />
+              );
+            })}
+        </CollectionCardContainer>
+      </NFTContentContainer>
+    </NFTListContainer>
   );
 }
+
+const NFTListContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+}));
+
+const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
+}));
+
+const NFTSettingContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  gap: "16px",
+  alignItems: "center",
+  color: "#f4f4f4",
+  mb: 2,
+  [theme.breakpoints.down(490)]: {
+    flexDirection: "column",
+  },
+}));
+
+const NFTContentContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  gap: "16px",
+  [theme.breakpoints.down(992)]: {
+    flexDirection: "column",
+  },
+}));
 
 export default NFTlist;

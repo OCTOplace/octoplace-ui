@@ -7,11 +7,9 @@ export const getAllCollections = createAsyncThunk(
   "collections/getAllCollections",
   async (params, thunkAPI) => {
     let items = [];
-    const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
-      params,
-    });
-    items = result.data.items.map((item) => {
-      let slug = slugify(item.collectionName);
+    const result = await axios.get(`${apiUrl}/collections/categories`);
+    items = result.data.categories.map((item) => {
+      let slug = slugify(item.name);
       return { ...item, slug };
     });
     // items =items.filter(item => item.site !== "thetadrop");
@@ -19,22 +17,28 @@ export const getAllCollections = createAsyncThunk(
   }
 );
 
-export const getVisibleCollections = async (params) => {
+export const getCollections = async (params) => {
   let items = [];
-  const result = await axios.get(`${apiUrl}/collections/listAllVisible`, {
+  const result = await axios.get(`${apiUrl}/collections`, {
     params,
   });
-  items = result.data.items.map((item) => {
-    let slug = slugify(item.collectionName);
+
+  items = result.data.collections.map((item) => {
+    let slug = slugify(item.name);
     return { ...item, slug };
   });
 
   return {
-    items,
+    collections: items,
     totalPages: result.data.totalPages,
     currentPage: result.data.currentPage,
-    totalCount: result.data.totalCount,
+    totalCounts: result.data.totalCounts,
   };
+};
+
+export const getCollection = async (address) => {
+  const result = await axios.get(`${apiUrl}/collections/${address}`);
+  return result.data;
 };
 
 const slugify = (str) =>

@@ -468,7 +468,7 @@ function Content({ activeListings, view }) {
                 and many more perks!
               </Typography>
             </Box>
-            <Box sx={styles.rContainer}>
+            {/* <Box sx={styles.rContainer}>
               <Box sx={styles.ownerContainer}>
                 <Box sx={styles.ownerBox}>
                   <Typography sx={styles.h2}>Theta Punks</Typography>
@@ -495,7 +495,7 @@ function Content({ activeListings, view }) {
                   Add Video
                 </Button>
               ) : null}
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       )}

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";
-import { Paper, Button } from "@mui/material";
+import { Paper } from "@mui/material";
+import { styled } from "@mui/system";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 function Item(props) {
+  const sendDataToGTM = useGTMDispatch();
+
   function isUrl(str) {
     const pattern = new RegExp(
       "^(https?:\\/\\/)?" + // protocol
@@ -19,29 +23,47 @@ function Item(props) {
 
   const handleImageClick = (url) => {
     if (isUrl(url)) {
+      sendDataToGTM({
+        event: "Opened Home Banner",
+        customData: { url: url },
+      });
+
       window.open(url, "_blank");
     }
   };
 
   return (
-    <Paper
-      style={{
-        backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${props.item.filename})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        padding: "2rem",
-        height: "50vh",
-        cursor: "grab",
-      }}
+    <CarouselPaper
+      className="home-banner"
+      image={props.item.bannerImage}
       onClick={() => handleImageClick(props.item.url, "_blank")}
     >
       {/* <h2>{props.item.name}</h2>
       <p>{props.item.url}</p>
       <Button className="CheckButton">Check it out!</Button> */}
-    </Paper>
+    </CarouselPaper>
   );
 }
+
+const CarouselPaper = styled(Paper)(({ theme, image }) => ({
+  backgroundImage: `url(${process.env.REACT_APP_API_URL}/assets/banners/${image})`,
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+  padding: "2rem",
+  cursor: "grab",
+  width: "100%",
+  height: "450px",
+  [theme.breakpoints.down(1120)]: {
+    height: "360px",
+  },
+  [theme.breakpoints.down(768)]: {
+    height: "280px",
+  },
+  [theme.breakpoints.down(540)]: {
+    height: "220px",
+  },
+}));
 
 function CarouselHome() {
   const [items, setItems] = useState([]);
@@ -67,11 +89,11 @@ function CarouselHome() {
   const downloadBanners = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
-      const response = await fetch(apiUrl + "/banners/lists");
+      const response = await fetch(apiUrl + "/banners/home/lists");
 
       if (response.ok) {
         let bannerInfos = await response.json();
-        bannerInfos = bannerInfos.filter((item) => item.filename);
+        bannerInfos = bannerInfos.filter((item) => item.bannerImage);
         setItems(bannerInfos);
       } else {
         console.error("Failed to get banner file");

@@ -5,16 +5,11 @@ import {
   DialogTitle,
   Typography,
   Box,
-  Divider,
   DialogContent,
   DialogActions,
   Button,
   IconButton,
   CircularProgress,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Grid,
 } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
@@ -29,7 +24,7 @@ import FilterComponent from "../../../components/FilterComponent";
 import Searchbox from "../../../components/searchbox";
 import { useSelector } from "react-redux";
 import { filterListedNFTs } from "../../../utils/filter";
-import { getImageUrl } from "../../../utils/string-util";
+// import { getImageUrl } from "../../../utils/string-util";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
@@ -37,7 +32,6 @@ import { Contract } from "@ethersproject/contracts";
 import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
 import axios from "axios";
-import { width } from "@mui/system";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -63,7 +57,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 export const OfferNFTDialog = (props) => {
   const { onClose, open, listingId, network } = props;
   const loading = useSelector((state) => state.myNFT.isLoading);
-  const nfts = useSelector((state) => state.myNFT.nfts);
+  const originalMyNFTs = useSelector((state) => state.myNFT.nfts);
   const listings = useSelector((state) => state.listings.allListings);
   const handleClose = () => {
     onClose();
@@ -76,12 +70,17 @@ export const OfferNFTDialog = (props) => {
     setOrderMethod(event.target.value);
   };
 
-  const [selectedIndex, setSelectedIndex] = React.useState(-1);
+  // const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [selectedNftOffer, setSelectedNftOffer] = useState();
-  const [myNFTs, setMyNFT] = useState([]);
+  const [myNFTs, setMyNFTs] = useState([]);
 
-  const handleListItemClick = (event, index, item) => {
-    setSelectedIndex(index);
+  // const handleListItemClick = (event, index, item) => {
+  //   setSelectedIndex(index);
+  //   setSelectedNftOffer(item);
+  // };
+
+  const handleListItemClick = (item) => {
+    // setSelectedIndex(index);
     setSelectedNftOffer(item);
   };
 
@@ -110,30 +109,35 @@ export const OfferNFTDialog = (props) => {
 
     let offers = await contract.readAllOffers();
     offers = formatOffers(offers, network);
-    let myNFTS = filterListedNFTs(
-      nfts.filter((x) => x.network === network),
+
+    let filteredOriginalMyNFTs = filterListedNFTs(
+      originalMyNFTs.filter((x) => x.network === network),
       listings,
       offers
     );
 
     let nftArr = [];
-    for (var nftItem of myNFTS) {
+    for (var nftItem of filteredOriginalMyNFTs) {
       if (nftItem.url) {
-        const meta = await getMetadata(nftItem.url);
-        nftArr = [...nftArr, { ...nftItem, metadata: meta }];
+        try {
+          const meta = await getMetadata(nftItem.url);
+          nftArr = [...nftArr, { ...nftItem, metadata: meta }];
+        } catch (error) {
+          console.log("error while fetch nft", error);
+        }
       } else {
         nftArr = [...nftArr, nftItem];
       }
     }
 
-    setMyNFT(nftArr);
+    setMyNFTs(nftArr);
   };
 
   useEffect(() => {
-    if (nfts.length > 0 && listings.length > 0) {
+    if (originalMyNFTs.length > 0 && listings.length > 0) {
       createData();
     }
-  }, [nfts, listings]);
+  }, [originalMyNFTs, listings]);
 
   const getMetadata = async (url) => {
     const metadataResult = await axios.get(url);
@@ -149,6 +153,10 @@ export const OfferNFTDialog = (props) => {
   };
 
   const filteredMyNFTs = myNFTs.filter((item) => {
+    if (!item.metadata) {
+      return false;
+    }
+
     if (
       item.metadata &&
       item.metadata.name &&
@@ -355,12 +363,13 @@ export const OfferNFTDialog = (props) => {
             {openFilterMenu && (
               <FilterComponent
                 filterPage={"Market"}
-                filterObject={filterObj}
+                filterParam={filterObj}
                 handleFilter={(obj) => handleFilter(obj)}
               />
             )}
             <Grid container spacing={2}>
               {view !== 1 &&
+                !loading &&
                 filteredMyNFTs.length > 0 &&
                 filteredMyNFTs.map((item, index) => {
                   return (
@@ -373,19 +382,61 @@ export const OfferNFTDialog = (props) => {
                       sx={{
                         my: 2,
                       }}
+                      onClick={() => handleListItemClick(item)}
                     >
-                      <NFTMarketCard marketItem={item} view={view} />
+                      <NFTMarketCard
+                        marketItem={item}
+                        view={view}
+                        selected={
+                          selectedNftOffer &&
+                          selectedNftOffer.contractAddress ===
+                            item.contractAddress &&
+                          Number(selectedNftOffer.tokenId) ===
+                            Number(item.tokenId)
+                        }
+                      />
                     </Grid>
                   );
                 })}
+              {view !== 1 && !loading && filteredMyNFTs.length === 0 && (
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    textAlign: "center",
+                    width: "100%",
+                    height: "200px",
+                  }}
+                >
+                  <Typography style={{ width: "100%" }}>
+                    It seems that you don’t have any NFT on{" "}
+                    {network.toUpperCase()}.
+                    <br />
+                    You can find and get NFT{" "}
+                    <a
+                      href={
+                        network.toLowerCase() === "theta"
+                          ? "https://www.thetadrop.com/"
+                          : "https://www.kava.io/"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      here
+                    </a>
+                    .
+                  </Typography>
+                </Box>
+              )}
             </Grid>
           </Box>
         </Fragment>
       </DialogContent>
       <DialogActions sx={style.dlgActions}>
         <Button
-          disabled={loading || myNFTs.length == 0}
+          disabled={loading || myNFTs.length === 0}
           sx={style.orangeButton}
+          style={{ color: myNFTs.length === 0 ? "gray" : "#262626" }}
           onClick={() => {
             onClose();
             navigate(
@@ -416,7 +467,6 @@ const style = {
     gap: 3,
   },
   orangeButton: {
-    width: "100%",
     backgroundColor: "#F78C09",
     boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.25)",
     borderRadius: ".625rem",
@@ -442,12 +492,12 @@ const style = {
   },
 };
 
-function manageUrl(metadata) {
-  try {
-    if (metadata && metadata.image) {
-      return getImageUrl(metadata.image);
-    }
-  } catch {
-    return "";
-  }
-}
+// function manageUrl(metadata) {
+//   try {
+//     if (metadata && metadata.image) {
+//       return getImageUrl(metadata.image);
+//     }
+//   } catch {
+//     return "";
+//   }
+// }

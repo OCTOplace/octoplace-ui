@@ -1,38 +1,39 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   address: 0,
-  balance:0,
+  balance: 0,
   chainId: "",
-  isLoggedIn: false
-}
+  isLoggedIn: false,
+};
 
 export const accountSlice = createSlice({
-  name: 'counter',
+  name: "counter",
   initialState,
   reducers: {
     setAddress: (state, action) => {
-      state.address = action.payload
+      state.address = action.payload;
     },
     setBalance: (state, action) => {
-        state.balance = action.payload
+      state.balance = action.payload;
     },
     setChainId: (state, action) => {
-        state.chainId = action.payload
+      state.chainId = action.payload;
     },
     setLogin: (state) => {
-        state.isLoggedIn = true
+      state.isLoggedIn = true;
     },
     setLogout: (state) => {
-        state.isLoggedIn = false
-        state.address =""
-        state.balance =0
-        state.chainId = ""
-    }
+      state.isLoggedIn = false;
+      state.address = "";
+      state.balance = 0;
+      state.chainId = "";
+    },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const { setAddress, setBalance,setChainId, setLogin, setLogout } = accountSlice.actions
+export const { setAddress, setBalance, setChainId, setLogin, setLogout } =
+  accountSlice.actions;
 
-export default accountSlice.reducer
+export default accountSlice.reducer;

@@ -118,6 +118,7 @@
 .connect-btn {
   border-radius: 12px !important;
   background: #f4f4f4;
+  background-color: #f4f4f4;
   color: #262626;
   font-family: "Montserrat";
   font-style: normal;
@@ -217,6 +218,25 @@
   }
 }
 
+.gopro-dlg {
+  .MuiPaper-root {
+    background-color: #262626;
+    color: white;
+  }
+  .spacer {
+    flex: 1 auto;
+  }
+  .icon {
+    color: white;
+  }
+
+  .title {
+    text-transform: uppercase;
+    align-items: center;
+    width: 100%;
+  }
+}
+
 .nft-card-img {
   width: 100%;
   height: 300px;
@@ -226,6 +246,17 @@
 
 .nft-card-link {
   text-decoration: none;
+  width: 16.6667%;
+  padding: 16px 16px 0 0;
+  @media screen and (max-width: 1200px) {
+    width: 25%;
+  }
+  @media screen and (max-width: 768px) {
+    width: 33.333%;
+  }
+  @media screen and (max-width: 480px) {
+    width: 50%;
+  }
 }
 
 .nft-list-dlg {
@@ -346,6 +377,18 @@ body > iframe {
     padding-bottom: 0.5rem;
   }
 
+  .regular-btn-disabled {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 105.02%;
+    color: #f4f4f4;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    cursor: default;
+  }
+
   .regular-btn::after {
     content: "";
     position: absolute;
@@ -353,11 +396,11 @@ body > iframe {
     bottom: 0;
     width: 100%;
     height: 2px;
-    background-color: #f78c09;
     transform: translateX(-100%);
     transition: transform 300ms ease;
   }
   .regular-btn:hover::after {
+    background-color: #f78c09;
     transform: translateX(0);
   }
 }
@@ -373,6 +416,6 @@ input[type="text"]:disabled {
   color: #fff;
 }
 
-.infinite-scroll-component__outerdiv{
-  width:100%;
+.infinite-scroll-component__outerdiv {
+  width: 100%;
 }

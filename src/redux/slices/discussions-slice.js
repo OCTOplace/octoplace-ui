@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { getCollectionDiscussions, getNftDiscussions } from "../thunk/get-nft-discussions";
+import { getCollectionDiscussions, getNftDiscussions } from "../thunk/get-discussions";
 
 const initialState = {
   isLoading: false,

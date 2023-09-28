@@ -1,17 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+// import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+// import axios from "axios";
 
 import verifiedLogo from "../../../assets/verified.svg";
-import flameLogo from "../../../assets/flame.svg";
+// import flameLogo from "../../../assets/flame.svg";
+import broken from "./../../../assets/broken.png";
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const NFTListingCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
-  const { view } = props;
+  // const { view } = props;
 
   const styles = {
     root: {
@@ -48,20 +52,23 @@ export const NFTListingCard = (props) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
+      textWrap: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
     },
     network: {
-      fontSize: ".625em",
-      fontWeight: "400",
-      color: "#6C6C6C",
+      width: "24px",
+      height: "24px",
     },
   };
 
-  const truncate = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
-  };
+  // const truncate = (text, maxLength) => {
+  //   if (text.length > maxLength) {
+  //     return text.substring(0, maxLength) + "...";
+  //   }
+  //   return text;
+  // };
 
   useEffect(() => {
     if (props.listingItem && props.listingItem.listingNFT.metadata) {
@@ -69,15 +76,17 @@ export const NFTListingCard = (props) => {
         if (props.listingItem.listingNFT.metadata.image.includes("ipfs://")) {
           let url = props.listingItem.listingNFT.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(newUrl);
+          setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
-          setImgUrl(props.listingItem.listingNFT.metadata.image);
+          setImgUrl(
+            `https://wsrv.nl/?url=${props.listingItem.listingNFT.metadata.image}&w=200&h=200&fit=outside`
+          );
         }
       } catch {
-        setImgUrl("https://thereisnoimage.com/image");
+        setImgUrl(broken);
       }
     } else {
-      setImgUrl("https://thereisnoimage.com/image");
+      setImgUrl(broken);
     }
   }, [props.listingItem]);
 
@@ -95,7 +104,7 @@ export const NFTListingCard = (props) => {
                 borderTopLeftRadius: "0.75rem",
                 borderTopRightRadius: "0.75rem",
                 objectFit: "cover",
-                width: view === 3 ? "200px" : "100%",
+                width: "100%",
                 aspectRatio: "1/1",
               }}
               alt="nft_image"
@@ -104,21 +113,24 @@ export const NFTListingCard = (props) => {
             <Box sx={styles.content}>
               <Box style={styles.meta}>
                 <Typography className="strokeme" sx={styles.title}>
-                  {truncate(
-                    props.listingItem.listingNFT.metadata
-                      ? props.listingItem.listingNFT.metadata.name
-                      : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`,
-                    10
-                  )}
+                  {props.listingItem.listingNFT.metadata
+                    ? props.listingItem.listingNFT.metadata.name
+                    : `${props.listingItem.listingNFT.name} #${props.listingItem.listingNFT.tokenId}`}
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
-              <Typography
+              {/* <Typography
                 sx={styles.network}
-              >{`#${props.listingItem.listingNFT.network}`}</Typography>
-              <Box style={styles.meta}>
-                <Typography>#{props.listingItem.listingNFT.tokenId}</Typography>
-              </Box>
+              >{`#${props.listingItem.listingNFT.network}`}</Typography> */}
+              <img
+                style={styles.network}
+                src={
+                  props.listingItem.listingNFT.network === "kava"
+                    ? KavaLogo
+                    : ThetaLogo
+                }
+                alt="network"
+              />
             </Box>
           </Box>
         </Link>

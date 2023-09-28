@@ -1,20 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef } from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+// import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { Link } from "react-router-dom";
 import broken from "./../../../assets/broken.png";
 
 import verifiedLogo from "../../../assets/verified.svg";
-import flameLogo from "../../../assets/flame.svg";
+import loadingLogo from "../../../assets/Pulse-1s-64px.svg";
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const CollectionCard = (props) => {
-  const { collectionItem, view } = props;
+  const { collectionItem, isSwiper, where } = props;
+  const sendDataToGTM = useGTMDispatch();
   const boxRef = useRef(null);
-  const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
-  const [titleLength, setTitleLength] = useState(0);
-  const [imgUrl, setImgUrl] = useState(broken);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
+  // const [titleLength, setTitleLength] = useState(0);
+  const [imgUrl, setImgUrl] = useState(
+    `https://wsrv.nl/?url=${collectionItem.projectImage}&w=200&h=400&fit=outside`
+  );
+  // const [imageLoaded, setImageLoaded] = useState(false);
 
   const styles = {
     root: {
@@ -23,6 +29,7 @@ export const CollectionCard = (props) => {
       boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.25)",
       borderRadius: ".75rem",
       cursor: "pointer",
+      flex: "0 0 auto",
       width: "100%",
       border: "1px solid transparent", // Add transparent border
       "&:hover": {
@@ -50,108 +57,133 @@ export const CollectionCard = (props) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
+      textWrap: "nowrap",
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
     },
     network: {
-      fontSize: ".625em",
-      fontWeight: "400",
-      color: "#6C6C6C",
+      width: "24px",
+      height: "24px",
     },
   };
 
-  useEffect(() => {
-    function handleResize() {
-      const boxRect = boxRef.current.getBoundingClientRect();
-      if (boxRect.top < window.innerHeight && boxRect.bottom > 0) {
-        // Box is currently visible in viewport, update size
-        setBoxSize({
-          width: boxRef.current.offsetWidth,
-          height: boxRef.current.offsetHeight,
-        });
-        setTitleLength(Math.floor(boxRef.current.offsetWidth / 18));
-      }
-    }
+  // useEffect(() => {
+  //   function handleResize() {
+  //     const boxRect = boxRef.current.getBoundingClientRect();
+  //     if (boxRect.top < window.innerHeight && boxRect.bottom > 0) {
+  //       // Box is currently visible in viewport, update size
+  //       setBoxSize({
+  //         width: boxRef.current.offsetWidth,
+  //         height: boxRef.current.offsetHeight,
+  //       });
+  //       setTitleLength(Math.floor(boxRef.current.offsetWidth / 18));
+  //     }
+  //   }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
-  const truncate = (text, maxLength) => {
-    let realLength = titleLength;
-    if (realLength === 0) {
-      realLength = boxRef.current
-        ? Math.floor(boxRef.current.offsetWidth / 15)
-        : 15;
-    }
-    if (text.length > realLength) {
-      return text.substring(0, realLength) + "...";
-    }
-    return text;
+  const handleCardClick = (name, address) => {
+    sendDataToGTM({
+      event: "Opened Popular Collection",
+      customData: { name: name, contractAddress: address },
+    });
   };
 
   const handleImageLoad = () => {
-    setImageLoaded(true);
+    // setImageLoaded(true);
   };
 
   const handleImageError = () => {
     setImgUrl(broken);
   };
 
-  useEffect(() => {
-    if (collectionItem && collectionItem.bannerUrl) {
-      try {
-        if (collectionItem.bannerImage) {
-          setImgUrl(process.env.REACT_APP_API_URL + collectionItem.bannerImage);
-        } else if (collectionItem.bannerUrl.includes("ipfs://")) {
-          let url = collectionItem.bannerUrl;
-          const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(newUrl);
-        } else {
-          setImgUrl(collectionItem.bannerUrl);
-        }
-      } catch {
-        setImgUrl(broken);
-      }
-    } else {
-      setImgUrl(broken);
-    }
-  }, [props.collectionItem]);
+  // useEffect(() => {
+  //   setImgUrl(
+  //     `https://wsrv.nl/?url=${collectionItem.projectImage}&w=200&h=400&fit=outside`
+  //   );
+  // }, [props.collectionItem]);
 
   return (
     <>
-      {props.collectionItem && (
-        <Link
-          className="nft-card-link"
-          to={`/collections/${collectionItem.network}/${collectionItem.collectionAddress}`}
-        >
+      {props.collectionItem &&
+        props.collectionItem.contractAddress !== "none" && (
+          <Link
+            className="nft-card-link"
+            to={`${where}/collection/${collectionItem.contractAddress}`}
+            onClick={() =>
+              handleCardClick(
+                collectionItem.name,
+                collectionItem.contractAddress
+              )
+            }
+          >
+            <Box ref={boxRef} sx={styles.root}>
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  // height: "168px",
+                }}
+              >
+                <img
+                  src={imgUrl}
+                  // onLoad={handleImageLoad}
+                  onError={handleImageError}
+                  style={{
+                    borderTopLeftRadius: "0.75rem",
+                    borderTopRightRadius: "0.75rem",
+                    objectFit: "cover",
+                    width: "100%",
+                    aspectRatio: "1/1",
+                  }}
+                  alt="nft_image"
+                  // loading="lazy"
+                />
+              </Box>
+
+              <Box sx={styles.content}>
+                <Box style={styles.meta}>
+                  <Typography className="strokeme" sx={styles.title}>
+                    {collectionItem.name}
+                  </Typography>
+                  <img src={verifiedLogo} alt="verified" />
+                </Box>
+                {/* <Typography
+                  sx={styles.network}
+                >{`#${collectionItem.network}`}</Typography> */}
+                <img
+                  style={styles.network}
+                  src={collectionItem.network === "kava" ? KavaLogo : ThetaLogo}
+                  alt="network"
+                />
+              </Box>
+            </Box>
+          </Link>
+        )}
+      {props.collectionItem &&
+        props.collectionItem.contractAddress === "none" && (
           <Box ref={boxRef} sx={styles.root}>
             <img
-              src={imgUrl}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
+              src={broken}
+              // onLoad={handleImageLoad}
+              // onError={handleImageError}
               style={{
-                borderTopLeftRadius: "0.75rem",
-                borderTopRightRadius: "0.75rem",
+                // borderTopLeftRadius: "0.75rem",
+                // borderTopRightRadius: "0.75rem",
+                borderRadius: "0.75rem",
                 objectFit: "cover",
-                width: view === 3 ? "200px" : "100%",
+                width: "100%",
                 aspectRatio: "1/1",
               }}
               alt="nft_image"
               loading="lazy"
             />
-            <Box sx={styles.content}>
-              <Box style={styles.meta}>
-                <Typography className="strokeme" sx={styles.title}>
-                  {truncate(collectionItem.collectionName, 15)}
-                </Typography>
-                <img src={verifiedLogo} alt="verified" />
-              </Box>
-              <Typography
-                sx={styles.network}
-              >{`#${collectionItem.network}`}</Typography>
-            </Box>
           </Box>
-        </Link>
-      )}
+        )}
     </>
   );
 };

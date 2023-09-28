@@ -1,16 +1,16 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import React, { Fragment, useEffect, useState, memo } from "react";
-import { styled } from "@mui/material/styles";
+import { Box, IconButton, Skeleton, Typography } from "@mui/material";
+import React, { useEffect, useState, memo } from "react";
+import { styled } from "@mui/system";
 import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import TuneIcon from "@mui/icons-material/Tune";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { NFTCard } from "./nft-card";
-import { getNFTsOfCollection } from "../../../redux/thunk/get-collection-nfts";
+import NFTCard from "./nft-card";
+import { getNFTsForCollection } from "../../../redux/thunk/get-collection-nfts";
 import FilterComponent from "../../../components/FilterComponent";
 import Searchbox from "../../../components/searchbox";
-import TuneIcon from "@mui/icons-material/Tune";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -35,7 +35,7 @@ function NFTlist({ address, network, view }) {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [nfts, setNfts] = useState([]);
   const [attributes, setAttributes] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [filterParam, setFilterParam] = useState({
     minPrice: 0,
@@ -54,22 +54,27 @@ function NFTlist({ address, network, view }) {
   const [loading, setLoading] = useState(true);
 
   const fetchNFTs = async () => {
-    // console.log("///////////////////////////////// fetchNTFs", filterParam);
-    const response = await getNFTsOfCollection(address, {
+    const response = await getNFTsForCollection(address, {
       page: page,
       limit: 24,
-      search,
+      name: search,
       attributes: JSON.stringify(filterParam.traits),
     });
-    const newItems = response.items;
-    const uniqueNewItems = newItems.filter(
-      (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
-    );
-    const newItemCount = response.count;
-    setNfts([...nfts, ...uniqueNewItems]);
-    setAttributes(response.attributes);
+    const newItems = response.nfts;
+    // const uniqueNewItems = newItems.filter(
+    //   (newItem) => !nfts.some((item) => item.token_id === newItem.token_id)
+    // );
+    const newItemCount = response.totalCounts;
+    setNfts([...nfts, ...newItems]);
+
+    // save only when first loading
+    const currentPage = parseInt(response.currentPage);
+    if (currentPage === 0) {
+      setAttributes(response.attributes);
+    }
+
     setFilteredCount(newItemCount);
-    setTotalCount(response.total);
+    setTotalCount(response.totalCounts);
     if (nfts.length >= newItemCount) {
       setHasMore(false);
     } else {
@@ -85,7 +90,7 @@ function NFTlist({ address, network, view }) {
   const handleSearch = (event) => {
     setLoading(true);
     setNfts([]);
-    setPage(1);
+    setPage(0);
     setSearch(event.target.value);
   };
 
@@ -93,13 +98,13 @@ function NFTlist({ address, network, view }) {
     // console.log("///////////////////////////// handleFilter", filterParam);
     setLoading(true);
     setNfts([]);
-    setPage(1);
+    setPage(0);
     setFilterParam(filterParam);
   };
 
   useEffect(() => {
     setNfts([]);
-    setPage(1);
+    setPage(0);
     setTotalCount(0);
     setFilteredCount(0);
     setHasMore(true);
@@ -108,16 +113,7 @@ function NFTlist({ address, network, view }) {
 
   return (
     <Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          color: "#f4f4f4",
-          mb: 2,
-        }}
-      >
+      <NFTActionContainer>
         <Box
           sx={{
             display: "flex",
@@ -176,47 +172,99 @@ function NFTlist({ address, network, view }) {
             type="text"
           />
         </Box>
-      </Box>
-      <Fragment>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 2,
-            width: "100%",
-          }}
-        >
-          {openFilterMenu && (
-            <FilterComponent
-              filterPage={"Collection"}
-              unionTraits={attributes}
-              filterParam={filterParam}
-              handleFilter={handleFilter}
-            />
-          )}
+      </NFTActionContainer>
+      <NFTContentContainer>
+        {openFilterMenu && (
+          <FilterComponent
+            filterPage={"Collection"}
+            unionTraits={attributes}
+            filterParam={filterParam}
+            handleFilter={handleFilter}
+          />
+        )}
+        {loading && (
+          <SkeletonContainer>
+            {[...Array(12)].map((e, i) => (
+              <Skeleton variant="rounded" width={200} height={270} key={i} />
+            ))}
+          </SkeletonContainer>
+        )}
+        {!loading && nfts && nfts.length > 0 && (
           <InfiniteScroll
             dataLength={nfts.length}
             next={fetchNFTs}
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
           >
-            <Grid container spacing={2}>
+            <CollectionCardContainer>
               {view !== 1 &&
                 nfts &&
                 nfts.length > 0 &&
                 nfts.map((item, index) => {
                   return (
-                    <Grid key={`index_${index}`} item xs={12} sm={6} md={view}>
-                      <NFTCard nft={item} view={view} />
-                    </Grid>
+                    <NFTCard
+                      nft={item}
+                      view={view}
+                      key={`index_${index}`}
+                      where=""
+                    />
                   );
                 })}
-            </Grid>
+            </CollectionCardContainer>
           </InfiniteScroll>
-        </Box>
-      </Fragment>
+        )}
+        {!loading && nfts.length === 0 && (
+          <Typography
+            sx={{
+              width: "100%",
+              m: 8,
+              fontSize: "1.8em",
+              color: "#f4f4f4",
+              textAlign: "center",
+            }}
+          >
+            NO NFTS FOUND
+          </Typography>
+        )}
+      </NFTContentContainer>
     </Box>
   );
 }
+
+const NFTActionContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  color: "#f4f4f4",
+  mb: 2,
+  gap: "8px",
+  [theme.breakpoints.down(540)]: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+}));
+
+const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
+}));
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "16px",
+}));
+
+const NFTContentContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  gap: "16px",
+  [theme.breakpoints.down(992)]: {
+    flexDirection: "column",
+  },
+}));
 
 export default memo(NFTlist);

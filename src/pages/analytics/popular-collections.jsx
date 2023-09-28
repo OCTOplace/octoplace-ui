@@ -1,58 +1,66 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
-import Carousel from "react-material-ui-carousel";
+import React, { useEffect } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { Container } from "react-bootstrap";
 import infoIcon from "../../assets/Infrormation_button.svg";
-import nextIcon from "../../assets/next.svg";
-import prevIcon from "../../assets/prev.svg";
-import { Grid, Box, useMediaQuery } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import { CollectionCard } from "../collections/components/collection-card";
 import { useDispatch, useSelector } from "react-redux";
 import { getPopularCollections } from "../../redux/thunk/get-analytics";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
+import { FreeMode, Navigation, Autoplay, EffectFlip } from "swiper";
+
+import "swiper/swiper.min.css";
+import "swiper/modules/navigation/navigation.min.css";
+import "swiper/modules/pagination/pagination.min.css";
+import "swiper/modules/scrollbar/scrollbar.min.css";
+import "swiper/modules/grid/grid.min.css";
+import "swiper/modules/autoplay/autoplay.min.css";
+import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 
 export function PopularCollections({ title }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const isXSmallScreen = useMediaQuery("(max-width: 600px)");
-  const isSmallScreen = useMediaQuery(
-    "(min-width: 601px) and (max-width: 900px)"
-  );
-  const isLargeScreen = useMediaQuery(
-    "(min-width: 1201px) and (max-width: 1535px)"
-  );
-  const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
+  // const [currentIndex, setCurrentIndex] = useState(0);
+  // const isXSmallScreen = useMediaQuery("(max-width: 600px)");
+  // const isSmallScreen = useMediaQuery(
+  //   "(min-width: 601px) and (max-width: 900px)"
+  // );
+  // const isLargeScreen = useMediaQuery(
+  //   "(min-width: 1201px) and (max-width: 1535px)"
+  // );
+  // const isXLargeScreen = useMediaQuery("(min-width: 1536px)");
+
   const dispatch = useDispatch();
   const popularCollections = useSelector(
     (state) => state.analytics.popularCollections
   );
 
-  let numItemsToShow = 3;
+  // let numItemsToShow = 3;
 
-  if (isXSmallScreen) {
-    numItemsToShow = 1;
-  } else if (isSmallScreen) {
-    numItemsToShow = 2;
-  } else if (isLargeScreen) {
-    numItemsToShow = 4;
-  } else if (isXLargeScreen) {
-    numItemsToShow = 6;
-  }
+  // if (isXSmallScreen) {
+  //   numItemsToShow = 1;
+  // } else if (isSmallScreen) {
+  //   numItemsToShow = 2;
+  // } else if (isLargeScreen) {
+  //   numItemsToShow = 4;
+  // } else if (isXLargeScreen) {
+  //   numItemsToShow = 6;
+  // }
 
-  const handlePrevClick = () => {
-    setCurrentIndex(Math.max(currentIndex - 1, 0));
-  };
+  // const handlePrevClick = () => {
+  //   setCurrentIndex(Math.max(currentIndex - 1, 0));
+  // };
 
-  const handleNextClick = () => {
-    const nextIndex = currentIndex + 1;
-    if (
-      nextIndex >=
-      popularCollections.length - (numItemsToShow == 1 ? 1 : numItemsToShow - 1)
-    ) {
-      setCurrentIndex(0);
-    } else {
-      setCurrentIndex(nextIndex);
-    }
-  };
+  // const handleNextClick = () => {
+  //   const nextIndex = currentIndex + 1;
+  //   if (
+  //     nextIndex >=
+  //     popularCollections.length - (numItemsToShow == 1 ? 1 : numItemsToShow - 1)
+  //   ) {
+  //     setCurrentIndex(0);
+  //   } else {
+  //     setCurrentIndex(nextIndex);
+  //   }
+  // };
 
   useEffect(() => {
     dispatch(getPopularCollections());
@@ -90,51 +98,69 @@ export function PopularCollections({ title }) {
           </Tooltip>
         </Box>
       </Container>
-      <Carousel
-        autoPlay={false}
-        animation="slide"
-        cycleNavigation={true}
-        indicators={true}
-        showArrows={true}
-        navButtonsAlwaysVisible={true}
-        navButtonsProps={{
-          style: {
-            margin: "1rem 5vw",
-            backgroundColor: "transparent",
-          },
+      <Container
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 10,
+          minHeight: "320px",
+          position: "relative",
         }}
-        NextIcon={<img src={nextIcon} alt="next icon" width={24} height={24} />}
-        PrevIcon={<img src={prevIcon} alt="prev icon" width={24} height={24} />}
-        next={handleNextClick}
-        prev={handlePrevClick}
       >
-        <Container
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: 10,
-            minHeight: "300px",
+        <Swiper
+          spaceBetween={16}
+          slidesPerView={1}
+          breakpoints={{
+            370: {
+              slidesPerView: 2,
+            },
+            768: {
+              slidesPerView: 3,
+            },
+            1024: {
+              slidesPerView: 4,
+            },
+            1280: {
+              slidesPerView: 5,
+            },
+            1536: {
+              slidesPerView: 6,
+            },
           }}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          freeMode={true}
+          navigation={{
+            prevEl: ".prevBtn",
+            nextEl: ".nextBtn",
+          }}
+          modules={[FreeMode, Navigation, Autoplay, EffectFlip]}
         >
-          {popularCollections
-            .slice(
-              currentIndex -
-                Math.max(
-                  currentIndex + numItemsToShow - popularCollections.length,
-                  0
-                ),
-              currentIndex + numItemsToShow
-            )
-            .map((item, i) => {
-              return (
-                <Grid key={`index_${i}`} item xs={12} sm={6} md={4} lg={2}>
-                  <CollectionCard collectionItem={item} view={3} />
-                </Grid>
-              );
-            })}
-        </Container>
-      </Carousel>
+          {popularCollections.map((item, i) => {
+            return (
+              <SwiperSlide key={`index_${i}`}>
+                <CollectionCard
+                  collectionItem={item}
+                  isSwiper={true}
+                  where="/popular"
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+        <div className="nextIcon nextBtn">
+          <Fab aria-label="next" color="default" size="small">
+            <NavigateNext />
+          </Fab>
+        </div>
+        <div className="prevIcon prevBtn">
+          <Fab aria-label="prev" color="default" size="small">
+            <NavigateBefore />
+          </Fab>
+        </div>
+      </Container>
     </Box>
   );
 }

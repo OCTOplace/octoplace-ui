@@ -11,6 +11,9 @@ import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 import { formatEther, parseEther } from "@ethersproject/units";
+import broken from "./../../../assets/broken.png";
+import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
+import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
@@ -49,20 +52,29 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       fontWeight: "500",
       fontSize: ".875em",
       letterSpacing: "1px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
     },
     network: {
-      fontSize: ".625em",
-      fontWeight: "400",
-      color: "#6C6C6C",
+      width: "24px",
+      height: "24px",
+    },
+    price: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      gap: ".5rem",
+      marginTop: ".5rem",
     },
   };
 
-  const truncate = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
-  };
+  // const truncate = (text, maxLength) => {
+  //   if (text.length > maxLength) {
+  //     return text.substring(0, maxLength) + "...";
+  //   }
+  //   return text;
+  // };
 
   useEffect(() => {
     dispatch(
@@ -80,15 +92,17 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         if (marketItem.nftDetails.metadata.image.includes("ipfs://")) {
           let url = marketItem.nftDetails.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(newUrl);
+          setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
-          setImgUrl(marketItem.nftDetails.metadata.image);
+          setImgUrl(
+            `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
+          );
         }
       } catch {
-        setImgUrl("https://thereisnoimage.com/image");
+        setImgUrl(broken);
       }
     } else {
-      setImgUrl("https://thereisnoimage.com/image");
+      setImgUrl(broken);
     }
   }, [marketItem]);
 
@@ -118,20 +132,26 @@ export const NFTMarketCard = ({ view, marketItem }) => {
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
-                    {truncate(
-                      marketItem.nftDetails.metadata
-                        ? marketItem.nftDetails.metadata.name
-                        : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`,
-                      15
-                    )}
+                    {marketItem.nftDetails.metadata
+                      ? marketItem.nftDetails.metadata.name
+                      : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`}
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
-                <Typography
+                {/* <img
+                  style={styles.network}
+                  src={marketItem.network === "kava" ? KavaLogo : ThetaLogo}
+                  alt="network"
+                /> */}
+                {/* <Typography
                   sx={styles.network}
-                >{`#${marketItem.Network}`}</Typography>
-                <Box style={styles.meta}>
-                  <Typography>#{marketItem.TokenId}</Typography>
+                >{`#${marketItem.Network}`}</Typography> */}
+                <Box style={styles.price}>
+                  <img
+                    style={styles.network}
+                    src={marketItem.network === "kava" ? KavaLogo : ThetaLogo}
+                    alt="network"
+                  />
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
                     <Typography>{marketItem.Price}</Typography>
