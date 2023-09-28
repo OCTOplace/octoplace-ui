@@ -66,8 +66,12 @@ const NFTPage = () => {
           <Img
             src={
               collection.bannerImage.startsWith("https://")
-                ? collection.bannerImage
-                : process.env.REACT_APP_API_URL + collection.bannerImage
+                ? // ? collection.bannerImage
+                  `https://wsrv.nl/?url=${collection.bannerImage}&w=1290&h=260&fit=outside&n=-1`
+                : // : process.env.REACT_APP_API_URL + collection.bannerImage
+                  `https://wsrv.nl/?url=${
+                    process.env.REACT_APP_API_URL + collection.bannerImage
+                  }&w=1290&h=260&fit=outside&n=-1`
             }
             onError={(event) => (event.target.style.display = "none")}
             alt="Collection banner"

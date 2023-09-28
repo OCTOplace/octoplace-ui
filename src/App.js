@@ -53,7 +53,7 @@ import contractInteraction from "./contracts";
 
 const gtmParams = {
   id:
-    process.env.NODE_ENV === "production"
+    process.env.REACT_APP_GTM_ENV === "production"
       ? process.env.REACT_APP_GTM_PRODUCT_ID
       : process.env.REACT_APP_GTM_DEVELOP_ID,
 };
@@ -100,11 +100,11 @@ function App() {
   }, [loggedAddress]);
 
   useEffect(() => {
-    console.log("Gethering prepare");
+    // console.log("Gethering prepare");
     if (typeof window === "undefined") {
       return;
     }
-    console.log("Getering started");
+    // console.log("Getering started");
     contractInteraction.gatherSpots();
   }, []);
 
@@ -122,10 +122,10 @@ function App() {
     dispatch(getAllMarketItems());
     dispatch(getAllCollections());
     getTxCharge();
-    try {
-      activateInjectedProvider("MetaMask");
-      activate(injectedConnector);
-    } catch {}
+    // try {
+    //   activateInjectedProvider("MetaMask");
+    //   activate(injectedConnector);
+    // } catch {}
   }, []);
 
   return (

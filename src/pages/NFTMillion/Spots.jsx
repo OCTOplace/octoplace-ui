@@ -134,7 +134,7 @@ export default React.memo(function Spots(props) {
               componentsProps={props}
               title={tooltipText}
             >
-              <img src={src} alt="" style={combineStyle} />
+              <img src={src} alt="" style={combineStyle} loading="lazy" />
             </Tooltip>
           </ALink>
         );

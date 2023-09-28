@@ -520,6 +520,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
               src={videoUrl}
               allowFullScreen
+              width="100%"
             />
           </Box>
           <Box sx={styles.descriptionContainer}>
