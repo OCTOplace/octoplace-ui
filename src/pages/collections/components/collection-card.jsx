@@ -85,11 +85,13 @@ export const CollectionCard = (props) => {
   //   return () => window.removeEventListener("resize", handleResize);
   // }, []);
 
-  const handleCardClick = (name, address) => {
-    sendDataToGTM({
-      event: "Opened Popular Collection",
-      customData: { name: name, contractAddress: address },
-    });
+  const handleCardClick = (where, name, address) => {
+    if (where) {
+      sendDataToGTM({
+        event: "Opened Popular Collection",
+        customData: { name: name, contractAddress: address },
+      });
+    }
   };
 
   const handleImageLoad = () => {
@@ -115,6 +117,7 @@ export const CollectionCard = (props) => {
             to={`${where}/collection/${collectionItem.contractAddress}`}
             onClick={() =>
               handleCardClick(
+                where,
                 collectionItem.name,
                 collectionItem.contractAddress
               )

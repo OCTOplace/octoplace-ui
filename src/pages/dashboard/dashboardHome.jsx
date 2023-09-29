@@ -21,6 +21,7 @@ import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
 import { toast } from "react-toastify";
 import copy from "clipboard-copy";
+import { getSocialUrl } from "../../utils/string-util";
 
 function DashboardHome() {
   const dispatch = useDispatch();
@@ -360,69 +361,112 @@ function DashboardHome() {
                 />
               </Box>
               <Box sx={styles.row}>
-                {userSetting.facebook && (
-                  <a href={userSetting.facebook} target="_blank">
-                    <IconButton>
-                      <FacebookRounded sx={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.facebook &&
+                  getSocialUrl("facebook.com", userSetting.facebook) && (
+                    <a
+                      href={getSocialUrl("facebook.com", userSetting.facebook)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <FacebookRounded sx={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.telegram && (
-                  <a href={userSetting.telegram} target="_blank">
-                    <IconButton>
-                      <TelegramIcon sx={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.telegram &&
+                  getSocialUrl("telegram.com", userSetting.telegram) && (
+                    <a
+                      href={getSocialUrl("telegram.com", userSetting.telegram)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <TelegramIcon sx={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.twitter && (
-                  <a href={userSetting.twitter} target="_blank">
-                    <IconButton>
-                      <TwitterIcon sx={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.twitter &&
+                  getSocialUrl("twitter.com", userSetting.twitter) && (
+                    <a
+                      href={getSocialUrl("twitter.com", userSetting.twitter)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <TwitterIcon sx={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.instagram && (
-                  <a href={userSetting.instagram} target="_blank">
-                    <IconButton>
-                      <FaInstagram style={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.instagram &&
+                  getSocialUrl("instagram.com", userSetting.instagram) && (
+                    <a
+                      href={getSocialUrl(
+                        "instagram.com",
+                        userSetting.instagram
+                      )}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <FaInstagram style={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.discord && (
-                  <a href={userSetting.discord}>
-                    <IconButton>
-                      <FaDiscord style={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.discord &&
+                  getSocialUrl("discord.com", userSetting.discord) && (
+                    <a
+                      href={getSocialUrl("discord.com", userSetting.discord)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <FaDiscord style={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.tikTok && (
-                  <a href={userSetting.tikTok} target="_blank">
-                    <IconButton>
-                      <FaTiktok style={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.tictok &&
+                  getSocialUrl("tiktok.com", userSetting.tictok) && (
+                    <a
+                      href={getSocialUrl("tiktok.com", userSetting.tictok)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <FaTiktok style={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.youtube && (
-                  <a href={userSetting.youtube} target="_blank">
-                    <IconButton>
-                      <YouTubeIcon sx={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.youtube &&
+                  getSocialUrl("youtube.com", userSetting.youtube) && (
+                    <a
+                      href={getSocialUrl("youtube.com", userSetting.youtube)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <YouTubeIcon sx={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
 
-                {userSetting.medium && (
-                  <a href={userSetting.medium} target="_blank">
-                    <IconButton>
-                      <BsMedium style={styles.icon} />
-                    </IconButton>
-                  </a>
-                )}
+                {userSetting.medium &&
+                  getSocialUrl("medium.com", userSetting.medium) && (
+                    <a
+                      href={getSocialUrl("medium.com", userSetting.medium)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <BsMedium style={styles.icon} />
+                      </IconButton>
+                    </a>
+                  )}
               </Box>
             </Box>
           </Box>
