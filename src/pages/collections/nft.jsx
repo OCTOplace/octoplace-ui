@@ -21,7 +21,7 @@ import RecentMessages from "./components/RecentMessages";
 import { CollectionDiscussions } from "../../components/discussions/collection-discussion";
 import defaultImage from "../../assets/GrayBackground.jpeg";
 import { styled } from "@mui/system";
-
+import { getSocialUrl } from "../../utils/string-util";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 const NFTPage = () => {
@@ -118,78 +118,128 @@ const NFTPage = () => {
               </Button> */}
                 {collection.social && (
                   <Box sx={styles.row}>
-                    {collection.social.telegram && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.telegram}
-                        target="_blank"
-                      >
-                        <Telegram sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.twitter && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.twitter}
-                        target="_blank"
-                      >
-                        <Twitter sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.discord && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.discord}
-                        target="_blank"
-                      >
-                        <FaDiscord color="#fff" sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.facebook && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.facebook}
-                        target="_blank"
-                      >
-                        <Facebook sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.instagram && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.instagram}
-                        target="_blank"
-                      >
-                        <Instagram sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.youtube && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.youtube}
-                        target="_blank"
-                      >
-                        <FaYoutube color="#fff" sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.medium && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.medium}
-                        target="_blank"
-                      >
-                        <BsMedium color="#fff" sx={styles.icon} />
-                      </IconButton>
-                    )}
-                    {collection.social.tikTok && (
-                      <IconButton
-                        LinkComponent={"a"}
-                        href={collection.social.tikTok}
-                        target="_blank"
-                      >
-                        <FaTiktok color="#fff" sx={styles.icon} />
-                      </IconButton>
-                    )}
+                    {collection.social.telegram &&
+                      getSocialUrl(
+                        "telegram.com",
+                        collection.social.telegram
+                      ) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "telegram.com",
+                            collection.social.telegram
+                          )}
+                          target="_blank"
+                        >
+                          <Telegram sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.twitter &&
+                      getSocialUrl(
+                        "twitter.com",
+                        collection.social.twitter
+                      ) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "twitter.com",
+                            collection.social.twitter
+                          )}
+                          target="_blank"
+                        >
+                          <Twitter sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.discord &&
+                      getSocialUrl(
+                        "discord.com",
+                        collection.social.discord
+                      ) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "discord.com",
+                            collection.social.discord
+                          )}
+                          target="_blank"
+                        >
+                          <FaDiscord color="#fff" sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.facebook &&
+                      getSocialUrl(
+                        "facebook.com",
+                        collection.social.facebook
+                      ) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "facebook.com",
+                            collection.social.facebook
+                          )}
+                          target="_blank"
+                        >
+                          <Facebook sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.instagram &&
+                      getSocialUrl(
+                        "instagram.com",
+                        collection.social.instagram
+                      ) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "instagram.com",
+                            collection.social.instagram
+                          )}
+                          target="_blank"
+                        >
+                          <Instagram sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.youtube &&
+                      getSocialUrl(
+                        "youtube.com",
+                        collection.social.youtube
+                      ) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "youtube.com",
+                            collection.social.youtube
+                          )}
+                          target="_blank"
+                        >
+                          <FaYoutube color="#fff" sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.medium &&
+                      getSocialUrl("medium.com", collection.social.medium) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "medium.com",
+                            collection.social.medium
+                          )}
+                          target="_blank"
+                        >
+                          <BsMedium color="#fff" sx={styles.icon} />
+                        </IconButton>
+                      )}
+                    {collection.social.tikTok &&
+                      getSocialUrl("tiktok.com", collection.social.tikTok) && (
+                        <IconButton
+                          LinkComponent={"a"}
+                          href={getSocialUrl(
+                            "tiktok.com",
+                            collection.social.tikTok
+                          )}
+                          target="_blank"
+                        >
+                          <FaTiktok color="#fff" sx={styles.icon} />
+                        </IconButton>
+                      )}
 
                     {account === collection.ownerAddr && (
                       <IconButton
