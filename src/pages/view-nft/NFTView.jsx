@@ -172,7 +172,9 @@ export const NFTView = () => {
         },
       });
 
-      setOfferDlgOpen(true);
+      if (account.toLowerCase() !== owner.toLowerCase()) {
+        setOfferDlgOpen(true);
+      }
     } else {
       toast.error("Please connect your wallet!");
     }
@@ -425,20 +427,17 @@ export const NFTView = () => {
                   </Button>
                 </Box>
               )}
-            {!loading &&
-              account &&
-              account.toLowerCase() !== owner.toLowerCase() &&
-              isListed && (
-                <Box sx={styles.row}>
-                  <Button
-                    sx={styles.orangeButton}
-                    variant="contained"
-                    onClick={handleOfferSwap}
-                  >
-                    Offer SWAP
-                  </Button>
-                </Box>
-              )}
+            {!loading && isListed && (
+              <Box sx={styles.row}>
+                <Button
+                  sx={styles.orangeButton}
+                  variant="contained"
+                  onClick={handleOfferSwap}
+                >
+                  Offer SWAP
+                </Button>
+              </Box>
+            )}
             {market && market.Price && (
               <Typography variant="h6" sx={{ mt: 2, mb: 2, color: "#FFFFFF" }}>
                 Price: {`${market.Price}`} TFUEL
