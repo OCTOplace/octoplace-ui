@@ -25,7 +25,7 @@ root.render(
   <Provider store={store}>
     <Web3ReactProvider getLibrary={getLibrary}>
       <ThemeProvider theme={theme}>
-        <ToastContainer />
+        <ToastContainer theme="dark" />
         <App />
       </ThemeProvider>
     </Web3ReactProvider>

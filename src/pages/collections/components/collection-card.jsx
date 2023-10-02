@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import broken from "./../../../assets/broken.png";
 
 import verifiedLogo from "../../../assets/verified.svg";
-// import flameLogo from "../../../assets/flame.svg";
+import loadingLogo from "../../../assets/Pulse-1s-64px.svg";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
@@ -15,10 +15,12 @@ export const CollectionCard = (props) => {
   const { collectionItem, isSwiper, where } = props;
   const sendDataToGTM = useGTMDispatch();
   const boxRef = useRef(null);
-  const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
-  const [titleLength, setTitleLength] = useState(0);
-  const [imgUrl, setImgUrl] = useState(broken);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
+  // const [titleLength, setTitleLength] = useState(0);
+  const [imgUrl, setImgUrl] = useState(
+    `https://wsrv.nl/?url=${collectionItem.projectImage}&w=200&h=400&fit=outside`
+  );
+  // const [imageLoaded, setImageLoaded] = useState(false);
 
   const styles = {
     root: {
@@ -66,22 +68,22 @@ export const CollectionCard = (props) => {
     },
   };
 
-  useEffect(() => {
-    function handleResize() {
-      const boxRect = boxRef.current.getBoundingClientRect();
-      if (boxRect.top < window.innerHeight && boxRect.bottom > 0) {
-        // Box is currently visible in viewport, update size
-        setBoxSize({
-          width: boxRef.current.offsetWidth,
-          height: boxRef.current.offsetHeight,
-        });
-        setTitleLength(Math.floor(boxRef.current.offsetWidth / 18));
-      }
-    }
+  // useEffect(() => {
+  //   function handleResize() {
+  //     const boxRect = boxRef.current.getBoundingClientRect();
+  //     if (boxRect.top < window.innerHeight && boxRect.bottom > 0) {
+  //       // Box is currently visible in viewport, update size
+  //       setBoxSize({
+  //         width: boxRef.current.offsetWidth,
+  //         height: boxRef.current.offsetHeight,
+  //       });
+  //       setTitleLength(Math.floor(boxRef.current.offsetWidth / 18));
+  //     }
+  //   }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   const handleCardClick = (name, address) => {
     if (where.length > 0) {
@@ -98,18 +100,18 @@ export const CollectionCard = (props) => {
   };
 
   const handleImageLoad = () => {
-    setImageLoaded(true);
+    // setImageLoaded(true);
   };
 
   const handleImageError = () => {
     setImgUrl(broken);
   };
 
-  useEffect(() => {
-    setImgUrl(
-      `https://wsrv.nl/?url=${collectionItem.projectImage}&w=400&h=400&fit=outside`
-    );
-  }, [props.collectionItem]);
+  // useEffect(() => {
+  //   setImgUrl(
+  //     `https://wsrv.nl/?url=${collectionItem.projectImage}&w=200&h=400&fit=outside`
+  //   );
+  // }, [props.collectionItem]);
 
   return (
     <>
@@ -120,26 +122,37 @@ export const CollectionCard = (props) => {
             to={`${where}/collection/${collectionItem.contractAddress}`}
             onClick={() =>
               handleCardClick(
+                where,
                 collectionItem.name,
                 collectionItem.contractAddress
               )
             }
           >
             <Box ref={boxRef} sx={styles.root}>
-              <img
-                src={imgUrl}
-                onLoad={handleImageLoad}
-                onError={handleImageError}
+              <Box
                 style={{
-                  borderTopLeftRadius: "0.75rem",
-                  borderTopRightRadius: "0.75rem",
-                  objectFit: "cover",
-                  width: "100%",
-                  aspectRatio: "1/1",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  // height: "168px",
                 }}
-                alt="nft_image"
-                loading="lazy"
-              />
+              >
+                <img
+                  src={imgUrl}
+                  // onLoad={handleImageLoad}
+                  onError={handleImageError}
+                  style={{
+                    borderTopLeftRadius: "0.75rem",
+                    borderTopRightRadius: "0.75rem",
+                    objectFit: "cover",
+                    width: "100%",
+                    aspectRatio: "1/1",
+                  }}
+                  alt="nft_image"
+                  // loading="lazy"
+                />
+              </Box>
+
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
@@ -164,8 +177,8 @@ export const CollectionCard = (props) => {
           <Box ref={boxRef} sx={styles.root}>
             <img
               src={broken}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
+              // onLoad={handleImageLoad}
+              // onError={handleImageError}
               style={{
                 // borderTopLeftRadius: "0.75rem",
                 // borderTopRightRadius: "0.75rem",
