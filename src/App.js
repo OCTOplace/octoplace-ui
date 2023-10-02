@@ -127,7 +127,7 @@ function App() {
     //   activate(injectedConnector);
     // } catch {}
   }, []);
-
+  console.log(gtmParams);
   return (
     <Router>
       <GTMProvider state={gtmParams}>

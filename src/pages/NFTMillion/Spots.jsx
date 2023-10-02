@@ -5,6 +5,7 @@ import { SPACE_WIDTH } from "../../constants/nftMillions";
 import { useGlobalState } from "../../hook/globalState";
 import TransparentPng from "../../assets/transparent.png";
 import { styled } from "@mui/system";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 const customStyle = {
   cell: {
@@ -35,6 +36,8 @@ const customStyle = {
 
 export default React.memo(function Spots(props) {
   const { spots, editIndex, editLinkUrl, editTitle, editImageUrl } = props;
+
+  const sendDataToGTM = useGTMDispatch();
 
   const [shownSpots, setShownSpots] = useGlobalState("shownSpots");
 
@@ -128,6 +131,12 @@ export default React.memo(function Spots(props) {
             href={props.href}
             target={props.target}
             key={props["data-tokenid"]}
+            onClick={() =>
+              sendDataToGTM({
+                event: "Opened One Million NFT",
+                customData: `spot: ${props.href}`,
+              })
+            }
           >
             <Tooltip
               key={props["data-tokenid"]}

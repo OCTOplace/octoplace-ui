@@ -12,15 +12,27 @@ export const NFTCard = ({ view, nft, isSwiper, where }) => {
   const sendDataToGTM = useGTMDispatch();
 
   const handleCardClick = (name, network, address, tokenId) => {
-    sendDataToGTM({
-      event: "Opened Popular NFT",
-      customData: {
-        name: name,
-        network: network,
-        contractAddress: address,
-        tokenId: tokenId,
-      },
-    });
+    if (where.length > 0) {
+      sendDataToGTM({
+        event: "Opened Popular NFT",
+        customData: {
+          name: name,
+          network: network,
+          "Collection Address": address,
+          "token Id": tokenId,
+        },
+      });
+    } else {
+      sendDataToGTM({
+        event: "Opened Collection NFT",
+        customData: {
+          name: name,
+          network: network,
+          "Collection Address": address,
+          "token Id": tokenId,
+        },
+      });
+    }
   };
 
   const styles = {

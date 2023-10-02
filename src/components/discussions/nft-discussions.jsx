@@ -41,7 +41,11 @@ import {
   createNFTDiscussion,
   getNftDiscussions,
 } from "../../redux/thunk/get-discussions";
+
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
+  const sendDataToGTM = useGTMDispatch();
   const [expanded, setExpanded] = useState(false);
   const styles = {
     accordion2: {
@@ -222,6 +226,14 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   useEffect(() => {}, [discussions]);
 
   const handleFeeApprove = async () => {
+    sendDataToGTM({
+      event: "Approved Comment (NFT Discussion)",
+      customData: {
+        "Collection Address": address,
+        "token Id": tokenId,
+      },
+    });
+
     const netInfo = getNetworkInfo("theta");
     dispatch(showTxDialog());
     try {
@@ -249,11 +261,27 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
+
+      sendDataToGTM({
+        event: "View Transaction Successful (NFT Discussion)",
+        customData: {
+          "Collection Address": address,
+          "token Id": tokenId,
+        },
+      });
     } catch (err) {
       console.log("Error");
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
+
+      sendDataToGTM({
+        event: "View Transaction Rejected (NFT Discussion)",
+        customData: {
+          "Collection Address": address,
+          "token Id": tokenId,
+        },
+      });
     }
   };
 
@@ -389,7 +417,17 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
             fullWidth
             variant="contained"
             onClick={() => {
-              if (message) setOpenSendDlg(true);
+              if (message) {
+                sendDataToGTM({
+                  event: "Opened Add Comment Popup (NFT Discussion)",
+                  customData: {
+                    "Collection Address": address,
+                    "token Id": tokenId,
+                  },
+                });
+
+                setOpenSendDlg(true);
+              }
             }}
             sx={styles.sendButton}
           >
@@ -425,7 +463,17 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
             <Button
               color="error"
               variant="contained"
-              onClick={() => setOpenSendDlg(false)}
+              onClick={() => {
+                sendDataToGTM({
+                  event: "Closed Add Comment Popup (NFT Discussion)",
+                  customData: {
+                    "Collection Address": address,
+                    "token Id": tokenId,
+                  },
+                });
+
+                setOpenSendDlg(false);
+              }}
             >
               Cancel
             </Button>

@@ -85,10 +85,15 @@ export const CollectionCard = (props) => {
   //   return () => window.removeEventListener("resize", handleResize);
   // }, []);
 
-  const handleCardClick = (where, name, address) => {
-    if (where) {
+  const handleCardClick = (name, address) => {
+    if (where.length > 0) {
       sendDataToGTM({
         event: "Opened Popular Collection",
+        customData: { name: name, contractAddress: address },
+      });
+    } else {
+      sendDataToGTM({
+        event: "Viewed Collection",
         customData: { name: name, contractAddress: address },
       });
     }
