@@ -1,24 +1,24 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
 import { getActiveListings, sortListigs } from "../../utils/format-listings";
 import {
   Box,
-  Divider,
-  Grid,
+  // Divider,
+  // Grid,
   IconButton,
-  Skeleton,
+  // Skeleton,
   Typography,
 } from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-import InfiniteScroll from "react-infinite-scroll-component";
+// import InfiniteScroll from "react-infinite-scroll-component";
 import Skelethon from "./compoents/sketlethon";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
@@ -134,7 +134,7 @@ function Swap({ isHome }) {
     if (!selItem.metadata) {
       return false;
     }
-    
+
     if (
       selItem.name &&
       !selItem.name.toLowerCase().includes(keyword.toLowerCase())
@@ -291,6 +291,7 @@ function Swap({ isHome }) {
                     listingItem={item}
                     view={view}
                     key={`index_${index}`}
+                    where="swap"
                   />
                 );
               })}

@@ -11,13 +11,21 @@ import wc from "../assets/walletconnect.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 export const GoProDlg = (props) => {
   const { onClose, open } = props;
+  const sendDataToGTM = useGTMDispatch();
   const handleClose = () => {
     onClose();
   };
 
   const handleGoProClick = async () => {
+    sendDataToGTM({
+      event: "Opened Go Pro CTA",
+      customData: { url: "https://discord.com/invite/73Ru5XUP2X" },
+    });
+
     window.open("https://discord.com/invite/73Ru5XUP2X", "_blank");
     handleClose();
   };

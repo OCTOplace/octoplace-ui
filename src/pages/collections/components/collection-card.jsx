@@ -84,10 +84,17 @@ export const CollectionCard = (props) => {
   }, []);
 
   const handleCardClick = (name, address) => {
-    sendDataToGTM({
-      event: "Opened Popular Collection",
-      customData: { name: name, contractAddress: address },
-    });
+    if (where.length > 0) {
+      sendDataToGTM({
+        event: "Opened Popular Collection",
+        customData: { name: name, contractAddress: address },
+      });
+    } else {
+      sendDataToGTM({
+        event: "Viewed Collection",
+        customData: { name: name, contractAddress: address },
+      });
+    }
   };
 
   const handleImageLoad = () => {

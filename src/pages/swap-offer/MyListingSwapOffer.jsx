@@ -23,8 +23,10 @@ import {
   setTxDialogSuccess,
   showTxDialog,
 } from "../../redux/slices/app-slice";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const MyListingSwapOffer = () => {
+  const sendDataToGTM = useGTMDispatch();
   const { listingId, offerNft, offerTokenId, network } = useParams();
   const listings = useSelector((state) => state.listings.allListings);
   const [myNft, setMyNft] = useState();
@@ -35,6 +37,7 @@ export const MyListingSwapOffer = () => {
   const { account, chainId } = useWeb3React();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const getApprovedStatus = async () => {
     try {
       const netDetails = getNetworkInfo(network);
@@ -117,6 +120,14 @@ export const MyListingSwapOffer = () => {
   }, [listings]);
 
   const handleApprove = async () => {
+    sendDataToGTM({
+      event: "Clicked Approve Swap",
+      customData: {
+        "Collection Address": listingNFT.listingDetails.tokenAddress,
+        "token Id": listingNFT.listingDetails.tokenId,
+      },
+    });
+
     const netDetails = getNetworkInfo(network);
     dispatch(showTxDialog());
     try {
@@ -149,6 +160,14 @@ export const MyListingSwapOffer = () => {
   };
 
   const handleAddOffer = async () => {
+    sendDataToGTM({
+      event: "Clicked Offer Button (Swap)",
+      customData: {
+        "Collection Address": listingNFT.listingDetails.tokenAddress,
+        "token Id": listingNFT.listingDetails.tokenId,
+      },
+    });
+
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
     if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {

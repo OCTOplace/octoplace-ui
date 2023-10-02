@@ -12,8 +12,10 @@ import verifiedLogo from "../../../assets/verified.svg";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const NFTListingCard = (props) => {
+  const sendDataToGTM = useGTMDispatch();
   const [imgUrl, setImgUrl] = useState();
   // const { view } = props;
 
@@ -70,6 +72,20 @@ export const NFTListingCard = (props) => {
   //   return text;
   // };
 
+  const handleCardClick = (name, network, address, tokenId) => {
+    if (props.where === "swap") {
+      sendDataToGTM({
+        event: "Opened NFT (Swap)",
+        customData: {
+          name: name,
+          network: network,
+          "Collection Address": address,
+          "token Id": tokenId,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     if (props.listingItem && props.listingItem.listingNFT.metadata) {
       try {
@@ -96,6 +112,16 @@ export const NFTListingCard = (props) => {
         <Link
           className="nft-card-link"
           to={`/nft/${props.listingItem.listingNFT.network}/${props.listingItem.listingNFT.contractAddress}/${props.listingItem.listingNFT.tokenId}`}
+          onClick={() =>
+            handleCardClick(
+              (props.listingItem.listingNFT.metadata &&
+                props.listingItem.listingNFT.metadata.name) ||
+                "",
+              props.listingItem.listingNFT.network,
+              props.listingItem.listingNFT.contractAddress,
+              props.listingItem.listingNFT.tokenId
+            )
+          }
         >
           <Box sx={styles.root}>
             <img

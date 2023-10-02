@@ -34,6 +34,8 @@ import { formatUnits, parseUnits } from "@ethersproject/units";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
 //create your forceUpdate hook
 function useForceUpdate() {
   // eslint-disable-next-line no-unused-vars
@@ -45,6 +47,7 @@ function useForceUpdate() {
 
 export const NFTView = () => {
   const { network, address, tokenId } = useParams();
+  const sendDataToGTM = useGTMDispatch();
   const [market, setMarket] = useState();
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
@@ -161,6 +164,14 @@ export const NFTView = () => {
 
   const handleOfferSwap = () => {
     if (account) {
+      sendDataToGTM({
+        event: "Clicked Offer Swap CTA",
+        customData: {
+          "Collection Address": address,
+          "token Id": tokenId,
+        },
+      });
+
       setOfferDlgOpen(true);
     } else {
       toast.error("Please connect your wallet!");
@@ -255,6 +266,11 @@ export const NFTView = () => {
   };
 
   const buyNFT = async () => {
+    sendDataToGTM({
+      event: "Click Buy NFT",
+      customData: { "Collection Address": address, "token Id": tokenId },
+    });
+
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
     if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
@@ -294,11 +310,21 @@ export const NFTView = () => {
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       toast.success("NFT Listing Successful!");
+
+      sendDataToGTM({
+        event: "View NFT Buy Transaction Successful Popup",
+        customData: { "Collection Address": address, "token Id": tokenId },
+      });
     } catch (err) {
       console.log("Error on buyNFT", err);
       dispatch(setTxDialogFailed(true));
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
+
+      sendDataToGTM({
+        event: "View NFT Buy Transaction Failed Popup",
+        customData: { "Collection Address": address, "token Id": tokenId },
+      });
     }
     forceUpdate();
   };
