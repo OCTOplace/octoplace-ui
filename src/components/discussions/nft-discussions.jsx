@@ -417,17 +417,24 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
             fullWidth
             variant="contained"
             onClick={() => {
-              if (message) {
-                sendDataToGTM({
-                  event: "Opened Add Comment Popup (NFT Discussion)",
-                  customData: {
-                    "Collection Address": address,
-                    "token Id": tokenId,
-                  },
-                });
-
-                setOpenSendDlg(true);
+              if (!message) {
+                return;
               }
+
+              if (!account) {
+                toast.info("Please connect your wallet!");
+                return;
+              }
+
+              sendDataToGTM({
+                event: "Opened Add Comment Popup (NFT Discussion)",
+                customData: {
+                  "Collection Address": address,
+                  "token Id": tokenId,
+                },
+              });
+
+              setOpenSendDlg(true);
             }}
             sx={styles.sendButton}
           >
