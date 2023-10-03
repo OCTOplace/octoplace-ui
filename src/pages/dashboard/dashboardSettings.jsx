@@ -241,7 +241,7 @@ function DashboardSettings() {
           setFacebook(fetchedData.facebook || "");
           setYT(fetchedData.youtube || "");
           setMedium(fetchedData.medium || "");
-          setTiktok(fetchedData.tikTok || "");
+          setTiktok(fetchedData.tictok || "");
         }
 
         setLoading(false);
@@ -317,7 +317,7 @@ function DashboardSettings() {
       twitter: twitter,
       instagram: instagram,
       discord: discord,
-      tikTok: tiktok,
+      tictok: tiktok,
       youtube: youtube,
       medium: medium,
       telegram: telegram,

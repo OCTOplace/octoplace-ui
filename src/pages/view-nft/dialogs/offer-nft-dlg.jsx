@@ -32,6 +32,7 @@ import { Contract } from "@ethersproject/contracts";
 import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
 import axios from "axios";
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -56,6 +57,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 export const OfferNFTDialog = (props) => {
   const { onClose, open, listingId, network } = props;
+  const sendDataToGTM = useGTMDispatch();
   const loading = useSelector((state) => state.myNFT.isLoading);
   const originalMyNFTs = useSelector((state) => state.myNFT.nfts);
   const listings = useSelector((state) => state.listings.allListings);
@@ -80,7 +82,14 @@ export const OfferNFTDialog = (props) => {
   // };
 
   const handleListItemClick = (item) => {
-    // setSelectedIndex(index);
+    sendDataToGTM({
+      event: "Viewed Pick NFT Popup (Swap)",
+      customData: {
+        "Collection Address": item.contractAddress,
+        "token Id": item.tokenId,
+      },
+    });
+
     setSelectedNftOffer(item);
   };
 
@@ -438,6 +447,15 @@ export const OfferNFTDialog = (props) => {
           sx={style.orangeButton}
           style={{ color: myNFTs.length === 0 ? "gray" : "#262626" }}
           onClick={() => {
+            sendDataToGTM({
+              event: "Viewed Swap Offer page",
+              customData: {
+                "listing Id": listingId,
+                "Collection Address": selectedNftOffer.contractAddress,
+                "token Id": selectedNftOffer.tokenId,
+              },
+            });
+
             onClose();
             navigate(
               `/swap/initiate-offer/${network}/${listingId}/${selectedNftOffer.contractAddress}/${selectedNftOffer.tokenId}`

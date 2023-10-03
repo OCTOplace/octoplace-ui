@@ -155,6 +155,11 @@ export const CollectionDiscussions = ({
   useEffect(() => {}, [discussions]);
 
   const handleFeeApprove = async () => {
+    sendDataToGTM({
+      event: "Approved Comment Function (Collection Discussion)",
+      customData: { "Collection Address": address },
+    });
+
     const netInfo = getNetworkInfo("theta");
     dispatch(showTxDialog());
     try {
@@ -175,6 +180,12 @@ export const CollectionDiscussions = ({
         netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT,
         parseUnits(commentFee.toString(), "ether")
       );
+
+      sendDataToGTM({
+        event: "Sent Comment (Collection Discussion)",
+        customData: { "Collection Address": address },
+      });
+
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       toast.success("Approval Successful!");
@@ -182,11 +193,21 @@ export const CollectionDiscussions = ({
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
+
+      sendDataToGTM({
+        event: "View Transaction Successful Popup (Collection Discussion)",
+        customData: { "Collection Address": address },
+      });
     } catch (err) {
       console.log("Error");
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
+
+      sendDataToGTM({
+        event: "View Transaction Failed Popup (Collection Discussion)",
+        customData: { "Collection Address": address },
+      });
     }
   };
 
@@ -396,14 +417,26 @@ export const CollectionDiscussions = ({
               fullWidth
               variant="contained"
               onClick={() => {
-                if (message) {
-                  sendDataToGTM({
-                    event: "Sent Collection Message",
-                    customData: { "Collection Address": address },
-                  });
+                sendDataToGTM({
+                  event: "Click Send Collection Message",
+                  customData: { "Collection Address": address },
+                });
 
-                  setOpenSendDlg(true);
+                if (!message) {
+                  return;
                 }
+
+                if (!account) {
+                  toast.info("Please connect your wallet!");
+                  return;
+                }
+
+                sendDataToGTM({
+                  event: "Opened Add Comment Popup (Collection Discussion)",
+                  customData: { "Collection Address": address },
+                });
+
+                setOpenSendDlg(true);
               }}
               sx={styles.sendButton}
             >
@@ -444,7 +477,14 @@ export const CollectionDiscussions = ({
               <Button
                 color="error"
                 variant="contained"
-                onClick={() => setOpenSendDlg(false)}
+                onClick={() => {
+                  sendDataToGTM({
+                    event: "Closed Add Comment Popup (Collection Discussion)",
+                    customData: { "Collection Address": address },
+                  });
+
+                  setOpenSendDlg(false);
+                }}
               >
                 Cancel
               </Button>
