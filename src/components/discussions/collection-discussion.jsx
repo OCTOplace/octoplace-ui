@@ -413,30 +413,35 @@ export const CollectionDiscussions = ({
                 }}
               />
             </Box>
-            {account && (
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={() => {
-                  sendDataToGTM({
-                    event: "Click Send Collection Message",
-                    customData: { "Collection Address": address },
-                  });
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={() => {
+                sendDataToGTM({
+                  event: "Click Send Collection Message",
+                  customData: { "Collection Address": address },
+                });
 
-                  if (message) {
-                    sendDataToGTM({
-                      event: "Opened Add Comment Popup (Collection Discussion)",
-                      customData: { "Collection Address": address },
-                    });
+                if (!message) {
+                  return;
+                }
 
-                    setOpenSendDlg(true);
-                  }
-                }}
-                sx={styles.sendButton}
-              >
-                Send
-              </Button>
-            )}
+                if (!account) {
+                  toast.info("Please connect your wallet!");
+                  return;
+                }
+
+                sendDataToGTM({
+                  event: "Opened Add Comment Popup (Collection Discussion)",
+                  customData: { "Collection Address": address },
+                });
+
+                setOpenSendDlg(true);
+              }}
+              sx={styles.sendButton}
+            >
+              Send
+            </Button>
           </Box>
           <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
             <DialogTitle

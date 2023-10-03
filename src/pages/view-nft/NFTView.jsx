@@ -176,7 +176,7 @@ export const NFTView = () => {
         setOfferDlgOpen(true);
       }
     } else {
-      toast.error("Please connect your wallet!");
+      toast.info("Please connect your wallet!");
     }
   };
 
