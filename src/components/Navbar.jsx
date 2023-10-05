@@ -12,7 +12,7 @@ import {
   Box,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate, useRoutes } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ConnectWalletDlg } from "./connect-wallet-dlg";
 import { GoProDlg } from "./go-pro-dlg";
 import { useState } from "react";
@@ -27,7 +27,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
-import { getNetworkInfo } from "../connectors/networks";
+import { isThetaChain, getNetworkInfo } from "../connectors/networks";
 import ThetaLogo from "../assets/chains/thetaLogo.svg";
 import KavaLogo from "../assets/chains/kavaLogo.svg";
 
@@ -259,13 +259,13 @@ export const AppNavbar = () => {
                   >
                     <img
                       style={{
-                        width: chainId === 361 ? "20px" : "15px",
-                        height: chainId === 361 ? "20px" : "15px",
+                        width: isThetaChain(chainId) ? "20px" : "15px",
+                        height: isThetaChain(chainId) ? "20px" : "15px",
                       }}
-                      src={chainId === 361 ? ThetaLogo : KavaLogo}
+                      src={isThetaChain(chainId) ? ThetaLogo : KavaLogo}
                       alt="network"
                     />
-                    &nbsp;{chainId === 361 ? "THETA" : "KAVA"}
+                    &nbsp;{isThetaChain(chainId) ? "THETA" : "KAVA"}
                   </Box>
                 )}
               </Button>
@@ -275,7 +275,8 @@ export const AppNavbar = () => {
                 variant="contained"
               >
                 {getAccountString(acctDetails.address)} &nbsp;|{" "}
-                {acctDetails.balance} {chainId === 361 ? "TFUEL" : "KAVA"}
+                {acctDetails.balance}{" "}
+                {isThetaChain(chainId) ? "TFUEL" : "TKAVA"}
               </Button>
             </>
           )}

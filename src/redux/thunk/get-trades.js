@@ -1,7 +1,7 @@
 import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { NETWORKS } from "../../connectors/networks";
+import { getAvailableNetworks } from "../../connectors/networks";
 import {
   FormatTrades,
   formatListings,
@@ -11,7 +11,7 @@ export const getAllTrades = createAsyncThunk(
   "trades/getAllTrades",
   async (thunkAPI) => {
     const detailedTrades = [];
-    const nets = [NETWORKS.THETA, NETWORKS.KAVA];
+    const nets = getAvailableNetworks();
     for (var net of nets) {
       const provider = new JsonRpcProvider(net.RPC);
       const chainId = net.CHAIN_ID;
@@ -29,7 +29,12 @@ export const getAllTrades = createAsyncThunk(
           tradeId: trade.tradeId,
           listing,
           offer,
-          network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2222 ? "kava" : "") ) //TODO Remove hardcoded ChainId
+          network: net.CHAIN_NAME.toLowerCase(),
+          // parseInt(chainId) === 361
+          //   ? "theta"
+          //   : parseInt(chainId) === 2222
+          //   ? "kava"
+          //   : "", //TODO Remove hardcoded ChainId
         });
       }
     }

@@ -1,18 +1,18 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
-import { useDispatch, useSelector } from "react-redux";
-import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings } from "../../utils/format-listings";
+import { useSelector } from "react-redux";
+// import { setActiveListings } from "../../redux/slices/listing-slice";
+// import { getActiveListings } from "../../utils/format-listings";
 import {
   Box,
-  Divider,
-  Grid,
+  // Divider,
+  // Grid,
   IconButton,
-  Paper,
+  // Paper,
   Typography,
 } from "@mui/material";
-import { NFTListingCard } from "../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
+// import { NFTListingCard } from "../listings/components/ListingCard";
+import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -45,9 +45,9 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 function Market({ isHome }) {
-  const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
+  // const dispatch = useDispatch();
+  // const listings = useSelector((state) => state.listings.allListings);
+  // const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");

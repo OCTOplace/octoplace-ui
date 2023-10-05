@@ -11,7 +11,7 @@ import wc from "../assets/walletconnect.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import { getNetworkInfo } from "../connectors/networks";
+import { ChainNames, getNetworkInfo } from "../connectors/networks";
 import {
   activateInjectedProvider,
   injectedConnector,
@@ -58,7 +58,7 @@ export const ConnectWalletDlg = (props) => {
   const switchNetwork = async () => {
     if (window.ethereum) {
       try {
-        const netInfo = getNetworkInfo("theta");
+        const netInfo = getNetworkInfo(ChainNames.THETA);
         await window.ethereum.request({
           method: "wallet_addEthereumChain",
           params: [netInfo.switch],

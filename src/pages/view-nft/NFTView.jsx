@@ -3,7 +3,6 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { swapAbi } from "../../connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 import { useState } from "react";
@@ -199,7 +198,7 @@ export const NFTView = () => {
       const signer = await provider.getSigner();
       const contract = new Contract(
         netDetails.dataNetwork.SWAP_CONTRACT,
-        swapAbi,
+        netDetails.dataNetwork.SWAP_ABI, //  origin code: address.swapAbi,
         signer
       );
       const txResult = await contract.removeListingById(

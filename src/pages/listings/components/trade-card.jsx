@@ -6,7 +6,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { defaultImage, ercAbi } from "../../../connectors/address";
+import { defaultImage } from "../../../connectors/address";
 import { metadataUrl } from "../../../utils/format-listings";
 import { getImageUrl } from "../../../utils/string-util";
 import { Cached } from "@mui/icons-material";
@@ -80,7 +80,12 @@ export const TradeCard = (props) => {
   async function getListingDetails() {
     const net = getNetworkInfo(network);
     const provider = new JsonRpcProvider(net.dataNetwork.RPC);
-    const contract = new Contract(listing.tokenAddress, ercAbi, provider);
+    // const contract = new Contract(listing.tokenAddress, ercAbi, provider);
+    const contract = new Contract(
+      listing.tokenAddress,
+      net.dataNetwork.ercAbi,
+      provider
+    );
     const listingName = await contract.name();
     const tokenUri = await contract.tokenURI(listing.tokenId);
     let metadata;
@@ -120,7 +125,13 @@ export const TradeCard = (props) => {
   async function getOfferDetails() {
     const net = getNetworkInfo(network);
     const provider = new JsonRpcProvider(net.dataNetwork.RPC);
-    const contract = new Contract(offer.offerTokenAddress, ercAbi, provider);
+    // const contract = new Contract(offer.offerTokenAddress, ercAbi, provider);
+    const contract = new Contract(
+      offer.offerTokenAddress,
+      net.dataNetwork.ercAbi,
+      provider
+    );
+
     const offerName = await contract.name();
     const tokenUri = await contract.tokenURI(offer.offerTokenId);
     let metadata;

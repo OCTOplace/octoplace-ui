@@ -46,7 +46,7 @@ export const SellNFT = ({
   isUpdate,
   itemPrice,
   marketId,
-  listingId
+  listingId,
 }) => {
   const theme = useTheme();
   const zeroAddress = "0x0000000000000000000000000000000000000000";
@@ -204,7 +204,7 @@ export const SellNFT = ({
         netDetails.dataNetwork.MARKET_ABI,
         signer
       );
-      console.log(marketId)
+      console.log(marketId);
       const txResult = await contract.updateMarketItem(
         contractAddress,
         tokenId,
@@ -219,7 +219,7 @@ export const SellNFT = ({
           tokenId: tokenId,
           price: formatUnits(parseUnits(price.toString()), 0),
           network: network,
-          listingId: listingId
+          listingId: listingId,
         })
       );
       dispatch(setTxDialogFailed(false));
@@ -235,7 +235,7 @@ export const SellNFT = ({
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
-  }
+  };
   const handleList = async () => {
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
@@ -274,7 +274,7 @@ export const SellNFT = ({
           category: contractAddress,
           price: formatUnits(price.toString(), 0),
           isSold: false,
-          collectionName: metadata.name ,
+          collectionName: metadata.name,
           tokenName: metadata.name,
           network: network,
         })
@@ -408,9 +408,8 @@ export const SellNFT = ({
             Confirm
           </Button>
         )}
-        {
-          isUpdate && (
-            <Button
+        {isUpdate && (
+          <Button
             sx={{ width: "100px" }}
             onClick={handleUpdate}
             variant="contained"
@@ -418,8 +417,7 @@ export const SellNFT = ({
           >
             Update
           </Button>
-          )
-        }
+        )}
         <Button
           onClick={handleClose}
           sx={[{ width: "100px" }, styles.btnCancel]}

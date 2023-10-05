@@ -4,7 +4,7 @@ import { createAction } from "@reduxjs/toolkit";
 import { takeLeading, put, call } from "redux-saga/effects";
 import { formatListings } from "../../utils/format-listings";
 import { setLoading } from "../slices/app-slice";
-import { NETWORKS } from "../../connectors/networks";
+import { getAvailableNetworks } from "../../connectors/networks";
 
 function* LoadAllListingsWatcher() {
   yield takeLeading("LOAD_ALL_LISTING", LoadAllListingsWorker);
@@ -26,7 +26,7 @@ function* LoadAllListingsWorker(action) {
 const loadAllListings = async () => {
   try {
     let finalListings = [];
-    const nets = [NETWORKS.THETA, NETWORKS.KAVA];
+    const nets = getAvailableNetworks();
     for (var net of nets) {
       const chainId = net.CHAIN_ID;
       const provider = new JsonRpcProvider(net.RPC);
@@ -34,7 +34,18 @@ const loadAllListings = async () => {
       let listings = await contract.readAllListings();
       listings = formatListings(listings);
       for (var listing of listings) {
-        finalListings = [...finalListings, {...listing, network: (parseInt(chainId) === 361 ? "theta" : (parseInt(chainId)=== 2222 ? "kava" : "") )}]  //TODO - change hardcoded chainid to Mainnet
+        finalListings = [
+          ...finalListings,
+          {
+            ...listing,
+            network: net.CHAIN_NAME.toLowerCase(),
+            // parseInt(chainId) === 361
+            //   ? "theta"
+            //   : parseInt(chainId) === 2222
+            //   ? "kava"
+            //   : "",
+          },
+        ]; //TODO - change hardcoded chainid to Mainnet
       }
       //finalListings = [...finalListings, ...listings];
     }

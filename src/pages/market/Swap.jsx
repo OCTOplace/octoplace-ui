@@ -51,7 +51,7 @@ function Swap({ isHome }) {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [filterObj, setFilterObj] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -125,7 +125,7 @@ function Swap({ isHome }) {
 
   const handleFilter = (filterObj) => {
     setFilterObj(filterObj);
-    setLoading(false);
+    // setLoading(false);
   };
 
   const filteredSwapItems = activeListings.filter((item, index) => {

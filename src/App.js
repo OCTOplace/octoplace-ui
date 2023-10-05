@@ -53,7 +53,7 @@ import contractInteraction from "./contracts";
 
 const gtmParams = {
   id:
-    process.env.REACT_APP_GTM_ENV === "production"
+    process.env.REACT_APP_ENV === "production"
       ? process.env.REACT_APP_GTM_PRODUCT_ID
       : process.env.REACT_APP_GTM_DEVELOP_ID,
 };
@@ -115,6 +115,7 @@ function App() {
     txCharge = formatUnits(txCharge, 18);
     dispatch(setTxCharge(txCharge));
   };
+
   useEffect(() => {
     dispatch({ type: "LOAD_ALL_LISTING" });
     dispatch({ type: "LOAD_ALL_OFFERS" });
