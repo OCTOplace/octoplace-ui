@@ -120,24 +120,62 @@ export const CollectionsPage = () => {
             />
           </Box>
         </Box>
-        {loading && (
+        {/* {loading && (
           <SkeletonContainer>
             {[...Array(12)].map((e, i) => (
               <Skeleton variant="rounded" width={"100%"} height={270} key={i} />
             ))}
           </SkeletonContainer>
-        )}
-        {!loading && collections && (
-          <InfiniteScroll
-            dataLength={collections.length}
-            next={fetchCollections}
-            hasMore={hasMore}
-            loader={<h4>Loading...</h4>}
-          >
-            <CardList list={collections} view={view} />
-          </InfiniteScroll>
-        )}
-        {!loading && collections.length === 0 && (
+        )} */}
+        {/* {!loading && collections && ( */}
+        <InfiniteScroll
+          dataLength={collections.length}
+          next={fetchCollections}
+          hasMore={hasMore}
+          // loader={<h4>Loading...</h4>}
+          style={{
+            width: "100%",
+            // marginLeft: "calc(-.25 * var(--bs-gutter-x))",
+            // marginRight: "calc(-.25 * var(--bs-gutter-x))",
+          }}
+        >
+          <CardList list={collections} view={view} />
+          {loading && (
+            <SkeletonContainer>
+              {[...Array(12)].map((e, i) => (
+                <Box className="nft-card-link">
+                  <Skeleton
+                    className="mySkeleton"
+                    variant="rounded"
+                    key={i}
+                    animation="wave"
+                    style={{
+                      borderRadius: "0.75rem",
+                      marginBottom: "16px",
+                      width: "100%",
+                      height: "0",
+                      paddingTop: "145%",
+                    }}
+                  />
+                </Box>
+              ))}
+            </SkeletonContainer>
+          )}
+          {!loading && collections.length === 0 && (
+            <Typography
+              sx={{
+                m: 8,
+                fontSize: "1.8em",
+                color: "#f4f4f4",
+                textAlign: "center",
+              }}
+            >
+              NO COLLECTIONS FOUND
+            </Typography>
+          )}
+        </InfiniteScroll>
+        {/* )} */}
+        {/* {!loading && collections.length === 0 && (
           <Typography
             sx={{
               m: 8,
@@ -148,14 +186,17 @@ export const CollectionsPage = () => {
           >
             NO COLLECTIONS FOUND
           </Typography>
-        )}
+        )} */}
       </Container>
     </Box>
   );
 };
 
 const SkeletonContainer = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: "16px",
+  // display: "grid",
+  // gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  // gap: "16px",
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
 }));

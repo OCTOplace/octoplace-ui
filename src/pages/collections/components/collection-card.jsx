@@ -31,6 +31,7 @@ export const CollectionCard = (props) => {
       cursor: "pointer",
       flex: "0 0 auto",
       width: "100%",
+      mb: 2,
       border: "1px solid transparent", // Add transparent border
       "&:hover": {
         border: "1px solid #F78C09",

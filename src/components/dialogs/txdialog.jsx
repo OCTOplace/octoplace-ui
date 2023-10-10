@@ -9,13 +9,14 @@ import {
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import React from "react";
-import { GridLoader } from "react-spinners";
+// import { GridLoader } from "react-spinners";
 import successGif from "../../assets/success.gif";
 import errorGif from "../../assets/close.gif";
 import { useTheme } from "@emotion/react";
 import { useDispatch } from "react-redux";
 import { hideTxDialog } from "../../redux/slices/app-slice";
 import { getBlockExplorerUrl } from "../../connectors/networks";
+import logoAnim from "../../assets/logo_anim_4.svg";
 
 export const TxDialog = ({
   handleClose,
@@ -44,7 +45,14 @@ export const TxDialog = ({
           justifyContent="center"
           alignItems="center"
         >
-          {isPending && <GridLoader color={theme.palette.primary.dark} />}
+          {/* {isPending && <GridLoader color={theme.palette.primary.dark} />} */}
+          {isPending && (
+            <img
+              style={{ width: "80px", height: "80px" }}
+              src={logoAnim}
+              alt="pendding"
+            />
+          )}
           {isSuccessful && (
             <img
               style={{ width: "80px", height: "80px" }}

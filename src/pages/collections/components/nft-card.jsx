@@ -111,6 +111,7 @@ export const NFTCard = ({ view, nft, isSwiper, where }) => {
               nft.tokenId
             )
           }
+          key={nft.contractAddress}
         >
           <Box sx={styles.root}>
             <Box

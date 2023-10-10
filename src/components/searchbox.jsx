@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import { InputAdornment } from "@mui/material";
@@ -12,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginLeft: "1rem",
-    marginRight: theme.spacing.unit,
+    marginRight: "1rem", //theme.spacing(1), //theme.spacing.unit,
     width: 200,
   },
 
@@ -22,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
 
   cssOutlinedInput: {
     "&$cssFocused $notchedOutline": {
-      borderColor: `${theme.palette.primary.main} !important`,
+      borderWidth: "thin",
+      borderColor: `#ffffff !important`,
     },
     height: "2.5rem",
   },
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 function Searchbox(props) {
   const classes = useStyles();
 
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
 
   return (
     <form className={`${classes.container} sb`} noValidate autoComplete="off">
@@ -75,6 +75,5 @@ function Searchbox(props) {
     </form>
   );
 }
-
 
 export default Searchbox;
