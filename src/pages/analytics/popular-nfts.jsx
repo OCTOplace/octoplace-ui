@@ -108,7 +108,7 @@ export function PopularNFTs({ title }) {
           justifyContent: "center",
           alignItems: "flex-start",
           gap: 10,
-          minHeight: "320px",
+          minHeight: "300px",
           position: "relative",
         }}
       >
@@ -153,12 +153,12 @@ export function PopularNFTs({ title }) {
           })}
         </Swiper>
         <div className="nextIcon navNext">
-          <Fab aria-label="next" color="default" size="small">
+          <Fab aria-label="next" color="default" size="small" sx={{ mb: 5 }}>
             <NavigateNext />
           </Fab>
         </div>
         <div className="prevIcon navPrev">
-          <Fab aria-label="prev" color="default" size="small">
+          <Fab aria-label="prev" color="default" size="small" sx={{ mb: 5 }}>
             <NavigateBefore />
           </Fab>
         </div>

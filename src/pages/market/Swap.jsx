@@ -14,12 +14,13 @@ import {
 import { NFTListingCard } from "../listings/components/ListingCard";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
+import Skeleton from "@mui/material/Skeleton";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
 // import InfiniteScroll from "react-infinite-scroll-component";
-import Skelethon from "./compoents/sketlethon";
+// import Skelethon from "./compoents/sketlethon";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";
@@ -51,7 +52,7 @@ function Swap({ isHome }) {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [filterObj, setFilterObj] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -80,13 +81,13 @@ function Swap({ isHome }) {
 
   useEffect(() => {
     if (listings.length > 0) {
-      setIsLoading(false);
       const active = getActiveListings(listings);
       const sorted = sortListigs(active, 0);
       dispatch(setActiveListings(sorted));
+      setIsLoading(false);
     }
   }, [listings]);
-
+  /*
   const fetchData = () => {
     // When this function runs, add the next 6 new items to the active listing directory. If we are at the end of the list, set setHasMore to false.
     if (activeListings.length >= listings.length) {
@@ -118,14 +119,13 @@ function Swap({ isHome }) {
       dispatch(setActiveListings(activeListings.concat(activeListings)));
     }, 1500);
   };
-
+*/
   const handleSearch = (event) => {
     setKeyword(event.target.value);
   };
 
   const handleFilter = (filterObj) => {
     setFilterObj(filterObj);
-    setLoading(false);
   };
 
   const filteredSwapItems = activeListings.filter((item, index) => {
@@ -159,9 +159,9 @@ function Swap({ isHome }) {
     return true;
   });
 
-  if (isLoading) {
-    return <Skelethon />;
-  }
+  // if (isLoading) {
+  //   return <Skelethon />;
+  // }
 
   return (
     <Container>
@@ -269,34 +269,43 @@ function Swap({ isHome }) {
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
-          {/* {loading && (
+          {isLoading && (
             <SkeletonContainer>
               {[...Array(12)].map((e, i) => (
-                <Skeleton
-                  variant="rounded"
-                  width={"100%"}
-                  height={270}
-                  key={i}
-                />
+                <Box className="nft-card-link">
+                  <Skeleton
+                    className="mySkeleton"
+                    variant="rounded"
+                    key={i}
+                    animation="wave"
+                    style={{
+                      borderRadius: "0.75rem",
+                      marginBottom: "16px",
+                      width: "100%",
+                      height: "0",
+                      paddingTop: "145%",
+                    }}
+                  />
+                </Box>
               ))}
             </SkeletonContainer>
-          )} */}
-          {/* {!loading && ( */}
-          <CollectionCardContainer>
-            {view !== 1 &&
-              filteredSwapItems.length > 0 &&
-              filteredSwapItems.map((item, index) => {
-                return (
-                  <NFTListingCard
-                    listingItem={item}
-                    view={view}
-                    key={`index_${index}`}
-                    where="swap"
-                  />
-                );
-              })}
-          </CollectionCardContainer>
-          {/* )} */}
+          )}
+          {!isLoading && (
+            <CollectionCardContainer>
+              {view !== 1 &&
+                filteredSwapItems.length > 0 &&
+                filteredSwapItems.map((item, index) => {
+                  return (
+                    <NFTListingCard
+                      listingItem={item}
+                      view={view}
+                      key={`index_${index}`}
+                      where="swap"
+                    />
+                  );
+                })}
+            </CollectionCardContainer>
+          )}
         </NFTContentContainer>
       </NFTListContainer>
     </Container>
@@ -339,9 +348,12 @@ const NFTContentContainer = styled(Box)(({ theme }) => ({
 }));
 
 const SkeletonContainer = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: "16px",
+  // display: "grid",
+  // gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  // gap: "16px",
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
 }));
 
 export default Swap;

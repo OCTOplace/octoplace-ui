@@ -14,18 +14,14 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import {
-  ContentCopy,
-  ExpandMore,
-  QuestionAnswer,
-  Send,
-} from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { ContentCopy, ExpandMore, QuestionAnswer } from "@mui/icons-material";
 import { shortenAddress } from "../../utils/string-util";
 import { getNetworkInfo } from "../../connectors/networks";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { useWeb3React } from "@web3-react/core";
-import { formatEther, formatUnits, parseUnits } from "@ethersproject/units";
+import { formatEther, parseUnits } from "@ethersproject/units";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -36,7 +32,7 @@ import {
   showTxDialog,
 } from "../../redux/slices/app-slice";
 import copy from "clipboard-copy";
-import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
+// import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
 import {
   createCollectionDiscussion,
   getCollectionDiscussions,
@@ -65,7 +61,8 @@ export const CollectionDiscussions = ({
   const [feeSymbol, setFeeSymbol] = useState("");
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
-  const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
+  const [loadingAllowance, setLoadingAllowance] = useState(false);
+  // const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
   const discussions = useSelector(
     (state) => state.discussion.selectedCollectionDiscussions
   );
@@ -136,16 +133,23 @@ export const CollectionDiscussions = ({
     setFeeAllowance(Number(formatEther(allowedAmt)));
   };
 
-  useEffect(() => {
-    if (account && feeToken) {
-      getAllowance();
-    }
-  }, [account, allowanceRefreshTrigger, feeToken]);
+  // useEffect(() => {
+  //   if (account && feeToken) {
+  //     getAllowance();
+  //   }
+  // }, [account, feeToken]);
 
   useEffect(() => {
+    const fetchAllowance = async () => {
+      setLoadingAllowance(true);
+      await getFeeToken();
+      setLoadingAllowance(false);
+    };
+
     if (account) {
-      getFeeToken();
+      fetchAllowance();
     }
+
     // if isAccordion is false expand the accordion default
     if (!isAccordion) {
       setExpanded(true);
@@ -346,6 +350,12 @@ export const CollectionDiscussions = ({
       fontWeight: 600,
       width: "20%",
       textTransform: "none",
+      "&:disabled": {
+        opacity: 0.3,
+        cursor: "not-allowed",
+        background: "#F78C09",
+        color: "#262626",
+      },
     },
   };
 
@@ -413,9 +423,11 @@ export const CollectionDiscussions = ({
                 }}
               />
             </Box>
-            <Button
+            <LoadingButton
               fullWidth
               variant="contained"
+              loading={loadingAllowance}
+              loadingPosition="start"
               onClick={() => {
                 sendDataToGTM({
                   event: "Click Send Collection Message",
@@ -431,6 +443,11 @@ export const CollectionDiscussions = ({
                   return;
                 }
 
+                if (feeAllowance < commentFee) {
+                  toast.warning("Insufficient funds for gas.");
+                  return;
+                }
+
                 sendDataToGTM({
                   event: "Opened Add Comment Popup (Collection Discussion)",
                   customData: { "Collection Address": address },
@@ -440,8 +457,8 @@ export const CollectionDiscussions = ({
               }}
               sx={styles.sendButton}
             >
-              Send
-            </Button>
+              {loadingAllowance ? "Getting an allowance..." : "Send"}
+            </LoadingButton>
           </Box>
           <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
             <DialogTitle
@@ -464,16 +481,6 @@ export const CollectionDiscussions = ({
               </Typography>
             </DialogContent>
             <DialogActions sx={{ pb: 2, pr: 2 }} className="tx-dialog">
-              {feeAllowance >= commentFee ? (
-                <Button onClick={handleSendMessage} variant="contained">
-                  Send Message
-                </Button>
-              ) : (
-                <Button onClick={handleFeeApprove} variant="contained">
-                  Approve
-                </Button>
-              )}
-
               <Button
                 color="error"
                 variant="contained"
@@ -488,6 +495,15 @@ export const CollectionDiscussions = ({
               >
                 Cancel
               </Button>
+              {feeAllowance >= commentFee ? (
+                <Button onClick={handleSendMessage} variant="contained">
+                  Send Message
+                </Button>
+              ) : (
+                <Button onClick={handleFeeApprove} variant="contained">
+                  Approve
+                </Button>
+              )}
             </DialogActions>
           </Dialog>
         </AccordionDetails>

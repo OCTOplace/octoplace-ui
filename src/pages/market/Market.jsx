@@ -1,18 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
-import { useDispatch, useSelector } from "react-redux";
-import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings } from "../../utils/format-listings";
-import {
-  Box,
-  Divider,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { NFTListingCard } from "../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
+// import { setActiveListings } from "../../redux/slices/listing-slice";
+// import { getActiveListings } from "../../utils/format-listings";
+import { Box, IconButton, Skeleton, Typography } from "@mui/material";
+// import { NFTListingCard } from "../listings/components/ListingCard";
+import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -22,6 +15,7 @@ import { NFTMarketCard } from "./compoents/nft-market-card";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";
+// import Skelethon from "./compoents/sketlethon";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -45,11 +39,12 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 function Market({ isHome }) {
-  const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
+  // const dispatch = useDispatch();
+  // const listings = useSelector((state) => state.listings.allListings);
+  // const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
   const marketItems = useSelector((state) => state.market.markets);
+  const isLoading = useSelector((state) => state.market.isLoading);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -201,6 +196,27 @@ function Market({ isHome }) {
                   />
                 );
               })}
+            {isLoading && (
+              <SkeletonContainer>
+                {[...Array(12)].map((e, i) => (
+                  <Box className="nft-card-link">
+                    <Skeleton
+                      className="mySkeleton"
+                      variant="rounded"
+                      key={i}
+                      animation="wave"
+                      style={{
+                        borderRadius: "0.75rem",
+                        marginBottom: "16px",
+                        width: "100%",
+                        height: "0",
+                        paddingTop: "145%",
+                      }}
+                    />
+                  </Box>
+                ))}
+              </SkeletonContainer>
+            )}
           </CollectionCardContainer>
         </NFTContentContainer>
       </NFTListContainer>
@@ -238,6 +254,12 @@ const NFTContentContainer = styled(Box)(({ theme }) => ({
 }));
 
 const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
+}));
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
   width: "100%",

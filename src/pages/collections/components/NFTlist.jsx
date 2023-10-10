@@ -1,5 +1,5 @@
 import { Box, IconButton, Skeleton, Typography } from "@mui/material";
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState, Fragment, memo } from "react";
 import { styled } from "@mui/system";
 import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
@@ -54,6 +54,7 @@ function NFTlist({ address, network, view }) {
   const [loading, setLoading] = useState(true);
 
   const fetchNFTs = async () => {
+    setLoading(true);
     const response = await getNFTsForCollection(address, {
       page: page,
       limit: 24,
@@ -182,20 +183,20 @@ function NFTlist({ address, network, view }) {
             handleFilter={handleFilter}
           />
         )}
-        {loading && (
-          <SkeletonContainer>
-            {[...Array(12)].map((e, i) => (
-              <Skeleton variant="rounded" width={200} height={270} key={i} />
-            ))}
-          </SkeletonContainer>
-        )}
-        {!loading && nfts && nfts.length > 0 && (
-          <InfiniteScroll
-            dataLength={nfts.length}
-            next={fetchNFTs}
-            hasMore={hasMore}
-            loader={<h4>Loading...</h4>}
-          >
+        {/* {nfts && nfts.length > 0 && ( */}
+        <InfiniteScroll
+          dataLength={nfts.length}
+          next={fetchNFTs}
+          hasMore={hasMore}
+          // loader={<h4>Loading...</h4>}
+          style={{
+            width: "100%",
+            // marginLeft: "calc(-.5 * var(--bs-gutter-x))",
+            // marginRight: "calc(-.5 * var(--bs-gutter-x))",
+          }}
+        >
+          {/* {!loading && nfts && ( */}
+          <Fragment>
             <CollectionCardContainer>
               {view !== 1 &&
                 nfts &&
@@ -211,12 +212,67 @@ function NFTlist({ address, network, view }) {
                   );
                 })}
             </CollectionCardContainer>
-          </InfiniteScroll>
-        )}
-        {!loading && nfts.length === 0 && (
+          </Fragment>
+          {/* )} */}
+          {loading && (
+            <SkeletonContainer>
+              {[...Array(12)].map((e, i) => (
+                <Box className="nft-card-link">
+                  <Skeleton
+                    variant="rounded"
+                    key={`sk_index_${i}`}
+                    animation="wave"
+                    style={{
+                      backgroundColor: "#212121",
+                      borderRadius: "0.75rem",
+                      marginBottom: "16px",
+                      width: "100%",
+                      height: "0",
+                      paddingTop: "145%",
+                    }}
+                  />
+                </Box>
+              ))}
+            </SkeletonContainer>
+          )}
+          {!loading && nfts.length === 0 && (
+            <Typography
+              sx={{
+                m: 8,
+                fontSize: "1.8em",
+                color: "#f4f4f4",
+                textAlign: "center",
+              }}
+            >
+              NO NFTS FOUND
+            </Typography>
+          )}
+        </InfiniteScroll>
+        {/* )} */}
+        {/* {!loading && (
+          <SkeletonContainer>
+            {[...Array(12)].map((e, i) => (
+              <Skeleton
+                variant="rounded"
+                // width={200}
+                height={270}
+                key={i}
+                animation="wave"
+                style={{
+                  backgroundColor: "#263238",
+                  borderRadius: "0.75rem",
+                  objectFit: "cover",
+                  width: "100%",
+                  aspectRatio: "1/1",
+                }}
+              />
+            ))}
+          </SkeletonContainer>
+        )} */}
+
+        {/* {!loading && nfts.length === 0 && (
           <Typography
             sx={{
-              width: "100%",
               m: 8,
               fontSize: "1.8em",
               color: "#f4f4f4",
@@ -225,7 +281,7 @@ function NFTlist({ address, network, view }) {
           >
             NO NFTS FOUND
           </Typography>
-        )}
+        )} */}
       </NFTContentContainer>
     </Box>
   );
@@ -254,17 +310,19 @@ const CollectionCardContainer = styled(Box)(({ theme }) => ({
 const SkeletonContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
-  gap: "16px",
+  width: "100%",
+  // gap: "16px",
 }));
 
 const NFTContentContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "flex-start",
   alignItems: "flex-start",
-  gap: "16px",
+  // gap: "16px",
   [theme.breakpoints.down(992)]: {
     flexDirection: "column",
   },
 }));
 
-export default memo(NFTlist);
+// export default memo(NFTlist);
+export default NFTlist;
