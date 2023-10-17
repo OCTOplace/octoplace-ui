@@ -30,7 +30,24 @@ const kavaRpcUrl = "https://evm.kava.io";
 const kavaBlockExplorerUrl = "https://kavascan.com/";
 const kavaDataContract = "0xd676051dAC65E1a96ab738e94F6a5a91905dC582";
 const kavaSwapContract = "0x61F91266F6abEA61447E00EB781A3c38a3D1b925";
+const kavaNFTDiscussions = "";
+const kavaCollectionDisscussions = "";
+const kavaFaucet = "";
 const kavaMarketPlaceContract = "";
+
+const mantleChainId = "0x1388"; // 5000
+const mantleChainName = "MANTLE";
+const mantleNetworkName = "Mantle Mainnet";
+const mantleCurrency = "MNT";
+const mantleDecimals = 18;
+const mantleRpcUrl = "https://rpc.mantle.xyz";
+const mantleBlockExplorerUrl = "https://explorer.mantle.xyz/";
+const mantleDataContract = "0x6e4c614da85DD861e08f84706742239dBA892Df1";
+const mantleSwapContract = "0xD218272534f4889CA2CdaA4D641709B77cEf534b";
+const mantleNFTDiscussions = "";
+const mantleCollectionDisscussions = "";
+const mantleFaucet = "";
+const mantleMarketPlaceContract = "0xdfB00e816bC17f46f90aeD507f9e36C3C1db1f53";
 
 export {
   swapAbi,
@@ -62,5 +79,21 @@ export {
   kavaBlockExplorerUrl,
   kavaDataContract,
   kavaSwapContract,
+  kavaCollectionDisscussions,
+  kavaNFTDiscussions,
+  kavaFaucet,
   kavaMarketPlaceContract,
+  mantleChainId,
+  mantleChainName,
+  mantleNetworkName,
+  mantleCurrency,
+  mantleDecimals,
+  mantleRpcUrl,
+  mantleBlockExplorerUrl,
+  mantleDataContract,
+  mantleSwapContract,
+  mantleCollectionDisscussions,
+  mantleNFTDiscussions,
+  mantleFaucet,
+  mantleMarketPlaceContract,
 };

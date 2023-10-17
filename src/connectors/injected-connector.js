@@ -5,6 +5,7 @@ export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
     ChainIds.THETA, // 361
     ChainIds.KAVA, // 2222
+    ChainIds.MANTLE, // 5000
   ],
 });
 

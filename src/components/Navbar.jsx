@@ -27,9 +27,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
-import { isThetaChain, getNetworkInfo } from "../connectors/networks";
+import {
+  isThetaChain,
+  isKavaChain,
+  getChainName,
+  getCurrency,
+  getNetworkInfo,
+} from "../connectors/networks";
 import ThetaLogo from "../assets/chains/thetaLogo.svg";
 import KavaLogo from "../assets/chains/kavaLogo.svg";
+import mantleLogo from "../assets/chains/mantleLogo.svg";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
@@ -262,10 +269,17 @@ export const AppNavbar = () => {
                         width: isThetaChain(chainId) ? "20px" : "15px",
                         height: isThetaChain(chainId) ? "20px" : "15px",
                       }}
-                      src={isThetaChain(chainId) ? ThetaLogo : KavaLogo}
+                      src={
+                        isThetaChain(chainId)
+                          ? ThetaLogo
+                          : isKavaChain(chainId)
+                          ? KavaLogo
+                          : mantleLogo
+                      }
                       alt="network"
                     />
-                    &nbsp;{isThetaChain(chainId) ? "THETA" : "KAVA"}
+                    &nbsp;
+                    {getChainName(chainId)}
                   </Box>
                 )}
               </Button>
@@ -275,8 +289,7 @@ export const AppNavbar = () => {
                 variant="contained"
               >
                 {getAccountString(acctDetails.address)} &nbsp;|{" "}
-                {acctDetails.balance}{" "}
-                {isThetaChain(chainId) ? "TFUEL" : "TKAVA"}
+                {acctDetails.balance} {getCurrency(chainId)}
               </Button>
             </>
           )}
@@ -317,6 +330,19 @@ export const AppNavbar = () => {
             alt="network"
           />
           &nbsp;KAVA
+        </MenuItem>
+        <MenuItem
+          style={{ fontSize: "0.9rem" }}
+          onClick={() => {
+            handleChainMenuClose("mantle");
+          }}
+        >
+          <img
+            style={{ width: "15px", height: "15px", margin: "0 2px 0 4px" }}
+            src={mantleLogo}
+            alt="network"
+          />
+          &nbsp;MANTLE
         </MenuItem>
       </Menu>
       <ConnectWalletDlg open={dlgOpen} onClose={handleWalletClose} />
