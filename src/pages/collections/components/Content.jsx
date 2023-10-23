@@ -8,6 +8,7 @@ import {
   MenuItem,
   FormControl,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
@@ -109,6 +110,7 @@ const styles = {
     },
   }),
   orangeButton: {
+    width: "100%",
     backgroundColor: "#F78C09",
     color: "#262626",
     textTransform: "none",
@@ -559,22 +561,37 @@ function Content({
                   }}
                 />
               </Box>
-              <Button
-                onClick={() => {
-                  if (!isOwner) {
-                    toast("Only the owners of collections can upload videos.", {
-                      type: "info",
-                    });
-                    return;
-                  }
-
-                  setOpenAddVideo(true);
-                }}
-                sx={styles.orangeButton}
-                disabled={!isOwner}
+              <Tooltip
+                title={
+                  !isOwner && (
+                    <Typography fontSize={"0.83rem"}>
+                      Only owners of the collection can upload video.
+                    </Typography>
+                  )
+                }
               >
-                Add Video
-              </Button>
+                <spin style={{ fontSize: "smaller" }}>
+                  <Button
+                    onClick={() => {
+                      if (!isOwner) {
+                        toast(
+                          "Only the owners of collections can upload videos.",
+                          {
+                            type: "info",
+                          }
+                        );
+                        return;
+                      }
+
+                      setOpenAddVideo(true);
+                    }}
+                    sx={styles.orangeButton}
+                    disabled={!isOwner}
+                  >
+                    Add Video
+                  </Button>
+                </spin>
+              </Tooltip>
             </Box>
           </Box>
         </Box>
