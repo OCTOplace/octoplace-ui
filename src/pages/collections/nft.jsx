@@ -325,8 +325,15 @@ const NFTPage = () => {
                     ? styles.activeButton
                     : styles.regularButton
                 }
-                style={{ color: asset.video === "" ? "#6d6c6c" : "#FFFFFF" }}
-                disabled={asset.video === ""}
+                style={{
+                  color:
+                    asset.video === "" && account !== collection.ownerAddr
+                      ? "#6d6c6c"
+                      : "#FFFFFF",
+                }}
+                disabled={
+                  asset.video === "" && account !== collection.ownerAddr
+                }
               >
                 Content
               </Button>
@@ -353,6 +360,7 @@ const NFTPage = () => {
             )}
             {activeMenu === "content" && (
               <Content
+                isOwner={account === collection.ownerAddr}
                 address={collection.contractAddress}
                 activeListings={{}} // {activeListings}
                 view={view}
