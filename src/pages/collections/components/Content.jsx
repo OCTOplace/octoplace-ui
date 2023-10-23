@@ -17,6 +17,7 @@ import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { styled } from "@mui/system";
+import { toast } from "react-toastify";
 
 const styles = {
   videoContainer: {
@@ -160,11 +161,19 @@ const styles = {
   }),
 };
 
-function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
-  const videoRef = useRef(null);
-  const [isOwner, setIsOwner] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showButton, setShowButton] = useState(true);
+function Content({
+  isOwner,
+  address,
+  activeListings,
+  view,
+  videoTitle,
+  videoDesc,
+  videoUrl,
+}) {
+  // const videoRef = useRef(null);
+  // const [isOwner, setIsOwner] = useState(true);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  // const [showButton, setShowButton] = useState(true);
   const [openAddVideo, setOpenAddVideo] = useState(false);
   const [chain, setChain] = useState("Theta Mainnet");
   const [chipData, setChipData] = useState([
@@ -230,7 +239,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       console.log("Submitting Error: ", err);
     }
   };
-
+  /*
   const handlePlayVideo = () => {
     if (videoRef.current.paused) {
       videoRef.current.play();
@@ -264,9 +273,10 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       console.log("Pre-Signed URL Error: ", err);
     }
   };
+*/
 
   useEffect(() => {
-    getPreSignedUrl();
+    // getPreSignedUrl();
   }, []);
 
   return (
@@ -515,14 +525,16 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
         </Box>
       ) : (
         <Box sx={styles.videoContainer}>
-          <Box sx={styles.videoBox}>
-            <Iframe
-              sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
-              src={videoUrl}
-              allowFullScreen
-              width="100%"
-            />
-          </Box>
+          {videoUrl && (
+            <Box sx={styles.videoBox}>
+              <Iframe
+                sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
+                src={videoUrl}
+                allowFullScreen
+                width="100%"
+              />
+            </Box>
+          )}
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
               <Typography sx={styles.h1}>{videoTitle}</Typography>
@@ -539,7 +551,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 </Box>
                 <img
                   src={thetaImage}
-                  alt="profile-image"
+                  alt="profile"
                   style={{
                     width: "140px",
                     height: "100%",
@@ -547,15 +559,22 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                   }}
                 />
               </Box>
-              {isOwner ? (
-                <Button
-                  onClick={() => setOpenAddVideo(true)}
-                  sx={styles.orangeButton}
-                  // disabled={true}
-                >
-                  Add Video
-                </Button>
-              ) : null}
+              <Button
+                onClick={() => {
+                  if (!isOwner) {
+                    toast("Only the owners of collections can upload videos.", {
+                      type: "info",
+                    });
+                    return;
+                  }
+
+                  setOpenAddVideo(true);
+                }}
+                sx={styles.orangeButton}
+                disabled={!isOwner}
+              >
+                Add Video
+              </Button>
             </Box>
           </Box>
         </Box>

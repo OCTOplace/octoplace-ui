@@ -56,7 +56,7 @@ import { theme } from "./theme";
 
 const gtmParams = {
   id:
-    process.env.REACT_APP_GTM_ENV === "production"
+    process.env.REACT_APP_ENV === "production"
       ? process.env.REACT_APP_GTM_PRODUCT_ID
       : process.env.REACT_APP_GTM_DEVELOP_ID,
 };
