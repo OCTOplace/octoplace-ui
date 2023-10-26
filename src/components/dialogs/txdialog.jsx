@@ -91,7 +91,7 @@ export const TxDialog = ({
                   textAlign: "center",
                 }}
               >
-                This may take up a few seconds.
+                This may take a few seconds
               </Typography>
             </Typography>
           )}
