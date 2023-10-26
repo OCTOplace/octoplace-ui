@@ -273,62 +273,70 @@ export const NFTView = () => {
       customData: { "Collection Address": address, "token Id": tokenId },
     });
 
-    dispatch(showTxDialog());
-    const netDetails = getNetworkInfo(network);
-    if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
-      await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [netDetails.switch],
-      });
-    }
-    const provider = new Web3Provider(window.ethereum, "any");
-    const signer = await provider.getSigner();
-    try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      const overRides = {
-        value: parseUnits(market.Price.toString(), "ether"),
-      };
-      const txResult = await contract.createMarketSale(
-        address,
-        market.MarketId,
-        overRides
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      dispatch(
-        executeSale({
-          marketId: market.MarketId,
-          network: network,
-          listingId: market.Id,
-          isSold: true,
-          owner: account,
-        })
-      );
-      dispatch(setTxDialogFailed(false));
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      toast.success("NFT Listing Successful!");
+    if (account) {
+      if (account.toUpperCase() !== market.SellerAddress.toUpperCase()) {
+        return;
+      }
 
-      sendDataToGTM({
-        event: "View NFT Buy Transaction Successful Popup",
-        customData: { "Collection Address": address, "token Id": tokenId },
-      });
-    } catch (err) {
-      console.log("Error on buyNFT", err);
-      dispatch(setTxDialogFailed(true));
-      dispatch(setTxDialogSuccess(false));
-      dispatch(setTxDialogPending(false));
+      dispatch(showTxDialog());
+      const netDetails = getNetworkInfo(network);
+      if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [netDetails.switch],
+        });
+      }
+      const provider = new Web3Provider(window.ethereum, "any");
+      const signer = await provider.getSigner();
+      try {
+        const contract = new Contract(
+          netDetails.dataNetwork.MARKETPLACE_CONTRACT,
+          netDetails.dataNetwork.MARKET_ABI,
+          signer
+        );
+        const overRides = {
+          value: parseUnits(market.Price.toString(), "ether"),
+        };
+        const txResult = await contract.createMarketSale(
+          address,
+          market.MarketId,
+          overRides
+        );
+        dispatch(setTxDialogHash(txResult.hash));
+        await txResult.wait();
+        dispatch(
+          executeSale({
+            marketId: market.MarketId,
+            network: network,
+            listingId: market.Id,
+            isSold: true,
+            owner: account,
+          })
+        );
+        dispatch(setTxDialogFailed(false));
+        dispatch(setTxDialogSuccess(true));
+        dispatch(setTxDialogPending(false));
+        toast.success("NFT Listing Successful!");
 
-      sendDataToGTM({
-        event: "View NFT Buy Transaction Failed Popup",
-        customData: { "Collection Address": address, "token Id": tokenId },
-      });
+        sendDataToGTM({
+          event: "View NFT Buy Transaction Successful Popup",
+          customData: { "Collection Address": address, "token Id": tokenId },
+        });
+      } catch (err) {
+        console.log("Error on buyNFT", err);
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+
+        sendDataToGTM({
+          event: "View NFT Buy Transaction Failed Popup",
+          customData: { "Collection Address": address, "token Id": tokenId },
+        });
+      }
+      forceUpdate();
+    } else {
+      toast.info("Please connect your wallet!");
     }
-    forceUpdate();
   };
 
   return (
@@ -412,9 +420,9 @@ export const NFTView = () => {
               )}
             {!loading &&
               market &&
-              account &&
+              // account &&
               market.SellerAddress &&
-              account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
+              // account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
               market.IsSold === false &&
               !isListed && (
                 <Box sx={styles.row}>

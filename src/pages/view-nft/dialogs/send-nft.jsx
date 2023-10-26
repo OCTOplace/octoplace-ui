@@ -37,8 +37,24 @@ export const SendNFT = ({
   const [address, setAddress] = useState("");
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
-  const { library, account , chainId} = useWeb3React();
+  const { account, chainId } = useWeb3React();
   const theme = useTheme();
+
+  const style = {
+    btnSend: {
+      "&:hover": {
+        backgroundColor: "#F78C09",
+        color: "#fff",
+      },
+    },
+    btnCancel: {
+      "&:hover": {
+        backgroundColor: theme.palette.error.main,
+        color: "#fff",
+      },
+    },
+  };
+
   const handleClose = () => {
     onCloseDlg();
     setAddress("");
@@ -109,7 +125,7 @@ export const SendNFT = ({
         <Button
           onClick={handleSend}
           startIcon={<Send />}
-          sx={{ width: "100px" }}
+          sx={[{ width: "100px" }, style.btnSend]}
           variant="contained"
           color="primary"
         >
@@ -118,7 +134,7 @@ export const SendNFT = ({
         <Button
           onClick={handleClose}
           startIcon={<Cancel />}
-          sx={{ width: "100px" }}
+          sx={[{ width: "100px" }, style.btnCancel]}
           variant="contained"
           color="primary"
         >
