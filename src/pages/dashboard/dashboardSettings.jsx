@@ -253,7 +253,7 @@ function DashboardSettings() {
     };
 
     loadData();
-  }, []);
+  }, [account]);
 
   const handleBannerClick = () => {
     const bannerInput = document.getElementById("bannerInput");

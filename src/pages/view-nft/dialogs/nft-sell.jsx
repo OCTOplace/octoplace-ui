@@ -1,6 +1,6 @@
-import { isAddress } from "@ethersproject/address";
+// import { isAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
-import { Cancel, Send } from "@mui/icons-material";
+// import { Cancel, Send } from "@mui/icons-material";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import {
   Dialog,
@@ -13,7 +13,6 @@ import {
   Grid,
   Box,
   CircularProgress,
-  Divider,
   InputAdornment,
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
@@ -29,10 +28,10 @@ import {
 import ercAbi from "../../../abi/erc721.json";
 import { useTheme } from "@mui/material";
 import { toast } from "react-toastify";
-import { createAction } from "redux-actions";
+// import { createAction } from "redux-actions";
 import { getNetworkInfo } from "../../../connectors/networks";
 import { getImageUrl } from "../../../utils/string-util";
-import { formatEther, formatUnits, parseUnits } from "@ethersproject/units";
+import { formatUnits, parseUnits } from "@ethersproject/units";
 import { createListing } from "../../../redux/thunk/create-sale";
 import { updateListing } from "../../../redux/thunk/update-item";
 
@@ -46,7 +45,7 @@ export const SellNFT = ({
   isUpdate,
   itemPrice,
   marketId,
-  listingId
+  listingId,
 }) => {
   const theme = useTheme();
   const zeroAddress = "0x0000000000000000000000000000000000000000";
@@ -55,6 +54,12 @@ export const SellNFT = ({
       width: "100%",
       height: "100%px",
       backgroundColor: "#3c3c3c",
+    },
+    btnApprove: {
+      "&:hover": {
+        backgroundColor: "#F78C09",
+        color: "#fff",
+      },
     },
     btnCancel: {
       "&:hover": {
@@ -69,8 +74,8 @@ export const SellNFT = ({
   const [approved, setApproved] = useState(false);
   const dispatch = useDispatch();
   const [imgUrl, setUrl] = useState("");
-  const { library, account, chainId } = useWeb3React();
-  const [isAnimation, setAnimation] = useState(false);
+  const { account, chainId } = useWeb3React();
+  const [setAnimation] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const handleClose = () => {
     onCloseDlg();
@@ -204,7 +209,7 @@ export const SellNFT = ({
         netDetails.dataNetwork.MARKET_ABI,
         signer
       );
-      console.log(marketId)
+      console.log(marketId);
       const txResult = await contract.updateMarketItem(
         contractAddress,
         tokenId,
@@ -219,7 +224,7 @@ export const SellNFT = ({
           tokenId: tokenId,
           price: formatUnits(parseUnits(price.toString()), 0),
           network: network,
-          listingId: listingId
+          listingId: listingId,
         })
       );
       dispatch(setTxDialogFailed(false));
@@ -235,7 +240,7 @@ export const SellNFT = ({
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
-  }
+  };
   const handleList = async () => {
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
@@ -274,7 +279,7 @@ export const SellNFT = ({
           category: contractAddress,
           price: formatUnits(price.toString(), 0),
           isSold: false,
-          collectionName: metadata.name ,
+          collectionName: metadata.name,
           tokenName: metadata.name,
           network: network,
         })
@@ -391,7 +396,7 @@ export const SellNFT = ({
         {!approved && !isUpdate && (
           <Button
             onClick={handleApprove}
-            sx={{ width: "100px" }}
+            sx={[{ width: "100px" }, styles.btnApprove]}
             variant="contained"
             color="primary"
           >
@@ -400,7 +405,7 @@ export const SellNFT = ({
         )}
         {approved && !isUpdate && (
           <Button
-            sx={{ width: "100px" }}
+            sx={[{ width: "100px" }, styles.btnApprove]}
             onClick={handleList}
             variant="contained"
             color="primary"
@@ -408,18 +413,16 @@ export const SellNFT = ({
             Confirm
           </Button>
         )}
-        {
-          isUpdate && (
-            <Button
-            sx={{ width: "100px" }}
+        {isUpdate && (
+          <Button
+            sx={[{ width: "100px" }, styles.btnApprove]}
             onClick={handleUpdate}
             variant="contained"
             color="primary"
           >
             Update
           </Button>
-          )
-        }
+        )}
         <Button
           onClick={handleClose}
           sx={[{ width: "100px" }, styles.btnCancel]}
