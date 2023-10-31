@@ -75,9 +75,24 @@ export const TxDialog = ({
         >
           {isPending && (
             <Typography
-              sx={{ fontSize: "20px", color: "white", fontWeight: 400 }}
+              sx={{
+                fontSize: "20px",
+                color: "white",
+                fontWeight: 400,
+                textAlign: "center",
+              }}
             >
               Transaction Pending
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                  color: "#F78C09",
+                  fontWeight: 100,
+                  textAlign: "center",
+                }}
+              >
+                This may take a few seconds
+              </Typography>
             </Typography>
           )}
           {isFailed && (

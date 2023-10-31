@@ -320,20 +320,22 @@ const NFTPage = () => {
               </Button>
               <Button
                 onClick={() => setActiveMenu("content")}
+                style={{ "color": "#FFFFFF" }}
                 sx={
                   activeMenu === "content"
                     ? styles.activeButton
                     : styles.regularButton
                 }
+                
+               /*
                 style={{
                   color:
                     asset.video === "" && account !== collection.ownerAddr
                       ? "#6d6c6c"
                       : "#FFFFFF",
                 }}
-                disabled={
-                  asset.video === "" && account !== collection.ownerAddr
-                }
+                */
+                //disabled={ asset.video === "" && account !== collection.ownerAddr } // this had the button content disabled if no content present
               >
                 Content
               </Button>

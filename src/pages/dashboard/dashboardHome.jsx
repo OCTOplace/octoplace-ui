@@ -7,6 +7,7 @@ import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
 import { useWeb3React } from "@web3-react/core";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
+import Tooltip from "@mui/material/Tooltip";
 import { ContentCopy, FacebookRounded } from "@mui/icons-material";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -513,53 +514,77 @@ function DashboardHome() {
             >
               NFTs
             </Button>
-            <Button
-              onClick={() => setActiveMenu("inbox")}
-              disabled
-              sx={
-                activeMenu === "inbox"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Inbox
-              <span style={styles.orangeText}>3</span>
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("offers")}
-              disabled
-              sx={
-                activeMenu === "offers"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+                <Button
+                  onClick={() => setActiveMenu("inbox")}
+                  disabled
+                  sx={
+                    activeMenu === "inbox"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Inbox
+                  <span style={styles.orangeText}></span>
+                </Button>
+              </spin>
+            </Tooltip>
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Offers
-              <span style={styles.orangeText}>1</span>
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("content")}
-              disabled
-              sx={
-                activeMenu === "content"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+                <Button
+                  onClick={() => setActiveMenu("offers")}
+                  disabled
+                  sx={
+                    activeMenu === "offers"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Offers
+                  <span style={styles.orangeText}></span>
+                </Button>
+              </spin>
+            </Tooltip>
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Content
-              <span style={styles.orangeText}>7</span>
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("wall")}
-              disabled
-              sx={
-                activeMenu === "wall"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+                <Button
+                  onClick={() => setActiveMenu("content")}
+                  disabled
+                  sx={
+                    activeMenu === "content"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Content
+                  <span style={styles.orangeText}></span>
+                </Button>
+              </spin>
+            </Tooltip>
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Wall
-            </Button>
+              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+                <Button
+                  onClick={() => setActiveMenu("wall")}
+                  disabled
+                  sx={
+                    activeMenu === "wall"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Wall
+                </Button>
+              </spin>
+            </Tooltip>
           </Box>
 
           {activeMenu === "nft" && (
