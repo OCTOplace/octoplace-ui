@@ -341,7 +341,8 @@ function Content({
       console.log("Submitting Error: ", err);
     }
   };
-
+  
+  /*
   async function getWalletAccessToken() {
     //Check if a user is logged in...
     let isAuthenticated = true;
@@ -354,7 +355,7 @@ function Content({
     //Return the access token from the request body
     return body.access_token;
   }
-  /*
+
   const handlePlayVideo = () => {
     if (videoRef.current.paused) {
       videoRef.current.play();
