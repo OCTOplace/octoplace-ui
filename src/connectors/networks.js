@@ -7,13 +7,13 @@ import marketAbi from "../abi/marketplace.json";
 import collectionDiscussionsAbi from "../abi/collection-discussions.json";
 const thetaRpc = "https://eth-rpc-api.thetatoken.org/rpc";
 const thetaChainId = "0x169";
-const thetaDataContract = "0xdfB00e816bC17f46f90aeD507f9e36C3C1db1f53"; // DataFlat.sol
-const thetaSwapContract = "0x6e4c614da85DD861e08f84706742239dBA892Df1"; // SwapFlat.sol
-const thetaNFTDiscussions = "0x70b6ebf21cb6cbbaaf695725e610f0914e48845c"; // Discussions.sol
+const thetaDataContract = "0x309a468b573b4cb168813a9a28db6Ab5e008B787"; // DataFlat.sol
+const thetaSwapContract = "0x14459D6C7b398e64E4eC2Edf41d858B83505781b"; // SwapFlat.sol
+const thetaNFTDiscussions = "0xfEfB9d1f61433c7BF04E667CfAFCf7A8eEe3cD8B"; // Discussions.sol
 const thetaCollectionDisscussions =
-  "0x25Ffe4FCd767411aa1Acc0ef127d07D8F7D1ff8e"; // CollectionDiscussions.sol
+  "0x63C290716F5A80baB5F2cc4D09678bAC71D28801"; // CollectionDiscussions.sol
 const thetaFaucet = "0xf693b83d35b336ffe54dd22845ee7516218ba3fb"; // Faucet.sol
-const thetaMarketplaceContract = "0x465a8f1a0bd542f1ea9ae10165e6eeb5ec51f4c3"; // Octoplace_FLAT.sol
+const thetaMarketplaceContract = "0x8Bb2718bEA1382348046F671C003C02c27aD9cbD"; // Octoplace_FLAT.sol
 const swapAbi = swapabi;
 const ercAbi = ercabi;
 const kavaRpc = "https://evm.kava.io";
