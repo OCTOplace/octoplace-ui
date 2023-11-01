@@ -125,7 +125,7 @@ export const ListNFTDialog = (props) => {
         dispatch(setTxDialogPending(false));
         dispatch(setTxDialogFailed(false));
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleListing = async () => {
@@ -220,19 +220,19 @@ export const ListNFTDialog = (props) => {
       <DialogActions sx={style.dlgActions}>
         <Button
           sx={style.orangeButton}
-          onClick={handleApprove}
-          disabled={isApproved}
-          variant="contained"
-        >
-          Approve
-        </Button>
-        <Button
-          sx={style.orangeButton}
           variant="contained"
           onClick={handleListing}
           disabled={!isApproved}
         >
           List NFT
+        </Button>
+        <Button
+          sx={style.orangeButton}
+          onClick={handleApprove}
+          disabled={isApproved}
+          variant="contained"
+        >
+          Approve
         </Button>
       </DialogActions>
     </Dialog>
