@@ -393,6 +393,14 @@ export const SellNFT = ({
         </Grid>
       </DialogContent>
       <DialogActions sx={{ pr: 3, pb: 3 }} className="tx-dialog">
+        <Button
+          onClick={handleClose}
+          sx={[{ width: "100px" }, styles.btnCancel]}
+          variant="contained"
+          color="primary"
+        >
+          Cancel
+        </Button>
         {!approved && !isUpdate && (
           <Button
             onClick={handleApprove}
@@ -423,14 +431,7 @@ export const SellNFT = ({
             Update
           </Button>
         )}
-        <Button
-          onClick={handleClose}
-          sx={[{ width: "100px" }, styles.btnCancel]}
-          variant="contained"
-          color="primary"
-        >
-          Cancel
-        </Button>
+
       </DialogActions>
     </Dialog>
   );

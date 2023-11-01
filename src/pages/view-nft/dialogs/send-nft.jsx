@@ -101,6 +101,7 @@ export const SendNFT = ({
         Send NFT
       </DialogTitle>
       <DialogContent className="tx-dialog">
+
         <TextField
           error={error}
           placeholder="Wallet Address (0x..)"
@@ -123,15 +124,6 @@ export const SendNFT = ({
       </DialogContent>
       <DialogActions sx={{ pr: 3, pb: 3 }} className="tx-dialog">
         <Button
-          onClick={handleSend}
-          startIcon={<Send />}
-          sx={[{ width: "100px" }, style.btnSend]}
-          variant="contained"
-          color="primary"
-        >
-          Send
-        </Button>
-        <Button
           onClick={handleClose}
           startIcon={<Cancel />}
           sx={[{ width: "100px" }, style.btnCancel]}
@@ -139,6 +131,15 @@ export const SendNFT = ({
           color="primary"
         >
           Cancel
+        </Button>
+        <Button
+          onClick={handleSend}
+          startIcon={<Send />}
+          sx={[{ width: "100px" }, style.btnSend]}
+          variant="contained"
+          color="primary"
+        >
+          Send
         </Button>
       </DialogActions>
     </Dialog>
