@@ -222,7 +222,7 @@ export const SellNFT = ({
         updateListing({
           marketId: marketId,
           tokenId: tokenId,
-          price: formatUnits(parseUnits(price.toString()), 0),
+          price: parseUnits(price.toString()),
           network: network,
           listingId: listingId,
         })
