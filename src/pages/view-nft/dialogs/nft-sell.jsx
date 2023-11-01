@@ -209,7 +209,7 @@ export const SellNFT = ({
         netDetails.dataNetwork.MARKET_ABI,
         signer
       );
-      console.log(marketId);
+      console.log("marketId ", marketId);
       const txResult = await contract.updateMarketItem(
         contractAddress,
         tokenId,
@@ -218,11 +218,12 @@ export const SellNFT = ({
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
+      console.log("price: ",price.toString());
       dispatch(
         updateListing({
           marketId: marketId,
           tokenId: tokenId,
-          price: parseUnits(price.toString()),
+          price: formatUnits(price.toString(), 0),
           network: network,
           listingId: listingId,
         })

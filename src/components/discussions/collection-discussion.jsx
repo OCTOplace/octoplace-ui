@@ -156,7 +156,7 @@ export const CollectionDiscussions = ({
     }
   }, [account]);
 
-  useEffect(() => {}, [discussions]);
+  useEffect(() => { }, [discussions]);
 
   const handleFeeApprove = async () => {
     sendDataToGTM({
@@ -442,11 +442,11 @@ export const CollectionDiscussions = ({
                   toast.info("Please connect your wallet!");
                   return;
                 }
-
-                // if (feeBalance < commentFee) {
-                //   toast.warning("Insufficient funds for gas.");
-                //   return;
-                // }
+                getAllowance(); //this call updates the balance so it doesn't fail
+                if (feeBalance < commentFee) {
+                  toast.warning("Insufficient funds for gas.");
+                  return;
+                }
 
                 sendDataToGTM({
                   event: "Opened Add Comment Popup (Collection Discussion)",

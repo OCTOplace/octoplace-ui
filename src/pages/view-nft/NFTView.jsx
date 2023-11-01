@@ -274,7 +274,7 @@ export const NFTView = () => {
     });
 
     if (account) {
-      if (account.toUpperCase() !== market.SellerAddress.toUpperCase()) {
+      if (account.toUpperCase() === market.SellerAddress.toUpperCase()) {
         return;
       }
 
@@ -422,7 +422,7 @@ export const NFTView = () => {
               market &&
               // account &&
               market.SellerAddress &&
-              // account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
+              account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
               market.IsSold === false &&
               !isListed && (
                 <Box sx={styles.row}>
