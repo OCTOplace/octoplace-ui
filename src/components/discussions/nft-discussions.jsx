@@ -210,11 +210,11 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     setFeeAllowance(Number(formatEther(allowedAmt)));
   };
 
-  // useEffect(() => {
-  //   if (account && feeToken) {
-  //     getAllowance();
-  //   }
-  // }, [account, feeToken]);
+  useEffect(() => {
+    if (account && feeToken) {
+      getAllowance();
+    }
+  }, [account, feeToken]);
 
   useEffect(() => {
     const fetchAllowance = async () => {
@@ -438,10 +438,10 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
                 return;
               }
 
-              if (feeAllowance < commentFee) {
-                toast.warn("Insufficient funds for gas.");
-                return;
-              }
+              // if (feeBalance < commentFee) {
+              //   toast.warn("Insufficient funds for gas.");
+              //   return;
+              // }
 
               sendDataToGTM({
                 event: "Opened Add Comment Popup (NFT Discussion)",
