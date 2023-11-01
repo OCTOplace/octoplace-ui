@@ -133,11 +133,11 @@ export const CollectionDiscussions = ({
     setFeeAllowance(Number(formatEther(allowedAmt)));
   };
 
-  // useEffect(() => {
-  //   if (account && feeToken) {
-  //     getAllowance();
-  //   }
-  // }, [account, feeToken]);
+  useEffect(() => {
+    if (account && feeToken) {
+      getAllowance();
+    }
+  }, [account, feeToken]);
 
   useEffect(() => {
     const fetchAllowance = async () => {
@@ -443,10 +443,10 @@ export const CollectionDiscussions = ({
                   return;
                 }
 
-                if (feeAllowance < commentFee) {
-                  toast.warning("Insufficient funds for gas.");
-                  return;
-                }
+                // if (feeBalance < commentFee) {
+                //   toast.warning("Insufficient funds for gas.");
+                //   return;
+                // }
 
                 sendDataToGTM({
                   event: "Opened Add Comment Popup (Collection Discussion)",
