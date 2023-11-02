@@ -233,7 +233,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     }
   }, [account]);
 
-  useEffect(() => {}, [discussions]);
+  //useEffect(() => { }, [discussions]);
 
   const handleFeeApprove = async () => {
     sendDataToGTM({
@@ -438,10 +438,10 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
                 return;
               }
 
-              // if (feeBalance < commentFee) {
-              //   toast.warn("Insufficient funds for gas.");
-              //   return;
-              // }
+              if (feeBalance < commentFee) {
+                toast.warn("Insufficient funds for gas.");
+                return;
+              }
 
               sendDataToGTM({
                 event: "Opened Add Comment Popup (NFT Discussion)",
