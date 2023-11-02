@@ -233,7 +233,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     }
   }, [account]);
 
-  useEffect(() => { }, [discussions]);
+  //useEffect(() => { }, [discussions]);
 
   const handleFeeApprove = async () => {
     sendDataToGTM({
@@ -437,7 +437,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
                 toast.info("Please connect your wallet!");
                 return;
               }
-              getAllowance(); //this call updates the balance so it doesn't fail
+
               if (feeBalance < commentFee) {
                 toast.warn("Insufficient funds for gas.");
                 return;
