@@ -41,11 +41,25 @@ async function loadNFT(account) {
 async function loadKavaNFT(account) {
   const result = await axios.get(`${apiUrl}/users/kava/${account}`);
   if (result.data.success) {
+    for (let nft of result.data.nfts) {
+      if (!nft.metadata && nft.uri) {
+        const metadata = await getMetadata(nft.uri);
+        nft.metadata = metadata;
+      }
+    }
     return transformData(result.data.nfts);
   } else {
     throw result.data.message;
   }
 }
+
+const getMetadata = async (uri) => {
+  try {
+    const result = await axios.get(uri);
+    return result.data;
+  } catch {}
+  return null;
+};
 
 function transformData(nfts) {
   return nfts.map((nft) => {
