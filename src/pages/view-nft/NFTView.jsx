@@ -435,7 +435,10 @@ export const NFTView = () => {
                   </Button>
                 </Box>
               )}
-            {!loading && isListed && (
+            {!loading && 
+            account &&
+            account.toLowerCase() !== owner.toLowerCase() &&
+            isListed && (
               <Box sx={styles.row}>
                 <Button
                   sx={styles.orangeButton}

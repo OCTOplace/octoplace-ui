@@ -193,6 +193,7 @@ export const SellNFT = ({
   };
 
   const handleUpdate = async () => {
+    if (checkPrice()) { return };
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
     if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
@@ -218,12 +219,12 @@ export const SellNFT = ({
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
-      console.log("price: ",price.toString());
       dispatch(
         updateListing({
           marketId: marketId,
           tokenId: tokenId,
-          price: formatUnits(price.toString(), 0),
+          //price: formatUnits(price.toString(), 0),
+          price: price.toString(),
           network: network,
           listingId: listingId,
         })
@@ -242,7 +243,9 @@ export const SellNFT = ({
       dispatch(setTxDialogPending(false));
     }
   };
+
   const handleList = async () => {
+    if (checkPrice()) { return };
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
     if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
@@ -278,7 +281,8 @@ export const SellNFT = ({
           highestOffer: "",
           bidder: "",
           category: contractAddress,
-          price: formatUnits(price.toString(), 0),
+          //price: formatUnits(price.toString(), 0),
+          price: Number(price.toString()),
           isSold: false,
           collectionName: metadata.name,
           tokenName: metadata.name,
@@ -298,6 +302,22 @@ export const SellNFT = ({
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
     }
+  };
+
+  const checkPrice = () => {
+    if (price === itemPrice) {
+      toast.warning("Price must different than original value!");
+      return true
+    }
+    if (price === '') {
+      toast.warning("Price must set a value!");
+      return true
+    }
+    if (Number(price.toString()) <= 0) {
+      toast.warning("Price must be higher than 0!");
+      return true
+    }
+    return false
   };
 
   return (
@@ -359,8 +379,9 @@ export const SellNFT = ({
                         sx={{ mt: 2, width: "12rem" }}
                         autoComplete="off"
                         type="number"
-                        value={Number(price)}
+                        value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        onFocus={(e) => setPrice('')}
                       />
                       <Box>
                         <Typography variant="caption">
