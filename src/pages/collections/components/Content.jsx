@@ -10,6 +10,18 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material";
+
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  //CircularProgress,
+} from "@mui/material";
+import logoAnim from "../../../assets/logo_anim_4.svg";
+import successGif from "../../../assets/success.gif";
+import errorGif from "../../../assets/close.gif";
+
 import React, { useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
 import thetaImage from "../../../assets/icon.png";
@@ -24,6 +36,7 @@ import Checkbox from '@mui/material/Checkbox';
 import axios from "axios";
 import { styled } from "@mui/system";
 import { toast } from "react-toastify";
+
 
 const styles = {
   videoContainer: {
@@ -178,7 +191,7 @@ function Content({
   videoDesc,
   videoUrl,
 }) {
-  console.log("address: ", address);
+  //console.log("address: ", address);
   // const videoRef = useRef(null);
   // const [isOwner, setIsOwner] = useState(true);
   // const [isPlaying, setIsPlaying] = useState(false);
@@ -193,10 +206,16 @@ function Content({
     //{ key: 4, label: "360p" }, //hidden for UI improvement
   ]);
   const [uploadData, setUploadData] = useState();
+  const [url, setUrl] = useState();
   const [movie, setMovie] = useState();
-  const [videoName, setVideoName] = useState();
-  const [videoDescription, setVideoDescription] = useState();
+  const [videoName, setVideoName] = useState("");
+  const [videoDescription, setVideoDescription] = useState("");
   const [asset, setAsset] = useState({});
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  //const [isSuccessful, setIsSuccessful] = useState(false);
+  //const [isFailed, setIsFailed] = useState(false);
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
@@ -208,6 +227,10 @@ function Content({
     setChain(event.target.value);
   };
 
+  const handleChangeURL = (e) => {
+    setUrl(e.target.value);
+  };
+
   const handleVideoNameChange = (event) => {
     setVideoName(event.target.value);
   };
@@ -217,8 +240,7 @@ function Content({
   };
 
   const onDrop = (acceptedFiles) => {
-    // Handle dropped files logic here
-    console.log(acceptedFiles);
+    //console.log(acceptedFiles);
     let files;
     if (acceptedFiles != null) {
       files = acceptedFiles[0];
@@ -237,32 +259,42 @@ function Content({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Save");
+
     //if (uploadData == null) return;
     const formData = new FormData();
     if (movie != null || movie !== "") {
       formData.append("file", movie);
-      console.log("movie:", movie);
+      //console.log("movie:", movie);
     }
+
+    //Proper URL address is NOT validated yet!
+    if (movie === undefined && url === "") {
+      toast.warn("Video not selected");
+      return
+    }
+
+    if (videoName === "") {
+      toast.warn("Video Name not selected");
+      return
+    }
+    if (videoDescription === "") {
+      toast.warn("Video Description not selected");
+      return
+    }
+
     const headers = {
       "Content-type": "application/octet-stream",
     };
     try {
-      console.log("presigned_url: ", uploadData.presigned_url);
-      console.log("upload_id", uploadData.id);
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
-      console.log("headers: ", headers);
-
+      setIsOpen(true);
+      setIsPending(true);
       const response = await axios.put(uploadData.presigned_url, movie, {
         headers: headers,
       });
       const data = response.data;
-      console.log("Submit: ", data);
+      //console.log("Submit: ", data);
 
-      /// changes by Armandos
+      /// changes by Armando
 
       const headers2 = {
         'x-tva-sa-id': 'srvacc_fp72dqw4ix8r6ad6vr9evm68d',
@@ -273,41 +305,40 @@ function Content({
         "source_upload_id": uploadData.id,
         "playback_policy": "public",
         "file_name": movie.name,
-        /* this is the DRM feature and it's disabled for now
+        /* //This is the DRM feature and it's disabled for now, needs to be checked and unhardcode the chain_id
         "use_drm": true,
         drm_rules: [{
           chain_id: 361,
-          nft_collection: "0xcfdbae33681b728a28ef62f9db16acf7af0b9cde"
+          nft_collection: address
         }],
         */
         "metadata": {
-          "filename": address + " " + movie.name, //figured that it's better to have which collection owns each video in the thetavideo dashboard
+          "filename": address + " " + movie.name, //Figured that it's better to have which collection owns each video in the thetavideo dashboard
           "videoName": videoName,
           "videoDescription": videoDescription,
         },
 
       });
-      console.log("Body: ", body)
+      //console.log("Body: ", body)
 
       const response2 = await axios.post(
         "https://api.thetavideoapi.com/video", body,
         { headers: headers2 }
       );
-      console.log("transcode response: ", response2);
-      console.log("video id: ", response2.data.body.videos[0].id);
+      //console.log("transcode response: ", response2);
+      //console.log("video id: ", response2.data.body.videos[0].id);
       let url3 = "https://api.thetavideoapi.com/video/" + response2.data.body.videos[0].id;
-      console.log("url 3: ", url3)
+      //console.log("url 3: ", url3)
 
       async function checkPlayerUri() { // this func needs to be replaced for a better solution, the transcode time is quite long sometimes
         const response3 = await axios.get(url3, { headers: headers2 });
         const playerUri = response3.data.body.videos[0].player_uri;
-
         if (playerUri === null || playerUri === undefined || playerUri === "") {
           console.log("Player URI is wrong. Retrying in 5 seconds...");
           await new Promise((resolve) => setTimeout(resolve, 5000));
           return checkPlayerUri();
         } else {
-          console.log("Player URI:", playerUri);
+          //console.log("Player URI:", playerUri);
 
           let collection = {};
 
@@ -320,28 +351,28 @@ function Content({
           asset.video = response3.data.body.videos[0].player_uri;
           asset.contractAddress = address;
 
-          console.log("Asset: ", asset);
-          console.log("Collection: ", collection);
+          //console.log("Asset: ", asset);
+          //console.log("Collection: ", collection);
 
           const result = await axios.post("https://api.octoplace.io/collections/update", {
             collection,
             asset,
           });
-
-          console.log(result);
+          setIsOpen(false);
+          toast.success("Video Uploaded sucessfully!");
+          setOpenAddVideo(false);
+          //console.log(result);
         }
       }
 
       checkPlayerUri();
-
       ///
-
-
     } catch (err) {
+      toast.error("Video not Uploaded!");
       console.log("Submitting Error: ", err);
     }
   };
-  
+
   /*
   async function getWalletAccessToken() {
     //Check if a user is logged in...
@@ -366,11 +397,6 @@ function Content({
     }
   };*/
 
-  const handleChangeURL = (e) => {
-    console.log(e);
-    const url = e.target.value;
-  };
-
   const getPreSignedUrl = async () => {
     const headers = {
       "x-tva-sa-id": "srvacc_fp72dqw4ix8r6ad6vr9evm68d",
@@ -393,11 +419,11 @@ function Content({
     getPreSignedUrl();
   }, []);
 
-
   return (
     <Container>
       {openAddVideo ? (
         <Box sx={styles.formContainer}>
+          {/*}
           <form
             onSubmit={handleSubmit}
             style={{
@@ -406,9 +432,17 @@ function Content({
               width: "100%",
               gap: "1rem",
             }}
+          >{*/}
+          {//<Typography sx={styles.h1}>New Video</Typography>
+          }
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              gap: "1rem",
+            }}
           >
-            {//<Typography sx={styles.h1}>New Video</Typography>
-            }
             <TextField
               type="url"
               variant="standard"
@@ -425,6 +459,7 @@ function Content({
                 size: "small",
                 placeholder: "Enter URL",
               }}
+              onChange={handleChangeURL}
             />
 
             <Typography sx={styles.h1}>or</Typography>
@@ -551,7 +586,7 @@ function Content({
                     border: "1px solid white",
                     borderRadius: "0.594rem",
                     padding: "0.5rem",
-                    "& .MuiInputBase-input": {
+                    "& .MuiInputBaseinput": {
                       padding: 0,
                     },
                   },
@@ -575,7 +610,7 @@ function Content({
                     border: "1px solid white",
                     borderRadius: "0.594rem",
                     padding: "0.5rem",
-                    "& .MuiInputBase-input": {
+                    "& .MuiInputBaseinput": {
                       padding: 0,
                     },
                   },
@@ -676,6 +711,7 @@ function Content({
               }}
             >
               <Button
+                onClick={() => { setOpenAddVideo(false) }}
                 sx={{
                   backgroundColor: "#3D3D3D",
                   color: "#151515",
@@ -687,6 +723,7 @@ function Content({
                 CANCEL
               </Button>
               <Button
+                onClick={handleSubmit}
                 sx={{
                   backgroundColor: "#F78C09",
                   color: "#151515",
@@ -699,7 +736,9 @@ function Content({
                 SAVE
               </Button>
             </Box>
-          </form>
+            {//</form>
+            }
+          </Box>
         </Box>
       ) : (
         <Box sx={styles.videoContainer}>
@@ -762,43 +801,102 @@ function Content({
                 />
               </Box>
                 {*/}
-              <Tooltip
-                title={
-                  !isOwner && (
-                    <Typography fontSize={"0.83rem"}>
-                      Only owners of the collection can upload video.
-                    </Typography>
-                  )
-                }
-              >
-                <spin style={{ fontSize: "smaller" }}>
-                  <Button
-                    onClick={() => {
-                      /* This is the owner check to be disabled for testing purposes only
-                      if (!isOwner) {
-                        toast(
-                          "Only the owners of collections can upload videos.",
-                          {
-                            type: "info",
-                          }
-                        );
-                        return;
-                      }
-                    */
-                      setOpenAddVideo(true);
-                    }}
-                    sx={styles.orangeButton}
-                  //disabled={!isOwner} //This is the owner check to be disabled for testing purposes only
-                  >
-                    Add Video
-                  </Button>
-                </spin>
-              </Tooltip>
+
+              {//isOwner && ( //this line is to hide the button to non-owners
+                <Tooltip
+                  title={
+                    !isOwner && (
+                      <Typography fontSize={"0.83rem"}>
+                        Only owners of the collection can upload video.
+                      </Typography>
+                    )
+                  }
+                >
+                  <spin style={{ fontSize: "smaller" }}>
+                    <Button
+                      onClick={() => {
+                        //console.log("isOwner", isOwner)
+                        // This is the owner check to be disabled for testing purposes only
+                        if (!isOwner) {
+                          toast(
+                            "Only the owners of collections can upload videos.",
+                            {
+                              type: "info",
+                            }
+                          );
+                          return;
+                        }
+                        setOpenAddVideo(true);
+                      }}
+                      sx={styles.orangeButton}
+                      disabled={!isOwner} //This is the owner check to be disabled for testing purposes only
+                    >
+                      Add Video
+                    </Button>
+                  </spin>
+                </Tooltip>
+                //) //this line is to hide the button to non-owners
+              }
             </Box>
           </Box>
         </Box>
       )}
       {/* <NFTlist activeListings={activeListings.slice(0, 6)} view={view} /> */}
+
+
+      <Dialog maxWidth={"xs"} fullWidth open={isOpen}
+      >
+        <DialogTitle
+          sx={{ color: "white", textTransform: "uppercase", fontWeight: 700 }}
+          style={{ backgroundColor: "#262626" }}
+        >
+          Upload Status
+        </DialogTitle>
+        <DialogContent style={{ backgroundColor: "#262626" }} >
+          <Box
+            sx={{ pt: 2, pb: 2 }}
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {isPending && (
+              <img
+                style={{ width: "80px", height: "80px" }}
+                src={logoAnim}
+                alt="pendding"
+              />
+            )}
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography
+              sx={{
+                fontSize: "20px",
+                color: "white",
+                fontWeight: 400,
+                textAlign: "center",
+              }}
+            >
+              Upload Pending
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                  color: "#F78C09",
+                  fontWeight: 100,
+                  textAlign: "center",
+                }}
+              >
+                This may take a few seconds
+              </Typography>
+            </Typography>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 }

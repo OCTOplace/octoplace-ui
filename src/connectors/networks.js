@@ -31,7 +31,7 @@ export const switchNetworks = {
       symbol: "TFUEL",
       decimals: 18,
     },
-    rpcUrls: ["https://eth-rpc-api.thetatoken.org/rpc"],
+    rpcUrls: ["https://172.190.238.225:80/rpc"],
     blockExplorerUrls: ["https://explorer.thetatoken.org/"],
     iconUrls: [""],
   },
