@@ -138,12 +138,13 @@ export const NFTView = () => {
     if (listings.length > 0 && address && tokenId) {
       const found = listings.find(
         (x) =>
-          x.listingDetails.tokenAddress.toLowerCase() ===
-            address.toLowerCase() &&
+          x.listingDetails.tokenAddress.toLowerCase() === address.toLowerCase() &&
           x.listingDetails.tokenId === Number(tokenId) &&
-          x.listingDetails.isCancelled === false
+          x.listingDetails.isCompleted === false &&
+          x.listingDetails.isCancelled === false 
       );
       if (found) {
+        console.log('found',found);
         setListed(true);
         setListing(found);
       }

@@ -108,9 +108,14 @@ export const ListNFTDialog = (props) => {
           netDetails.dataNetwork.ERC_ABI,
           signer
         );
+        /*
         const tx = await contract.setApprovalForAll(
           netDetails.dataNetwork.SWAP_CONTRACT,
           true
+        );*/
+        const tx = await contract.approve(
+          netDetails.dataNetwork.SWAP_CONTRACT,
+          tokenId
         );
         dispatch(setTxDialogHash(tx.hash));
         await tx.wait();

@@ -73,7 +73,7 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
     }
   };
 
-  const onSelect = (item) => {
+  const onSelect = (item) => { //aqui para arreglar el defecto que no deselecciona?
     setSelectedItem(item);
   };
 
