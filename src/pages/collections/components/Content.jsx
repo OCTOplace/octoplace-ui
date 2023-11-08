@@ -812,7 +812,7 @@ function Content({
                     )
                   }
                 >
-                  <spin style={{ fontSize: "smaller" }}>
+                  <span style={{ fontSize: "smaller" }}>
                     <Button
                       onClick={() => {
                         //console.log("isOwner", isOwner)
@@ -833,7 +833,7 @@ function Content({
                     >
                       Add Video
                     </Button>
-                  </spin>
+                  </span>
                 </Tooltip>
                 //) //this line is to hide the button to non-owners
               }

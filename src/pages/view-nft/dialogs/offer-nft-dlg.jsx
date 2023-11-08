@@ -11,6 +11,7 @@ import {
   IconButton,
   CircularProgress,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -33,6 +34,7 @@ import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
 import axios from "axios";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+import { toast } from "react-toastify";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -82,15 +84,18 @@ export const OfferNFTDialog = (props) => {
   // };
 
   const handleListItemClick = (item) => {
-    sendDataToGTM({
-      event: "Viewed Pick NFT Popup (Swap)",
-      customData: {
-        "Collection Address": item.contractAddress,
-        "token Id": item.tokenId,
-      },
-    });
-
-    setSelectedNftOffer(item);
+    if (selectedNftOffer !== item) {
+      sendDataToGTM({
+        event: "Viewed Pick NFT Popup (Swap)",
+        customData: {
+          "Collection Address": item.contractAddress,
+          "token Id": item.tokenId,
+        },
+      });
+      setSelectedNftOffer(item);
+    } else {
+      setSelectedNftOffer();
+    }
   };
 
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
@@ -119,11 +124,19 @@ export const OfferNFTDialog = (props) => {
     let offers = await contract.readAllOffers();
     offers = formatOffers(offers, network);
 
+    offers = offers.filter((x) => //this filters declined offers
+      x.isDeclined === false &&
+      x.isCancelled === false &&
+      x.isCompleted === false
+    );
+    console.log('offers', offers);
+
     let filteredOriginalMyNFTs = filterListedNFTs(
       originalMyNFTs.filter((x) => x.network === network),
       listings,
       offers
     );
+    console.log('filteredOriginalMyNFTs', filteredOriginalMyNFTs);
 
     let nftArr = [];
     for (var nftItem of filteredOriginalMyNFTs) {
@@ -138,7 +151,6 @@ export const OfferNFTDialog = (props) => {
         nftArr = [...nftArr, nftItem];
       }
     }
-
     setMyNFTs(nftArr);
   };
 
@@ -399,9 +411,9 @@ export const OfferNFTDialog = (props) => {
                         selected={
                           selectedNftOffer &&
                           selectedNftOffer.contractAddress ===
-                            item.contractAddress &&
+                          item.contractAddress &&
                           Number(selectedNftOffer.tokenId) ===
-                            Number(item.tokenId)
+                          Number(item.tokenId)
                         }
                       />
                     </Grid>
@@ -442,29 +454,42 @@ export const OfferNFTDialog = (props) => {
         </Fragment>
       </DialogContent>
       <DialogActions sx={style.dlgActions}>
-        <Button
-          disabled={loading || myNFTs.length === 0}
-          sx={style.orangeButton}
-          style={{ color: myNFTs.length === 0 ? "gray" : "#262626" }}
-          onClick={() => {
-            sendDataToGTM({
-              event: "Viewed Swap Offer page",
-              customData: {
-                "listing Id": listingId,
-                "Collection Address": selectedNftOffer.contractAddress,
-                "token Id": selectedNftOffer.tokenId,
-              },
-            });
-
-            onClose();
-            navigate(
-              `/swap/initiate-offer/${network}/${listingId}/${selectedNftOffer.contractAddress}/${selectedNftOffer.tokenId}`
-            );
-          }}
-          variant="contained"
+        <Tooltip
+          title={
+            selectedNftOffer === undefined && (
+              <Typography fontSize={"0.83rem"}>
+                You must select and NFT to offer a swap.
+              </Typography>
+            )
+          }
         >
-          SAVE
-        </Button>
+          <span style={{ fontSize: "smaller" }}>
+            <Button
+              disabled={loading || myNFTs.length === 0 || selectedNftOffer === undefined}
+              sx={style.orangeButton}
+              style={{ color: myNFTs.length === 0 || selectedNftOffer === undefined ? "gray" : "#262626" }}
+              onClick={() => {
+                //console.log('selectedNftOffer',selectedNftOffer)
+                sendDataToGTM({
+                  event: "Viewed Swap Offer page",
+                  customData: {
+                    "listing Id": listingId,
+                    "Collection Address": selectedNftOffer.contractAddress,
+                    "token Id": selectedNftOffer.tokenId,
+                  },
+                });
+
+                onClose();
+                navigate(
+                  `/swap/initiate-offer/${network}/${listingId}/${selectedNftOffer.contractAddress}/${selectedNftOffer.tokenId}`
+                );
+              }}
+              variant="contained"
+            >
+              SAVE
+            </Button>
+          </span>
+        </Tooltip>
       </DialogActions>
     </Dialog>
   );

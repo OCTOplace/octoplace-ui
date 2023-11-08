@@ -6,6 +6,7 @@ import faucetAbi from "../abi/faucet.json";
 import marketAbi from "../abi/marketplace.json";
 import collectionDiscussionsAbi from "../abi/collection-discussions.json";
 const thetaRpc = "https://eth-rpc-api.thetatoken.org/rpc";
+//const thetaRpc = "https://172.190.238.225:80/rpc";
 const thetaChainId = "0x169";
 const thetaDataContract = "0x309a468b573b4cb168813a9a28db6Ab5e008B787"; // DataFlat.sol
 const thetaSwapContract = "0x14459D6C7b398e64E4eC2Edf41d858B83505781b"; // SwapFlat.sol
