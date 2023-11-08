@@ -144,15 +144,17 @@ export const MyListingSwapOffer = () => {
       const provider = new Web3Provider(window.ethereum, "any");
       const signer = await provider.getSigner();
       const contract = new Contract(offerNft, ercAbi, signer);
-      /* //Old code requesting access to ALL NFT's in the collection
+      //Old code requesting access to ALL NFT's in the collection
       const txResult = await contract.setApprovalForAll(
         netDetails.dataNetwork.SWAP_CONTRACT,
         true
-      );*/
+      );
+      /* // New code requesting ONLY access to the swapped NFT, as per shivam request 
+         // this is rolled back as the contract needs to be modified later on
       const txResult = await contract.approve(
         netDetails.dataNetwork.SWAP_CONTRACT,
         offerTokenId
-      );
+      );*/
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       toast.success("Approval Successful!");
