@@ -11,13 +11,13 @@ const thetaChainId = "0x169";
 const thetaDataContract = "0x309a468b573b4cb168813a9a28db6Ab5e008B787"; // DataFlat.sol
 const thetaSwapContract = "0x14459D6C7b398e64E4eC2Edf41d858B83505781b"; // SwapFlat.sol
 const thetaNFTDiscussions = "0xfEfB9d1f61433c7BF04E667CfAFCf7A8eEe3cD8B"; // Discussions.sol
-const thetaCollectionDisscussions =
-  "0x63C290716F5A80baB5F2cc4D09678bAC71D28801"; // CollectionDiscussions.sol
+const thetaCollectionDisscussions = "0x63C290716F5A80baB5F2cc4D09678bAC71D28801"; // CollectionDiscussions.sol
 const thetaFaucet = "0xf693b83d35b336ffe54dd22845ee7516218ba3fb"; // Faucet.sol
 const thetaMarketplaceContract = "0x8Bb2718bEA1382348046F671C003C02c27aD9cbD"; // Octoplace_FLAT.sol
 const swapAbi = swapabi;
 const ercAbi = ercabi;
-const kavaRpc = "https://evm.kava.io";
+//const kavaRpc = "https://evm.kava.io";
+const kavaRpc = "https://kava.publicnode.com/";
 const kavaChainId = "0x8ae";
 const kavaDataContract = "0xd676051dAC65E1a96ab738e94F6a5a91905dC582";
 const kavaSwapContract = "0x61F91266F6abEA61447E00EB781A3c38a3D1b925";
