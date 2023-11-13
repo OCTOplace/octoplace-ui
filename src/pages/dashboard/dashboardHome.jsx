@@ -15,6 +15,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import { createAction } from "@reduxjs/toolkit";
+import styled from "styled-components";
 import { fetchUserSetting } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import avatarImage from "../../assets/default-user.jpg";
@@ -520,7 +521,7 @@ function DashboardHome() {
             <Tooltip
               title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+              <Spin>
                 <Button
                   onClick={() => setActiveMenu("inbox")}
                   disabled
@@ -533,12 +534,12 @@ function DashboardHome() {
                   Inbox
                   <span style={styles.orangeText}></span>
                 </Button>
-              </spin>
+              </Spin>
             </Tooltip>
             <Tooltip
               title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+              <Spin>
                 <Button
                   onClick={() => setActiveMenu("offers")}
                   disabled
@@ -551,12 +552,12 @@ function DashboardHome() {
                   Offers
                   <span style={styles.orangeText}></span>
                 </Button>
-              </spin>
+              </Spin>
             </Tooltip>
             <Tooltip
               title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+              <Spin>
                 <Button
                   onClick={() => setActiveMenu("content")}
                   disabled
@@ -569,12 +570,12 @@ function DashboardHome() {
                   Content
                   <span style={styles.orangeText}></span>
                 </Button>
-              </spin>
+              </Spin>
             </Tooltip>
             <Tooltip
               title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              <spin style={{ fontSize: "smaller", marginTop: "0px" }}>
+              <Spin>
                 <Button
                   onClick={() => setActiveMenu("wall")}
                   disabled
@@ -586,7 +587,7 @@ function DashboardHome() {
                 >
                   Wall
                 </Button>
-              </spin>
+              </Spin>
             </Tooltip>
           </Box>
 
@@ -603,3 +604,8 @@ function DashboardHome() {
 }
 
 export default DashboardHome;
+
+const Spin = styled.div`
+  font-size: smaller;
+  margin-top: "0px";
+`;
