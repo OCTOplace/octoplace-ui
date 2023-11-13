@@ -5,6 +5,7 @@ const initialState = {
   balance: 0,
   chainId: "",
   isLoggedIn: false,
+  token: "",
 };
 
 export const accountSlice = createSlice({
@@ -20,6 +21,9 @@ export const accountSlice = createSlice({
     setChainId: (state, action) => {
       state.chainId = action.payload;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
     setLogin: (state) => {
       state.isLoggedIn = true;
     },
@@ -28,12 +32,19 @@ export const accountSlice = createSlice({
       state.address = "";
       state.balance = 0;
       state.chainId = "";
+      state.token = "";
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setAddress, setBalance, setChainId, setLogin, setLogout } =
-  accountSlice.actions;
+export const {
+  setAddress,
+  setBalance,
+  setChainId,
+  setToken,
+  setLogin,
+  setLogout,
+} = accountSlice.actions;
 
 export default accountSlice.reducer;
