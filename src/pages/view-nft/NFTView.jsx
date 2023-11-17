@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -138,13 +139,14 @@ export const NFTView = () => {
     if (listings.length > 0 && address && tokenId) {
       const found = listings.find(
         (x) =>
-          x.listingDetails.tokenAddress.toLowerCase() === address.toLowerCase() &&
+          x.listingDetails.tokenAddress.toLowerCase() ===
+            address.toLowerCase() &&
           x.listingDetails.tokenId === Number(tokenId) &&
           x.listingDetails.isCompleted === false &&
-          x.listingDetails.isCancelled === false 
+          x.listingDetails.isCancelled === false
       );
       if (found) {
-        console.log('found',found);
+        console.log("found", found);
         setListed(true);
         setListing(found);
       }
@@ -155,9 +157,10 @@ export const NFTView = () => {
     if (marketItems.length > 0) {
       const index = marketItems.findIndex(
         (obj) =>
-          obj.TokenId === Number(tokenId) &&
-          obj.NFTContractAddress === address &&
-          obj.Network === network
+          !obj.isSold &&
+          obj.tokenId === Number(tokenId) &&
+          obj.nftContract === address &&
+          obj.network === network
       );
       setMarket(marketItems[index]);
     }
@@ -242,18 +245,13 @@ export const NFTView = () => {
       );
       const txResult = await contract.createMarketCancel(
         address,
-        market.MarketId
+        market.marketId
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
-      dispatch(
-        cancelListing({
-          marketId: market.MarketId,
-          network: network,
-          listingId: market.Id,
-          isSold: true,
-        })
-      );
+
+      await getDetailsFromSite();
+
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
@@ -275,7 +273,7 @@ export const NFTView = () => {
     });
 
     if (account) {
-      if (account.toUpperCase() === market.SellerAddress.toUpperCase()) {
+      if (account.toUpperCase() === market.seller.toUpperCase()) {
         return;
       }
 
@@ -296,24 +294,18 @@ export const NFTView = () => {
           signer
         );
         const overRides = {
-          value: parseUnits(market.Price.toString(), "ether"),
+          value: parseUnits(market.price.toString(), "ether"),
         };
         const txResult = await contract.createMarketSale(
           address,
-          market.MarketId,
+          market.marketId,
           overRides
         );
         dispatch(setTxDialogHash(txResult.hash));
         await txResult.wait();
-        dispatch(
-          executeSale({
-            marketId: market.MarketId,
-            network: network,
-            listingId: market.Id,
-            isSold: true,
-            owner: account,
-          })
-        );
+
+        await getDetailsFromSite();
+
         dispatch(setTxDialogFailed(false));
         dispatch(setTxDialogSuccess(true));
         dispatch(setTxDialogPending(false));
@@ -397,9 +389,9 @@ export const NFTView = () => {
             {!loading &&
               market &&
               account &&
-              market.SellerAddress &&
-              account.toUpperCase() === market.SellerAddress.toUpperCase() &&
-              market.IsSold === false &&
+              market.seller &&
+              account.toUpperCase() === market.seller.toUpperCase() &&
+              market.isSold === false &&
               !isListed && (
                 <Box sx={styles.row}>
                   <Button
@@ -422,9 +414,9 @@ export const NFTView = () => {
             {!loading &&
               market &&
               // account &&
-              market.SellerAddress &&
-              account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
-              market.IsSold === false &&
+              market.seller &&
+              account.toUpperCase() !== market.seller.toUpperCase() &&
+              market.isSold === false &&
               !isListed && (
                 <Box sx={styles.row}>
                   <Button
@@ -436,23 +428,23 @@ export const NFTView = () => {
                   </Button>
                 </Box>
               )}
-            {!loading && 
-            account &&
-            account.toLowerCase() !== owner.toLowerCase() &&
-            isListed && (
-              <Box sx={styles.row}>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={handleOfferSwap}
-                >
-                  Offer SWAP
-                </Button>
-              </Box>
-            )}
-            {market && market.Price && (
+            {!loading &&
+              account &&
+              account.toLowerCase() !== owner.toLowerCase() &&
+              isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleOfferSwap}
+                  >
+                    Offer SWAP
+                  </Button>
+                </Box>
+              )}
+            {market && market.price && (
               <Typography variant="h6" sx={{ mt: 2, mb: 2, color: "#FFFFFF" }}>
-                Price: {`${market.Price}`} TFUEL
+                Price: {`${market.price}`} TFUEL
               </Typography>
             )}
             <NFTDetails
@@ -523,9 +515,9 @@ export const NFTView = () => {
         network={network}
         metadata={metadata}
         isUpdate={isUpdatePrice}
-        itemPrice={market ? market.Price : 0}
-        marketId={market ? market.MarketId : 0}
-        listingId={market ? market.Id : 0}
+        itemPrice={market ? market.price : 0}
+        marketId={market ? market.marketId : 0}
+        listingId={market ? market.id : 0}
         onCloseDlg={() => {
           setSellOpen(false);
           getDetailsFromSite();

@@ -77,9 +77,9 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   useEffect(() => {
     dispatch(
       getMarketNFTDetail({
-        contractAddress: marketItem.NFTContractAddress,
-        tokenId: marketItem.TokenId,
-        listingId: marketItem.Id,
+        contractAddress: marketItem.nftContract,
+        tokenId: marketItem.tokenId,
+        listingId: marketItem.id,
       })
     );
   }, []);
@@ -109,7 +109,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       {marketItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${marketItem.Network}/${marketItem.NFTContractAddress}/${marketItem.TokenId}`}
+          to={`/nft/${marketItem.network}/${marketItem.nftContract}/${marketItem.tokenId}`}
         >
           <Box sx={styles.root}>
             {marketItem.nftDetails && (
@@ -132,7 +132,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   <Typography className="strokeme" sx={styles.title}>
                     {marketItem.nftDetails.metadata
                       ? marketItem.nftDetails.metadata.name
-                      : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`}
+                      : `${marketItem.nftDetails.metadata.name} #${marketItem.tokenId}`}
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
@@ -152,7 +152,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   />
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
-                    <Typography>{marketItem.Price}</Typography>
+                    <Typography>{marketItem.price}</Typography>
                   </Box>
                 </Box>
               </Box>

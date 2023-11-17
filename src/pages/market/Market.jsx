@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllMarketItems } from "../../redux/thunk/get-all-market-items";
 import { Box, IconButton, Skeleton, Typography } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
@@ -36,12 +38,10 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 function Market({ isHome }) {
-  // const dispatch = useDispatch();
-  // const listings = useSelector((state) => state.listings.allListings);
-  // const activeListings = useSelector((state) => state.listings.activeListings);
+  const dispatch = useDispatch();
   const [view, setView] = useState(2);
-  const marketItems = useSelector((state) => state.market.markets);
   const isLoading = useSelector((state) => state.market.isLoading);
+  const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -56,7 +56,9 @@ function Market({ isHome }) {
     includeBurned: false,
   });
 
-  useEffect(() => {}, [marketItems]);
+  useEffect(() => {
+    dispatch(getAllMarketItems());
+  }, []);
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -71,9 +73,17 @@ function Market({ isHome }) {
   };
 
   const filteredMarketItems = marketItems.filter((item) => {
+    if (item.isSold) {
+      return false;
+    }
+
     if (
-      item.TokenName &&
-      !item.TokenName.toLowerCase().includes(keyword.toLowerCase())
+      item.nftDetails &&
+      item.nftDetails.metadata &&
+      item.nftDetails.metadata.name &&
+      !item.nftDetails.metadata.name
+        .toLowerCase()
+        .includes(keyword.toLowerCase())
     ) {
       return false;
     }
@@ -108,7 +118,7 @@ function Market({ isHome }) {
 
     return true;
   });
-
+  console.log(marketItems);
   return (
     <Container>
       <NFTListContainer>
@@ -182,7 +192,8 @@ function Market({ isHome }) {
             />
           )}
           <CollectionCardContainer>
-            {view !== 1 &&
+            {!isLoading &&
+              view !== 1 &&
               filteredMarketItems.length > 0 &&
               filteredMarketItems.map((item, index) => {
                 return (
@@ -193,6 +204,27 @@ function Market({ isHome }) {
                   />
                 );
               })}
+            {!isLoading && view !== 1 && filteredMarketItems.length === 0 && (
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: "100%",
+                  height: "200px",
+                }}
+              >
+                <Typography
+                  style={{
+                    width: "100%",
+                    color: "#f4f4f4",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  There are currently no items available in the market.
+                </Typography>
+              </Box>
+            )}
             {isLoading && (
               <SkeletonContainer>
                 {[...Array(12)].map((e, i) => (

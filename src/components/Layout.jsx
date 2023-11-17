@@ -15,6 +15,6 @@ export const Layout = ({ children }) => {
 };
 
 const MainContainer = styled(Box)(({ theme }) => ({
-  minHeight: "calc(100vh - 92px - 80px)",
+  minHeight: "calc(100vh - 92px - 400px)",
   width: "100%",
 }));

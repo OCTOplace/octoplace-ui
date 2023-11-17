@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // import { isAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
@@ -194,7 +195,9 @@ export const SellNFT = ({
   };
 
   const handleUpdate = async () => {
-    if (checkPrice()) { return };
+    if (checkPrice()) {
+      return;
+    }
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
     if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
@@ -246,7 +249,9 @@ export const SellNFT = ({
   };
 
   const handleList = async () => {
-    if (checkPrice()) { return };
+    if (checkPrice()) {
+      return;
+    }
     dispatch(showTxDialog());
     const netDetails = getNetworkInfo(network);
     if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
@@ -272,24 +277,24 @@ export const SellNFT = ({
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       const id = await contract.getLastMarketId();
-      dispatch(
-        createListing({
-          nftContractAddress: contractAddress,
-          marketId: Number(formatUnits(id, 0)),
-          tokenId: tokenId,
-          seller: account,
-          owner: "",
-          highestOffer: "",
-          bidder: "",
-          category: contractAddress,
-          //price: formatUnits(price.toString(), 0),
-          price: Number(price.toString()),
-          isSold: false,
-          collectionName: metadata.name,
-          tokenName: metadata.name,
-          network: network,
-        })
-      );
+      // dispatch(
+      //   createListing({
+      //     nftContractAddress: contractAddress,
+      //     marketId: Number(formatUnits(id, 0)),
+      //     tokenId: tokenId,
+      //     seller: account,
+      //     owner: "",
+      //     highestOffer: "",
+      //     bidder: "",
+      //     category: contractAddress,
+      //     //price: formatUnits(price.toString(), 0),
+      //     price: Number(price.toString()),
+      //     isSold: false,
+      //     collectionName: metadata.name,
+      //     tokenName: metadata.name,
+      //     network: network,
+      //   })
+      // );
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
@@ -308,17 +313,17 @@ export const SellNFT = ({
   const checkPrice = () => {
     if (price === itemPrice) {
       toast.warning("Price must different than original value!");
-      return true
+      return true;
     }
-    if (price === '') {
+    if (price === "") {
       toast.warning("Price must set a value!");
-      return true
+      return true;
     }
     if (Number(price.toString()) <= 0) {
       toast.warning("Price must be higher than 0!");
-      return true
+      return true;
     }
-    return false
+    return false;
   };
 
   return (
@@ -382,7 +387,7 @@ export const SellNFT = ({
                         type="number"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
-                        onFocus={(e) => setPrice('')}
+                        onFocus={(e) => setPrice("")}
                       />
                       <Box>
                         <Typography variant="caption">
@@ -454,7 +459,6 @@ export const SellNFT = ({
             Update
           </Button>
         )}
-
       </DialogActions>
     </Dialog>
   );

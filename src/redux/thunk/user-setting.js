@@ -75,10 +75,10 @@ const fetchUserSetting = async (address) => {
     );
     return result.data;
   } catch (error) {
-    // Handle error here, e.g. show an error message
     console.log("Error getting user setting:", error);
-    throw new Error("Failed to fetch user setting");
   }
+
+  return null;
 };
 
 const fetchUserTopNFTs = async (address) => {
@@ -95,10 +95,39 @@ const fetchUserTopNFTs = async (address) => {
   }
 };
 
+// logging
+
+const loggingWalletConnect = async (address) => {
+  const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
+  try {
+    const result = await axios.post(
+      `${apiUrl}/api/wallet/wallet-connection/${address}`
+    );
+    return result.data;
+  } catch (error) {
+    console.log("Error logging wallet connection:", error);
+  }
+};
+
+const loggingUserRegistration = async (address) => {
+  const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
+  try {
+    const result = await axios.post(
+      `${apiUrl}/api/wallet/octo-user-registration/${address}`
+    );
+    console.log("logging", result.data);
+    return result.data;
+  } catch (error) {
+    console.log("Error logging user registration:", error);
+  }
+};
+
 export {
   registerOrFetchUserSetting,
   updateUserSetting,
   updateUserTopNFT,
   fetchUserSetting,
   fetchUserTopNFTs,
+  loggingWalletConnect,
+  loggingUserRegistration,
 };
