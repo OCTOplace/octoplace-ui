@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,7 +9,6 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
-import { formatEther, parseEther } from "@ethersproject/units";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
@@ -125,7 +123,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   aspectRatio: "1/1",
                 }}
                 loading="lazy"
-                alt="nft-image"
+                alt="nft-artwork"
               />
             )}
             {marketItem.nftDetails && marketItem.nftDetails.metadata && (

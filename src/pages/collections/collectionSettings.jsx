@@ -252,7 +252,7 @@ function CollectionSettings() {
           <div>
             <img
               src={bgImage}
-              alt="bg-image"
+              alt="bg-img"
               style={{
                 width: "100vw",
                 height: "45vh",
@@ -271,7 +271,7 @@ function CollectionSettings() {
           >
             <img
               src={bannerSrc ? bannerSrc : bgImage}
-              alt="bg-image"
+              alt="bg-img"
               style={{
                 width: "100vw",
                 height: "45vh",

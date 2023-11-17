@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState } from "react";
 import {
@@ -34,7 +35,6 @@ import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
 import axios from "axios";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
-import { toast } from "react-toastify";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {

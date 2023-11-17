@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
@@ -30,7 +30,7 @@ import { getCommonNFTDetail } from "../../redux/thunk/getNftDetail";
 import { SellNFT } from "./dialogs/nft-sell";
 import { cancelListing } from "../../redux/thunk/cancel-sale";
 import { executeSale } from "../../redux/thunk/execute-sale";
-import { formatUnits, parseUnits } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 

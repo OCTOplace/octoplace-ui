@@ -1,13 +1,7 @@
 import React, { useEffect } from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
 import { Button, DialogTitle, DialogActions } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
-import mm from "../assets/metamask.svg";
-import wc from "../assets/walletconnect.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 

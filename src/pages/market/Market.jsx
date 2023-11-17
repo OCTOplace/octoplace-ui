@@ -1,10 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
 import { useSelector } from "react-redux";
-// import { setActiveListings } from "../../redux/slices/listing-slice";
-// import { getActiveListings } from "../../utils/format-listings";
 import { Box, IconButton, Skeleton, Typography } from "@mui/material";
-// import { NFTListingCard } from "../listings/components/ListingCard";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,7 +13,6 @@ import { NFTMarketCard } from "./compoents/nft-market-card";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";
-// import Skelethon from "./compoents/sketlethon";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {

@@ -1,7 +1,6 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import React, { Fragment, useState } from "react";
+import { Box,  IconButton, Typography } from "@mui/material";
+import React, {  useState } from "react";
 import { NFTListingCard } from "../../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
