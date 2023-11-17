@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import { getImageUrl, shortenAddress } from "../utils/string-util";

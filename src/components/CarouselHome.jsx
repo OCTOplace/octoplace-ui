@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";

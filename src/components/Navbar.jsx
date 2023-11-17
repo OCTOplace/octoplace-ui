@@ -12,7 +12,7 @@ import {
   Box,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate, useRoutes } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ConnectWalletDlg } from "./connect-wallet-dlg";
 import { GoProDlg } from "./go-pro-dlg";
 import { useState } from "react";

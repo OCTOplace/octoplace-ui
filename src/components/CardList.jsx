@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { Fragment } from "react";
 import { CollectionCard } from "../pages/collections/components/collection-card";
 import { styled } from "@mui/system";

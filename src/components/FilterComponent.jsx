@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Divider,
@@ -6,17 +7,14 @@ import {
   Select,
   FormControl,
   MenuItem,
-  FormGroup,
-  FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useSelector } from "react-redux";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Margin } from "@mui/icons-material";
 
 function FilterComponent({
   filterPage,

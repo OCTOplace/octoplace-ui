@@ -1,5 +1,5 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import {toast} from "react-toastify";
 import { getNetworkInfo } from "../../connectors/networks";
@@ -10,7 +10,6 @@ import { Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 
 export const FaucetPage = () => {
-  const [walletAddr, setWalletAddr] = useState("");
   const dispatch = useDispatch();
   const {account, chainId} = useWeb3React();
   

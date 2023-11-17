@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { Tooltip } from "@mui/material";
 import mappedImages from "../../constants/mappedImages.json";
