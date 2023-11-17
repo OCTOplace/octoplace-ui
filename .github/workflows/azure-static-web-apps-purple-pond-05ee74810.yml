@@ -32,6 +32,12 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "build" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env: #Add eviornment variables here
+          REACT_APP_API_URL: ${{ secrets.TEST_API }}
+          GENERATE_SOURCEMAP: false
+          REACT_APP_ENV: development
+          REACT_APP_GTM_PRODUCT_ID: ${{ secrets.GTM_TEST_PRODUCT_ID}}
+          REACT_APP_GTM_DEVELOP_ID: ${{ secrets.GTM_TEST_DEVELOP_ID}}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
