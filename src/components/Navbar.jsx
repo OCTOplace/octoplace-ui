@@ -17,7 +17,7 @@ import { ConnectWalletDlg } from "./connect-wallet-dlg";
 import { GoProDlg } from "./go-pro-dlg";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -32,6 +32,8 @@ import ThetaLogo from "../assets/chains/thetaLogo.svg";
 import KavaLogo from "../assets/chains/kavaLogo.svg";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
+import { setLogout } from "../redux/slices/accout-slice";
 
 const WalletButton = styled(Button)({
   boxShadow: "none",
@@ -53,6 +55,7 @@ const WalletButton = styled(Button)({
 
 export const AppNavbar = () => {
   const sendDataToGTM = useGTMDispatch();
+  const dispatch = useDispatch();
   const [dlgOpen, setDlgOpen] = useState(false);
   const { deactivate, chainId } = useWeb3React();
   const navigate = useNavigate();
@@ -368,6 +371,8 @@ export const AppNavbar = () => {
                 address: (acctDetails && acctDetails.address) || "",
               },
             });
+
+            dispatch(setLogout());
 
             deactivate();
             navigate("/");
