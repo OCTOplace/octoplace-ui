@@ -1,18 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 // import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { Link } from "react-router-dom";
 import broken from "./../../../assets/broken.png";
 
 import verifiedLogo from "../../../assets/verified.svg";
-import loadingLogo from "../../../assets/Pulse-1s-64px.svg";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const CollectionCard = (props) => {
-  const { collectionItem, isSwiper, where } = props;
+  const { collectionItem,  where } = props;
   const sendDataToGTM = useGTMDispatch();
   const boxRef = useRef(null);
   // const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
@@ -100,9 +99,9 @@ export const CollectionCard = (props) => {
     }
   };
 
-  const handleImageLoad = () => {
-    // setImageLoaded(true);
-  };
+  // const handleImageLoad = () => {
+  //   // setImageLoaded(true);
+  // };
 
   const handleImageError = () => {
     setImgUrl(broken);

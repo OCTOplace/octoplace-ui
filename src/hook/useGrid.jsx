@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { SPACE_WIDTH, fixedImages } from "../constants/nftMillions";
 import { getGlobalState, setGlobalState, useGlobalState } from "./globalState";
 

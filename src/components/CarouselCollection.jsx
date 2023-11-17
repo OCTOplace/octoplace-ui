@@ -1,10 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/bg.png";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button, Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 
-import profileImage from "../assets/pp.png";
 import { Container } from "react-bootstrap";
 
 function CarouselCollection() {

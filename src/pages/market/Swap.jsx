@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
@@ -5,10 +7,7 @@ import { setActiveListings } from "../../redux/slices/listing-slice";
 import { getActiveListings, sortListigs } from "../../utils/format-listings";
 import {
   Box,
-  // Divider,
-  // Grid,
   IconButton,
-  // Skeleton,
   Typography,
 } from "@mui/material";
 import { NFTListingCard } from "../listings/components/ListingCard";
@@ -19,8 +18,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputBase from "@mui/material/InputBase";
-// import InfiniteScroll from "react-infinite-scroll-component";
-// import Skelethon from "./compoents/sketlethon";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";

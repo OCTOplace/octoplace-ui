@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { PauseRounded, PlayArrowRounded } from "@mui/icons-material";
 import {
   Box,
@@ -9,12 +10,10 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Paper,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, {  useRef, useState } from "react";
 import { Container } from "react-bootstrap";
-import thetaImage from "../../../assets/icon.png";
 import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
