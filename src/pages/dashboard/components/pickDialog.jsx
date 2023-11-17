@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useWeb3React } from "@web3-react/core";
 import NFTSelectlist from "./NFTSelectList";
 import { updateUserTopNFT } from "../../../redux/thunk/user-setting";
 import { useDispatch, useSelector } from "react-redux";
-import { getActiveListings } from "../../../utils/format-listings";
-import { setActiveListings } from "../../../redux/slices/listing-slice";
+import { setToken } from "../../../redux/slices/accout-slice";
+import { generateToken, verifyToken } from "../../../utils/auth-utils";
 
 function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
-  // const dispatch = useDispatch();
+  const { library } = useWeb3React();
+  const dispatch = useDispatch();
+
+  const token = useSelector((state) => state.account.token);
   const myNFTs = useSelector((state) => state.myNFT.nfts);
   // const listings = useSelector((state) => state.listings.allListings);
   // const activeListings = useSelector((state) => state.listings.activeListings);
@@ -45,14 +47,23 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
     // saveObj[`tokenId${nftIndex}`] = selectedItem.tokenId;
     // saveObj[`bannerImage${nftIndex}`] = bannerImage;
 
-    let saveObj = { walletAddress: wallet };
+    let saveObj = {}; //{ walletAddress: wallet };
     saveObj[`nft${nftIndex}`] = {};
     saveObj[`nft${nftIndex}`].contractAddress = selectedItem.contractAddress;
     saveObj[`nft${nftIndex}`].tokenId = selectedItem.tokenId;
     saveObj[`nft${nftIndex}`].bannerImage = bannerImage;
 
     try {
-      const fetchedData = await updateUserTopNFT(saveObj);
+      let newToken = "";
+      if (!token || !(await verifyToken(token))) {
+        newToken = await generateToken(library);
+        dispatch(setToken(newToken));
+      }
+
+      const fetchedData = await updateUserTopNFT(
+        newToken ? newToken : token,
+        saveObj
+      );
       toast.success(fetchedData.message, {
         position: "top-center",
       });
@@ -110,7 +121,11 @@ function PickDialog({ open, setOpen, onClose, wallet, nftIndex }) {
     >
       <DialogTitle>Pick NFT</DialogTitle>
       <DialogContent>
-        <NFTSelectlist nftListings={filteredMyNFTs} view={2} onSelect={onSelect} />
+        <NFTSelectlist
+          nftListings={filteredMyNFTs}
+          view={2}
+          onSelect={onSelect}
+        />
       </DialogContent>
       <DialogActions>
         <Button
