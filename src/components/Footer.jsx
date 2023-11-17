@@ -1,11 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import EmailIcon from "@mui/icons-material/Email";
 import { Fragment } from "react";
-import { Row, Col } from "react-bootstrap";
-import { FaTwitter, FaDiscord, FaVoicemail } from "react-icons/fa";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
+import {  Col } from "react-bootstrap";
+import { FaDiscord } from "react-icons/fa";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";

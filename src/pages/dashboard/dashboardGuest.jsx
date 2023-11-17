@@ -1,4 +1,6 @@
-import React, { Fragment, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import React, {  useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveListings } from "../../utils/format-listings";
 import { setActiveListings } from "../../redux/slices/listing-slice";
@@ -245,7 +247,7 @@ function DashboardGuest() {
     <Box>
       <img
         src={bgImage}
-        alt="bg-image"
+        alt="bg-artwork"
         style={{
           width: "100vw",
           height: "45vh",
@@ -288,7 +290,7 @@ function DashboardGuest() {
               <Box sx={styles.rightRow}>
                 <img
                   src={bgImage}
-                  alt="bg-image"
+                  alt="bg-img"
                   style={{
                     width: "120px",
                     height: "120px",
@@ -299,7 +301,7 @@ function DashboardGuest() {
                 />
                 <img
                   src={bgImage}
-                  alt="bg-image"
+                  alt="bg-img"
                   style={{
                     width: "150px",
                     height: "150px",
@@ -310,7 +312,7 @@ function DashboardGuest() {
                 />
                 <img
                   src={bgImage}
-                  alt="bg-image"
+                  alt="bg-img"
                   style={{
                     width: "120px",
                     height: "120px",

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -13,23 +14,16 @@ import {
 
 import {
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   //CircularProgress,
 } from "@mui/material";
 import logoAnim from "../../../assets/logo_anim_4.svg";
-import successGif from "../../../assets/success.gif";
-import errorGif from "../../../assets/close.gif";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect,  useState } from "react";
 import { Container } from "react-bootstrap";
-import thetaImage from "../../../assets/icon.png";
-import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
-
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 

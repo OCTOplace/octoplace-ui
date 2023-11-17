@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import { isAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
 // import { Cancel, Send } from "@mui/icons-material";

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Fragment, useEffect } from "react";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
@@ -30,7 +30,7 @@ import { getCommonNFTDetail } from "../../redux/thunk/getNftDetail";
 import { SellNFT } from "./dialogs/nft-sell";
 import { cancelListing } from "../../redux/thunk/cancel-sale";
 import { executeSale } from "../../redux/thunk/execute-sale";
-import { formatUnits, parseUnits } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 
@@ -156,9 +156,10 @@ export const NFTView = () => {
     if (marketItems.length > 0) {
       const index = marketItems.findIndex(
         (obj) =>
-          obj.TokenId === Number(tokenId) &&
-          obj.NFTContractAddress === address &&
-          obj.Network === network
+          !obj.isSold &&
+          obj.tokenId === Number(tokenId) &&
+          obj.nftContract === address &&
+          obj.network === network
       );
       setMarket(marketItems[index]);
     }
@@ -243,18 +244,10 @@ export const NFTView = () => {
       );
       const txResult = await contract.createMarketCancel(
         address,
-        market.MarketId
+        market.marketId
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
-      // dispatch(
-      //   cancelListing({
-      //     marketId: market.MarketId,
-      //     network: network,
-      //     listingId: market.Id,
-      //     isSold: true,
-      //   })
-      // );
 
       await getDetailsFromSite();
 
@@ -279,7 +272,7 @@ export const NFTView = () => {
     });
 
     if (account) {
-      if (account.toUpperCase() === market.SellerAddress.toUpperCase()) {
+      if (account.toUpperCase() === market.seller.toUpperCase()) {
         return;
       }
 
@@ -300,24 +293,18 @@ export const NFTView = () => {
           signer
         );
         const overRides = {
-          value: parseUnits(market.Price.toString(), "ether"),
+          value: parseUnits(market.price.toString(), "ether"),
         };
         const txResult = await contract.createMarketSale(
           address,
-          market.MarketId,
+          market.marketId,
           overRides
         );
         dispatch(setTxDialogHash(txResult.hash));
         await txResult.wait();
-        // dispatch(
-        //   executeSale({
-        //     marketId: market.MarketId,
-        //     network: network,
-        //     listingId: market.Id,
-        //     isSold: true,
-        //     owner: account,
-        //   })
-        // );
+
+        await getDetailsFromSite();
+
         dispatch(setTxDialogFailed(false));
         dispatch(setTxDialogSuccess(true));
         dispatch(setTxDialogPending(false));
@@ -401,9 +388,9 @@ export const NFTView = () => {
             {!loading &&
               market &&
               account &&
-              market.SellerAddress &&
-              account.toUpperCase() === market.SellerAddress.toUpperCase() &&
-              market.IsSold === false &&
+              market.seller &&
+              account.toUpperCase() === market.seller.toUpperCase() &&
+              market.isSold === false &&
               !isListed && (
                 <Box sx={styles.row}>
                   <Button
@@ -426,9 +413,9 @@ export const NFTView = () => {
             {!loading &&
               market &&
               // account &&
-              market.SellerAddress &&
-              account.toUpperCase() !== market.SellerAddress.toUpperCase() &&
-              market.IsSold === false &&
+              market.seller &&
+              account.toUpperCase() !== market.seller.toUpperCase() &&
+              market.isSold === false &&
               !isListed && (
                 <Box sx={styles.row}>
                   <Button
@@ -454,9 +441,9 @@ export const NFTView = () => {
                   </Button>
                 </Box>
               )}
-            {market && market.Price && (
+            {market && market.price && (
               <Typography variant="h6" sx={{ mt: 2, mb: 2, color: "#FFFFFF" }}>
-                Price: {`${market.Price}`} TFUEL
+                Price: {`${market.price}`} TFUEL
               </Typography>
             )}
             <NFTDetails
@@ -527,9 +514,9 @@ export const NFTView = () => {
         network={network}
         metadata={metadata}
         isUpdate={isUpdatePrice}
-        itemPrice={market ? market.Price : 0}
-        marketId={market ? market.MarketId : 0}
-        listingId={market ? market.Id : 0}
+        itemPrice={market ? market.price : 0}
+        marketId={market ? market.marketId : 0}
+        listingId={market ? market.id : 0}
         onCloseDlg={() => {
           setSellOpen(false);
           getDetailsFromSite();

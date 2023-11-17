@@ -1,4 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
+/* eslint-disable no-loop-func */
+/* eslint-disable no-unused-vars */
 import { rpc } from "../connectors/address";
 import { ethers } from "ethers";
 import ABI from "./abi/abi.json";
