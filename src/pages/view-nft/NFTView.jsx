@@ -138,13 +138,14 @@ export const NFTView = () => {
     if (listings.length > 0 && address && tokenId) {
       const found = listings.find(
         (x) =>
-          x.listingDetails.tokenAddress.toLowerCase() === address.toLowerCase() &&
+          x.listingDetails.tokenAddress.toLowerCase() ===
+            address.toLowerCase() &&
           x.listingDetails.tokenId === Number(tokenId) &&
           x.listingDetails.isCompleted === false &&
-          x.listingDetails.isCancelled === false 
+          x.listingDetails.isCancelled === false
       );
       if (found) {
-        console.log('found',found);
+        console.log("found", found);
         setListed(true);
         setListing(found);
       }
@@ -246,14 +247,17 @@ export const NFTView = () => {
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
-      dispatch(
-        cancelListing({
-          marketId: market.MarketId,
-          network: network,
-          listingId: market.Id,
-          isSold: true,
-        })
-      );
+      // dispatch(
+      //   cancelListing({
+      //     marketId: market.MarketId,
+      //     network: network,
+      //     listingId: market.Id,
+      //     isSold: true,
+      //   })
+      // );
+
+      await getDetailsFromSite();
+
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
@@ -305,15 +309,15 @@ export const NFTView = () => {
         );
         dispatch(setTxDialogHash(txResult.hash));
         await txResult.wait();
-        dispatch(
-          executeSale({
-            marketId: market.MarketId,
-            network: network,
-            listingId: market.Id,
-            isSold: true,
-            owner: account,
-          })
-        );
+        // dispatch(
+        //   executeSale({
+        //     marketId: market.MarketId,
+        //     network: network,
+        //     listingId: market.Id,
+        //     isSold: true,
+        //     owner: account,
+        //   })
+        // );
         dispatch(setTxDialogFailed(false));
         dispatch(setTxDialogSuccess(true));
         dispatch(setTxDialogPending(false));
@@ -436,20 +440,20 @@ export const NFTView = () => {
                   </Button>
                 </Box>
               )}
-            {!loading && 
-            account &&
-            account.toLowerCase() !== owner.toLowerCase() &&
-            isListed && (
-              <Box sx={styles.row}>
-                <Button
-                  sx={styles.orangeButton}
-                  variant="contained"
-                  onClick={handleOfferSwap}
-                >
-                  Offer SWAP
-                </Button>
-              </Box>
-            )}
+            {!loading &&
+              account &&
+              account.toLowerCase() !== owner.toLowerCase() &&
+              isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleOfferSwap}
+                  >
+                    Offer SWAP
+                  </Button>
+                </Box>
+              )}
             {market && market.Price && (
               <Typography variant="h6" sx={{ mt: 2, mb: 2, color: "#FFFFFF" }}>
                 Price: {`${market.Price}`} TFUEL

@@ -32,6 +32,7 @@ function DashboardHome() {
   const [balance, setBalance] = useState(null);
   const listings = useSelector((state) => state.listings.allListings);
   // const activeListings = useSelector((state) => state.listings.activeListings);
+  const isLoading = useSelector((state) => state.myNFT.isLoading);
   const myNFTs = useSelector((state) => state.myNFT.nfts);
   // const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
@@ -262,7 +263,7 @@ function DashboardHome() {
     const last = hash.substring(len - 4, len);
     return `${first}...${last}`;
   };
-
+  console.log("myDashboard isLoading", isLoading);
   return (
     <Box>
       <img
@@ -592,7 +593,11 @@ function DashboardHome() {
           </Box>
 
           {activeMenu === "nft" && (
-            <NFTlist activeListings={myNFTs} view={view} />
+            <NFTlist
+              activeListings={myNFTs}
+              view={view}
+              isLoading={isLoading}
+            />
           )}
           {activeMenu === "inbox" && (
             <Content activeListings={myNFTs} view={view} />

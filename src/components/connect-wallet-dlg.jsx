@@ -25,6 +25,7 @@ import {
   NoEthereumProviderError,
 } from "@web3-react/injected-connector";
 
+import { loggingWalletConnect } from "../redux/thunk/user-setting";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const ConnectWalletDlg = (props) => {
@@ -79,6 +80,9 @@ export const ConnectWalletDlg = (props) => {
         type: "success",
         position: "bottom-left",
       });
+
+      // logging
+      loggingWalletConnect(account);
     }
   }, [account]);
 

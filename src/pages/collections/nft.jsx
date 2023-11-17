@@ -50,6 +50,7 @@ const NFTPage = () => {
   useEffect(() => {
     dispatch(setCollectionDiscussions([]));
     fetchCollectionSetting();
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -320,14 +321,14 @@ const NFTPage = () => {
               </Button>
               <Button
                 onClick={() => setActiveMenu("content")}
-                style={{ "color": "#FFFFFF" }}
+                style={{ color: "#FFFFFF" }}
                 sx={
                   activeMenu === "content"
                     ? styles.activeButton
                     : styles.regularButton
                 }
-                
-               /*
+
+                /*
                 style={{
                   color:
                     asset.video === "" && account !== collection.ownerAddr

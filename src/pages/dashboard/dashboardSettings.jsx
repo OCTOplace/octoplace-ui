@@ -16,7 +16,9 @@ import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import {
   registerOrFetchUserSetting,
+  fetchUserSetting,
   updateUserSetting,
+  loggingUserRegistration,
 } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import avatarImage from "../../assets/default-user.jpg";
@@ -228,7 +230,14 @@ function DashboardSettings() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const fetchedData = await registerOrFetchUserSetting(account, "theta");
+        let fetchedData = await fetchUserSetting(account);
+        if (!fetchedData) {
+          fetchedData = await registerOrFetchUserSetting(account, "theta");
+
+          // logging
+          loggingUserRegistration(account);
+        }
+
         setUserSetting(fetchedData);
 
         if (fetchedData !== undefined) {
