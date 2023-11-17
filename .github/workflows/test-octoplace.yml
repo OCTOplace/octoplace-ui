@@ -38,6 +38,7 @@ jobs:
           REACT_APP_ENV: development
           REACT_APP_GTM_PRODUCT_ID: ${{ secrets.GTM_TEST_PRODUCT_ID}}
           REACT_APP_GTM_DEVELOP_ID: ${{ secrets.GTM_TEST_DEVELOP_ID}}
+          REACT_APP_LOGGING_API_URL: ${{ secrets.TEST_LOGGING_API }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

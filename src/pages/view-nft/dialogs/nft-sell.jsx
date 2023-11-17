@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // import { isAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
