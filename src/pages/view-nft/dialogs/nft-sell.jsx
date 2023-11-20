@@ -34,8 +34,6 @@ import { toast } from "react-toastify";
 import { getNetworkInfo } from "../../../connectors/networks";
 import { getImageUrl } from "../../../utils/string-util";
 import { formatUnits, parseUnits } from "@ethersproject/units";
-import { createListing } from "../../../redux/thunk/create-sale";
-import { updateListing } from "../../../redux/thunk/update-item";
 
 export const SellNFT = ({
   network,
@@ -223,16 +221,6 @@ export const SellNFT = ({
       );
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
-      dispatch(
-        updateListing({
-          marketId: marketId,
-          tokenId: tokenId,
-          //price: formatUnits(price.toString(), 0),
-          price: price.toString(),
-          network: network,
-          listingId: listingId,
-        })
-      );
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
@@ -277,24 +265,6 @@ export const SellNFT = ({
       dispatch(setTxDialogHash(txResult.hash));
       await txResult.wait();
       const id = await contract.getLastMarketId();
-      // dispatch(
-      //   createListing({
-      //     nftContractAddress: contractAddress,
-      //     marketId: Number(formatUnits(id, 0)),
-      //     tokenId: tokenId,
-      //     seller: account,
-      //     owner: "",
-      //     highestOffer: "",
-      //     bidder: "",
-      //     category: contractAddress,
-      //     //price: formatUnits(price.toString(), 0),
-      //     price: Number(price.toString()),
-      //     isSold: false,
-      //     collectionName: metadata.name,
-      //     tokenName: metadata.name,
-      //     network: network,
-      //   })
-      // );
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
