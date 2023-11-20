@@ -118,7 +118,7 @@ function Market({ isHome }) {
 
     return true;
   });
-  console.log(marketItems);
+
   return (
     <Container>
       <NFTListContainer>
