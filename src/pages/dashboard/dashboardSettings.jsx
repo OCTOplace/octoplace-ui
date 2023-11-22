@@ -1,4 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-toastify";
 import { Box, Typography, Button, TextField } from "@mui/material";
@@ -16,7 +19,9 @@ import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
 import {
   registerOrFetchUserSetting,
+  fetchUserSetting,
   updateUserSetting,
+  loggingUserRegistration,
 } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import avatarImage from "../../assets/default-user.jpg";
@@ -25,6 +30,9 @@ import PickDialog from "./components/pickDialog";
 import { styled } from "@mui/system";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+import { setToken } from "../../redux/slices/accout-slice";
+
+import { generateToken, verifyToken } from "../../utils/auth-utils";
 
 const styles = {
   container: {
@@ -179,9 +187,11 @@ const styles = {
 function DashboardSettings() {
   const sendDataToGTM = useGTMDispatch();
 
-  const { account, chainId } = useWeb3React();
-  const [userSetting, setUserSetting] = useState({});
+  const dispatch = useDispatch();
+  const { library, account } = useWeb3React();
+  const token = useSelector((state) => state.account.token);
 
+  const [userSetting, setUserSetting] = useState({});
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
   const [telegram, setTelegram] = useState("");
@@ -214,21 +224,27 @@ function DashboardSettings() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const listing = {
-    listingNFT: {
-      name: "NFT Name",
-      contractAddress: "0x1234567890",
-      metadata: {
-        image: bgImage,
-        description: "NFT Description",
-      },
-    },
-  };
-
   useEffect(() => {
     const loadData = async () => {
       try {
-        const fetchedData = await registerOrFetchUserSetting(account, "theta");
+        let fetchedData = await fetchUserSetting(account);
+        if (!fetchedData) {
+          let newToken = "";
+          if (!token || !(await verifyToken(token))) {
+            newToken = await generateToken(library);
+            dispatch(setToken(newToken));
+          }
+
+          fetchedData = await registerOrFetchUserSetting(
+            newToken ? newToken : token,
+            account,
+            "theta"
+          );
+
+          // logging
+          loggingUserRegistration(account);
+        }
+
         setUserSetting(fetchedData);
 
         if (fetchedData !== undefined) {
@@ -243,17 +259,15 @@ function DashboardSettings() {
           setMedium(fetchedData.medium || "");
           setTiktok(fetchedData.tictok || "");
         }
-
-        setLoading(false);
       } catch (error) {
-        // Handle error here, e.g. show an error message
         console.log("Error loading data:", error);
+      } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, []);
+  }, [account]);
 
   const handleBannerClick = () => {
     const bannerInput = document.getElementById("bannerInput");
@@ -310,7 +324,7 @@ function DashboardSettings() {
 
     saveObj = {
       ...saveObj,
-      walletAddress: account,
+      // walletAddress: account,
       title: title,
       description: about,
       facebook: facebook,
@@ -324,7 +338,16 @@ function DashboardSettings() {
     };
 
     try {
-      const fetchedData = await updateUserSetting(saveObj);
+      let newToken = "";
+      if (!token || !(await verifyToken(token))) {
+        newToken = await generateToken(library);
+        dispatch(setToken(newToken));
+      }
+
+      const fetchedData = await updateUserSetting(
+        newToken ? newToken : token,
+        saveObj
+      );
       toast.success(fetchedData.message, {
         position: "top-center",
       });

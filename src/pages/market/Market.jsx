@@ -1,18 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
-import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings } from "../../utils/format-listings";
-import {
-  Box,
-  Divider,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { NFTListingCard } from "../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
+import { getAllMarketItems } from "../../redux/thunk/get-all-market-items";
+import { Box, IconButton, Skeleton, Typography } from "@mui/material";
+import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -46,9 +39,8 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 function Market({ isHome }) {
   const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
   const [view, setView] = useState(2);
+  const isLoading = useSelector((state) => state.market.isLoading);
   const marketItems = useSelector((state) => state.market.markets);
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
@@ -64,7 +56,9 @@ function Market({ isHome }) {
     includeBurned: false,
   });
 
-  useEffect(() => {}, [marketItems]);
+  useEffect(() => {
+    dispatch(getAllMarketItems());
+  }, []);
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -79,9 +73,17 @@ function Market({ isHome }) {
   };
 
   const filteredMarketItems = marketItems.filter((item) => {
+    if (item.isSold) {
+      return false;
+    }
+
     if (
-      item.TokenName &&
-      !item.TokenName.toLowerCase().includes(keyword.toLowerCase())
+      item.nftDetails &&
+      item.nftDetails.metadata &&
+      item.nftDetails.metadata.name &&
+      !item.nftDetails.metadata.name
+        .toLowerCase()
+        .includes(keyword.toLowerCase())
     ) {
       return false;
     }
@@ -190,7 +192,8 @@ function Market({ isHome }) {
             />
           )}
           <CollectionCardContainer>
-            {view !== 1 &&
+            {!isLoading &&
+              view !== 1 &&
               filteredMarketItems.length > 0 &&
               filteredMarketItems.map((item, index) => {
                 return (
@@ -201,6 +204,48 @@ function Market({ isHome }) {
                   />
                 );
               })}
+            {!isLoading && view !== 1 && filteredMarketItems.length === 0 && (
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: "100%",
+                  height: "200px",
+                }}
+              >
+                <Typography
+                  style={{
+                    width: "100%",
+                    color: "#f4f4f4",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  There are currently no items available in the market.
+                </Typography>
+              </Box>
+            )}
+            {isLoading && (
+              <SkeletonContainer>
+                {[...Array(12)].map((e, i) => (
+                  <Box className="nft-card-link">
+                    <Skeleton
+                      className="mySkeleton"
+                      variant="rounded"
+                      key={i}
+                      animation="wave"
+                      style={{
+                        borderRadius: "0.75rem",
+                        marginBottom: "16px",
+                        width: "100%",
+                        height: "0",
+                        paddingTop: "145%",
+                      }}
+                    />
+                  </Box>
+                ))}
+              </SkeletonContainer>
+            )}
           </CollectionCardContainer>
         </NFTContentContainer>
       </NFTListContainer>
@@ -238,6 +283,12 @@ const NFTContentContainer = styled(Box)(({ theme }) => ({
 }));
 
 const CollectionCardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
+}));
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
   width: "100%",

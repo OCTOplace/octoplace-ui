@@ -1,12 +1,20 @@
 import axios from "axios";
 
-const registerOrFetchUserSetting = async (address, network) => {
+const registerOrFetchUserSetting = async (token, address, network) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   try {
-    const result = await axios.post(`${apiUrl}/users/register`, {
-      address: address,
-      network: network,
-    });
+    const result = await axios.post(
+      `${apiUrl}/users/register`,
+      {
+        // address: address,
+        network: network,
+      },
+      {
+        headers: {
+          authorization: token,
+        },
+      }
+    );
     return result.data;
   } catch (error) {
     // Handle error here, e.g. show an error message
@@ -15,12 +23,20 @@ const registerOrFetchUserSetting = async (address, network) => {
   }
 };
 
-const updateUserSetting = async (userObj) => {
+const updateUserSetting = async (token, userObj) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   try {
-    const result = await axios.post(`${apiUrl}/users/update`, {
-      user: userObj,
-    });
+    const result = await axios.post(
+      `${apiUrl}/users/update`,
+      {
+        user: userObj,
+      },
+      {
+        headers: {
+          authorization: token,
+        },
+      }
+    );
     return result.data;
   } catch (error) {
     // Handle error here, e.g. show an error message
@@ -29,12 +45,20 @@ const updateUserSetting = async (userObj) => {
   }
 };
 
-const updateUserTopNFT = async (nftObj) => {
+const updateUserTopNFT = async (token, nftObj) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   try {
-    const result = await axios.post(`${apiUrl}/users/update-top-nft`, {
-      topNFT: nftObj,
-    });
+    const result = await axios.post(
+      `${apiUrl}/users/update-top-nft`,
+      {
+        topNFT: nftObj,
+      },
+      {
+        headers: {
+          authorization: token,
+        },
+      }
+    );
     return result.data;
   } catch (error) {
     // Handle error here, e.g. show an error message
@@ -51,10 +75,10 @@ const fetchUserSetting = async (address) => {
     );
     return result.data;
   } catch (error) {
-    // Handle error here, e.g. show an error message
     console.log("Error getting user setting:", error);
-    throw new Error("Failed to fetch user setting");
   }
+
+  return null;
 };
 
 const fetchUserTopNFTs = async (address) => {
@@ -71,10 +95,39 @@ const fetchUserTopNFTs = async (address) => {
   }
 };
 
+// logging
+
+const loggingWalletConnect = async (address) => {
+  const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
+  try {
+    const result = await axios.post(
+      `${apiUrl}/api/wallet/wallet-connection/${address}`
+    );
+    return result.data;
+  } catch (error) {
+    console.log("Error logging wallet connection:", error);
+  }
+};
+
+const loggingUserRegistration = async (address) => {
+  const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
+  try {
+    const result = await axios.post(
+      `${apiUrl}/api/wallet/octo-user-registration/${address}`
+    );
+    console.log("logging", result.data);
+    return result.data;
+  } catch (error) {
+    console.log("Error logging user registration:", error);
+  }
+};
+
 export {
   registerOrFetchUserSetting,
   updateUserSetting,
   updateUserTopNFT,
   fetchUserSetting,
   fetchUserTopNFTs,
+  loggingWalletConnect,
+  loggingUserRegistration,
 };

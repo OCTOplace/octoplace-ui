@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 import GridPng from "../../assets/grid.png";
-import { useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { PRICE_WEI, SPACE_WIDTH } from "../../constants/nftMillions";
 import Spots from "./Spots";

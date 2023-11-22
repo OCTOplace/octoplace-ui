@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +9,15 @@ import { getCollectionOwner } from "../../redux/thunk/get-collection-owner";
 import { useWeb3React } from "@web3-react/core";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Container } from "react-bootstrap";
+import Tooltip from "@mui/material/Tooltip";
 import { ContentCopy, FacebookRounded } from "@mui/icons-material";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FaTiktok, FaInstagram, FaDiscord } from "react-icons/fa";
 import { BsMedium } from "react-icons/bs";
+import { createAction } from "@reduxjs/toolkit";
+import styled from "styled-components";
 import { fetchUserSetting } from "../../redux/thunk/user-setting";
 import bgImage from "../../assets/GrayBackground.jpeg";
 import avatarImage from "../../assets/default-user.jpg";
@@ -29,6 +34,7 @@ function DashboardHome() {
   const [balance, setBalance] = useState(null);
   const listings = useSelector((state) => state.listings.allListings);
   // const activeListings = useSelector((state) => state.listings.activeListings);
+  const isLoading = useSelector((state) => state.myNFT.isLoading);
   const myNFTs = useSelector((state) => state.myNFT.nfts);
   // const [myNFTListings, setMyNFTListings] = useState([]);
   const [view, setView] = useState(2);
@@ -235,6 +241,8 @@ function DashboardHome() {
 
     loadData();
 
+    dispatch(createAction("LOAD_MY_NFTS_API")({ account: account }));
+
     // Calc balance
     setTFUELtoUSD(acctDetails.balance);
 
@@ -257,7 +265,7 @@ function DashboardHome() {
     const last = hash.substring(len - 4, len);
     return `${first}...${last}`;
   };
-
+  console.log("myDashboard isLoading", isLoading);
   return (
     <Box>
       <img
@@ -513,57 +521,85 @@ function DashboardHome() {
             >
               NFTs
             </Button>
-            <Button
-              onClick={() => setActiveMenu("inbox")}
-              disabled
-              sx={
-                activeMenu === "inbox"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Inbox
-              <span style={styles.orangeText}>3</span>
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("offers")}
-              disabled
-              sx={
-                activeMenu === "offers"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+              <Spin>
+                <Button
+                  onClick={() => setActiveMenu("inbox")}
+                  disabled
+                  sx={
+                    activeMenu === "inbox"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Inbox
+                  <span style={styles.orangeText}></span>
+                </Button>
+              </Spin>
+            </Tooltip>
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Offers
-              <span style={styles.orangeText}>1</span>
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("content")}
-              disabled
-              sx={
-                activeMenu === "content"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+              <Spin>
+                <Button
+                  onClick={() => setActiveMenu("offers")}
+                  disabled
+                  sx={
+                    activeMenu === "offers"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Offers
+                  <span style={styles.orangeText}></span>
+                </Button>
+              </Spin>
+            </Tooltip>
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Content
-              <span style={styles.orangeText}>7</span>
-            </Button>
-            <Button
-              onClick={() => setActiveMenu("wall")}
-              disabled
-              sx={
-                activeMenu === "wall"
-                  ? styles.activeButton
-                  : styles.regularButton
-              }
+              <Spin>
+                <Button
+                  onClick={() => setActiveMenu("content")}
+                  disabled
+                  sx={
+                    activeMenu === "content"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Content
+                  <span style={styles.orangeText}></span>
+                </Button>
+              </Spin>
+            </Tooltip>
+            <Tooltip
+              title={<Typography fontSize={"0.83rem"}>Coming soon!</Typography>}
             >
-              Wall
-            </Button>
+              <Spin>
+                <Button
+                  onClick={() => setActiveMenu("wall")}
+                  disabled
+                  sx={
+                    activeMenu === "wall"
+                      ? styles.activeButton
+                      : styles.regularButton
+                  }
+                >
+                  Wall
+                </Button>
+              </Spin>
+            </Tooltip>
           </Box>
 
           {activeMenu === "nft" && (
-            <NFTlist activeListings={myNFTs} view={view} />
+            <NFTlist
+              activeListings={myNFTs}
+              view={view}
+              isLoading={isLoading}
+            />
           )}
           {activeMenu === "inbox" && (
             <Content activeListings={myNFTs} view={view} />
@@ -575,3 +611,8 @@ function DashboardHome() {
 }
 
 export default DashboardHome;
+
+const Spin = styled.div`
+  font-size: smaller;
+  margin-top: "0px";
+`;

@@ -14,7 +14,6 @@ import { defaultImage } from "../connectors/address";
 export const NFTCard = (props) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
-  const { view } = props;
   const { metadata, collectionName, tokenId, contractAddress, url, network } =
     props.nft;
   const styles = {
@@ -24,7 +23,6 @@ export const NFTCard = (props) => {
       borderRadius: "12px",
       position: "relative",
       color: "white",
-      width: "100%",
       backgroundImage: `url(${imgUrl})`,
       backgroundSize: "cover",
       cursor: "pointer",

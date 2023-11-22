@@ -14,18 +14,14 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import {
-  ContentCopy,
-  ExpandMore,
-  QuestionAnswer,
-  Send,
-} from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { ContentCopy, ExpandMore, QuestionAnswer } from "@mui/icons-material";
 import { shortenAddress } from "../../utils/string-util";
 import { getNetworkInfo } from "../../connectors/networks";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { useWeb3React } from "@web3-react/core";
-import { formatEther, formatUnits, parseUnits } from "@ethersproject/units";
+import { formatEther, parseUnits } from "@ethersproject/units";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -124,6 +120,12 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       fontWeight: 600,
       width: "20%",
       textTransform: "none",
+      "&:disabled": {
+        opacity: 0.3,
+        cursor: "not-allowed",
+        background: "#F78C09",
+        color: "#262626",
+      },
     },
   };
 
@@ -139,7 +141,8 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const [feeSymbol, setFeeSymbol] = useState("");
   const { account, chainId } = useWeb3React();
   const [feeAllowance, setFeeAllowance] = useState(0);
-  const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
+  const [loadingAllowance, setLoadingAllowance] = useState(false);
+  // const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
   const discussions = useSelector(
     (state) => state.discussion.selectedNFTDiscussions
   );
@@ -211,19 +214,26 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     if (account && feeToken) {
       getAllowance();
     }
-  }, [account, allowanceRefreshTrigger, feeToken]);
+  }, [account, feeToken]);
 
   useEffect(() => {
+    const fetchAllowance = async () => {
+      setLoadingAllowance(true);
+      await getFeeToken();
+      setLoadingAllowance(false);
+    };
+
     if (account) {
-      getFeeToken();
+      fetchAllowance();
     }
+
     // if isAccordion is false expand the accordion default
     if (!isAccordion) {
       setExpanded(true);
     }
   }, [account]);
 
-  useEffect(() => {}, [discussions]);
+  //useEffect(() => { }, [discussions]);
 
   const handleFeeApprove = async () => {
     sendDataToGTM({
@@ -413,9 +423,11 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
               }}
             />
           </Box>
-          <Button
+          <LoadingButton
             fullWidth
             variant="contained"
+            loading={loadingAllowance}
+            loadingPosition="start"
             onClick={() => {
               if (!message) {
                 return;
@@ -423,6 +435,11 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
 
               if (!account) {
                 toast.info("Please connect your wallet!");
+                return;
+              }
+
+              if (feeBalance < commentFee) {
+                toast.warn("Insufficient funds for gas.");
                 return;
               }
 
@@ -439,7 +456,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
             sx={styles.sendButton}
           >
             Send
-          </Button>
+          </LoadingButton>
         </Box>
         <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
           <DialogTitle
@@ -457,16 +474,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
             </Typography>
           </DialogContent>
           <DialogActions sx={{ pb: 2, pr: 2 }} className="tx-dialog">
-            {feeAllowance >= commentFee ? (
-              <Button onClick={handleSendMessage} variant="contained">
-                Send Message
-              </Button>
-            ) : (
-              <Button onClick={handleFeeApprove} variant="contained">
-                Approve
-              </Button>
-            )}
-
             <Button
               color="error"
               variant="contained"
@@ -484,6 +491,15 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
             >
               Cancel
             </Button>
+            {feeAllowance >= commentFee ? (
+              <Button onClick={handleSendMessage} variant="contained">
+                Send Message
+              </Button>
+            ) : (
+              <Button onClick={handleFeeApprove} variant="contained">
+                Approve
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       </AccordionDetails>

@@ -1,10 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { getAllCollections } from "../thunk/getAllCollections";
-import { getAllCollectionNFTs } from "../thunk/get-collection-nfts";
-import { getCollectionSettings } from "../thunk/get-collection-setting";
-import { getCollectionOwner } from "../thunk/get-collection-owner";
-import { getRoyaltyInfo } from "../thunk/get-royalty-info";
 import { getPopularCollections, getPopularNFTs } from "../thunk/get-analytics";
 
 const initialState = {

@@ -30,6 +30,7 @@ import {
   setTxDialogFailed,
   setTxDialogPending,
 } from "../../../redux/slices/app-slice";
+
 export const ListNFTDialog = (props) => {
   const { onClose, open, metadata, tokenId, owner, address, network } = props;
   const [isApproved, setIsApproved] = useState(false);
@@ -39,6 +40,7 @@ export const ListNFTDialog = (props) => {
   const [imgLoading, setImageLoading] = useState(true);
   const txCharge = useSelector((state) => state.app.txCharge);
   const dispatch = useDispatch();
+
   const handleClose = (isSuccess) => {
     onClose(isSuccess);
   };
@@ -106,9 +108,14 @@ export const ListNFTDialog = (props) => {
           netDetails.dataNetwork.ERC_ABI,
           signer
         );
+        /*
         const tx = await contract.setApprovalForAll(
           netDetails.dataNetwork.SWAP_CONTRACT,
           true
+        );*/
+        const tx = await contract.approve(
+          netDetails.dataNetwork.SWAP_CONTRACT,
+          tokenId
         );
         dispatch(setTxDialogHash(tx.hash));
         await tx.wait();
@@ -123,7 +130,7 @@ export const ListNFTDialog = (props) => {
         dispatch(setTxDialogPending(false));
         dispatch(setTxDialogFailed(false));
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleListing = async () => {
@@ -152,14 +159,14 @@ export const ListNFTDialog = (props) => {
           address,
           overRides
         );
-        dispatch(setTxDialogHash(txResult.hash))
+        dispatch(setTxDialogHash(txResult.hash));
         await txResult.wait();
         dispatch({ type: "LOAD_ALL_LISTING" });
         handleClose(true);
         toast.success("NFT Listed successfully!");
         dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(false));
       }
     } catch (err) {
       dispatch(setTxDialogSuccess(false));
@@ -217,23 +224,26 @@ export const ListNFTDialog = (props) => {
       </DialogContent>
       <DialogActions sx={style.dlgActions}>
         <Button
+          sx={style.orangeButton}
+          variant="contained"
+          onClick={handleListing}
+          disabled={!isApproved}
+        >
+          List NFT
+        </Button>
+        <Button
+          sx={style.orangeButton}
           onClick={handleApprove}
           disabled={isApproved}
           variant="contained"
         >
           Approve
         </Button>
-        <Button
-          onClick={handleListing}
-          disabled={!isApproved}
-          variant="contained"
-        >
-          List NFT
-        </Button>
       </DialogActions>
     </Dialog>
   );
 };
+
 const style = {
   img: {
     width: "150px",
@@ -252,5 +262,15 @@ const style = {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "top",
+  },
+  orangeButton: {
+    "&:hover": {
+      backgroundColor: "#F78C09",
+      color: "#fff",
+    },
+    "&:disabled": {
+      color: "gray",
+      fontWeight: 500,
+    },
   },
 };

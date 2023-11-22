@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -8,15 +9,28 @@ import {
   MenuItem,
   FormControl,
   Paper,
+  Tooltip,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  //CircularProgress,
+} from "@mui/material";
+import logoAnim from "../../../assets/logo_anim_4.svg";
+
+import React, { useEffect,  useState } from "react";
 import { Container } from "react-bootstrap";
-import thetaImage from "../../../assets/icon.png";
-import NFTlist from "./NFTlist";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+
 import axios from "axios";
 import { styled } from "@mui/system";
+import { toast } from "react-toastify";
+
 
 const styles = {
   videoContainer: {
@@ -108,6 +122,7 @@ const styles = {
     },
   }),
   orangeButton: {
+    width: "100%",
     backgroundColor: "#F78C09",
     color: "#262626",
     textTransform: "none",
@@ -151,7 +166,8 @@ const styles = {
     py: 0.5,
     px: 2,
     m: 0,
-    backgroundColor: "transparent",
+    //backgroundColor: "transparent",
+    backgroundColor: 'black',
     border: "1px solid white",
     color: "white",
     [theme.breakpoints.down(1200)]: {
@@ -160,11 +176,20 @@ const styles = {
   }),
 };
 
-function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
-  const videoRef = useRef(null);
-  const [isOwner, setIsOwner] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showButton, setShowButton] = useState(true);
+function Content({
+  isOwner,
+  address,
+  activeListings,
+  view,
+  videoTitle,
+  videoDesc,
+  videoUrl,
+}) {
+  //console.log("address: ", address);
+  // const videoRef = useRef(null);
+  // const [isOwner, setIsOwner] = useState(true);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  // const [showButton, setShowButton] = useState(true);
   const [openAddVideo, setOpenAddVideo] = useState(false);
   const [chain, setChain] = useState("Theta Mainnet");
   const [chipData, setChipData] = useState([
@@ -172,10 +197,19 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     { key: 1, label: "1080p" },
     { key: 2, label: "720p" },
     { key: 3, label: "480p" },
-    { key: 4, label: "360p" },
+    //{ key: 4, label: "360p" }, //hidden for UI improvement
   ]);
   const [uploadData, setUploadData] = useState();
+  const [url, setUrl] = useState();
   const [movie, setMovie] = useState();
+  const [videoName, setVideoName] = useState("");
+  const [videoDescription, setVideoDescription] = useState("");
+  const [asset, setAsset] = useState({});
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  //const [isSuccessful, setIsSuccessful] = useState(false);
+  //const [isFailed, setIsFailed] = useState(false);
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
@@ -187,9 +221,20 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     setChain(event.target.value);
   };
 
+  const handleChangeURL = (e) => {
+    setUrl(e.target.value);
+  };
+
+  const handleVideoNameChange = (event) => {
+    setVideoName(event.target.value);
+  };
+
+  const handleVideoDescriptionChange = (event) => {
+    setVideoDescription(event.target.value);
+  };
+
   const onDrop = (acceptedFiles) => {
-    // Handle dropped files logic here
-    console.log(acceptedFiles);
+    //console.log(acceptedFiles);
     let files;
     if (acceptedFiles != null) {
       files = acceptedFiles[0];
@@ -208,28 +253,133 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Save");
-    if (uploadData == null) return;
+
+    //if (uploadData == null) return;
     const formData = new FormData();
     if (movie != null || movie !== "") {
       formData.append("file", movie);
-      console.log("movie:", movie);
+      //console.log("movie:", movie);
     }
+
+    //Proper URL address is NOT validated yet!
+    if (movie === undefined && url === "") {
+      toast.warn("Video not selected");
+      return
+    }
+
+    if (videoName === "") {
+      toast.warn("Video Name not selected");
+      return
+    }
+    if (videoDescription === "") {
+      toast.warn("Video Description not selected");
+      return
+    }
+
     const headers = {
       "Content-type": "application/octet-stream",
     };
     try {
-      console.log("presigned_url: ", uploadData.presigned_url);
-      const response = await axios.put(uploadData.presigned_url, formData, {
+      setIsOpen(true);
+      setIsPending(true);
+      const response = await axios.put(uploadData.presigned_url, movie, {
         headers: headers,
       });
       const data = response.data;
-      console.log("Submit: ", data);
+      //console.log("Submit: ", data);
+
+      /// changes by Armando
+
+      const headers2 = {
+        'x-tva-sa-id': 'srvacc_fp72dqw4ix8r6ad6vr9evm68d',
+        'x-tva-sa-secret': 'xn0xqh78s04e0n67vkbwwztq2zvp7scg',
+        'Content-Type': 'application/json',
+      };
+      const body = JSON.stringify({
+        "source_upload_id": uploadData.id,
+        "playback_policy": "public",
+        "file_name": movie.name,
+        /* //This is the DRM feature and it's disabled for now, needs to be checked and unhardcode the chain_id
+        "use_drm": true,
+        drm_rules: [{
+          chain_id: 361,
+          nft_collection: address
+        }],
+        */
+        "metadata": {
+          "filename": address + " " + movie.name, //Figured that it's better to have which collection owns each video in the thetavideo dashboard
+          "videoName": videoName,
+          "videoDescription": videoDescription,
+        },
+
+      });
+      //console.log("Body: ", body)
+
+      const response2 = await axios.post(
+        "https://api.thetavideoapi.com/video", body,
+        { headers: headers2 }
+      );
+      //console.log("transcode response: ", response2);
+      //console.log("video id: ", response2.data.body.videos[0].id);
+      let url3 = "https://api.thetavideoapi.com/video/" + response2.data.body.videos[0].id;
+      //console.log("url 3: ", url3)
+
+      async function checkPlayerUri() { // this func needs to be replaced for a better solution, the transcode time is quite long sometimes
+        const response3 = await axios.get(url3, { headers: headers2 });
+        const playerUri = response3.data.body.videos[0].player_uri;
+        if (playerUri === null || playerUri === undefined || playerUri === "") {
+          console.log("Player URI is wrong. Retrying in 5 seconds...");
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          return checkPlayerUri();
+        } else {
+          //console.log("Player URI:", playerUri);
+
+          let collection = {};
+
+          collection = {
+            contractAddress: address,
+          };
+
+          asset.name = videoName;
+          asset.description = videoDescription;
+          asset.video = response3.data.body.videos[0].player_uri;
+          asset.contractAddress = address;
+
+          //console.log("Asset: ", asset);
+          //console.log("Collection: ", collection);
+
+          const result = await axios.post("https://api.octoplace.io/collections/update", {
+            collection,
+            asset,
+          });
+          setIsOpen(false);
+          toast.success("Video Uploaded sucessfully!");
+          setOpenAddVideo(false);
+          //console.log(result);
+        }
+      }
+
+      checkPlayerUri();
+      ///
     } catch (err) {
+      toast.error("Video not Uploaded!");
       console.log("Submitting Error: ", err);
     }
   };
+
+  /*
+  async function getWalletAccessToken() {
+    //Check if a user is logged in...
+    let isAuthenticated = true;
+    if (!isAuthenticated) {
+      //No user is logged in, no wallet will be used
+      return null;
+    }
+    //This API should check the user's auth 
+    let body = await yourAPIRequestToGenerateThetaWalletAccessTokenForAuthedUser();
+    //Return the access token from the request body
+    return body.access_token;
+  }
 
   const handlePlayVideo = () => {
     if (videoRef.current.paused) {
@@ -239,12 +389,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       videoRef.current.pause();
       setIsPlaying(false);
     }
-  };
-
-  const handleChangeURL = (e) => {
-    console.log(e);
-    const url = e.target.value;
-  };
+  };*/
 
   const getPreSignedUrl = async () => {
     const headers = {
@@ -264,7 +409,6 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
       console.log("Pre-Signed URL Error: ", err);
     }
   };
-
   useEffect(() => {
     getPreSignedUrl();
   }, []);
@@ -273,6 +417,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
     <Container>
       {openAddVideo ? (
         <Box sx={styles.formContainer}>
+          {/*}
           <form
             onSubmit={handleSubmit}
             style={{
@@ -281,9 +426,17 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               width: "100%",
               gap: "1rem",
             }}
+          >{*/}
+          {//<Typography sx={styles.h1}>New Video</Typography>
+          }
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              gap: "1rem",
+            }}
           >
-            <Typography sx={styles.h1}>New Video</Typography>
-
             <TextField
               type="url"
               variant="standard"
@@ -298,8 +451,9 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 },
                 disableUnderline: true,
                 size: "small",
-                placeholder: "| Enter URL",
+                placeholder: "Enter URL",
               }}
+              onChange={handleChangeURL}
             />
 
             <Typography sx={styles.h1}>or</Typography>
@@ -339,6 +493,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                           border: "1px solid white",
                           borderRadius: "0.594rem",
                           color: "white",
+                          backgroundColor: 'black',
                           //change color of delete icon
                           "& .MuiChip-deleteIcon": {
                             color: "white",
@@ -357,9 +512,11 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 <Select
                   sx={{
                     color: "white",
-                    backgroundColor: "transparent",
+                    //backgroundColor: "transparent",
+                    backgroundColor: 'black',
                     border: "1px solid white",
                     borderRadius: "0.594rem",
+                    padding: '0.5rem',
                     "& .MuiSelect-icon": {
                       color: "white",
                     },
@@ -367,9 +524,9 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                       backgroundColor: "transparent",
                     },
                     "& .MuiSelect-select:not(:focus):not([multiple]):not([disabled])":
-                      {
-                        color: "white",
-                      },
+                    {
+                      color: "white",
+                    },
                     "& .MuiInputLabel-root": {
                       color: "white",
                     },
@@ -383,35 +540,90 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                   <MenuItem value="Ethereum Mainnet">Ethereum Mainnet</MenuItem>
                 </Select>
               </FormControl>
+              <Box
+                sx={{
+                  backgroundColor: 'black',
+                  color: 'white',
+                  border: '1px solid white',
+                  borderRadius: '0.594rem',
+                  padding: '0.5rem',
+                }}
+              >
+                <FormControlLabel
+                  control={<Checkbox style={{
+                    color: 'white',
+                  }}
+                  />}
+                  label="Gate this content with NFT ownership"
+                />
+              </Box>
             </Box>
-
-            <TextField
-              type="text"
-              variant="standard"
-              hiddenLabel
-              InputProps={{
-                style: {
-                  backgroundColor: "black",
-                  color: "white",
-                  border: "1px solid white",
-                  borderRadius: "0.594rem",
-                  padding: "0.5rem",
-                  "& .MuiInputBase-input": {
-                    padding: 0,
-                  },
-                },
-                disableUnderline: true,
-                size: "small",
-                placeholder: "| Enter Video Name",
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "justify-between",
+                alignItems: "center",
+                gap: 3,
               }}
-            />
+            >
+              <TextField
+                type="text"
+                variant="standard"
+                hiddenLabel
+                sx={{
+                  flex: 1,
+                }}
+                InputProps={{
+                  style: {
+                    backgroundColor: "black",
+                    color: "white",
+                    border: "1px solid white",
+                    borderRadius: "0.594rem",
+                    padding: "0.5rem",
+                    "& .MuiInputBaseinput": {
+                      padding: 0,
+                    },
+                  },
+                  disableUnderline: true,
+                  size: "small",
+                  placeholder: "Enter Video Name",
+                }}
+                onChange={handleVideoNameChange}
+              />
+              <TextField
+                type="text"
+                variant="standard"
+                hiddenLabel
+                sx={{
+                  flex: 1,
+                }}
+                InputProps={{
+                  style: {
+                    backgroundColor: "black",
+                    color: "white",
+                    border: "1px solid white",
+                    borderRadius: "0.594rem",
+                    padding: "0.5rem",
+                    "& .MuiInputBaseinput": {
+                      padding: 0,
+                    },
+                  },
+                  disableUnderline: true,
+                  size: "small",
+                  placeholder: "Enter Video Description",
+                }}
+                onChange={handleVideoDescriptionChange}
+              />
+            </Box>
+            {/*
             <TextField
               type="text"
               variant="standard"
               hiddenLabel
               InputProps={{
                 style: {
-                  backgroundColor: "#3D3D3D",
+                  //backgroundColor: "#3D3D3D", //changed as for tony's request
+                  backgroundColor: "black",
                   color: "white",
                   border: "1px solid white",
                   borderRadius: "0.594rem",
@@ -423,9 +635,11 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 },
                 disableUnderline: true,
                 size: "small",
-                placeholder: "| Collection Address (Optional)",
+                placeholder: "Collection Address (Optional)",
               }}
             />
+            /*}
+            {/*}
             <Box
               sx={{
                 display: "flex",
@@ -453,9 +667,9 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                       backgroundColor: "transparent",
                     },
                     "& .MuiSelect-select:not(:focus):not([multiple]):not([disabled])":
-                      {
-                        color: "white",
-                      },
+                    {
+                      color: "white",
+                    },
                     "& .MuiInputLabel-root": {
                       color: "white",
                     },
@@ -468,8 +682,10 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                   <MenuItem value="option3">Option 3</MenuItem>
                 </Select>
               </FormControl>
+                
             </Box>
-
+            */}
+            {/* //
             <Typography
               sx={{
                 color: "#6C6C6C",
@@ -479,6 +695,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               If a collection address is added, users MUST have at least one NFT
               from the specified collection in order to view the video
             </Typography>
+            */}
             <Box
               sx={{
                 display: "flex",
@@ -488,6 +705,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
               }}
             >
               <Button
+                onClick={() => { setOpenAddVideo(false) }}
                 sx={{
                   backgroundColor: "#3D3D3D",
                   color: "#151515",
@@ -499,6 +717,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 CANCEL
               </Button>
               <Button
+                onClick={handleSubmit}
                 sx={{
                   backgroundColor: "#F78C09",
                   color: "#151515",
@@ -511,24 +730,52 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 SAVE
               </Button>
             </Box>
-          </form>
+            {//</form>
+            }
+          </Box>
         </Box>
       ) : (
         <Box sx={styles.videoContainer}>
-          <Box sx={styles.videoBox}>
-            <Iframe
-              sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
-              src={videoUrl}
-              allowFullScreen
-              width="100%"
-            />
-          </Box>
+          {videoUrl ? ( //this is the new video that shows only if the collection has no video(s) uploaded
+            <Box sx={styles.videoBox}>
+              <Iframe
+                sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
+                src={videoUrl}
+                allowFullScreen
+                width="100%"
+              />
+            </Box>
+          ) : (
+            <Box sx={styles.videoBox}>
+              <Iframe
+                sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
+                src="https://assets.mixkit.co/videos/preview/mixkit-little-cats-lying-on-an-armchair-32471-large.mp4"
+                allowFullScreen
+                width="100%"
+              />
+            </Box>
+          )}
+
+          {/* this is the old empty video box if the collection didn't have any video
+          videoUrl && (
+            <Box sx={styles.videoBox}>
+              <Iframe
+                sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
+                src={videoUrl}
+                allowFullScreen
+                width="100%"
+              />
+            </Box>
+          )
+          */}
           <Box sx={styles.descriptionContainer}>
             <Box sx={styles.textContainer}>
               <Typography sx={styles.h1}>{videoTitle}</Typography>
               <Typography sx={styles.p}>{videoDesc}</Typography>
             </Box>
+
             <Box sx={styles.rContainer}>
+              {/*} DRM cleanup, this needs to be shown dinamically and not fixed
               <Box sx={styles.ownerContainer}>
                 <Box sx={styles.ownerBox}>
                   <Typography sx={styles.h2}>Theta Punks</Typography>
@@ -539,7 +786,7 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                 </Box>
                 <img
                   src={thetaImage}
-                  alt="profile-image"
+                  alt="profile"
                   style={{
                     width: "140px",
                     height: "100%",
@@ -547,20 +794,103 @@ function Content({ activeListings, view, videoTitle, videoDesc, videoUrl }) {
                   }}
                 />
               </Box>
-              {isOwner ? (
-                <Button
-                  onClick={() => setOpenAddVideo(true)}
-                  sx={styles.orangeButton}
-                  // disabled={true}
+                {*/}
+
+              {//isOwner && ( //this line is to hide the button to non-owners
+                <Tooltip
+                  title={
+                    !isOwner && (
+                      <Typography fontSize={"0.83rem"}>
+                        Only owners of the collection can upload video.
+                      </Typography>
+                    )
+                  }
                 >
-                  Add Video
-                </Button>
-              ) : null}
+                  <span style={{ fontSize: "smaller" }}>
+                    <Button
+                      onClick={() => {
+                        //console.log("isOwner", isOwner)
+                        // This is the owner check to be disabled for testing purposes only
+                        if (!isOwner) {
+                          toast(
+                            "Only the owners of collections can upload videos.",
+                            {
+                              type: "info",
+                            }
+                          );
+                          return;
+                        }
+                        setOpenAddVideo(true);
+                      }}
+                      sx={styles.orangeButton}
+                      disabled={!isOwner} //This is the owner check to be disabled for testing purposes only
+                    >
+                      Add Video
+                    </Button>
+                  </span>
+                </Tooltip>
+                //) //this line is to hide the button to non-owners
+              }
             </Box>
           </Box>
         </Box>
       )}
       {/* <NFTlist activeListings={activeListings.slice(0, 6)} view={view} /> */}
+
+
+      <Dialog maxWidth={"xs"} fullWidth open={isOpen}
+      >
+        <DialogTitle
+          sx={{ color: "white", textTransform: "uppercase", fontWeight: 700 }}
+          style={{ backgroundColor: "#262626" }}
+        >
+          Upload Status
+        </DialogTitle>
+        <DialogContent style={{ backgroundColor: "#262626" }} >
+          <Box
+            sx={{ pt: 2, pb: 2 }}
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {isPending && (
+              <img
+                style={{ width: "80px", height: "80px" }}
+                src={logoAnim}
+                alt="pendding"
+              />
+            )}
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography
+              sx={{
+                fontSize: "20px",
+                color: "white",
+                fontWeight: 400,
+                textAlign: "center",
+              }}
+            >
+              Upload Pending
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                  color: "#F78C09",
+                  fontWeight: 100,
+                  textAlign: "center",
+                }}
+              >
+                This may take a few seconds
+              </Typography>
+            </Typography>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 }

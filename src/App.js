@@ -51,9 +51,12 @@ import DashboardGuest from "./pages/dashboard/dashboardGuest";
 import DashboardSettings from "./pages/dashboard/dashboardSettings";
 import contractInteraction from "./contracts";
 
+import { ThemeProvider } from "@mui/system";
+import { theme } from "./theme";
+
 const gtmParams = {
   id:
-    process.env.REACT_APP_GTM_ENV === "production"
+    process.env.REACT_APP_ENV === "production"
       ? process.env.REACT_APP_GTM_PRODUCT_ID
       : process.env.REACT_APP_GTM_DEVELOP_ID,
 };
@@ -130,60 +133,65 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <GTMProvider state={gtmParams}>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/market" element={<Market />} />
-            <Route path="/market/swap" element={<Swap />} />
-            <Route path="/market/auction" element={<Auction />} />
-            <Route path="my-nft" element={<MyNFT />} />
-            <Route
-              path="popular/nft/:network/:address/:tokenId"
-              element={<NFTView />}
+    <ThemeProvider theme={theme}>
+      <Router>
+        <GTMProvider state={gtmParams}>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/market" element={<Market />} />
+              <Route path="/market/swap" element={<Swap />} />
+              <Route path="/market/auction" element={<Auction />} />
+              <Route path="my-nft" element={<MyNFT />} />
+              <Route
+                path="popular/nft/:network/:address/:tokenId"
+                element={<NFTView />}
+              />
+              <Route
+                path="nft/:network/:address/:tokenId"
+                element={<NFTView />}
+              />
+              <Route path="listing" element={<Listings />} />
+              <Route path="listing/offers" element={<ListingOffers />} />
+              <Route
+                path="swap/:network/:offerId"
+                element={<SingleSwapOffer />}
+              />
+              <Route
+                path="swap/initiate-offer/:network/:listingId/:offerNft/:offerTokenId"
+                element={<MyListingSwapOffer />}
+              />
+              <Route path="swap/mylist2" element={<MyListingSwapOffer2 />} />
+              <Route path="swap/done" element={<SwapComplete />} />
+              <Route path="faucet" element={<FaucetPage />} />
+              <Route path="popular/collection/:address" element={<NFTPage />} />
+              <Route path="collections" element={<CollectionsPage />} />
+              <Route path="collection/:address" element={<NFTPage />} />
+              <Route
+                path="collections/settings/:network/:collectionAddress"
+                element={<CollectionSettings />}
+              />
+              <Route path="dashboard" element={<DashboardHome />} />
+              <Route path="dashboard/guest" element={<DashboardGuest />} />
+              <Route
+                path="dashboard/settings"
+                element={<DashboardSettings />}
+              />
+            </Routes>
+            <TxDialog
+              isOpen={txDialogState.isOpen}
+              isPending={txDialogState.isPending}
+              txHash={txDialogState.txHash}
+              isSuccessful={txDialogState.isSuccess}
+              isFailed={txDialogState.isFailed}
+              onClose={() => {
+                dispatch(hideTxDialog());
+              }}
             />
-            <Route
-              path="nft/:network/:address/:tokenId"
-              element={<NFTView />}
-            />
-            <Route path="listing" element={<Listings />} />
-            <Route path="listing/offers" element={<ListingOffers />} />
-            <Route
-              path="swap/:network/:offerId"
-              element={<SingleSwapOffer />}
-            />
-            <Route
-              path="swap/initiate-offer/:network/:listingId/:offerNft/:offerTokenId"
-              element={<MyListingSwapOffer />}
-            />
-            <Route path="swap/mylist2" element={<MyListingSwapOffer2 />} />
-            <Route path="swap/done" element={<SwapComplete />} />
-            <Route path="faucet" element={<FaucetPage />} />
-            <Route path="popular/collection/:address" element={<NFTPage />} />
-            <Route path="collections" element={<CollectionsPage />} />
-            <Route path="collection/:address" element={<NFTPage />} />
-            <Route
-              path="collections/settings/:network/:collectionAddress"
-              element={<CollectionSettings />}
-            />
-            <Route path="dashboard" element={<DashboardHome />} />
-            <Route path="dashboard/guest" element={<DashboardGuest />} />
-            <Route path="dashboard/settings" element={<DashboardSettings />} />
-          </Routes>
-          <TxDialog
-            isOpen={txDialogState.isOpen}
-            isPending={txDialogState.isPending}
-            txHash={txDialogState.txHash}
-            isSuccessful={txDialogState.isSuccess}
-            isFailed={txDialogState.isFailed}
-            onClose={() => {
-              dispatch(hideTxDialog());
-            }}
-          />
-        </Layout>
-      </GTMProvider>
-    </Router>
+          </Layout>
+        </GTMProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 

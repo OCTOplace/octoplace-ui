@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,7 +9,6 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
-import { formatEther, parseEther } from "@ethersproject/units";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
@@ -79,9 +77,9 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   useEffect(() => {
     dispatch(
       getMarketNFTDetail({
-        contractAddress: marketItem.NFTContractAddress,
-        tokenId: marketItem.TokenId,
-        listingId: marketItem.Id,
+        contractAddress: marketItem.nftContract,
+        tokenId: marketItem.tokenId,
+        listingId: marketItem.id,
       })
     );
   }, []);
@@ -111,7 +109,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
       {marketItem && (
         <Link
           className="nft-card-link"
-          to={`/nft/${marketItem.Network}/${marketItem.NFTContractAddress}/${marketItem.TokenId}`}
+          to={`/nft/${marketItem.network}/${marketItem.nftContract}/${marketItem.tokenId}`}
         >
           <Box sx={styles.root}>
             {marketItem.nftDetails && (
@@ -125,7 +123,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   aspectRatio: "1/1",
                 }}
                 loading="lazy"
-                alt="nft-image"
+                alt="nft-artwork"
               />
             )}
             {marketItem.nftDetails && marketItem.nftDetails.metadata && (
@@ -134,7 +132,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   <Typography className="strokeme" sx={styles.title}>
                     {marketItem.nftDetails.metadata
                       ? marketItem.nftDetails.metadata.name
-                      : `${marketItem.nftDetails.metadata.name} #${marketItem.TokenId}`}
+                      : `${marketItem.nftDetails.metadata.name} #${marketItem.tokenId}`}
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
@@ -154,7 +152,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   />
                   <Box style={styles.meta}>
                     <img src={flameLogo} alt="flame" />
-                    <Typography>{marketItem.Price}</Typography>
+                    <Typography>{marketItem.price}</Typography>
                   </Box>
                 </Box>
               </Box>

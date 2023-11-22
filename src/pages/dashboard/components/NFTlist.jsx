@@ -1,7 +1,6 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import React, { Fragment, useState } from "react";
+import { Box, IconButton, Typography, Skeleton } from "@mui/material";
+import React, { useState } from "react";
 import { NFTListingCard } from "../../listings/components/ListingCard";
-import { Col, Container, Row } from "react-bootstrap";
 import { styled } from "@mui/system";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -29,7 +28,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function NFTlist({ activeListings, view }) {
+function NFTlist({ activeListings, view, isLoading }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -60,7 +59,7 @@ function NFTlist({ activeListings, view }) {
     if (!item.metadata) {
       return false;
     }
-    
+
     if (
       item.metadata &&
       item.metadata.name &&
@@ -180,6 +179,27 @@ function NFTlist({ activeListings, view }) {
                 />
               );
             })}
+          {isLoading && (
+            <SkeletonContainer>
+              {[...Array(12)].map((e, i) => (
+                <Box className="nft-card-link">
+                  <Skeleton
+                    className="mySkeleton"
+                    variant="rounded"
+                    key={i}
+                    animation="wave"
+                    style={{
+                      borderRadius: "0.75rem",
+                      marginBottom: "16px",
+                      width: "100%",
+                      height: "0",
+                      paddingTop: "145%",
+                    }}
+                  />
+                </Box>
+              ))}
+            </SkeletonContainer>
+          )}
         </CollectionCardContainer>
       </NFTContentContainer>
     </NFTListContainer>
@@ -219,6 +239,12 @@ const NFTContentContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down(992)]: {
     flexDirection: "column",
   },
+}));
+
+const SkeletonContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
 }));
 
 export default NFTlist;

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -50,6 +52,7 @@ const NFTPage = () => {
   useEffect(() => {
     dispatch(setCollectionDiscussions([]));
     fetchCollectionSetting();
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -320,13 +323,22 @@ const NFTPage = () => {
               </Button>
               <Button
                 onClick={() => setActiveMenu("content")}
+                style={{ color: "#FFFFFF" }}
                 sx={
                   activeMenu === "content"
                     ? styles.activeButton
                     : styles.regularButton
                 }
-                style={{ color: asset.video === "" ? "#6d6c6c" : "#FFFFFF" }}
-                disabled={asset.video === ""}
+
+                /*
+                style={{
+                  color:
+                    asset.video === "" && account !== collection.ownerAddr
+                      ? "#6d6c6c"
+                      : "#FFFFFF",
+                }}
+                */
+                //disabled={ asset.video === "" && account !== collection.ownerAddr } // this had the button content disabled if no content present
               >
                 Content
               </Button>
@@ -353,6 +365,7 @@ const NFTPage = () => {
             )}
             {activeMenu === "content" && (
               <Content
+                isOwner={account === collection.ownerAddr}
                 address={collection.contractAddress}
                 activeListings={{}} // {activeListings}
                 view={view}
