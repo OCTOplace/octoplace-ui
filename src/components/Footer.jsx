@@ -3,14 +3,17 @@ import { Box, Divider, IconButton, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import EmailIcon from "@mui/icons-material/Email";
 import { Fragment } from "react";
-import {  Col } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { Col } from "react-bootstrap";
 import { FaDiscord } from "react-icons/fa";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { ALink } from "../components/ALink";
 import Logo from "../assets/logo.png";
 
-export const Footer = () => {
+export const Footer = ({ onLoginMenuClick }) => {
   const navigate = useNavigate();
+  const acctDetails = useSelector((state) => state.account);
   const contactEmail = "contact@octoplace.io";
 
   const styles = {
@@ -70,6 +73,7 @@ export const Footer = () => {
       },
     },
   };
+
   return (
     <Fragment>
       <nav style={styles.nav}>
@@ -105,16 +109,16 @@ export const Footer = () => {
                 <FooterLinkTitle>KNOWLEDGE BASE</FooterLinkTitle>
                 <FooterLinkNavs>
                   <FooterLinkNav>Guide</FooterLinkNav>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>What are NFTs?</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>How to buy NFTs?</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>Sequrity questions</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>FAQ</FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
@@ -122,22 +126,55 @@ export const Footer = () => {
               <FooterLink>
                 <FooterLinkTitle>DISCOVER</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
-                    <FooterLinkNav>Log in</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        if (acctDetails && acctDetails.isLoggedIn) {
+                          navigate("/dashboard");
+                        } else {
+                          onLoginMenuClick();
+                        }
+
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Log in
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Trade</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        navigate("/market");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Trade
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Swap</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        navigate("/market/swap");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Swap
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Popular collections</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        navigate("/collections");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Popular collections
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>Popular NFTs</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>Discussion boards</FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
@@ -145,47 +182,47 @@ export const Footer = () => {
               <FooterLink>
                 <FooterLinkTitle>COMMUNITY</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
+                  <ALink link="https://discord.gg/73Ru5XUP2X">
                     <FooterLinkNav>Discord</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="https://discord.gg/73Ru5XUP2X">
+                  </ALink>
+                  <ALink link="https://twitter.com/octoplace">
                     <FooterLinkNav>X(Twitter)</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="https://twitter.com/octoplace">
+                  </ALink>
+                  <FooterLink>
                     <FooterLinkNav>Supported blockchains</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <ALink link="https://linktr.ee/octoplace">
                     <FooterLinkNav>Linktree</FooterLinkNav>
-                  </FooterLink>
+                  </ALink>
                 </FooterLinkNavs>
               </FooterLink>
               <FooterLink>
                 <FooterLinkTitle>CONTACTS</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
+                  <ALink link={`mailto:${contactEmail}`}>
                     <FooterLinkNav>Contact us</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="">
+                  </ALink>
+                  <ALink link={`mailto:${contactEmail}`}>
                     <FooterLinkNav>Get verified</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="">
+                  </ALink>
+                  <ALink link={`mailto:${contactEmail}`}>
                     <FooterLinkNav>Launchpad</FooterLinkNav>
-                  </FooterLink>
+                  </ALink>
                 </FooterLinkNavs>
               </FooterLink>
               <FooterLink>
                 <FooterLinkTitle>COMPANY</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>About us</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>Project partnerships</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>Blockchain partnerships</FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
+                  <FooterLink>
                     <FooterLinkNav>Brand Kit</FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
