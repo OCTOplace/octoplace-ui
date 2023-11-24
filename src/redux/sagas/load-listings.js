@@ -14,6 +14,9 @@ function* LoadAllListingsWorker(action) {
   try {
     yield put(setLoading(true));
     const listings = yield call(loadAllListings);
+    if(listings.length === 0){
+      yield put(setLoading(false));
+    }
     for (const item of listings) {
       yield put(createAction("LOAD_LISTING_NFT")(item));
     }
@@ -38,6 +41,7 @@ const loadAllListings = async () => {
       }
       //finalListings = [...finalListings, ...listings];
     }
+    console.log("final listings", finalListings);
     return finalListings;
   } catch (e) {
     console.log(e);
