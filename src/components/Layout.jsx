@@ -8,7 +8,6 @@ export const Layout = ({ children }) => {
   const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(true);
 
   const handleLoginClick = () => {
-    console.log("............ handleLoginClick");
     setIsWalletDialogOpen(!isWalletDialogOpen);
   };
 

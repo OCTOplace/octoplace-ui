@@ -2,7 +2,7 @@
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import EmailIcon from "@mui/icons-material/Email";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import { Col } from "react-bootstrap";
 import { FaDiscord } from "react-icons/fa";
@@ -10,9 +10,14 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ALink } from "../components/ALink";
 import Logo from "../assets/logo.png";
+import { ConnectWalletDlg } from "./connect-wallet-dlg";
+
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 export const Footer = ({ onLoginMenuClick }) => {
+  const sendDataToGTM = useGTMDispatch();
   const navigate = useNavigate();
+  const [walletDlgOpen, setWalletDlgOpen] = useState(false);
   const acctDetails = useSelector((state) => state.account);
   const contactEmail = "contact@octoplace.io";
 
@@ -74,6 +79,20 @@ export const Footer = ({ onLoginMenuClick }) => {
     },
   };
 
+  const handleWalletOpen = () => {
+    setWalletDlgOpen(true);
+    sendDataToGTM({
+      event: "View Connect Wallet Popup",
+    });
+  };
+
+  const handleWalletClose = () => {
+    setWalletDlgOpen(false);
+    sendDataToGTM({
+      event: "Closed Wallet Popup",
+    });
+  };
+
   return (
     <Fragment>
       <nav style={styles.nav}>
@@ -108,18 +127,28 @@ export const Footer = ({ onLoginMenuClick }) => {
               <FooterLink>
                 <FooterLinkTitle>KNOWLEDGE BASE</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLinkNav>Guide</FooterLinkNav>
+                  <FooterLinkNav style={{ color: "#757575" }}>
+                    Guide
+                  </FooterLinkNav>
                   <FooterLink>
-                    <FooterLinkNav>What are NFTs?</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      What are NFTs?
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>How to buy NFTs?</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      How to buy NFTs?
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>Sequrity questions</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Sequrity questions
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>FAQ</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      FAQ
+                    </FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
               </FooterLink>
@@ -132,7 +161,7 @@ export const Footer = ({ onLoginMenuClick }) => {
                         if (acctDetails && acctDetails.isLoggedIn) {
                           navigate("/dashboard");
                         } else {
-                          onLoginMenuClick();
+                          handleWalletOpen();
                         }
 
                         window.scrollTo(0, 0);
@@ -172,10 +201,14 @@ export const Footer = ({ onLoginMenuClick }) => {
                     </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>Popular NFTs</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Popular NFTs
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>Discussion boards</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Discussion boards
+                    </FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
               </FooterLink>
@@ -189,7 +222,9 @@ export const Footer = ({ onLoginMenuClick }) => {
                     <FooterLinkNav>X(Twitter)</FooterLinkNav>
                   </ALink>
                   <FooterLink>
-                    <FooterLinkNav>Supported blockchains</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Supported blockchains
+                    </FooterLinkNav>
                   </FooterLink>
                   <ALink link="https://linktr.ee/octoplace">
                     <FooterLinkNav>Linktree</FooterLinkNav>
@@ -214,16 +249,24 @@ export const Footer = ({ onLoginMenuClick }) => {
                 <FooterLinkTitle>COMPANY</FooterLinkTitle>
                 <FooterLinkNavs>
                   <FooterLink>
-                    <FooterLinkNav>About us</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      About us
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>Project partnerships</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Project partnerships
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>Blockchain partnerships</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Blockchain partnerships
+                    </FooterLinkNav>
                   </FooterLink>
                   <FooterLink>
-                    <FooterLinkNav>Brand Kit</FooterLinkNav>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Brand Kit
+                    </FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
               </FooterLink>
@@ -272,6 +315,7 @@ export const Footer = ({ onLoginMenuClick }) => {
           </Col>
         </ContainerWrapper>
       </nav>
+      <ConnectWalletDlg open={walletDlgOpen} onClose={handleWalletClose} />
     </Fragment>
   );
 };

@@ -147,13 +147,13 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
     });
   };
 
-  useEffect(() => {
-    if (walletDlgOpen) {
-      handleWalletClose();
-    } else {
-      handleWalletOpen();
-    }
-  }, [isWalletDialogOpen]);
+  // useEffect(() => {
+  //   if (walletDlgOpen) {
+  //     handleWalletClose();
+  //   } else {
+  //     handleWalletOpen();
+  //   }
+  // }, [isWalletDialogOpen]);
 
   return (
     <NavBarContainer>
@@ -329,10 +329,7 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
           &nbsp;KAVA
         </MenuItem>
       </Menu>
-      <ConnectWalletDlg
-        open={!acctDetails && !acctDetails.isLoggedIn && walletDlgOpen}
-        onClose={handleWalletClose}
-      />
+      <ConnectWalletDlg open={walletDlgOpen} onClose={handleWalletClose} />
       <GoProDlg open={goProDlgOpen} onClose={handleGoProClose} />
       <Menu
         id="basic-menu"
