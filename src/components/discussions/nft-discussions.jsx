@@ -41,7 +41,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const [message, setMessage] = useState("");
   const [commentFee, setCommentFee] = useState(0);
   const [feeBalance, setFeeBalance] = useState("");
-  const [feeSymbol, setFeeSymbol] = useState("");
   const { account, chainId } = useWeb3React();
   const discussions = useSelector(
     (state) => state.discussion.selectedNFTDiscussions
@@ -151,9 +150,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     setFeeBalance(Number(formatUnits(bal,0)));
     setCommentFee(Number(formatUnits(fee,0)));
   }
-  const format = (x) => {
-    return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
-  };
 
   useEffect(() => {
     return () => {
