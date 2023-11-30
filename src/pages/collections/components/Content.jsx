@@ -31,6 +31,11 @@ import axios from "axios";
 import { styled } from "@mui/system";
 import { toast } from "react-toastify";
 
+import { setToken } from "../../../redux/slices/accout-slice";
+
+import { generateToken, verifyToken } from "../../../utils/auth-utils";
+import { useDispatch, useSelector } from "react-redux";
+import { useWeb3React } from "@web3-react/core";
 
 const styles = {
   videoContainer: {
@@ -42,7 +47,7 @@ const styles = {
   videoBox: {
     width: "100%",
     height: "100%",
-    borderRadius: "1rem",
+    borderRadius: "0.594rem",
     position: "relative",
     overflow: "hidden",
   },
@@ -211,6 +216,10 @@ function Content({
   //const [isSuccessful, setIsSuccessful] = useState(false);
   //const [isFailed, setIsFailed] = useState(false);
 
+  const dispatch = useDispatch();
+  const { library, account } = useWeb3React();
+  const token = useSelector((state) => state.account.token);
+
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
@@ -291,8 +300,8 @@ function Content({
       /// changes by Armando
 
       const headers2 = {
-        'x-tva-sa-id': 'srvacc_fp72dqw4ix8r6ad6vr9evm68d',
-        'x-tva-sa-secret': 'xn0xqh78s04e0n67vkbwwztq2zvp7scg',
+        "x-tva-sa-id": "srvacc_s4jpy4ynj9tmiu5b84xe2n2xk",
+        "x-tva-sa-secret": "xmrpq48cpd32p87pm1qv9bx6scjedd58",
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({
@@ -328,8 +337,8 @@ function Content({
         const response3 = await axios.get(url3, { headers: headers2 });
         const playerUri = response3.data.body.videos[0].player_uri;
         if (playerUri === null || playerUri === undefined || playerUri === "") {
-          console.log("Player URI is wrong. Retrying in 5 seconds...");
-          await new Promise((resolve) => setTimeout(resolve, 5000));
+          console.log("Player URI is wrong. Retrying in 10 seconds...");
+          await new Promise((resolve) => setTimeout(resolve, 10000));
           return checkPlayerUri();
         } else {
           //console.log("Player URI:", playerUri);
@@ -348,14 +357,26 @@ function Content({
           //console.log("Asset: ", asset);
           //console.log("Collection: ", collection);
 
-          const result = await axios.post("https://api.octoplace.io/collections/update", {
+          let newToken = "";
+          if (!token || !(await verifyToken(token))) {
+            newToken = await generateToken(library);
+            dispatch(setToken(newToken));
+          }
+
+          const result = await axios.post("https://api.octoplace.io/collections/update", { 
             collection,
             asset,
-          });
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${newToken}`
+            },
+          }
+          );
           setIsOpen(false);
           toast.success("Video Uploaded sucessfully!");
           setOpenAddVideo(false);
-          //console.log(result);
+          console.log(result);
         }
       }
 
@@ -393,8 +414,8 @@ function Content({
 
   const getPreSignedUrl = async () => {
     const headers = {
-      "x-tva-sa-id": "srvacc_fp72dqw4ix8r6ad6vr9evm68d",
-      "x-tva-sa-secret": "xn0xqh78s04e0n67vkbwwztq2zvp7scg",
+      "x-tva-sa-id": "srvacc_s4jpy4ynj9tmiu5b84xe2n2xk",
+      "x-tva-sa-secret": "xmrpq48cpd32p87pm1qv9bx6scjedd58",
     };
     try {
       const response = await axios.post(
