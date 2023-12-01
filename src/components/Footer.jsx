@@ -101,18 +101,21 @@ export const Footer = ({ onLoginMenuClick }) => {
           <FooterLinkContainer>
             <FooterExplain>
               <Box style={{ width: "100%", textAlign: "center" }}>
+                <Typography variant="h2" style={{ 
+                  color: "#f4f4f4",
+                  fontFamily: 'Montserrat',
+                  fontWeight: '550'
+                  }}>
+                  OCTO
+                </Typography>
                 <FooterLogo
                   src={OCTO}
                   alt="kingpad-footer-logo"
-                  width="10px"
-                  height="10px"
                   onClick={() => {
                     navigate("/");
                     window.scrollTo(0, 0);
                   }}
                 />
-              </Box>
-              <Box style={{ width: "100%", textAlign: "center" }}>
                 <FooterLogo
                   src={Logo}
                   alt="kingpad-footer-logo"
@@ -284,7 +287,7 @@ export const Footer = ({ onLoginMenuClick }) => {
           </FooterLinkContainer>
           <CDivider />
           <Col lg={11} sm={12} md={11}>
-          <Box display="flex" justifyContent="space-around">
+            <Box display="flex">
               <Box sx={styles.row}>
                 <Typography>&#169; Copyright 2023</Typography>
               </Box>
@@ -370,7 +373,8 @@ const ExplainContent = styled.div`
   font-weight: 600;
   line-height: 20px;
   width: 400px;
-  white-space: pre-wrap;
+  word-wrap: break-word;
+  white-space: pre-line;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
@@ -388,7 +392,8 @@ const ExplainContent1 = styled.div`
   line-height: 20px;
   word-break: break-all;
   width: 400px;
-  white-space: pre-wrap;
+  word-wrap: break-word;
+  white-space: pre-line;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
