@@ -770,7 +770,7 @@ function Content({
             <Box sx={styles.videoBox}>
               <Iframe
                 sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-presentation"
-                src="https://assets.mixkit.co/videos/preview/mixkit-little-cats-lying-on-an-armchair-32471-large.mp4"
+                src="https://player.thetavideoapi.com/video/video_c76vccdewd1w2qmwtvewmsan22"
                 allowFullScreen
                 width="100%"
               />
