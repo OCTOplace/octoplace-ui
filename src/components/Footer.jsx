@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { Box, Divider, IconButton, Typography } from "@mui/material";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import EmailIcon from "@mui/icons-material/Email";
 import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import { Col } from "react-bootstrap";
 import { FaDiscord } from "react-icons/fa";
+import { FaSquareXTwitter } from "react-icons/fa6";
+import EmailIcon from "@mui/icons-material/Email";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ALink } from "../components/ALink";
@@ -35,17 +35,14 @@ export const Footer = ({ onLoginMenuClick }) => {
       display: "flex",
       justifyContent: "flex-start",
       alignItems: "center",
-      gap: 1,
       color: "white",
-      width: "100%",
+      width: "20%",
       fontSize: "1rem",
-      textWrap: "nowrap",
     },
     legal: {
       display: "flex",
-      justifyContent: "flex-end",
       alignItems: "center",
-      gap: 3,
+      justifyContent: "space-around",
       color: "#6C6C6C",
       mt: ".75rem",
       mb: ".75rem",
@@ -55,20 +52,21 @@ export const Footer = ({ onLoginMenuClick }) => {
     },
     legalTextContainer: (theme) => ({
       display: "flex",
+      justifyContent: "space-between",
       alignItems: "center",
-      gap: "24px",
+      //gap: "24px",
       [theme.breakpoints.down(840)]: {
         display: "none",
       },
     }),
     legalText: {
-      textWrap: "nowrap",
       "&:hover": {
         color: "#F4F4F4",
       },
     },
     iconContainer: {
       display: "flex",
+      justifyContent: "flex-end",
       alignItems: "center",
       gap: "4px",
     },
@@ -101,13 +99,16 @@ export const Footer = ({ onLoginMenuClick }) => {
           <FooterLinkContainer>
             <FooterExplain>
               <Box style={{ width: "100%", textAlign: "center" }}>
-                <Typography variant="h2" style={{ 
-                  color: "#f4f4f4",
-                  fontFamily: 'Montserrat',
-                  fontWeight: '550'
-                  }}>
-                  OCTO
-                </Typography>
+                <OctoLogo
+                  src={OCTO}
+                  alt="kingpad-footer-logo"
+                  onClick={() => {
+                    navigate("/");
+                    window.scrollTo(0, 0);
+                  }}
+                />
+              </Box>
+              <Box style={{ width: "100%", textAlign: "center" }}>
                 <FooterLogo
                   src={Logo}
                   alt="kingpad-footer-logo"
@@ -117,7 +118,6 @@ export const Footer = ({ onLoginMenuClick }) => {
                   }}
                 />
               </Box>
-
               <ExplainContent>
                 More features, More chains, Less fees, One place.
               </ExplainContent>
@@ -284,38 +284,35 @@ export const Footer = ({ onLoginMenuClick }) => {
                 <Typography>&#169; Copyright 2023</Typography>
               </Box>
               <Box sx={styles.legal}>
-                <Box sx={styles.legalTextContainer}>
-                  <Typography sx={styles.legalText}>
-                    Terms & Conditions
-                  </Typography>
-                  <Typography sx={styles.legalText}>Privacy Policy</Typography>
-                  <Typography sx={styles.legalText}>Risks Disclamer</Typography>
-                  <Typography sx={styles.legalText}>Queries</Typography>
-                </Box>
-                <Box sx={styles.iconContainer}>
-                  <IconButton
-                    href="https://twitter.com/octoplace"
-                    target="_blank"
-                    sx={styles.icon}
-                  >
-                    <TwitterIcon />
-                  </IconButton>
-                  <IconButton
-                    target="_blank"
-                    href="https://discord.gg/73Ru5XUP2X"
-                    sx={styles.icon}
-                  >
-                    <FaDiscord />
-                  </IconButton>
-                  <IconButton
-                    href={`mailto:${contactEmail}`}
-                    target="_blank"
-                    sx={styles.icon}
-                  >
-                    <EmailIcon />
-                  </IconButton>
-                </Box>
+                <Typography sx={styles.legalText}>Terms & Conditions</Typography>
+                <Typography sx={styles.legalText}>Privacy Policy</Typography>
+                <Typography sx={styles.legalText}>Risks Disclamer</Typography>
+                <Typography sx={styles.legalText}>Queries</Typography>
               </Box>
+              <Box sx={styles.iconContainer}>
+                <IconButton
+                  href="https://twitter.com/octoplace"
+                  target="_blank"
+                  sx={styles.icon}
+                >
+                  <FaSquareXTwitter />
+                </IconButton>
+                <IconButton
+                  target="_blank"
+                  href="https://discord.gg/73Ru5XUP2X"
+                  sx={styles.icon}
+                >
+                  <FaDiscord />
+                </IconButton>
+                <IconButton
+                  href={`mailto:${contactEmail}`}
+                  target="_blank"
+                  sx={styles.icon}
+                >
+                  <EmailIcon />
+                </IconButton>
+              </Box>
+
             </Box>
           </Col>
         </ContainerWrapper>
@@ -353,6 +350,14 @@ const FooterExplain = styled.div`
     align-items: center;
   }
 `;
+
+const OctoLogo = styled.img`
+  text-align: center;
+  width: auto;
+  height: 70px;
+  cursor: pointer;
+`;
+
 const FooterLogo = styled.img`
   text-align: center;
   width: auto;
@@ -365,8 +370,7 @@ const ExplainContent = styled.div`
   font-weight: 600;
   line-height: 20px;
   width: 400px;
-  word-wrap: break-word;
-  white-space: pre-line;
+  textAlign: justify;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
@@ -382,10 +386,8 @@ const ExplainContent = styled.div`
 const ExplainContent1 = styled.div`
   font-size: 16px;
   line-height: 20px;
-  word-break: break-all;
   width: 400px;
-  word-wrap: break-word;
-  white-space: pre-line;
+  text-align: justify;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
