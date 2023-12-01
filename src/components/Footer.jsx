@@ -54,7 +54,6 @@ export const Footer = ({ onLoginMenuClick }) => {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      //gap: "24px",
       [theme.breakpoints.down(840)]: {
         display: "none",
       },
@@ -333,7 +332,6 @@ const CDivider = styled(Divider)`
 
 const ContainerWrapper = styled.div`
   width: 100%;
-  // max-width: 1440px;
   padding: 0 50px;
   display: flex;
   flex-direction: column;
