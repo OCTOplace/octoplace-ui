@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import logoAnim from "../../../assets/logo_anim_4.svg";
 
-import React, { useEffect,  useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
@@ -359,16 +359,18 @@ function Content({
             newToken = await generateToken(library);
             dispatch(setToken(newToken));
           }
+
           const apiUrl = process.env.REACT_APP_API_URL;
-          const result = await axios.post(`${apiUrl}/collections/updateVideo`, { 
-            collection,
-            asset,
-          },
-          {
-            headers: {
-              authorization: `Bearer ${newToken}`
+          const result = await axios.post(`${apiUrl}/collections/updateVideo`, 
+            {
+              collection,
+              asset,
             },
-          }
+            {
+              headers: {
+                authorization: newToken,
+              },
+            }
           );
           setIsOpen(false);
           toast.success("Video Uploaded sucessfully!");
