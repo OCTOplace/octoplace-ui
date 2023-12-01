@@ -53,10 +53,10 @@ const WalletButton = styled(Button)({
   // },
 });
 
-export const AppNavbar = () => {
+export const AppNavbar = ({ isWalletDialogOpen }) => {
   const sendDataToGTM = useGTMDispatch();
   const dispatch = useDispatch();
-  const [dlgOpen, setDlgOpen] = useState(false);
+  const [walletDlgOpen, setWalletDlgOpen] = useState(false);
   const { deactivate, chainId } = useWeb3React();
   const navigate = useNavigate();
   const acctDetails = useSelector((state) => state.account);
@@ -134,18 +134,26 @@ export const AppNavbar = () => {
   };
 
   const handleWalletOpen = () => {
-    setDlgOpen(true);
+    setWalletDlgOpen(true);
     sendDataToGTM({
       event: "View Connect Wallet Popup",
     });
   };
 
   const handleWalletClose = () => {
-    setDlgOpen(false);
+    setWalletDlgOpen(false);
     sendDataToGTM({
       event: "Closed Wallet Popup",
     });
   };
+
+  // useEffect(() => {
+  //   if (walletDlgOpen) {
+  //     handleWalletClose();
+  //   } else {
+  //     handleWalletOpen();
+  //   }
+  // }, [isWalletDialogOpen]);
 
   return (
     <NavBarContainer>
@@ -321,7 +329,7 @@ export const AppNavbar = () => {
           &nbsp;KAVA
         </MenuItem>
       </Menu>
-      <ConnectWalletDlg open={dlgOpen} onClose={handleWalletClose} />
+      <ConnectWalletDlg open={walletDlgOpen} onClose={handleWalletClose} />
       <GoProDlg open={goProDlgOpen} onClose={handleGoProClose} />
       <Menu
         id="basic-menu"
@@ -453,7 +461,7 @@ const MobileNavBarItemContainer = styled(Box)(({ theme }) => ({
 //           {acctDetails && !acctDetails.isLoggedIn && (
 //             <WalletButton
 //               className="connect-btn"
-//               onClick={() => setDlgOpen(true)}
+//               onClick={() => setWalletDlgOpen(true)}
 //               variant="contained"
 //             >
 //               Connect Wallet

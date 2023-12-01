@@ -1,21 +1,30 @@
 /* eslint-disable no-unused-vars */
 import { Box, Divider, IconButton, Typography } from "@mui/material";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import EmailIcon from "@mui/icons-material/Email";
-import { Fragment } from "react";
-import {  Col } from "react-bootstrap";
+import { Fragment, useState } from "react";
+import { useSelector } from "react-redux";
+import { Col } from "react-bootstrap";
 import { FaDiscord } from "react-icons/fa";
+import { FaSquareXTwitter } from "react-icons/fa6";
+import EmailIcon from "@mui/icons-material/Email";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/logo.png";
+import { ALink } from "../components/ALink";
+import Logo from "../assets/logo_f.svg";
+import OCTO from "../assets/text.svg";
+import { ConnectWalletDlg } from "./connect-wallet-dlg";
 
-export const Footer = () => {
+import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+
+export const Footer = ({ onLoginMenuClick }) => {
+  const sendDataToGTM = useGTMDispatch();
   const navigate = useNavigate();
+  const [walletDlgOpen, setWalletDlgOpen] = useState(false);
+  const acctDetails = useSelector((state) => state.account);
   const contactEmail = "contact@octoplace.io";
 
   const styles = {
     nav: {
-      backgroundColor: "black",
+      backgroundColor: "#151515",
       position: "relative",
       bottom: 0,
       width: "100%",
@@ -26,17 +35,14 @@ export const Footer = () => {
       display: "flex",
       justifyContent: "flex-start",
       alignItems: "center",
-      gap: 1,
       color: "white",
-      width: "100%",
+      width: "20%",
       fontSize: "1rem",
-      textWrap: "nowrap",
     },
     legal: {
       display: "flex",
-      justifyContent: "flex-end",
       alignItems: "center",
-      gap: 3,
+      justifyContent: "space-around",
       color: "#6C6C6C",
       mt: ".75rem",
       mb: ".75rem",
@@ -46,20 +52,20 @@ export const Footer = () => {
     },
     legalTextContainer: (theme) => ({
       display: "flex",
+      justifyContent: "space-between",
       alignItems: "center",
-      gap: "24px",
       [theme.breakpoints.down(840)]: {
         display: "none",
       },
     }),
     legalText: {
-      textWrap: "nowrap",
       "&:hover": {
         color: "#F4F4F4",
       },
     },
     iconContainer: {
       display: "flex",
+      justifyContent: "flex-end",
       alignItems: "center",
       gap: "4px",
     },
@@ -70,6 +76,21 @@ export const Footer = () => {
       },
     },
   };
+
+  const handleWalletOpen = () => {
+    setWalletDlgOpen(true);
+    sendDataToGTM({
+      event: "View Connect Wallet Popup",
+    });
+  };
+
+  const handleWalletClose = () => {
+    setWalletDlgOpen(false);
+    sendDataToGTM({
+      event: "Closed Wallet Popup",
+    });
+  };
+
   return (
     <Fragment>
       <nav style={styles.nav}>
@@ -77,9 +98,16 @@ export const Footer = () => {
           <FooterLinkContainer>
             <FooterExplain>
               <Box style={{ width: "100%", textAlign: "center" }}>
-                <Typography variant="h2" style={{ color: "#f4f4f4" }}>
-                  OCTO
-                </Typography>
+                <OctoLogo
+                  src={OCTO}
+                  alt="kingpad-footer-logo"
+                  onClick={() => {
+                    navigate("/");
+                    window.scrollTo(0, 0);
+                  }}
+                />
+              </Box>
+              <Box style={{ width: "100%", textAlign: "center" }}>
                 <FooterLogo
                   src={Logo}
                   alt="kingpad-footer-logo"
@@ -89,7 +117,6 @@ export const Footer = () => {
                   }}
                 />
               </Box>
-
               <ExplainContent>
                 More features, More chains, Less fees, One place.
               </ExplainContent>
@@ -104,89 +131,146 @@ export const Footer = () => {
               <FooterLink>
                 <FooterLinkTitle>KNOWLEDGE BASE</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLinkNav>Guide</FooterLinkNav>
-                  <FooterLink link="">
-                    <FooterLinkNav>What are NFTs?</FooterLinkNav>
+                  <FooterLinkNav style={{ color: "#757575" }}>
+                    Guide
+                  </FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      What are NFTs?
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>How to buy NFTs?</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      How to buy NFTs?
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Sequrity questions</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Sequrity questions
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>FAQ</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      FAQ
+                    </FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
               </FooterLink>
               <FooterLink>
                 <FooterLinkTitle>DISCOVER</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
-                    <FooterLinkNav>Log in</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        if (acctDetails && acctDetails.isLoggedIn) {
+                          navigate("/dashboard");
+                        } else {
+                          handleWalletOpen();
+                        }
+
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Log in
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Trade</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        navigate("/market");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Trade
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Swap</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        navigate("/market/swap");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Swap
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Popular collections</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav
+                      onClick={() => {
+                        navigate("/collections");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Popular collections
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Popular NFTs</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Popular NFTs
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Discussion boards</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Discussion boards
+                    </FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
               </FooterLink>
               <FooterLink>
                 <FooterLinkTitle>COMMUNITY</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
+                  <ALink link="https://discord.gg/73Ru5XUP2X">
                     <FooterLinkNav>Discord</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="https://discord.gg/73Ru5XUP2X">
+                  </ALink>
+                  <ALink link="https://twitter.com/octoplace">
                     <FooterLinkNav>X(Twitter)</FooterLinkNav>
+                  </ALink>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Supported blockchains
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="https://twitter.com/octoplace">
-                    <FooterLinkNav>Supported blockchains</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="">
+                  <ALink link="https://linktr.ee/octoplace">
                     <FooterLinkNav>Linktree</FooterLinkNav>
-                  </FooterLink>
+                  </ALink>
                 </FooterLinkNavs>
               </FooterLink>
               <FooterLink>
                 <FooterLinkTitle>CONTACTS</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
+                  <ALink link={`mailto:${contactEmail}`}>
                     <FooterLinkNav>Contact us</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="">
+                  </ALink>
+                  <ALink link={`mailto:${contactEmail}`}>
                     <FooterLinkNav>Get verified</FooterLinkNav>
-                  </FooterLink>
-                  <FooterLink link="">
+                  </ALink>
+                  <ALink link={`mailto:${contactEmail}`}>
                     <FooterLinkNav>Launchpad</FooterLinkNav>
-                  </FooterLink>
+                  </ALink>
                 </FooterLinkNavs>
               </FooterLink>
               <FooterLink>
                 <FooterLinkTitle>COMPANY</FooterLinkTitle>
                 <FooterLinkNavs>
-                  <FooterLink link="">
-                    <FooterLinkNav>About us</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      About us
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Project partnerships</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Project partnerships
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Blockchain partnerships</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Blockchain partnerships
+                    </FooterLinkNav>
                   </FooterLink>
-                  <FooterLink link="">
-                    <FooterLinkNav>Brand Kit</FooterLinkNav>
+                  <FooterLink>
+                    <FooterLinkNav style={{ color: "#757575" }}>
+                      Brand Kit
+                    </FooterLinkNav>
                   </FooterLink>
                 </FooterLinkNavs>
               </FooterLink>
@@ -199,42 +283,40 @@ export const Footer = () => {
                 <Typography>&#169; Copyright 2023</Typography>
               </Box>
               <Box sx={styles.legal}>
-                <Box sx={styles.legalTextContainer}>
-                  <Typography sx={styles.legalText}>
-                    Terms & Conditions
-                  </Typography>
-                  <Typography sx={styles.legalText}>Privacy Policy</Typography>
-                  <Typography sx={styles.legalText}>Risks Disclamer</Typography>
-                  <Typography sx={styles.legalText}>Queries</Typography>
-                </Box>
-                <Box sx={styles.iconContainer}>
-                  <IconButton
-                    href="https://twitter.com/octoplace"
-                    target="_blank"
-                    sx={styles.icon}
-                  >
-                    <TwitterIcon />
-                  </IconButton>
-                  <IconButton
-                    target="_blank"
-                    href="https://discord.gg/73Ru5XUP2X"
-                    sx={styles.icon}
-                  >
-                    <FaDiscord />
-                  </IconButton>
-                  <IconButton
-                    href={`mailto:${contactEmail}`}
-                    target="_blank"
-                    sx={styles.icon}
-                  >
-                    <EmailIcon />
-                  </IconButton>
-                </Box>
+                <Typography sx={styles.legalText}>Terms & Conditions</Typography>
+                <Typography sx={styles.legalText}>Privacy Policy</Typography>
+                <Typography sx={styles.legalText}>Risks Disclamer</Typography>
+                <Typography sx={styles.legalText}>Queries</Typography>
               </Box>
+              <Box sx={styles.iconContainer}>
+                <IconButton
+                  href="https://twitter.com/octoplace"
+                  target="_blank"
+                  sx={styles.icon}
+                >
+                  <FaSquareXTwitter />
+                </IconButton>
+                <IconButton
+                  target="_blank"
+                  href="https://discord.gg/73Ru5XUP2X"
+                  sx={styles.icon}
+                >
+                  <FaDiscord />
+                </IconButton>
+                <IconButton
+                  href={`mailto:${contactEmail}`}
+                  target="_blank"
+                  sx={styles.icon}
+                >
+                  <EmailIcon />
+                </IconButton>
+              </Box>
+
             </Box>
           </Col>
         </ContainerWrapper>
       </nav>
+      <ConnectWalletDlg open={walletDlgOpen} onClose={handleWalletClose} />
     </Fragment>
   );
 };
@@ -250,7 +332,6 @@ const CDivider = styled(Divider)`
 
 const ContainerWrapper = styled.div`
   width: 100%;
-  // max-width: 1440px;
   padding: 0 50px;
   display: flex;
   flex-direction: column;
@@ -267,6 +348,14 @@ const FooterExplain = styled.div`
     align-items: center;
   }
 `;
+
+const OctoLogo = styled.img`
+  text-align: center;
+  width: auto;
+  height: 70px;
+  cursor: pointer;
+`;
+
 const FooterLogo = styled.img`
   text-align: center;
   width: auto;
@@ -279,6 +368,7 @@ const ExplainContent = styled.div`
   font-weight: 600;
   line-height: 20px;
   width: 400px;
+  textAlign: justify;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
@@ -293,10 +383,9 @@ const ExplainContent = styled.div`
 
 const ExplainContent1 = styled.div`
   font-size: 16px;
-  // font-weight: 600;
   line-height: 20px;
-  word-break: break-all;
   width: 400px;
+  text-align: justify;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
