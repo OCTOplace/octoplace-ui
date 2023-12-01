@@ -27,8 +27,7 @@ const updateUserSetting = async (token, userObj) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   try {
     const result = await axios.post(
-      `http://localhost:4000/users/update`,
-      //`${apiUrl}/users/update`,
+      `${apiUrl}/users/update`,
       {
         user: userObj,
       },
