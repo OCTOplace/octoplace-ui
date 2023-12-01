@@ -359,9 +359,6 @@ function Content({
             newToken = await generateToken(library);
             dispatch(setToken(newToken));
           }
-          console.log('newToken',newToken)
-          console.log('collection',collection)
-          console.log('asset',asset)
           const apiUrl = process.env.REACT_APP_API_URL;
           const result = await axios.post(`${apiUrl}/collections/update`, { 
             collection,
