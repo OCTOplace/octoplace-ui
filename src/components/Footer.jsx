@@ -9,7 +9,8 @@ import { FaDiscord } from "react-icons/fa";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ALink } from "../components/ALink";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/logo_f.svg";
+import OCTO from "../assets/text.svg";
 import { ConnectWalletDlg } from "./connect-wallet-dlg";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
@@ -23,7 +24,7 @@ export const Footer = ({ onLoginMenuClick }) => {
 
   const styles = {
     nav: {
-      backgroundColor: "black",
+      backgroundColor: "#151515",
       position: "relative",
       bottom: 0,
       width: "100%",
@@ -100,9 +101,21 @@ export const Footer = ({ onLoginMenuClick }) => {
           <FooterLinkContainer>
             <FooterExplain>
               <Box style={{ width: "100%", textAlign: "center" }}>
-                <Typography variant="h2" style={{ color: "#f4f4f4" }}>
+                <Typography variant="h2" style={{ 
+                  color: "#f4f4f4",
+                  fontFamily: 'Montserrat',
+                  fontWeight: '550'
+                  }}>
                   OCTO
                 </Typography>
+                <FooterLogo
+                  src={OCTO}
+                  alt="kingpad-footer-logo"
+                  onClick={() => {
+                    navigate("/");
+                    window.scrollTo(0, 0);
+                  }}
+                />
                 <FooterLogo
                   src={Logo}
                   alt="kingpad-footer-logo"
@@ -360,6 +373,8 @@ const ExplainContent = styled.div`
   font-weight: 600;
   line-height: 20px;
   width: 400px;
+  word-wrap: break-word;
+  white-space: pre-line;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
@@ -374,10 +389,11 @@ const ExplainContent = styled.div`
 
 const ExplainContent1 = styled.div`
   font-size: 16px;
-  // font-weight: 600;
   line-height: 20px;
   word-break: break-all;
   width: 400px;
+  word-wrap: break-word;
+  white-space: pre-line;
   color: #f4f4f4;
   @media screen and (max-width: 1120px) {
     width: auto;
