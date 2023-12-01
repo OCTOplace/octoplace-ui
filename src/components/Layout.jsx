@@ -1,15 +1,21 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Footer } from "./Footer";
 import { AppNavbar } from "./Navbar";
 import { styled } from "@mui/system";
 import { Box } from "@mui/material";
 
 export const Layout = ({ children }) => {
+  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(true);
+
+  const handleLoginClick = () => {
+    setIsWalletDialogOpen(!isWalletDialogOpen);
+  };
+
   return (
     <Fragment>
-      <AppNavbar />
+      <AppNavbar isWalletDialogOpen={isWalletDialogOpen} />
       <MainContainer>{children}</MainContainer>
-      <Footer />
+      <Footer onLoginMenuClick={handleLoginClick} />
     </Fragment>
   );
 };

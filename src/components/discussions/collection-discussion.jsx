@@ -7,12 +7,7 @@ import {
   Typography,
   Box,
   IconButton,
-  Button,
   TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { ContentCopy, ExpandMore, QuestionAnswer } from "@mui/icons-material";
@@ -21,7 +16,7 @@ import { getNetworkInfo } from "../../connectors/networks";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { useWeb3React } from "@web3-react/core";
-import { formatEther, parseUnits } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -53,35 +48,19 @@ export const CollectionDiscussions = ({
     setExpanded(isExpanded);
   };
 
-  const [openSendDlg, setOpenSendDlg] = useState(false);
   const [message, setMessage] = useState("");
-  const [feeToken, setFeeToken] = useState("");
   const [commentFee, setCommentFee] = useState(0);
   const [feeBalance, setFeeBalance] = useState("");
-  const [feeSymbol, setFeeSymbol] = useState("");
   const { account, chainId } = useWeb3React();
-  const [feeAllowance, setFeeAllowance] = useState(0);
-  const [loadingAllowance, setLoadingAllowance] = useState(false);
-  // const [allowanceRefreshTrigger, setAllowanceRefreshTrigger] = useState(0);
   const discussions = useSelector(
     (state) => state.discussion.selectedCollectionDiscussions
   );
-
-  // const ownerMessages = discussions.filter(
-  //   (message) => message.senderAddress === account
-  // );
 
   const dispatch = useDispatch();
   const format = (x) => {
     return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
-
-  // useEffect(() => {
-  //   return () => {
-  //     dispatch(setCollectionDiscussions([]));
-  //   };
-  // }, []);
-  const getFeeToken = async () => {
+  const getCommentFee = async () => {
     const netInfo = getNetworkInfo("theta");
     const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
     const contract = new Contract(
@@ -89,23 +68,12 @@ export const CollectionDiscussions = ({
       netInfo.dataNetwork.COLLECTION_DISCUSSION_ABI,
       provider
     );
-
-    const feeTokenAddress = await contract.erc20Token();
-    setFeeToken(feeTokenAddress);
-
     const fee = await contract.commentFee();
     setCommentFee(Number(formatEther(fee)));
 
-    const tokenContract = new Contract(
-      feeTokenAddress,
-      netInfo.dataNetwork.FEE_ABI,
-      provider
-    );
-    const symb = await tokenContract.symbol();
-    setFeeSymbol(symb);
-    const bal = await tokenContract.balanceOf(account);
+    
+    const bal = await provider.getBalance(account);
     setFeeBalance(format(Number(formatEther(bal))));
-    getAllowance();
   };
 
   const getDiscussions = async () => {
@@ -118,36 +86,10 @@ export const CollectionDiscussions = ({
     }
   }, [address]);
 
-  const getAllowance = async () => {
-    const netInfo = getNetworkInfo("theta");
-    const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
-    const tokenContract = new Contract(
-      feeToken,
-      netInfo.dataNetwork.FEE_ABI,
-      provider
-    );
-    const allowedAmt = await tokenContract.allowance(
-      account,
-      netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT
-    );
-    setFeeAllowance(Number(formatEther(allowedAmt)));
-  };
-
   useEffect(() => {
-    if (account && feeToken) {
-      getAllowance();
-    }
-  }, [account, feeToken]);
-
-  useEffect(() => {
-    const fetchAllowance = async () => {
-      setLoadingAllowance(true);
-      await getFeeToken();
-      setLoadingAllowance(false);
-    };
-
+   
     if (account) {
-      fetchAllowance();
+      getCommentFee();
     }
 
     // if isAccordion is false expand the accordion default
@@ -155,65 +97,6 @@ export const CollectionDiscussions = ({
       setExpanded(true);
     }
   }, [account]);
-
-  //useEffect(() => { }, [discussions]);
-
-  const handleFeeApprove = async () => {
-    sendDataToGTM({
-      event: "Approved Comment Function (Collection Discussion)",
-      customData: { "Collection Address": address },
-    });
-
-    const netInfo = getNetworkInfo("theta");
-    dispatch(showTxDialog());
-    try {
-      if (chainId !== parseInt(netInfo.dataNetwork.CHAIN_ID)) {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [netInfo.switch],
-        });
-      }
-      const provider = new Web3Provider(window.ethereum, "any");
-      const signer = await provider.getSigner();
-      const contract = new Contract(
-        feeToken,
-        netInfo.dataNetwork.FEE_ABI,
-        signer
-      );
-      const txResult = await contract.approve(
-        netInfo.dataNetwork.COLLECTION_DISCUSSION_CONTRACT,
-        parseUnits(commentFee.toString(), "ether")
-      );
-
-      sendDataToGTM({
-        event: "Sent Comment (Collection Discussion)",
-        customData: { "Collection Address": address },
-      });
-
-      dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      toast.success("Approval Successful!");
-      getAllowance();
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
-
-      sendDataToGTM({
-        event: "View Transaction Successful Popup (Collection Discussion)",
-        customData: { "Collection Address": address },
-      });
-    } catch (err) {
-      console.log("Error");
-      dispatch(setTxDialogSuccess(false));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(true));
-
-      sendDataToGTM({
-        event: "View Transaction Failed Popup (Collection Discussion)",
-        customData: { "Collection Address": address },
-      });
-    }
-  };
 
   const handleSendMessage = async () => {
     if (!message) {
@@ -236,7 +119,7 @@ export const CollectionDiscussions = ({
         netInfo.dataNetwork.COLLECTION_DISCUSSION_ABI,
         signer
       );
-      const txResult = await contract.addComment_erc20(address, message);
+      const txResult = await contract.addComment_native(address, message, {value: commentFee});
       dispatch(setTxDialogHash(txResult.hash));
 
       await txResult.wait();
@@ -252,10 +135,7 @@ export const CollectionDiscussions = ({
 
       toast.success("Comment Posted Successfuly!");
       setMessage("");
-
-      setOpenSendDlg(false);
       setMessage("");
-      getAllowance();
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -265,18 +145,6 @@ export const CollectionDiscussions = ({
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
     }
-
-    // For test without auth
-    // dispatch(
-    //   createCollectionDiscussion({
-    //     address,
-    //     network,
-    //     sender: account,
-    //     message,
-    //   })
-    // );
-    // toast.success("Comment Posted Successfuly!");
-    // setMessage("");
   };
 
   const styles = {
@@ -426,7 +294,7 @@ export const CollectionDiscussions = ({
             <LoadingButton
               fullWidth
               variant="contained"
-              loading={loadingAllowance}
+              loading={false}
               loadingPosition="start"
               onClick={() => {
                 sendDataToGTM({
@@ -453,59 +321,13 @@ export const CollectionDiscussions = ({
                   customData: { "Collection Address": address },
                 });
 
-                setOpenSendDlg(true);
+                handleSendMessage();
               }}
               sx={styles.sendButton}
             >
-              {loadingAllowance ? "Getting an allowance..." : "Send"}
+              Send
             </LoadingButton>
           </Box>
-          <Dialog maxWidth={"xs"} fullWidth open={openSendDlg}>
-            <DialogTitle
-              sx={{
-                color: "white",
-                textTransform: "uppercase",
-                fontWeight: 700,
-              }}
-              className="tx-dialog"
-            >
-              Add Comment
-            </DialogTitle>
-            <DialogContent className="tx-dialog">
-              <Typography>
-                Your {feeSymbol} Balance: {`${feeBalance} ${feeSymbol}`}
-              </Typography>
-              <Typography>
-                {feeSymbol} Required: &nbsp; &nbsp;{" "}
-                {`${commentFee} ${feeSymbol}`}
-              </Typography>
-            </DialogContent>
-            <DialogActions sx={{ pb: 2, pr: 2 }} className="tx-dialog">
-              <Button
-                color="error"
-                variant="contained"
-                onClick={() => {
-                  sendDataToGTM({
-                    event: "Closed Add Comment Popup (Collection Discussion)",
-                    customData: { "Collection Address": address },
-                  });
-
-                  setOpenSendDlg(false);
-                }}
-              >
-                Cancel
-              </Button>
-              {feeAllowance >= commentFee ? (
-                <Button onClick={handleSendMessage} variant="contained">
-                  Send Message
-                </Button>
-              ) : (
-                <Button onClick={handleFeeApprove} variant="contained">
-                  Approve
-                </Button>
-              )}
-            </DialogActions>
-          </Dialog>
         </AccordionDetails>
       </Accordion>
     </Box>
