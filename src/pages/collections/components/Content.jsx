@@ -337,8 +337,8 @@ function Content({
         const response3 = await axios.get(url3, { headers: headers2 });
         const playerUri = response3.data.body.videos[0].player_uri;
         if (playerUri === null || playerUri === undefined || playerUri === "") {
-          console.log("Player URI is wrong. Retrying in 10 seconds...");
-          await new Promise((resolve) => setTimeout(resolve, 10000));
+          console.log("Player URI is wrong. Retrying in 5 seconds...");
+          await new Promise((resolve) => setTimeout(resolve, 5000));
           return checkPlayerUri();
         } else {
           //console.log("Player URI:", playerUri);
@@ -354,22 +354,22 @@ function Content({
           asset.video = response3.data.body.videos[0].player_uri;
           asset.contractAddress = address;
 
-          //console.log("Asset: ", asset);
-          //console.log("Collection: ", collection);
-
           let newToken = "";
           if (!token || !(await verifyToken(token))) {
             newToken = await generateToken(library);
             dispatch(setToken(newToken));
           }
-
-          const result = await axios.post("https://api.octoplace.io/collections/update", { 
+          console.log('newToken',newToken)
+          console.log('collection',collection)
+          console.log('asset',asset)
+          const apiUrl = process.env.REACT_APP_API_URL;
+          const result = await axios.post(`${apiUrl}/collections/update`, { 
             collection,
             asset,
           },
           {
             headers: {
-              Authorization: `Bearer ${newToken}`
+              authorization: `Bearer ${newToken}`
             },
           }
           );
