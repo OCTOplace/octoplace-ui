@@ -109,14 +109,6 @@ export const Footer = ({ onLoginMenuClick }) => {
                   OCTO
                 </Typography>
                 <FooterLogo
-                  src={OCTO}
-                  alt="kingpad-footer-logo"
-                  onClick={() => {
-                    navigate("/");
-                    window.scrollTo(0, 0);
-                  }}
-                />
-                <FooterLogo
                   src={Logo}
                   alt="kingpad-footer-logo"
                   onClick={() => {
