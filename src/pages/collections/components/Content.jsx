@@ -360,7 +360,7 @@ function Content({
             dispatch(setToken(newToken));
           }
           const apiUrl = process.env.REACT_APP_API_URL;
-          const result = await axios.post(`${apiUrl}/collections/update`, { 
+          const result = await axios.post(`${apiUrl}/collections/updateVideo`, { 
             collection,
             asset,
           },
