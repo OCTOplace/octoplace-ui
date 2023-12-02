@@ -108,7 +108,7 @@ export const ListNFTDialog = (props) => {
           netDetails.dataNetwork.ERC_ABI,
           signer
         );
-        
+
         const tx = await contract.setApprovalForAll(
           netDetails.dataNetwork.SWAP_CONTRACT,
           true
@@ -118,19 +118,28 @@ export const ListNFTDialog = (props) => {
         //   tokenId
         // );
         dispatch(setTxDialogHash(tx.hash));
-        await tx.wait();
-        setIsApproved(true);
-        toast.success("NFT approval successful!");
-        dispatch(setTxDialogSuccess(true));
-        dispatch(setTxDialogPending(false));
-        dispatch(setTxDialogFailed(false));
+        tx.wait();
+        const provObj = new JsonRpcProvider(netDetails.dataNetwork.RPC);
+        const receipt = await provObj.getTransactionReceipt(tx.hash);
+        if (receipt && receipt.status === 1) {
+          setIsApproved(true);
+          toast.success("NFT approval successful!");
+          dispatch(setTxDialogSuccess(true));
+          dispatch(setTxDialogPending(false));
+          dispatch(setTxDialogFailed(false));
+        } else {
+          toast.error("Connect your wallet.");
+          dispatch(setTxDialogSuccess(true));
+          dispatch(setTxDialogPending(false));
+          dispatch(setTxDialogFailed(false));
+        }
       } else {
         toast.error("Connect your wallet.");
         dispatch(setTxDialogSuccess(true));
         dispatch(setTxDialogPending(false));
         dispatch(setTxDialogFailed(false));
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleListing = async () => {
@@ -159,14 +168,23 @@ export const ListNFTDialog = (props) => {
           address,
           overRides
         );
+
         dispatch(setTxDialogHash(txResult.hash));
-        await txResult.wait();
-        dispatch({ type: "LOAD_ALL_LISTING" });
-        handleClose(true);
-        toast.success("NFT Listed successfully!");
-        dispatch(setTxDialogSuccess(true));
-        dispatch(setTxDialogPending(false));
-        dispatch(setTxDialogFailed(false));
+        txResult.wait();
+        const provObj = new JsonRpcProvider(netDetails.dataNetwork.RPC);
+        const receipt = await provObj.getTransactionReceipt(txResult.hash);
+        if (receipt && receipt.status === 1) {
+          dispatch({ type: "LOAD_ALL_LISTING" });
+          handleClose(true);
+          toast.success("NFT Listed successfully!");
+          dispatch(setTxDialogSuccess(true));
+          dispatch(setTxDialogPending(false));
+          dispatch(setTxDialogFailed(false));
+        } else {
+          dispatch(setTxDialogSuccess(false));
+          dispatch(setTxDialogPending(false));
+          dispatch(setTxDialogFailed(true));
+        }
       }
     } catch (err) {
       dispatch(setTxDialogSuccess(false));

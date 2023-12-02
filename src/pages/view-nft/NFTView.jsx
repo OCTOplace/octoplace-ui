@@ -208,13 +208,23 @@ export const NFTView = () => {
         listing.listingDetails.listingid
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      dispatch({ type: "LOAD_ALL_LISTING" });
-      setListed(false);
-      toast.success("NFT Listing removed!");
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
+      txResult.wait();
+      const provObj = new JsonRpcProvider(netDetails.dataNetwork.RPC);
+      const receipt = await provObj.getTransactionReceipt(txResult.hash);
+      if (receipt && receipt.status === 1) {
+        //transaction success
+        console.log("Transaction succeeded!");
+        dispatch({ type: "LOAD_ALL_LISTING" });
+        setListed(false);
+        toast.success("NFT Listing removed!");
+        dispatch(setTxDialogSuccess(true));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(false));
+      } else {
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(true));
+      }
     } catch (error) {
       console.log("Error on handleRemoveNFT", error);
       dispatch(setTxDialogSuccess(false));
