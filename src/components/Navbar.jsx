@@ -14,7 +14,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import { ConnectWalletDlg } from "./connect-wallet-dlg";
-import { EarlyAdopterDlg } from "./early-adopter-dlg";
+import { GoProDlg } from "./go-pro-dlg";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,7 +67,7 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
   const [anchorEl1, setAnchorEl1] = useState(null);
   const [anchorChainEl, setAnchorChainEl] = useState(null);
   const [switchingChain, setSwitchingChain] = useState(false);
-  const [EarlyAdopterDlgOpen, setEarlyAdopterDlgOpen] = useState(false);
+  const [goProDlgOpen, setGoProDlgOpen] = useState(false);
   const openMenu = Boolean(anchorEl);
   const isOpen = Boolean(anchorEl1);
   const openChainMenu = Boolean(anchorChainEl);
@@ -120,16 +120,16 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
   };
 
   const handleGoProOpen = () => {
-    setEarlyAdopterDlgOpen(true);
+    setGoProDlgOpen(true);
     sendDataToGTM({
-      event: "Opened Early Adopter Popup",
+      event: "Opened Go Pro Popup",
     });
   };
 
   const handleGoProClose = () => {
-    setEarlyAdopterDlgOpen(false);
+    setGoProDlgOpen(false);
     sendDataToGTM({
-      event: "Closed Early Adopter Popup",
+      event: "Closed Go Pro Popup",
     });
   };
 
@@ -204,7 +204,7 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
                 <ForwardToInboxIcon /> &nbsp;Inbox
               </MenuItem> */}
               <MenuItem>
-                <ForwardToInboxIcon /> &nbsp;Early Adopter
+                <ForwardToInboxIcon /> &nbsp;GO PRO
               </MenuItem>
             </Menu>
           </MobileNavBarItemContainer>
@@ -217,7 +217,7 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
             </NavItem>
             {/* <NavItem disabled={true}>Inbox</NavItem> */}
             <NavItem sx={{ fontSize: "16px" }} onClick={handleGoProOpen}>
-              Early Adopter
+              GO PRO
             </NavItem>
           </NavBarItemContainer>
           {acctDetails && !acctDetails.isLoggedIn && (
@@ -330,7 +330,7 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
         </MenuItem>
       </Menu>
       <ConnectWalletDlg open={walletDlgOpen} onClose={handleWalletClose} />
-      <EarlyAdopterDlg open={EarlyAdopterDlgOpen} onClose={handleGoProClose} />
+      <GoProDlg open={goProDlgOpen} onClose={handleGoProClose} />
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
