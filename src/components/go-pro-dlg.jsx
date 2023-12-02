@@ -7,20 +7,20 @@ import { IconButton, Box, Divider, DialogContent } from "@mui/material";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
-export const EarlyAdopterDlg = (props) => {
+export const GoProDlg = (props) => {
   const { onClose, open } = props;
   const sendDataToGTM = useGTMDispatch();
   const handleClose = () => {
     onClose();
   };
 
-  const handleEarlyAdopterClick = async () => {
+  const handleGoProClick = async () => {
     sendDataToGTM({
-      event: "Opened Early Adopter CTA",
-      customData: { url: "https://forms.gle/1SbJS4RRY9UBy9yf9" },
+      event: "Opened Go Pro CTA",
+      customData: { url: "https://discord.com/invite/73Ru5XUP2X" },
     });
 
-    window.open("https://forms.gle/1SbJS4RRY9UBy9yf9", "_blank");
+    window.open("https://discord.com/invite/73Ru5XUP2X", "_blank");
     handleClose();
   };
 
@@ -32,7 +32,7 @@ export const EarlyAdopterDlg = (props) => {
       fullWidth
       onClose={handleClose}
       open={open}
-      className="earlyAdopter-dlg"
+      className="gopro-dlg"
     >
       <DialogTitle className="title">
         <Box display="flex" flexDirection="row" alignItems="center">
@@ -40,7 +40,7 @@ export const EarlyAdopterDlg = (props) => {
             sx={{ ml: "8px", textAlign: "center", width: "100%" }}
             variant="h5"
           >
-            Early Adopter
+            GO PRO
           </Typography>
           <span className="spacer"></span>
           <IconButton onClick={handleClose}>
@@ -58,10 +58,11 @@ export const EarlyAdopterDlg = (props) => {
           alignItems="center"
         >
           <Typography sx={{ textAlign: "center" }}>
-            Share your thoughts directly to founders to become an Early Adopter!
+            Share your thoughts directly to founders to Go PRO!
             <br />
             Your feedback shapes Octo's future.
             <br />
+            <br /> Join Pro group in Discord now!
           </Typography>
         </Box>
       </DialogContent>
@@ -84,7 +85,7 @@ export const EarlyAdopterDlg = (props) => {
             }}
             variant="contained"
             color="primary"
-            onClick={handleEarlyAdopterClick}
+            onClick={handleGoProClick}
           >
             Share feedback
           </Button>

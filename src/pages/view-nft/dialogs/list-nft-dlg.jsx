@@ -38,63 +38,8 @@ export const ListNFTDialog = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [url, setUrl] = useState("");
   const [imgLoading, setImageLoading] = useState(true);
-
   const txCharge = useSelector((state) => state.app.txCharge);
   const dispatch = useDispatch();
-  const [pendingTransaction, setPendingTransaction] = useState(undefined);
-  useEffect(() => {
-    if (pendingTransaction) {
-      processPendingTransaction();
-    }
-  }, [pendingTransaction]);
-
-  const processPendingTransaction = async () => {
-    do {
-      try {
-        const { dataNetwork } = getNetworkInfo(network);
-        const provider = new JsonRpcProvider(dataNetwork.RPC);
-        const receipt = await provider.getTransactionReceipt(
-          pendingTransaction.hash
-        );
-        if (receipt) {
-          if (receipt.status === 1) {
-            if (
-              pendingTransaction &&
-              pendingTransaction.initiator === "swap_listing_add"
-            ) {
-              dispatch({ type: "LOAD_ALL_LISTING" });
-              handleClose(true);
-              toast.success("NFT Listed successfully!");
-              dispatch(setTxDialogSuccess(true));
-              dispatch(setTxDialogPending(false));
-              dispatch(setTxDialogFailed(false));
-            } else if (
-              pendingTransaction &&
-              pendingTransaction.initiator === "swap_listing_approval"
-            ) {
-              setIsApproved(true);
-              toast.success("NFT approval successful!");
-              dispatch(setTxDialogSuccess(true));
-              dispatch(setTxDialogPending(false));
-              dispatch(setTxDialogFailed(false));
-            }
-            setPendingTransaction(undefined);
-            break;
-          } else if (receipt.status === 1) {
-            dispatch(setTxDialogSuccess(true));
-            dispatch(setTxDialogPending(false));
-            dispatch(setTxDialogFailed(false));
-            setPendingTransaction(undefined);
-            break;
-          }
-        } else {
-          continue;
-        }
-      } catch {
-        continue;
-      }
-    } while (true);
-  };
 
   const handleClose = (isSuccess) => {
     onClose(isSuccess);
@@ -163,7 +108,7 @@ export const ListNFTDialog = (props) => {
           netDetails.dataNetwork.ERC_ABI,
           signer
         );
-
+        
         const tx = await contract.setApprovalForAll(
           netDetails.dataNetwork.SWAP_CONTRACT,
           true
@@ -173,18 +118,19 @@ export const ListNFTDialog = (props) => {
         //   tokenId
         // );
         dispatch(setTxDialogHash(tx.hash));
-        tx.wait();
-        setPendingTransaction({
-          hash: tx.hash,
-          initiator: "swap_listing_approval",
-        });
+        await tx.wait();
+        setIsApproved(true);
+        toast.success("NFT approval successful!");
+        dispatch(setTxDialogSuccess(true));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(false));
       } else {
         toast.error("Connect your wallet.");
         dispatch(setTxDialogSuccess(true));
         dispatch(setTxDialogPending(false));
         dispatch(setTxDialogFailed(false));
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleListing = async () => {
@@ -213,13 +159,14 @@ export const ListNFTDialog = (props) => {
           address,
           overRides
         );
-
         dispatch(setTxDialogHash(txResult.hash));
-        txResult.wait();
-        setPendingTransaction({
-          hash: txResult.hash,
-          initiator: "swap_listing_add",
-        });
+        await txResult.wait();
+        dispatch({ type: "LOAD_ALL_LISTING" });
+        handleClose(true);
+        toast.success("NFT Listed successfully!");
+        dispatch(setTxDialogSuccess(true));
+        dispatch(setTxDialogPending(false));
+        dispatch(setTxDialogFailed(false));
       }
     } catch (err) {
       dispatch(setTxDialogSuccess(false));
