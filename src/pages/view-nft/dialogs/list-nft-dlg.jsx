@@ -38,8 +38,64 @@ export const ListNFTDialog = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [url, setUrl] = useState("");
   const [imgLoading, setImageLoading] = useState(true);
+
   const txCharge = useSelector((state) => state.app.txCharge);
   const dispatch = useDispatch();
+  const [pendingTransaction, setPendingTransaction] = useState(undefined);
+  useEffect(() => {
+    if (pendingTransaction) {
+      processPendingTransaction();
+    }
+  }, [pendingTransaction]);
+
+  const processPendingTransaction = async () => {
+    do {
+      try {
+        console.log("Processing Tx:", pendingTransaction);
+        const { dataNetwork } = getNetworkInfo(network);
+        const provider = new JsonRpcProvider(dataNetwork.RPC);
+        const receipt = await provider.getTransactionReceipt(
+          pendingTransaction.hash
+        );
+        if (receipt) {
+          if (receipt.status === 1) {
+            if (
+              pendingTransaction &&
+              pendingTransaction.initiator === "swap_listing_add"
+            ) {
+              dispatch({ type: "LOAD_ALL_LISTING" });
+              handleClose(true);
+              toast.success("NFT Listed successfully!");
+              dispatch(setTxDialogSuccess(true));
+              dispatch(setTxDialogPending(false));
+              dispatch(setTxDialogFailed(false));
+            } else if (
+              pendingTransaction &&
+              pendingTransaction.initiator === "swap_listing_approve"
+            ) {
+              setIsApproved(true);
+              toast.success("NFT approval successful!");
+              dispatch(setTxDialogSuccess(true));
+              dispatch(setTxDialogPending(false));
+              dispatch(setTxDialogFailed(false));
+            }
+            setPendingTransaction(undefined);
+            break;
+          } else if (receipt.status === 1) {
+            dispatch(setTxDialogSuccess(true));
+            dispatch(setTxDialogPending(false));
+            dispatch(setTxDialogFailed(false));
+            setPendingTransaction(undefined);
+            break;
+          }
+        } else {
+          continue;
+        }
+      } catch {
+        continue;
+      }
+    } while (true);
+  };
 
   const handleClose = (isSuccess) => {
     onClose(isSuccess);
@@ -119,20 +175,10 @@ export const ListNFTDialog = (props) => {
         // );
         dispatch(setTxDialogHash(tx.hash));
         tx.wait();
-        const provObj = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-        const receipt = await provObj.getTransactionReceipt(tx.hash);
-        if (receipt && receipt.status === 1) {
-          setIsApproved(true);
-          toast.success("NFT approval successful!");
-          dispatch(setTxDialogSuccess(true));
-          dispatch(setTxDialogPending(false));
-          dispatch(setTxDialogFailed(false));
-        } else {
-          toast.error("Connect your wallet.");
-          dispatch(setTxDialogSuccess(true));
-          dispatch(setTxDialogPending(false));
-          dispatch(setTxDialogFailed(false));
-        }
+        setPendingTransaction({
+          hash: tx.hash,
+          initiator: "swap_listing_approval",
+        });
       } else {
         toast.error("Connect your wallet.");
         dispatch(setTxDialogSuccess(true));
@@ -171,20 +217,10 @@ export const ListNFTDialog = (props) => {
 
         dispatch(setTxDialogHash(txResult.hash));
         txResult.wait();
-        const provObj = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-        const receipt = await provObj.getTransactionReceipt(txResult.hash);
-        if (receipt && receipt.status === 1) {
-          dispatch({ type: "LOAD_ALL_LISTING" });
-          handleClose(true);
-          toast.success("NFT Listed successfully!");
-          dispatch(setTxDialogSuccess(true));
-          dispatch(setTxDialogPending(false));
-          dispatch(setTxDialogFailed(false));
-        } else {
-          dispatch(setTxDialogSuccess(false));
-          dispatch(setTxDialogPending(false));
-          dispatch(setTxDialogFailed(true));
-        }
+        setPendingTransaction({
+          hash: txResult.hash,
+          initiator: "swap_listing_add",
+        });
       }
     } catch (err) {
       dispatch(setTxDialogSuccess(false));

@@ -65,7 +65,53 @@ export const NFTView = () => {
   const loading = useSelector((state) => state.app.isLoading);
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
+  const [pendingTransaction, setPendingTransaction] = useState(undefined);
+  useEffect(() => {
+    if (pendingTransaction) {
+      processPendingTransaction();
+    }
+  }, [pendingTransaction]);
 
+  const processPendingTransaction = async () => {
+    do {
+      try {
+        console.log("Processing Tx:", pendingTransaction);
+        const { dataNetwork } = getNetworkInfo(network);
+        const provider = new JsonRpcProvider(dataNetwork.RPC);
+        const receipt = await provider.getTransactionReceipt(
+          pendingTransaction.hash
+        );
+        if (receipt) {
+          if (receipt.status === 1) {
+            if (
+              pendingTransaction &&
+              pendingTransaction.initiator === "swap_listing_remove"
+            ) {
+              dispatch({ type: "LOAD_ALL_LISTING" });
+              setListed(false);
+              toast.success("NFT Listing removed!");
+              dispatch(setTxDialogSuccess(true));
+              dispatch(setTxDialogPending(false));
+              dispatch(setTxDialogFailed(false));
+            }
+            setPendingTransaction(undefined);
+            break;
+          } else if (receipt.status === 0) {
+            dispatch(setTxDialogSuccess(false));
+            dispatch(setTxDialogPending(false));
+            dispatch(setTxDialogFailed(true));
+            dispatch({ type: "LOAD_ALL_LISTING" });
+            setPendingTransaction(undefined);
+            break;
+          }
+        } else {
+          continue;
+        }
+      } catch {
+        continue;
+      }
+    } while (true);
+  };
   const styles = {
     row: {
       display: "flex",
@@ -209,22 +255,10 @@ export const NFTView = () => {
       );
       dispatch(setTxDialogHash(txResult.hash));
       txResult.wait();
-      const provObj = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-      const receipt = await provObj.getTransactionReceipt(txResult.hash);
-      if (receipt && receipt.status === 1) {
-        //transaction success
-        console.log("Transaction succeeded!");
-        dispatch({ type: "LOAD_ALL_LISTING" });
-        setListed(false);
-        toast.success("NFT Listing removed!");
-        dispatch(setTxDialogSuccess(true));
-        dispatch(setTxDialogPending(false));
-        dispatch(setTxDialogFailed(false));
-      } else {
-        dispatch(setTxDialogSuccess(false));
-        dispatch(setTxDialogPending(false));
-        dispatch(setTxDialogFailed(true));
-      }
+      setPendingTransaction({
+        hash: txResult.hash,
+        initiator: "swap_listing_remove",
+      });
     } catch (error) {
       console.log("Error on handleRemoveNFT", error);
       dispatch(setTxDialogSuccess(false));
