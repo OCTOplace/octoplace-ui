@@ -14,13 +14,13 @@ export const EarlyAdopterDlg = (props) => {
     onClose();
   };
 
-  const handleGoProClick = async () => {
+  const handleEarlyAdopterClick = async () => {
     sendDataToGTM({
       event: "Opened Early Adopter CTA",
-      customData: { url: "https://discord.com/invite/73Ru5XUP2X" },
+      customData: { url: "https://forms.gle/1SbJS4RRY9UBy9yf9" },
     });
 
-    window.open("https://discord.com/invite/73Ru5XUP2X", "_blank");
+    window.open("https://forms.gle/1SbJS4RRY9UBy9yf9", "_blank");
     handleClose();
   };
 
@@ -62,7 +62,6 @@ export const EarlyAdopterDlg = (props) => {
             <br />
             Your feedback shapes Octo's future.
             <br />
-            <br /> Join Early Adopters group in Discord now!
           </Typography>
         </Box>
       </DialogContent>
@@ -85,7 +84,7 @@ export const EarlyAdopterDlg = (props) => {
             }}
             variant="contained"
             color="primary"
-            onClick={handleGoProClick}
+            onClick={handleEarlyAdopterClick}
           >
             Share feedback
           </Button>
