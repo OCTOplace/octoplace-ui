@@ -71,7 +71,7 @@ export const ListNFTDialog = (props) => {
               dispatch(setTxDialogFailed(false));
             } else if (
               pendingTransaction &&
-              pendingTransaction.initiator === "swap_listing_approve"
+              pendingTransaction.initiator === "swap_listing_approval"
             ) {
               setIsApproved(true);
               toast.success("NFT approval successful!");
