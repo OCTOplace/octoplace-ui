@@ -51,7 +51,6 @@ export const ListNFTDialog = (props) => {
   const processPendingTransaction = async () => {
     do {
       try {
-        console.log("Processing Tx:", pendingTransaction);
         const { dataNetwork } = getNetworkInfo(network);
         const provider = new JsonRpcProvider(dataNetwork.RPC);
         const receipt = await provider.getTransactionReceipt(

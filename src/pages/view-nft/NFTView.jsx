@@ -75,7 +75,6 @@ export const NFTView = () => {
   const processPendingTransaction = async () => {
     do {
       try {
-        console.log("Processing Tx:", pendingTransaction);
         const { dataNetwork } = getNetworkInfo(network);
         const provider = new JsonRpcProvider(dataNetwork.RPC);
         const receipt = await provider.getTransactionReceipt(
@@ -190,7 +189,6 @@ export const NFTView = () => {
           x.listingDetails.isCancelled === false
       );
       if (found) {
-        console.log("found", found);
         setListed(true);
         setListing(found);
       }
