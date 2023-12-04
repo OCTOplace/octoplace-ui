@@ -453,7 +453,7 @@ export const NFTView = () => {
               )}
             {!loading &&
               market &&
-              // account &&
+              account &&
               market.seller &&
               account.toUpperCase() !== market.seller.toUpperCase() &&
               market.isSold === false &&
