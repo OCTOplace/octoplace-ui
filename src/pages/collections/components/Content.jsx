@@ -25,14 +25,12 @@ import { Container } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
 import axios from "axios";
 import { styled } from "@mui/system";
 import { toast } from "react-toastify";
-
 import { setToken } from "../../../redux/slices/accout-slice";
-
 import { generateToken, verifyToken } from "../../../utils/auth-utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
@@ -190,11 +188,6 @@ function Content({
   videoDesc,
   videoUrl,
 }) {
-  //console.log("address: ", address);
-  // const videoRef = useRef(null);
-  // const [isOwner, setIsOwner] = useState(true);
-  // const [isPlaying, setIsPlaying] = useState(false);
-  // const [showButton, setShowButton] = useState(true);
   const [openAddVideo, setOpenAddVideo] = useState(false);
   const [chain, setChain] = useState("Theta Mainnet");
   const [chipData, setChipData] = useState([
@@ -210,15 +203,12 @@ function Content({
   const [videoName, setVideoName] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [asset, setAsset] = useState({});
-
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  //const [isSuccessful, setIsSuccessful] = useState(false);
-  //const [isFailed, setIsFailed] = useState(false);
-
   const dispatch = useDispatch();
   const { library, account } = useWeb3React();
   const token = useSelector((state) => state.account.token);
+  const [isLocked, setIsLocked] = useState(false);
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
@@ -308,13 +298,12 @@ function Content({
         "source_upload_id": uploadData.id,
         "playback_policy": "public",
         "file_name": movie.name,
-        /* //This is the DRM feature and it's disabled for now, needs to be checked and unhardcode the chain_id
-        "use_drm": true,
-        drm_rules: [{
+        //This is the DRM feature and it's disabled for now, needs to be checked and unhardcode the chain_id
+        "use_drm": isLocked,
+        "drm_rules": [{
           chain_id: 361,
           nft_collection: address
         }],
-        */
         "metadata": {
           "filename": address + " " + movie.name, //Figured that it's better to have which collection owns each video in the thetavideo dashboard
           "videoName": videoName,
@@ -323,7 +312,6 @@ function Content({
 
       });
       //console.log("Body: ", body)
-
       const response2 = await axios.post(
         "https://api.thetavideoapi.com/video", body,
         { headers: headers2 }
@@ -337,7 +325,7 @@ function Content({
         const response3 = await axios.get(url3, { headers: headers2 });
         const playerUri = response3.data.body.videos[0].player_uri;
         if (playerUri === null || playerUri === undefined || playerUri === "") {
-          console.log("Player URI is wrong. Retrying in 5 seconds...");
+          console.log("Encoding... wait 5 more seconds...");
           await new Promise((resolve) => setTimeout(resolve, 5000));
           return checkPlayerUri();
         } else {
@@ -375,7 +363,7 @@ function Content({
           setIsOpen(false);
           toast.success("Video Uploaded sucessfully!");
           setOpenAddVideo(false);
-          console.log(result);
+          //console.log(result);
         }
       }
 
@@ -569,13 +557,18 @@ function Content({
                   padding: '0.5rem',
                 }}
               >
-                <FormControlLabel
-                  control={<Checkbox style={{
-                    color: 'white',
-                  }}
-                  />}
-                  label="Gate this content with NFT ownership"
-                />
+    <FormControlLabel
+      control={
+        isLocked ? (
+          <LockIcon style={{ color: 'orange', fontSize: '35px', marginLeft: '15px', marginRight: '5px' }} />
+        ) : (
+          <LockOpenIcon style={{ color: 'white', fontSize: '35px', marginLeft: '15px', marginRight: '5px' }} />
+        )
+      }
+      label="Gate this content with NFT ownership"
+      onClick={ () => setIsLocked(!isLocked) }
+      margin-left="5px"
+    />
               </Box>
             </Box>
             <Box

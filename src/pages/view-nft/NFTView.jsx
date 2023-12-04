@@ -26,13 +26,11 @@ import {
 } from "../../redux/slices/app-slice";
 import { SendNFT } from "./dialogs/send-nft";
 import { NFTDiscussions } from "../../components/discussions/nft-discussions";
-
 import { getCommonNFTDetail } from "../../redux/thunk/getNftDetail";
 import { SellNFT } from "./dialogs/nft-sell";
 import { parseUnits } from "@ethersproject/units";
 import { Container } from "react-bootstrap";
 import { styled } from "@mui/system";
-
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
 //create your forceUpdate hook
@@ -66,6 +64,8 @@ export const NFTView = () => {
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
   const [pendingTransaction, setPendingTransaction] = useState(undefined);
+  const balance = useSelector((state) => state.account.balance);  
+
   useEffect(() => {
     if (pendingTransaction) {
       processPendingTransaction();
@@ -307,6 +307,11 @@ export const NFTView = () => {
   };
 
   const buyNFT = async () => {
+    if (market.price > balance) {
+      toast.error("Your balance is not enough to buy this NFT");
+      return;
+    }
+    
     sendDataToGTM({
       event: "Click Buy NFT",
       customData: { "Collection Address": address, "token Id": tokenId },
