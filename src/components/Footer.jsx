@@ -122,7 +122,7 @@ export const Footer = ({ onLoginMenuClick }) => {
               </ExplainContent>
               <ExplainContent1 style={{ fontSize: "14px" }}>
                 OCTO is super dApp that resolves around Non-Fungible
-                Tokens(NFTs) with a string emphasis on creators and communities.
+                Tokens(NFTs) with a strong emphasis on creators and communities.
                 Most comprehensive functionality with built-in social tools,
                 while being chain-agnostic, as Web3 should be. Join us today!
               </ExplainContent1>
