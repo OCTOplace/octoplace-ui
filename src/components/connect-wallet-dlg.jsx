@@ -79,6 +79,7 @@ export const ConnectWalletDlg = (props) => {
       toast(`Wallet Connected! ${getAccountString(account)}`, {
         type: "success",
         position: "bottom-left",
+        toastId: "walletConnected",
       });
 
       // logging
