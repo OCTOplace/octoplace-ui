@@ -13,8 +13,7 @@ export const TxProcess = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (txHash && txHash !== "" && chainId && chainId !== "") {
-        console.log("transaction started! ", txHash, " on network ", getNetworkName(chainId));
-      processTx();
+        processTx();
     }
   }, [txHash, chainId]);
 
