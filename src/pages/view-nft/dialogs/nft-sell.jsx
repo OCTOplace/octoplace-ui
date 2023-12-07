@@ -281,16 +281,16 @@ export const SellNFT = ({
   };
 
   const checkPrice = () => {
-    if (price === itemPrice) {
-      toast.warning("Price must different than original value!");
-      return true;
-    }
     if (price === "") {
-      toast.warning("Price must set a value!");
+      toast.warning("Price must set a value!",{ toastId: "priceNotSet", });
       return true;
     }
     if (Number(price.toString()) <= 0) {
-      toast.warning("Price must be higher than 0!");
+      toast.warning("Price must be higher than 0!",{ toastId: "priceZero", });
+      return true;
+    }
+    if (Number(price.toString()) === itemPrice) {
+      toast.warning("Price must different than original value!",{ toastId: "priceSame", });
       return true;
     }
     return false;
