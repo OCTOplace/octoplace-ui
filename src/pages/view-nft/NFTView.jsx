@@ -461,10 +461,10 @@ export const NFTView = () => {
               tokenId={tokenId}
               chainId={network}
             />
-            {listing && (
+            {foundSwapListing && (
               <OfferList
                 network={network}
-                listingId={listing.listingDetails.listingid}
+                listingId={foundSwapListing.listingDetails.listingid}
               />
             )}
             <NFTDiscussions
@@ -491,10 +491,10 @@ export const NFTView = () => {
         network={network}
         address={address}
       />
-      {listing && (
+      {foundSwapListing && (
         <OfferNFTDialog
           tokenAddress={address}
-          listingId={listing.listingDetails.listingid}
+          listingId={foundSwapListing.listingDetails.listingid}
           open={offerDlgOpen}
           network={network}
           onClose={(isSuccess) => {
