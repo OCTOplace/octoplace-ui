@@ -18,7 +18,7 @@ let thetaMarketplaceContract = ""; // Octoplace_FLAT.sol
 const swapAbi = swapabi;
 const ercAbi = ercabi;
 //const kavaRpc = "https://evm.kava.io";
-const kavaRpc = "https://kava.publicnode.com/";
+const kavaRpc = "https://lb.drpc.org/ogrpc?network=kava&dkey=AtQrS3V_LUn3v9xR5oAHBKUJLmp4fwMR7qSRxqxINsn1";
 const kavaChainId = "0x8ae";
 let kavaDataContract = "";
 let kavaSwapContract = "";
