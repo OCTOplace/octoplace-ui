@@ -13,7 +13,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { ContentCopy, ExpandMore, QuestionAnswer } from "@mui/icons-material";
 import { shortenAddress } from "../../utils/string-util";
 import { getNetworkInfo } from "../../connectors/networks";
-import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { useWeb3React } from "@web3-react/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,6 +34,12 @@ import {
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 import { formatUnits } from "@ethersproject/units";
+import {
+  abortTxProcess,
+  completeTxProcess,
+  startTxProcess,
+} from "../../redux/slices/tx-slice";
+import { txInitiators, txStatus } from "../../constants/tx-initiators";
 
 export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const sendDataToGTM = useGTMDispatch();
@@ -45,8 +51,36 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const discussions = useSelector(
     (state) => state.discussion.selectedNFTDiscussions
   );
+  const [discussion, setDiscussion] = useState(undefined);
+  const { txInitiator, status } = useSelector((state) => state.txProcess);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (
+      txInitiator === txInitiators.POST_NFT_COMMENT &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(createNFTDiscussion(discussion));
+      toast.success("Comment Posted Successfuly!");
+      setMessage("");
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      dispatch(completeTxProcess());
+      setDiscussion(undefined);
+    }
+    if (
+      txInitiator === txInitiators.POST_NFT_COMMENT &&
+      status === txStatus.FAILED
+    ) {
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
+      dispatch(abortTxProcess());
+    }
+  }, [status]);
+
   const styles = {
     accordion2: {
       backgroundColor: "transparent",
@@ -147,9 +181,9 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     );
     const bal = await provider.getBalance(account);
     const fee = await contract.commentFee();
-    setFeeBalance(Number(formatUnits(bal,0)));
-    setCommentFee(Number(formatUnits(fee,0)));
-  }
+    setFeeBalance(Number(formatUnits(bal, 0)));
+    setCommentFee(Number(formatUnits(fee, 0)));
+  };
 
   useEffect(() => {
     return () => {
@@ -157,7 +191,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
     };
   }, []);
 
-  
   const getDiscussions = async () => {
     dispatch(getNftDiscussions({ address, tokenId, network }));
   };
@@ -168,8 +201,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       getCommentFee();
     }
   }, [address, tokenId]);
-
-
 
   useEffect(() => {
     // if isAccordion is false expand the accordion default
@@ -183,7 +214,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
 
   //useEffect(() => { }, [discussions]);
 
-  
   const handleSendMessage = async () => {
     if (!message) {
       return;
@@ -203,31 +233,31 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
       const contract = new Contract(
         netInfo.dataNetwork.NFT_DISCUSSION_CONTRACT,
         netInfo.dataNetwork.NFT_DISCUSSION_ABI,
-        signer, {value: 0}
+        signer,
+        { value: 0 }
       );
 
       const txResult = await contract.addComment_native(
         address,
         tokenId,
         message,
-        {value: commentFee}
+        { value: commentFee }
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
       dispatch(
-        createNFTDiscussion({
-          address,
-          tokenId,
-          network,
-          sender: account,
-          message,
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.POST_NFT_COMMENT,
         })
       );
-      toast.success("Comment Posted Successfuly!");
-      setMessage("");
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
+      setDiscussion({
+        address,
+        tokenId,
+        network,
+        sender: account,
+        message,
+      });
+      txResult.wait();
     } catch (err) {
       console.log("Error", err);
       dispatch(setTxDialogSuccess(false));

@@ -53,6 +53,7 @@ import contractInteraction from "./contracts";
 
 import { ThemeProvider } from "@mui/system";
 import { theme } from "./theme";
+import { TxProcess } from "./components/tx-process/tx-process";
 
 const gtmParams = {
   id:
@@ -188,6 +189,7 @@ function App() {
                 dispatch(hideTxDialog());
               }}
             />
+            <TxProcess />
           </Layout>
         </GTMProvider>
       </Router>
