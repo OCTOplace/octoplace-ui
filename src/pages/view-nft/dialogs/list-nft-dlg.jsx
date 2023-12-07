@@ -110,11 +110,15 @@ export const ListNFTDialog = (props) => {
           netDetails.dataNetwork.ERC_ABI,
           provider
         );
-        const isAppr = await contract.isApprovedForAll(
-          owner,
-          netDetails.dataNetwork.SWAP_CONTRACT
+        const operator = await contract.getApproved(
+          tokenId
         );
-        setIsApproved(isAppr);
+        if(operator === netDetails.dataNetwork.SWAP_CONTRACT){
+          setIsApproved(true);
+        }else{
+          setIsApproved(false);
+        }
+        
       }
     } catch {
       setIsApproved(false);
@@ -163,15 +167,11 @@ export const ListNFTDialog = (props) => {
           netDetails.dataNetwork.ERC_ABI,
           signer
         );
-
-        const tx = await contract.setApprovalForAll(
+        
+        const tx = await contract.approve(
           netDetails.dataNetwork.SWAP_CONTRACT,
-          true
+          tokenId
         );
-        // const tx = await contract.approve(
-        //   netDetails.dataNetwork.SWAP_CONTRACT,
-        //   tokenId
-        // );
         dispatch(setTxDialogHash(tx.hash));
         tx.wait();
         setPendingTransaction({
