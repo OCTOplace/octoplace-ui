@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setTxDialogFailed,
   setTxDialogHash,
@@ -34,7 +34,12 @@ import { toast } from "react-toastify";
 import { getNetworkInfo } from "../../../connectors/networks";
 import { getImageUrl } from "../../../utils/string-util";
 import { formatUnits, parseUnits } from "@ethersproject/units";
-
+import {
+  startTxProcess,
+  completeTxProcess,
+  abortTxProcess,
+} from "../../../redux/slices/tx-slice";
+import { txInitiators, txStatus } from "../../../constants/tx-initiators";
 export const SellNFT = ({
   network,
   isOpen,
@@ -77,6 +82,56 @@ export const SellNFT = ({
   const { account, chainId } = useWeb3React();
   const [setAnimation] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+
+  const { txInitiator, status } = useSelector((state) => state.txProcess);
+
+  useEffect(() => {
+    if (
+      txInitiator === txInitiators.ADD_MARKET_LISTING_APPROVE &&
+      status === txStatus.COMPLETED
+    ) {
+      toast.success("NFT Approval Successful!");
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      dispatch(completeTxProcess());
+      getApprovalStatus();
+    }
+    if (
+      txInitiator === txInitiators.UPDATE_MARKET_LISTING_PRICE &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      toast.success("Price Update Successful!");
+      getApprovalStatus();
+      handleClose();
+    }
+    if (
+      txInitiator === txInitiators.ADD_MARKET_LISTING &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      toast.success("NFT Listing Successful!");
+      getApprovalStatus();
+      handleClose();
+    }
+    if (
+      (txInitiator === txInitiators.ADD_MARKET_LISTING_APPROVE ||
+        txInitiator === txInitiators.UPDATE_MARKET_LISTING_PRICE ||
+        txInitiator === txInitiators.ADD_MARKET_LISTING) &&
+      status === txStatus.FAILED
+    ) {
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
+      dispatch(abortTxProcess());
+    }
+  }, [status]);
+
   const handleClose = () => {
     onCloseDlg();
   };
@@ -121,6 +176,7 @@ export const SellNFT = ({
       console.log(err);
     }
   };
+
   const getDetails = async () => {
     const netDetails = getNetworkInfo(network);
     const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
@@ -178,12 +234,13 @@ export const SellNFT = ({
         tokenId
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      dispatch(setTxDialogFailed(false));
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      toast.success("NFT Approval Successful!");
-      await getApprovalStatus();
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.ADD_MARKET_LISTING_APPROVE,
+        })
+      );
+      txResult.wait();
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -220,14 +277,13 @@ export const SellNFT = ({
         marketId
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      dispatch(setTxDialogFailed(false));
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      toast.success("NFT Listing Successful!");
-
-      await getApprovalStatus();
-      handleClose();
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.UPDATE_MARKET_LISTING_PRICE,
+        })
+      );
+      txResult.wait();
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -263,15 +319,13 @@ export const SellNFT = ({
         metadata.name
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      const id = await contract.getLastMarketId();
-      dispatch(setTxDialogFailed(false));
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      toast.success("NFT Listing Successful!");
-
-      await getApprovalStatus();
-      handleClose();
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.ADD_MARKET_LISTING,
+        })
+      );
+      txResult.wait();
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -282,15 +336,17 @@ export const SellNFT = ({
 
   const checkPrice = () => {
     if (price === "") {
-      toast.warning("Price must set a value!",{ toastId: "priceNotSet", });
+      toast.warning("Price must set a value!", { toastId: "priceNotSet" });
       return true;
     }
     if (Number(price.toString()) <= 0) {
-      toast.warning("Price must be higher than 0!",{ toastId: "priceZero", });
+      toast.warning("Price must be higher than 0!", { toastId: "priceZero" });
       return true;
     }
     if (Number(price.toString()) === itemPrice) {
-      toast.warning("Price must different than original value!",{ toastId: "priceSame", });
+      toast.warning("Price must different than original value!", {
+        toastId: "priceSame",
+      });
       return true;
     }
     return false;
