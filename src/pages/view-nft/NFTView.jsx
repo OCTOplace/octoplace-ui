@@ -87,6 +87,28 @@ export const NFTView = () => {
       dispatch(completeTxProcess());
     }
     if (
+      txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
+      status === txStatus.COMPLETED
+    ) {
+      getDetailsFromSite();
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogFailed(false));
+      dispatch(setTxDialogPending(false));
+      toast.success("NFT Listing Removed!");
+      setSellOpen(false);
+      dispatch(completeTxProcess());
+    }
+    if (
+      txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
+      status === txStatus.FAILED
+    ) {
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
+      dispatch(abortTxProcess());
+      forceUpdate();
+    }
+    if (
       txInitiator === txInitiators.REMOVE_SWAP_LISTING &&
       status === txStatus.FAILED
     ) {
@@ -282,15 +304,13 @@ export const NFTView = () => {
         market.marketId
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-
-      await getDetailsFromSite();
-
-      dispatch(setTxDialogFailed(false));
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      toast.success("NFT Listing Successful!");
-      setSellOpen(false);
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.REMOVE_MARKET_LISTING,
+        })
+      );
+      txResult.wait();
     } catch (err) {
       console.log("Error on cancelSale", err);
       dispatch(setTxDialogFailed(true));
