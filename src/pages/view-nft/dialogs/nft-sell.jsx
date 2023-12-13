@@ -105,6 +105,7 @@ export const SellNFT = ({
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
       toast.success("Price Update Successful!");
+      dispatch(completeTxProcess());
       getApprovalStatus();
       handleClose();
     }
@@ -117,6 +118,7 @@ export const SellNFT = ({
       dispatch(setTxDialogFailed(false));
       toast.success("NFT Listing Successful!");
       getApprovalStatus();
+      dispatch(completeTxProcess());
       handleClose();
     }
     if (
