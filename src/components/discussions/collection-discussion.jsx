@@ -34,6 +34,8 @@ import {
 } from "../../redux/thunk/get-discussions";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+import { txInitiators, txStatus } from "../../constants/tx-initiators";
+import { abortTxProcess, completeTxProcess, startTxProcess } from "../../redux/slices/tx-slice";
 
 export const CollectionDiscussions = ({
   address,
@@ -55,8 +57,36 @@ export const CollectionDiscussions = ({
   const discussions = useSelector(
     (state) => state.discussion.selectedCollectionDiscussions
   );
+  const [discussion, setDiscussion] = useState(undefined);
+  const { txInitiator, status } = useSelector((state) => state.txProcess);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (
+      txInitiator === txInitiators.POST_COLLECTION_COMMENT &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(createCollectionDiscussion(discussion));
+      toast.success("Comment Posted Successfuly!");
+      setMessage("");
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      dispatch(completeTxProcess());
+      setDiscussion(undefined);
+    }
+    if (
+      txInitiator === txInitiators.POST_COLLECTION_COMMENT &&
+      status === txStatus.FAILED
+    ) {
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
+      dispatch(abortTxProcess());
+    }
+  }, [status]);
+
   const format = (x) => {
     return x.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
@@ -121,24 +151,19 @@ export const CollectionDiscussions = ({
       );
       const txResult = await contract.addComment_native(address, message, {value: commentFee});
       dispatch(setTxDialogHash(txResult.hash));
-
-      await txResult.wait();
-
       dispatch(
-        createCollectionDiscussion({
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.POST_COLLECTION_COMMENT,
+        })
+      );
+        setDiscussion({
           address,
           network,
           sender: account,
           message,
         })
-      );
-
-      toast.success("Comment Posted Successfuly!");
-      setMessage("");
-      setMessage("");
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
+      txResult.wait();
     } catch (err) {
       console.log("Error", err);
       dispatch(setTxDialogSuccess(false));
