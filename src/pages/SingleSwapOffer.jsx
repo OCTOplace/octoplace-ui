@@ -203,7 +203,7 @@ export const SingleSwapOffer = () => {
       );
       const txResult = await contract.declineOffer(obj.offerId, obj.listingId);
       dispatch(setTxDialogHash(txResult.hash));
-      dispatch(startTxProcess({txHash:txResult.hash, txInitiator: txInitiators.DECLINE_SWAP_OFFER}));
+      dispatch(startTxProcess({txHash:txResult.hash, initiator: txInitiators.DECLINE_SWAP_OFFER}));
       txResult.wait();
     } catch (err) {
       toast.error(err);
@@ -230,9 +230,10 @@ export const SingleSwapOffer = () => {
         netDetails.dataNetwork.SWAP_ABI,
         signer
       );
+
       const txResult = await contract.removeOfferById(obj.offerId);
       dispatch(setTxDialogHash(txResult.hash));
-      dispatch(startTxProcess({txHash:txResult.hash, txInitiator: txInitiators.WITHDRAW_SWAP_OFFER}));
+      dispatch(startTxProcess({txHash:txResult.hash, initiator: txInitiators.WITHDRAW_SWAP_OFFER}));
       txResult.wait();
     } catch (err) {
       toast.error(err);
@@ -261,7 +262,7 @@ export const SingleSwapOffer = () => {
       );
       const txResult = await contract.acceptOffer(obj.offerId, obj.listingId);
       dispatch(setTxDialogHash(txResult.hash));
-      dispatch(startTxProcess({txHash:txResult.hash, txInitiator: txInitiators.ACCEPT_SWAP_OFFER}));
+      dispatch(startTxProcess({txHash:txResult.hash, initiator: txInitiators.ACCEPT_SWAP_OFFER}));
       txResult.wait();
       
     } catch (err) {
