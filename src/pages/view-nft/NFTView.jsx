@@ -58,9 +58,8 @@ export const NFTView = () => {
   const marketItems = useSelector((state) => state.market.markets);
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
-  const [isListedForSwap, setListedForSwap] = useState(false);
+  const [isListed, setListed] = useState(false);
   const [listing, setListing] = useState();
-  const [foundSwapListing, setfoundSwapListing] = useState();
   const { account, chainId } = useWeb3React();
   const [sendOpen, setSendOpen] = useState(false);
   const [sellOpen, setSellOpen] = useState(false);
@@ -79,7 +78,7 @@ export const NFTView = () => {
       status === txStatus.COMPLETED
     ) {
       dispatch({ type: "LOAD_ALL_LISTING" });
-      setListedForSwap(false);
+      setListed(false);
       toast.success("NFT Listing removed!");
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
@@ -166,7 +165,7 @@ export const NFTView = () => {
       setOwner(ownerAddress);
       setCollectionName(name);
       setMetadata(meta);
-    } catch {}
+    } catch { }
   };
 
   const getDetailsFromSite = async () => {
@@ -195,19 +194,17 @@ export const NFTView = () => {
       const found = listings.find(
         (x) =>
           x.listingDetails.tokenAddress.toLowerCase() ===
-            address.toLowerCase() &&
+          address.toLowerCase() &&
           x.listingDetails.tokenId === Number(tokenId) &&
           x.listingDetails.isCompleted === false &&
           x.listingDetails.isCancelled === false
       );
       if (found) {
-        setListedForSwap(true);
-        //setListing(found);
-        setfoundSwapListing(found);
+        setListed(true);
+        setListing(found);
       }
     }
-  }, []);
-  //}, [listings, address, tokenId]);
+  }, [listings, address, tokenId]);
 
   useEffect(() => {
     if (marketItems.length > 0) {
@@ -215,7 +212,7 @@ export const NFTView = () => {
         (obj) =>
           !obj.isSold &&
           obj.tokenId === Number(tokenId) &&
-          obj.nftContract === address &&
+          obj.nftContract.toLowerCase() === address.toLowerCase() &&
           obj.network === network
       );
       setMarket(marketItems[index]);
@@ -263,7 +260,7 @@ export const NFTView = () => {
         signer
       );
       const txResult = await contract.removeListingById(
-        foundSwapListing.listingDetails.listingid
+        listing.listingDetails.listingid
       );
       dispatch(setTxDialogHash(txResult.hash));
       dispatch(
@@ -405,104 +402,109 @@ export const NFTView = () => {
             name={collectionName}
           />
           <NFTCardActionContaniner>
-            {!loading && (market || isListedForSwap) ? (
-              <>
-                {isListedForSwap ? (
-                  <Box sx={styles.row}>
-                    {account &&
-                    account.toLowerCase() === owner.toLowerCase() ? (
-                      <Button
-                        sx={styles.orangeButton}
-                        color="error"
-                        variant="contained"
-                        onClick={handleRemoveNFT}
-                      >
-                        Remove Listing
-                      </Button>
-                    ) : (
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={handleOfferSwap}
-                      >
-                        Offer SWAP
-                      </Button>
-                    )}
-                  </Box>
-                ) : (
-                  <>
-                    {account &&
-                    market &&
-                    account.toLowerCase() === market.seller.toLowerCase() ? (
-                      <Box sx={styles.row}>
-                        <Button
-                          sx={styles.orangeButton}
-                          color="error"
-                          variant="contained"
-                          onClick={cancelSale}
-                        >
-                          Remove Listing
-                        </Button>
-                        <Button
-                          sx={styles.orangeButton}
-                          variant="contained"
-                          onClick={handleUpdatePrice}
-                        >
-                          Update Price
-                        </Button>
-                      </Box>
-                    ) : (
-                      <Box sx={styles.row}>
-                        <Button
-                          sx={styles.orangeButton}
-                          variant="contained"
-                          onClick={buyNFT}
-                        >
-                          Buy
-                        </Button>
-                      </Box>
-                    )}
-                    {market && market.price && (
-                      <Typography
-                        variant="h6"
-                        sx={{ mt: 0, mb: 1, color: "#FFFFFF" }}
-                      >
-                        Price: {`${market.price}`} TFUEL
-                      </Typography>
-                    )}
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                {account &&
-                  account.toLowerCase() === owner.toLowerCase() &&
-                  !isListedForSwap && (
-                    <Box sx={styles.row}>
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={() => setListDlgOpen(true)}
-                      >
-                        LIST TO SWAP
-                      </Button>
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={() => setSellOpen(true)}
-                      >
-                        LIST TO SELL
-                      </Button>
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={() => setSendOpen(true)}
-                      >
-                        SEND NFT
-                      </Button>
-                    </Box>
-                  )}
-              </>
+            {!loading &&
+              account &&
+              account.toLowerCase() === owner.toLowerCase() &&
+              !isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setListDlgOpen(true)}
+                  >
+                    LIST TO SWAP
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setSellOpen(true)}
+                  >
+                    LIST TO SELL
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setSendOpen(true)}
+                  >
+                    SEND NFT
+                  </Button>
+                </Box>
+              )}
+            {!loading &&
+              account &&
+              account.toLowerCase() === owner.toLowerCase() &&
+              isListed && (
+                <>
+                  <Button
+                    sx={styles.orangeButton}
+                    color="error"
+                    variant="contained"
+                    onClick={handleRemoveNFT}
+                  >
+                    Remove Listing
+                  </Button>
+                </>
+              )}
+            {!loading &&
+              market &&
+              account &&
+              market.seller &&
+              account.toUpperCase() === market.seller.toUpperCase() &&
+              market.isSold === false &&
+              !isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    color="error"
+                    variant="contained"
+                    onClick={cancelSale}
+                  >
+                    Remove Listing
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleUpdatePrice}
+                  >
+                    Update Price
+                  </Button>
+                </Box>
+              )}
+            {!loading &&
+              market &&
+              // account &&
+              market.seller &&
+              account.toUpperCase() !== market.seller.toUpperCase() &&
+              market.isSold === false &&
+              !isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={buyNFT}
+                  >
+                    Buy
+                  </Button>
+                </Box>
+              )}
+            {!loading &&
+              account &&
+              account.toLowerCase() !== owner.toLowerCase() &&
+              isListed && (
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleOfferSwap}
+                  >
+                    Offer SWAP
+                  </Button>
+                </Box>
+              )}
+            {market && market.price && (
+              <Typography variant="h6" sx={{ mt: 2, mb: 2, color: "#FFFFFF" }}>
+                Price: {`${market.price}`} TFUEL
+              </Typography>
             )}
             <NFTDetails
               metadata={metadata}
@@ -510,10 +512,11 @@ export const NFTView = () => {
               tokenId={tokenId}
               chainId={network}
             />
-            {foundSwapListing && (
+
+            {listing && (
               <OfferList
                 network={network}
-                listingId={foundSwapListing.listingDetails.listingid}
+                listingId={listing.listingDetails.listingid}
               />
             )}
             <NFTDiscussions
@@ -540,16 +543,16 @@ export const NFTView = () => {
         network={network}
         address={address}
       />
-      {foundSwapListing && (
+      {listing && (
         <OfferNFTDialog
           tokenAddress={address}
-          listingId={foundSwapListing.listingDetails.listingid}
+          listingId={listing.listingDetails.listingid}
           open={offerDlgOpen}
           network={network}
           onClose={(isSuccess) => {
             setOfferDlgOpen(false);
             if (isSuccess) {
-              setListedForSwap(true);
+              setListed(true);
             }
           }}
         />
