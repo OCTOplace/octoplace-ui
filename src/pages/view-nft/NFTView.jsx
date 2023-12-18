@@ -206,7 +206,7 @@ export const NFTView = () => {
         setfoundSwapListing(found);
       }
     }
-  }, []);
+  }, [listings, address, tokenId]);
   //}, [listings, address, tokenId]);
 
   useEffect(() => {
