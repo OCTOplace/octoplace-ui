@@ -263,7 +263,7 @@ export const NFTView = () => {
         signer
       );
       const txResult = await contract.removeListingById(
-        foundSwapListing.listingDetails.listingid
+        listing.listingDetails.listingid
       );
       dispatch(setTxDialogHash(txResult.hash));
       dispatch(
