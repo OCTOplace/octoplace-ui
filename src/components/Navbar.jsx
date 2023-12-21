@@ -33,7 +33,7 @@ import KavaLogo from "../assets/chains/kavaLogo.svg";
 
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 
-import { setLogout } from "../redux/slices/accout-slice";
+import { setChainId, setLogout } from "../redux/slices/accout-slice";
 
 const WalletButton = styled(Button)({
   boxShadow: "none",
@@ -82,6 +82,7 @@ export const AppNavbar = ({ isWalletDialogOpen }) => {
           params: [netInfo.switch],
         });
         setSwitchingChain(false);
+        dispatch(setChainId(parseInt(netInfo.switch.chainId, 16)))
       } catch (error) {
         console.error("Failed to switch network:", error);
       }

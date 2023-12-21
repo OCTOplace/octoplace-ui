@@ -171,7 +171,7 @@ export const NFTCardDetails = (props) => {
                 )
               }
             >
-              {owner === "" ? "" : shortenAddress(owner)}
+              { owner !== undefined && owner !== "" ? shortenAddress(owner) : "" }
             </span>
             <IconButton
               onClick={() => {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { isAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
 import { Cancel, Send } from "@mui/icons-material";
@@ -12,8 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setTxDialogFailed,
   setTxDialogHash,
@@ -26,6 +27,12 @@ import { useTheme } from "@emotion/react";
 import { toast } from "react-toastify";
 import { createAction } from "redux-actions";
 import { getNetworkInfo } from "../../../connectors/networks";
+import { txInitiators, txStatus } from "../../../constants/tx-initiators";
+import {
+  abortTxProcess,
+  completeTxProcess,
+  startTxProcess,
+} from "../../../redux/slices/tx-slice";
 
 export const SendNFT = ({
   network,
@@ -39,7 +46,7 @@ export const SendNFT = ({
   const dispatch = useDispatch();
   const { account, chainId } = useWeb3React();
   const theme = useTheme();
-
+  const { txInitiator, status } = useSelector((state) => state.txProcess);
   const style = {
     btnSend: {
       "&:hover": {
@@ -55,6 +62,29 @@ export const SendNFT = ({
     },
   };
 
+  useEffect(() => {
+    if (
+      txInitiator === txInitiators.TRANSFER_NFT &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      dispatch(completeTxProcess());
+      toast.success("NFT Transfer Successful!");
+      dispatch(createAction("LOAD_MY_NFTS_API")({ account: account }));
+      handleClose();
+    }
+    if (
+      txInitiator === txInitiators.REMOVE_SWAP_LISTING &&
+      status === txStatus.FAILED
+    ) {
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
+      dispatch(abortTxProcess());
+    }
+  }, [status]);
   const handleClose = () => {
     onCloseDlg();
     setAddress("");
@@ -77,13 +107,13 @@ export const SendNFT = ({
         const contract = new Contract(contractAddress, ercAbi, signer);
         const txResult = await contract.transferFrom(account, address, tokenId);
         dispatch(setTxDialogHash(txResult.hash));
-        await txResult.wait();
-        dispatch(setTxDialogFailed(false));
-        dispatch(setTxDialogSuccess(true));
-        dispatch(setTxDialogPending(false));
-        toast.success("NFT Transfer Successful!");
-        dispatch(createAction("LOAD_MY_NFTS_API")({ account: account }));
-        handleClose();
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.TRANSFER_NFT,
+          })
+        );
+        txResult.wait();
       } catch (err) {
         console.log(err);
         dispatch(setTxDialogFailed(true));
@@ -101,7 +131,6 @@ export const SendNFT = ({
         Send NFT
       </DialogTitle>
       <DialogContent className="tx-dialog">
-
         <TextField
           error={error}
           placeholder="Wallet Address (0x..)"

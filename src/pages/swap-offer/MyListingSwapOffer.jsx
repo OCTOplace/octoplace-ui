@@ -24,6 +24,12 @@ import {
   showTxDialog,
 } from "../../redux/slices/app-slice";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+import { txInitiators, txStatus } from "../../constants/tx-initiators";
+import {
+  abortTxProcess,
+  completeTxProcess,
+  startTxProcess,
+} from "../../redux/slices/tx-slice";
 
 export const MyListingSwapOffer = () => {
   const sendDataToGTM = useGTMDispatch();
@@ -38,16 +44,56 @@ export const MyListingSwapOffer = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { txInitiator, status } = useSelector((state) => state.txProcess);
+
+  useEffect(() => {
+    if (
+      txInitiator === txInitiators.ADD_SWAP_OFFER_APPROVE &&
+      status === txStatus.COMPLETED
+    ) {
+      toast.success("Approval Successful!");
+      setIsApproved(true);
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      dispatch(completeTxProcess());
+    }
+    if (
+      txInitiator === txInitiators.ADD_SWAP_OFFER &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(false));
+      toast.success("Swap offer sent successfully!");
+      dispatch({ type: "LOAD_ALL_OFFERS" });
+      dispatch(completeTxProcess())
+      navigate(
+        `/nft/${listingNFT.listingDetails.network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
+      );
+    }
+
+    if (
+      (txInitiator === txInitiators.ADD_SWAP_OFFER_APPROVE || txInitiator===txInitiators.ADD_SWAP_OFFER) &&
+      status === txStatus.FAILED
+    ) {
+      dispatch(setTxDialogSuccess(false));
+      dispatch(setTxDialogPending(false));
+      dispatch(setTxDialogFailed(true));
+      dispatch(abortTxProcess());
+    }
+  }, [txInitiator, status]);
   const getApprovedStatus = async () => {
     try {
       const netDetails = getNetworkInfo(network);
       const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
       const contract = new Contract(offerNft, ercAbi, provider);
-      const status = await contract.isApprovedForAll(
-        offerOwner,
-        netDetails.dataNetwork.SWAP_CONTRACT
-      );
-      setIsApproved(status);
+      const operator = await contract.getApproved(offerTokenId);
+      if (operator === netDetails.dataNetwork.SWAP_CONTRACT) {
+        setIsApproved(true);
+      } else {
+        setIsApproved(false);
+      }
     } catch {
       setIsApproved(false);
     }
@@ -144,24 +190,19 @@ export const MyListingSwapOffer = () => {
       const provider = new Web3Provider(window.ethereum, "any");
       const signer = await provider.getSigner();
       const contract = new Contract(offerNft, ercAbi, signer);
-      //Old code requesting access to ALL NFT's in the collection
-      const txResult = await contract.setApprovalForAll(
-        netDetails.dataNetwork.SWAP_CONTRACT,
-        true
-      );
-      /* // New code requesting ONLY access to the swapped NFT, as per shivam request 
-         // this is rolled back as the contract needs to be modified later on
       const txResult = await contract.approve(
         netDetails.dataNetwork.SWAP_CONTRACT,
         offerTokenId
-      );*/
+      );
+
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
-      toast.success("Approval Successful!");
-      setIsApproved(true);
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      dispatch(setTxDialogFailed(false));
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.ADD_SWAP_OFFER_APPROVE,
+        })
+      );
+      txResult.wait();
     } catch (err) {
       console.log("Error on handleApprove", err);
       dispatch(setTxDialogSuccess(false));
@@ -200,16 +241,13 @@ export const MyListingSwapOffer = () => {
       listingId
     );
     dispatch(setTxDialogHash(txResult.hash));
-    await txResult.wait();
-    dispatch(setTxDialogSuccess(true));
-    dispatch(setTxDialogPending(false));
-    dispatch(setTxDialogFailed(false));
-    toast.success("Swap offer sent successfully!");
-    dispatch({ type: "LOAD_ALL_OFFERS" });
-
-    navigate(
-      `/nft/${listingNFT.listingDetails.network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
+    dispatch(
+      startTxProcess({
+        txHash: txResult.hash,
+        initiator: txInitiators.ADD_SWAP_OFFER,
+      })
     );
+    txResult.wait();
   };
   return (
     <Box
