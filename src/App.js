@@ -126,11 +126,11 @@ function App() {
     dispatch(getAllMarketItems());
     dispatch(getAllCollections());
     getTxCharge();
-
+    /*
     try {
       activateInjectedProvider("MetaMask");
       activate(injectedConnector);
-    } catch {}
+    } catch {}*/
   }, []);
 
   return (
