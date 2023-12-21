@@ -72,6 +72,22 @@ function Market({ isHome }) {
     setFilterObj(filterObj);
   };
 
+  const sortByOrderMethod = (items, orderMethod) => {
+    const sortedItems = [...items];
+    switch (orderMethod) {
+      case "Price: Low to High":
+        return sortedItems.sort((a, b) => a.price - b.price);
+      case "Price: High to Low":
+        return sortedItems.sort((a, b) => b.price - a.price);
+      case "Newest":
+        return sortedItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      case "Oldest":
+        return sortedItems.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      default:
+        return sortedItems.sort((a, b) => a.price - b.price);
+    }
+  };
+
   const filteredMarketItems = marketItems.filter((item) => {
     if (item.isSold) {
       return false;
@@ -81,38 +97,24 @@ function Market({ isHome }) {
       item.nftDetails &&
       item.nftDetails.metadata &&
       item.nftDetails.metadata.name &&
-      !item.nftDetails.metadata.name
-        .toLowerCase()
-        .includes(keyword.toLowerCase())
+      !item.nftDetails.metadata.name.toLowerCase().includes(keyword.toLowerCase())
     ) {
       return false;
     }
 
-    if (
-      filterObj.minPrice !== 0 &&
-      parseInt(item.Price, 10) < filterObj.minPrice
-    ) {
+    if (filterObj.minPrice !== 0 && parseInt(item.price, 10) < filterObj.minPrice) {
       return false;
     }
 
-    if (
-      filterObj.maxPrice !== 0 &&
-      parseInt(item.Price, 10) > filterObj.maxPrice
-    ) {
+    if (filterObj.maxPrice !== 0 && parseInt(item.price, 10) > filterObj.maxPrice) {
       return false;
     }
 
-    if (
-      filterObj.blockchain !== "empty" &&
-      item.Network.toLowerCase() !== filterObj.blockchain
-    ) {
+    if (filterObj.blockchain !== "empty" && item.network?.toLowerCase() !== filterObj.blockchain) {
       return false;
     }
 
-    if (
-      filterObj.collection !== "empty" &&
-      item.NFTContractAddress !== filterObj.collection
-    ) {
+    if (filterObj.collection !== "empty" && item.NFTContractAddress !== filterObj.collection) {
       return false;
     }
 
@@ -195,7 +197,7 @@ function Market({ isHome }) {
             {!isLoading &&
               view !== 1 &&
               filteredMarketItems.length > 0 &&
-              filteredMarketItems.map((item, index) => {
+              sortByOrderMethod(filteredMarketItems, orderMethod).map((item, index) => {
                 return (
                   <NFTMarketCard
                     marketItem={item}
