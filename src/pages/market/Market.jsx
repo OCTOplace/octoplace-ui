@@ -110,11 +110,11 @@ function Market({ isHome }) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && item.network?.toLowerCase() !== filterObj.blockchain) {
+    if (filterObj.blockchain !== "empty" && item.network?.toLowerCase() !== filterObj.blockchain?.toLowerCase()) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && item.NFTContractAddress !== filterObj.collection) {
+    if (filterObj.collection !== "empty" && item.nftContract?.toLowerCase() !== filterObj.collection?.toLowerCase()) {
       return false;
     }
 
