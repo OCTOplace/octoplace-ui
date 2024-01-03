@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getActiveListingsFromLoggingAPI } from "../thunk/get-active-listings";
 
 const initialState = {
   allListings: [],
   activeListings: [],
+  newActiveListings:[],
   completedListings: [],
   offers: [],
   selectedTab: 0,
@@ -29,6 +31,7 @@ export const listingSlice = createSlice({
     setActiveListings: (state, action) => {
       state.activeListings = action.payload;
     },
+    
     setCompletedListings: (state, action) => {
       state.completedListings = action.payload;
     },
@@ -44,6 +47,12 @@ export const listingSlice = createSlice({
       state.selectedTab = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(getActiveListingsFromLoggingAPI.fulfilled, (state, action) => {
+      console.log("fulfilled")
+      state.newActiveListings = action.payload
+    })
+  }
 });
 
 // Action creators are generated for each case reducer function

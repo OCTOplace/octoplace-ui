@@ -50,7 +50,7 @@ import DashboardHome from "./pages/dashboard/dashboardHome";
 import DashboardGuest from "./pages/dashboard/dashboardGuest";
 import DashboardSettings from "./pages/dashboard/dashboardSettings";
 import contractInteraction from "./contracts";
-
+import {getActiveListingsFromLoggingAPI} from "./redux/thunk/get-active-listings";
 import { ThemeProvider } from "@mui/system";
 import { theme } from "./theme";
 import { TxProcess } from "./components/tx-process/tx-process";
@@ -120,6 +120,7 @@ function App() {
     dispatch(setTxCharge(txCharge));
   };
   useEffect(() => {
+    dispatch(getActiveListingsFromLoggingAPI());
     dispatch({ type: "LOAD_ALL_LISTING" });
     dispatch({ type: "LOAD_ALL_OFFERS" });
     dispatch(getAllTrades());

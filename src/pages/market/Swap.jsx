@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import MarketMenu from "../../components/MarketMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveListings } from "../../redux/slices/listing-slice";
-import { getActiveListings, sortListigs } from "../../utils/format-listings";
+import {  sortListigs } from "../../utils/format-listings";
 import {
   Box,
   IconButton,
@@ -21,7 +21,6 @@ import InputBase from "@mui/material/InputBase";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";
-
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
     padding: ".3rem 1rem",
@@ -42,8 +41,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 function Swap({ isHome }) {
   const dispatch = useDispatch();
-  const listings = useSelector((state) => state.listings.allListings);
-  const activeListings = useSelector((state) => state.listings.activeListings);
+  const activeListings = useSelector((state) => state.listings.newActiveListings);
   const [view, setView] = useState(2);
   const [orderMethod, setOrderMethod] = useState("Newest");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
@@ -77,46 +75,11 @@ function Swap({ isHome }) {
   };
 
   useEffect(() => {
-    if (listings.length > 0) {
-      const active = getActiveListings(listings);
-      const sorted = sortListigs(active, 0);
-      dispatch(setActiveListings(sorted));
-      setIsLoading(false);
+    if(activeListings.length > 0){
+      setIsLoading(false)
     }
-  }, [listings]);
-  /*
-  const fetchData = () => {
-    // When this function runs, add the next 6 new items to the active listing directory. If we are at the end of the list, set setHasMore to false.
-    if (activeListings.length >= listings.length) {
-      console.log("No more listings to fetch");
-      // setHasMore(false);
-      return;
-    }
-    // Calculate the index range for the next 6 items
-    const startIndex = activeListings.length;
-    const endIndex = Math.min(startIndex + 6, listings.length);
-    // Fetch the new items or generate them
-    const newItems = fetchNextItems(startIndex, endIndex); // Replace with your own logic
-    // Add the new items to the active listings
-    const updatedListings = [...activeListings, ...newItems];
-    // Update the active listings state
-    dispatch(setActiveListings(updatedListings));
-  };
-
-  const fetchNextItems = (startIndex, endIndex) => {
-    const newItems = [];
-    for (let i = startIndex; i < endIndex; i++) {
-      newItems.push(listings[i]);
-    }
-    return newItems;
-  };
-
-  const refresh = () => {
-    setTimeout(() => {
-      dispatch(setActiveListings(activeListings.concat(activeListings)));
-    }, 1500);
-  };
-*/
+  }, [activeListings])
+  
   const handleSearch = (event) => {
     setKeyword(event.target.value);
   };
