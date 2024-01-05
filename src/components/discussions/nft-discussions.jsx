@@ -40,6 +40,7 @@ import {
   startTxProcess,
 } from "../../redux/slices/tx-slice";
 import { txInitiators, txStatus } from "../../constants/tx-initiators";
+import avatarImage from "../../assets/default-user.jpg";
 
 export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   const sendDataToGTM = useGTMDispatch();
@@ -164,6 +165,51 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
         background: "#F78C09",
         color: "#262626",
       },
+      container: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+        gap: "1rem",
+        width: "100%",
+        height: "100%",
+        maxHeight: "400px",
+        overflowY: "auto",
+        padding: "1rem",
+        backgroundColor: "transparent",
+        border: "1px solid #6C6C6C",
+        borderRadius: "1rem",
+      },
+      messageRow: {
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        gap: "1rem",
+        width: "100%",
+      },
+      avatar: {
+        width: "50px",
+        height: "50px",
+        borderRadius: "50%",
+        backgroundColor: "#6C6C6C",
+        padding: "2rem",
+      },
+      textCol: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+        gap: "0.5rem",
+      },
+      name: {
+        fontSize: "0.938rem",
+        fontWeight: "600",
+        color: "#F78C09",
+      },
+      clipBordIcon: {
+        fontSize: "0.938rem",
+        color: "#6C6C6C",
+      },
     },
   };
 
@@ -192,7 +238,7 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
   }, []);
 
   const getDiscussions = async () => {
-    dispatch(getNftDiscussions({ address, tokenId, network }));
+    dispatch(getNftDiscussions({ address, tokenId, network, owner: account }));
   };
 
   useEffect(() => {
@@ -288,29 +334,82 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
         <></>
       )}
       <AccordionDetails sx={styles.accordionBody}>
-        <Box sx={styles.detailsBox}>
-          {discussions.map((item) => {
-            return (
-              <Box key={item._id} sx={styles.comments}>
-                <Typography sx={styles.address}>
-                  {shortenAddress(item.senderAddress)}
-                  <IconButton
-                    onClick={() => {
-                      copy(item.senderAddress);
-                      toast.success("Address copied!");
+        <Box sx={styles.container}>
+          {discussions.map((message) => (
+            <Box key={message._id} sx={styles.messageRow}>
+              <Box sx={styles.avatar}>
+                {message.user && (
+                  <img
+                    src={
+                      message.user.avatarImage
+                        ? process.env.REACT_APP_API_URL + message.user.avatarImage
+                        : avatarImage
+                    }
+                    alt="collection-avatar"
+                    style={{
+                      width: "25px",
+                      height: "25px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
                     }}
-                    sx={styles.copyButton}
-                  >
-                    <ContentCopy fontSize="small" />
-                  </IconButton>
-                </Typography>
-                <Typography sx={styles.message} variant="body1">
-                  {item.message}
-                </Typography>
+                  />
+                )}
+                {!message.user && (
+                  <img
+                    src={avatarImage}
+                    alt="collection-avatar"
+                    style={{
+                      width: "25px",
+                      height: "25px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+                &nbsp;{(message.user && message.user.title) || shortenAddress(message.senderAddress)}
+                <IconButton
+                  onClick={() => {
+                    copy(message.senderAddress);
+                    toast.success("Address copied!");
+                  }}
+                  sx={styles.copyButton}
+                >
+                  <ContentCopy fontSize="small" />
+                </IconButton>
+                {message.message}
+
               </Box>
-            );
-          })}
+            </Box>
+          ))}
         </Box>
+
+        {
+          /*
+      <Box sx={styles.detailsBox}>
+        discussions.map((item) => {
+          return (
+            <Box key={item._id} sx={styles.comments}>
+              <Typography sx={styles.address}>
+                {shortenAddress(item.senderAddress)}
+                <IconButton
+                  onClick={() => {
+                    copy(item.senderAddress);
+                    toast.success("Address copied!");
+                  }}
+                  sx={styles.copyButton}
+                >
+                  <ContentCopy fontSize="small" />
+                </IconButton>
+              </Typography>
+              <Typography sx={styles.message} variant="body1">
+                {item.message}
+              </Typography>
+            </Box>
+          );
+        })
+      </Box>
+      */
+        }
         <Box sx={styles.row}>
           <Box sx={styles.textContainer}>
             <TextField
@@ -365,6 +464,6 @@ export const NFTDiscussions = ({ address, tokenId, network, isAccordion }) => {
           </LoadingButton>
         </Box>
       </AccordionDetails>
-    </Accordion>
+    </Accordion >
   );
 };
