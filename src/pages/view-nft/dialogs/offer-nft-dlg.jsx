@@ -62,7 +62,7 @@ export const OfferNFTDialog = (props) => {
   const sendDataToGTM = useGTMDispatch();
   const loading = useSelector((state) => state.myNFT.isLoading);
   const originalMyNFTs = useSelector((state) => state.myNFT.nfts);
-  const listings = useSelector((state) => state.listings.allListings);
+  const listings = useSelector((state) => state.listings.newActiveListings);
   const handleClose = () => {
     onClose();
   };

@@ -380,7 +380,9 @@ export const NFTView = () => {
     }
     forceUpdate();
   };
-
+useEffect(() => {
+    console.log("debug market",market);
+},[market])
   return (
     <Fragment>
       <Container>

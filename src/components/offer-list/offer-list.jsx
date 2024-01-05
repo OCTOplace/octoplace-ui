@@ -56,11 +56,6 @@ export const OfferList = (props) => {
 
   const {  network, offers } = props;
 
-
-  useEffect(() => {
-    console.log("Selected Offers:", offers)
-  }, [offers]);
-
   return (
     <Accordion
       sx={styles.accordion2}
