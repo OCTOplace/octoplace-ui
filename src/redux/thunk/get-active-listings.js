@@ -29,7 +29,6 @@ export const getActiveListingsFromLoggingAPI = createAsyncThunk(
       };
       finalListings.push(obj);
     }
-    console.log("/////////////////////////// getActiveListings", finalListings);
     return finalListings;
   }
 );

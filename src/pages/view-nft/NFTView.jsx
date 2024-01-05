@@ -38,6 +38,8 @@ import {
   startTxProcess,
 } from "../../redux/slices/tx-slice";
 import { txInitiators, txStatus } from "../../constants/tx-initiators";
+import { getSelectedListing } from "../../redux/thunk/getSelectedListing";
+import { setSelectedListing } from "../../redux/slices/listing-slice";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -59,19 +61,46 @@ export const NFTView = () => {
   const [collectionName, setCollectionName] = useState("");
   const [owner, setOwner] = useState("");
   const [isListedForSwap, setListedForSwap] = useState(false);
-  const [listing, setListing] = useState();
-  const [foundSwapListing, setfoundSwapListing] = useState();
   const { account, chainId } = useWeb3React();
   const [sendOpen, setSendOpen] = useState(false);
   const [sellOpen, setSellOpen] = useState(false);
   const [isUpdatePrice, setIsUpdatePrice] = useState(false);
-  const listings = useSelector((state) => state.listings.allListings);
-  const loading = useSelector((state) => state.app.isLoading);
+  const [loading, setLoading] = useState(true);
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
   const balance = useSelector((state) => state.account.balance);
 
+  const selectedListing = useSelector(
+    (state) => state.listings.selectedListing
+  );
+  const isMarketLoading = useSelector((state) => state.market.isLoading);
+  const isListingsLoading = useSelector((state) => state.listings.isLoading);
+
   const { txInitiator, status } = useSelector((state) => state.txProcess);
+
+
+  useEffect(()=> {
+    return () => {
+      dispatch(setSelectedListing());
+      setListedForSwap(false);
+    }
+  },[])
+  useEffect(() => {
+    if (!isMarketLoading && !isListingsLoading) {
+      setLoading(false);
+    }
+  }, [isMarketLoading, isListingsLoading]);
+  useEffect(() => {
+    if (network && address && tokenId) {
+      dispatch(
+        getSelectedListing({
+          network,
+          address,
+          tokenId,
+        })
+      );
+    }
+  }, [network, address, tokenId]);
 
   useEffect(() => {
     if (
@@ -120,6 +149,11 @@ export const NFTView = () => {
     }
   }, [status]);
 
+  useEffect(() => {
+    if (selectedListing) {
+      setListedForSwap(true);
+    }
+  }, [selectedListing]);
   const styles = {
     row: {
       display: "flex",
@@ -142,33 +176,6 @@ export const NFTView = () => {
     },
   };
 
-  const getDetailsFromContract = async () => {
-    try {
-      const netDetails = getNetworkInfo(network);
-      const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-      const contract = new Contract(
-        address,
-        netDetails.dataNetwork.ERC_ABI,
-        provider
-      );
-      let url = await contract.tokenURI(tokenId);
-      url = metaUrl(url);
-      let meta;
-      try {
-        const result = await axios.get(url);
-        meta = result.data;
-      } catch (e) {
-        meta = undefined;
-      }
-      const name = await contract.name();
-      const ownerAddress = await contract.ownerOf(tokenId);
-
-      setOwner(ownerAddress);
-      setCollectionName(name);
-      setMetadata(meta);
-    } catch {}
-  };
-
   const getDetailsFromSite = async () => {
     const nftDetails = await getCommonNFTDetail({
       contractAddress: address,
@@ -180,8 +187,6 @@ export const NFTView = () => {
       setCollectionName(nftDetails.collection_name || "");
       setMetadata(nftDetails.metadata);
       // setNetwork(nftDetails.network || "");
-    } else {
-      getDetailsFromContract();
     }
   };
 
@@ -189,25 +194,6 @@ export const NFTView = () => {
     window.scrollTo(0, 0);
     getDetailsFromSite();
   }, []);
-
-  useEffect(() => {
-    if (listings.length > 0 && address && tokenId) {
-      const found = listings.find(
-        (x) =>
-          x.listingDetails.tokenAddress.toLowerCase() ===
-            address.toLowerCase() &&
-          x.listingDetails.tokenId === Number(tokenId) &&
-          x.listingDetails.isCompleted === false &&
-          x.listingDetails.isCancelled === false
-      );
-      if (found) {
-        setListedForSwap(true);
-        //setListing(found);
-        setfoundSwapListing(found);
-      }
-    }
-  }, [listings, address, tokenId]);
-  //}, [listings, address, tokenId]);
 
   useEffect(() => {
     if (marketItems.length > 0) {
@@ -263,7 +249,7 @@ export const NFTView = () => {
         signer
       );
       const txResult = await contract.removeListingById(
-        foundSwapListing.listingDetails.listingid
+        selectedListing.listingid
       );
       dispatch(setTxDialogHash(txResult.hash));
       dispatch(
@@ -405,10 +391,10 @@ export const NFTView = () => {
             name={collectionName}
           />
           <NFTCardActionContaniner>
-            {!loading && (market || isListedForSwap) ? (
+            {!loading && (market || selectedListing) ? (
               <>
-                {isListedForSwap ? (
-                  <Box sx={styles.row}>
+                {isListedForSwap && account ? (
+                  <>
                     {account &&
                     account.toLowerCase() === owner.toLowerCase() ? (
                       <Button
@@ -428,81 +414,111 @@ export const NFTView = () => {
                         Offer SWAP
                       </Button>
                     )}
-                  </Box>
+                  </>
                 ) : (
+                  <></>
+                )}
+                {selectedListing && !account ? (
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={handleOfferSwap}
+                  >
+                    Offer SWAP
+                  </Button>
+                ) : (
+                  ""
+                )}
+                {market && account ? (
                   <>
                     {account &&
                     market &&
                     account.toLowerCase() === market.seller.toLowerCase() ? (
-                      <Box sx={styles.row}>
-                        <Button
-                          sx={styles.orangeButton}
-                          color="error"
-                          variant="contained"
-                          onClick={cancelSale}
-                        >
-                          Remove Listing
-                        </Button>
-                        <Button
-                          sx={styles.orangeButton}
-                          variant="contained"
-                          onClick={handleUpdatePrice}
-                        >
-                          Update Price
-                        </Button>
-                      </Box>
+                      <>
+                        <Box sx={styles.row}>
+                          <Button
+                            sx={styles.orangeButton}
+                            color="error"
+                            variant="contained"
+                            onClick={cancelSale}
+                          >
+                            Remove Listing
+                          </Button>
+                          <Button
+                            sx={styles.orangeButton}
+                            variant="contained"
+                            onClick={handleUpdatePrice}
+                          >
+                            Update Price
+                          </Button>
+                        </Box>
+                      </>
                     ) : (
-                      <Box sx={styles.row}>
-                        <Button
-                          sx={styles.orangeButton}
-                          variant="contained"
-                          onClick={buyNFT}
-                        >
-                          Buy
-                        </Button>
-                      </Box>
-                    )}
-                    {market && market.price && (
-                      <Typography
-                        variant="h6"
-                        sx={{ mt: 0, mb: 1, color: "#FFFFFF" }}
-                      >
-                        Price: {`${market.price}`} TFUEL
-                      </Typography>
+                      <>
+                        <Box sx={styles.row}>
+                          <Button
+                            sx={styles.orangeButton}
+                            variant="contained"
+                            onClick={buyNFT}
+                          >
+                            Buy
+                          </Button>
+                        </Box>
+                      </>
                     )}
                   </>
+                ) : (
+                  <></>
+                )}
+                {market && !account ? (
+                  <Box sx={styles.row}>
+                    <Button
+                      sx={styles.orangeButton}
+                      variant="contained"
+                      onClick={buyNFT}
+                    >
+                      Buy
+                    </Button>
+                  </Box>
+                ) : (
+                  <></>
                 )}
               </>
             ) : (
+              ""
+            )}
+            {!loading &&
+            !market &&
+            !isListedForSwap &&
+            account &&
+            account.toLowerCase() === owner.toLowerCase() ? (
               <>
-                {account &&
-                  account.toLowerCase() === owner.toLowerCase() &&
-                  !isListedForSwap && (
-                    <Box sx={styles.row}>
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={() => setListDlgOpen(true)}
-                      >
-                        LIST TO SWAP
-                      </Button>
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={() => setSellOpen(true)}
-                      >
-                        LIST TO SELL
-                      </Button>
-                      <Button
-                        sx={styles.orangeButton}
-                        variant="contained"
-                        onClick={() => setSendOpen(true)}
-                      >
-                        SEND NFT
-                      </Button>
-                    </Box>
-                  )}
+                <Box sx={styles.row}>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setListDlgOpen(true)}
+                  >
+                    LIST TO SWAP
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setSellOpen(true)}
+                  >
+                    LIST TO SELL
+                  </Button>
+                  <Button
+                    sx={styles.orangeButton}
+                    variant="contained"
+                    onClick={() => setSendOpen(true)}
+                  >
+                    SEND NFT
+                  </Button>
+                </Box>
               </>
+            ) : (
+              ""
             )}
             <NFTDetails
               metadata={metadata}
@@ -510,10 +526,11 @@ export const NFTView = () => {
               tokenId={tokenId}
               chainId={network}
             />
-            {foundSwapListing && (
+            {selectedListing && (
               <OfferList
                 network={network}
-                listingId={foundSwapListing.listingDetails.listingid}
+                offers={selectedListing.offers}
+                listingId={selectedListing.listingid}
               />
             )}
             <NFTDiscussions
@@ -540,10 +557,10 @@ export const NFTView = () => {
         network={network}
         address={address}
       />
-      {foundSwapListing && (
+      {selectedListing && (
         <OfferNFTDialog
           tokenAddress={address}
-          listingId={foundSwapListing.listingDetails.listingid}
+          listingId={selectedListing.listingid}
           open={offerDlgOpen}
           network={network}
           onClose={(isSuccess) => {
