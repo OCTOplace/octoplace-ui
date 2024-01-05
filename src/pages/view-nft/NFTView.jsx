@@ -40,6 +40,7 @@ import {
 import { txInitiators, txStatus } from "../../constants/tx-initiators";
 import { getSelectedListing } from "../../redux/thunk/getSelectedListing";
 import { setSelectedListing } from "../../redux/slices/listing-slice";
+import { getActiveListingsFromLoggingAPI } from "../../redux/thunk/get-active-listings";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -107,7 +108,7 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_SWAP_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch({ type: "LOAD_ALL_LISTING" });
+      dispatch(getActiveListingsFromLoggingAPI());
       setListedForSwap(false);
       toast.success("NFT Listing removed!");
       dispatch(setTxDialogSuccess(true));
@@ -144,7 +145,7 @@ export const NFTView = () => {
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
-      dispatch({ type: "LOAD_ALL_LISTING" });
+      dispatch(getActiveListingsFromLoggingAPI());
       dispatch(abortTxProcess());
     }
   }, [status]);
@@ -249,7 +250,7 @@ export const NFTView = () => {
         signer
       );
       const txResult = await contract.removeListingById(
-        selectedListing.listingid
+        selectedListing.listingId
       );
       dispatch(setTxDialogHash(txResult.hash));
       dispatch(

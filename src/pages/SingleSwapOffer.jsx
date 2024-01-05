@@ -1,15 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Box, Button, Grid, Typography } from "@mui/material";
 import CachedIcon from "@mui/icons-material/Cached";
 import { styled } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
-import ercAbi from "./../abi/erc721.json";
-import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import {  Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import {
   formatOffers,
-  metadataUrl,
-  formatListings,
 } from "../utils/format-listings";
 import React, { useState } from "react";
 import axios from "axios";
@@ -29,12 +27,20 @@ import {
   showTxDialog,
 } from "../redux/slices/app-slice";
 import { txInitiators, txStatus } from "../constants/tx-initiators";
-import { abortTxProcess, completeTxProcess, startTxProcess } from "../redux/slices/tx-slice";
+import {
+  abortTxProcess,
+  completeTxProcess,
+  startTxProcess,
+} from "../redux/slices/tx-slice";
+import { getCommonNFTDetail } from "../redux/thunk/getNftDetail";
 const noImage =
   "data:image/png;base64,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";
-
+const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
 export const SingleSwapOffer = () => {
-  const { offerId, network } = useParams();
+  const {
+    offerId,
+    network,
+  } = useParams();
   const [listingObj, setListingObj] = useState();
   const [offerObj, setOfferObj] = useState();
   const [obj, setObj] = useState();
@@ -53,11 +59,8 @@ export const SingleSwapOffer = () => {
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
-      dispatch({ type: "LOAD_ALL_OFFERS" });
-      dispatch({ type: "LOAD_ALL_LISTING" });
-      dispatch(getAllTrades());
-      getdetails();
-      dispatch(completeTxProcess())
+      getdetails(offerId);
+      dispatch(completeTxProcess());
     }
     if (
       txInitiator === txInitiators.ACCEPT_SWAP_OFFER &&
@@ -67,24 +70,20 @@ export const SingleSwapOffer = () => {
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
       toast.success("Swap Successful!");
-      dispatch({ type: "LOAD_ALL_OFFERS" });
-      dispatch({ type: "LOAD_ALL_LISTING" });
-      getdetails();
-      dispatch(completeTxProcess())
+      getdetails(offerId);
+      dispatch(completeTxProcess());
     }
     if (
       txInitiator === txInitiators.WITHDRAW_SWAP_OFFER &&
       status === txStatus.COMPLETED
     ) {
       toast.success("Withdraw Offer Successful!");
-      dispatch({ type: "LOAD_ALL_OFFERS" });
-      dispatch({ type: "LOAD_ALL_LISTING" });
       dispatch(getAllTrades());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
-      getdetails();
-      dispatch(completeTxProcess())
+      getdetails(offerId);
+      dispatch(completeTxProcess());
     }
     if (
       (txInitiator === txInitiators.DECLINE_SWAP_OFFER ||
@@ -98,89 +97,68 @@ export const SingleSwapOffer = () => {
       dispatch(abortTxProcess());
     }
   }, [txInitiator, status]);
-  const getdetails = async () => {
-    const netDetails = getNetworkInfo(network);
-    const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-    try {
-      const contract = new Contract(
-        netDetails.dataNetwork.SWAP_CONTRACT,
-        netDetails.dataNetwork.SWAP_ABI,
-        provider
-      );
-      let offer = await contract.readOfferById(offerId);
-      offer = formatOffers([offer])[0];
-      const {
-        listingTokenAddress,
-        offerTokenAddress,
-        offerTokenOwner,
-        listingTokenOwner,
-        listingTokenId,
-        offerTokenId,
-        listingId,
-      } = offer;
-      setObj(offer);
 
-      //Listing validity
-      let listingValidityObj = await contract.readListingById(listingId);
-      listingValidityObj = formatListings([listingValidityObj])[0];
-      listingValidityObj.isCancelled
-        ? setIsListingCancelled(true)
-        : setIsListingCancelled(false);
+  const getdetails = async (offerNum) => {
+    const offerResult = await axios.get(
+      `${apiUrl}/api/swap-data/get-swap-offer-details/${network}/${offerNum}`
+    );
+    let offer = offerResult.data;
+    const {
+      listingTokenAddress,
+      offerTokenAddress,
+      offerTokenOwner,
+      listingTokenOwner,
+      listingTokenId,
+      offerTokenId,
+    } = offer;
+    setObj(offer);
 
-      //Listing
-      const listContract = new Contract(listingTokenAddress, ercAbi, provider);
-      const listCollName = await listContract.name();
-      const listUri = await listContract.tokenURI(listingTokenId);
-      let listMeta;
-      try {
-        const result = await axios.get(metadataUrl(listUri));
-        listMeta = result.data;
-      } catch {
-        listMeta = {
-          image: noImage,
-          name: listCollName,
-          description: "",
-        };
-      }
+    //Listing validity
+    const listingResult = await axios.get(`${apiUrl}/api/swap-data/get-listing-detail/${network}/${listingTokenAddress}/${listingTokenId}`);
+    const listing = listingResult.data;
+    listing.isCancelled
+      ? setIsListingCancelled(true)
+      : setIsListingCancelled(false);
 
-      setListingObj({
-        name: listCollName,
-        metadata: listMeta,
-        tokenId: listingTokenId,
-        owner: listingTokenOwner,
-        address: listingTokenAddress,
-      });
+    // Listing NFT
+    const listingNFTDetails = await  getCommonNFTDetail({
+      contractAddress: listingTokenAddress,
+      tokenId: listingTokenId,
+    })
 
-      // Offer
-      const offerContract = new Contract(offerTokenAddress, ercAbi, provider);
-      const offerCollName = await offerContract.name();
-      const offerUri = await offerContract.tokenURI(offerTokenId);
-      let offerMeta;
-      try {
-        const result = await axios.get(metadataUrl(offerUri));
-        offerMeta = result.data;
-      } catch {
-        offerMeta = {
-          image: noImage,
-          name: offerCollName,
-          description: "",
-        };
-      }
+    setListingObj({
+      name: listingNFTDetails.metadata.name,
+      metadata: listingNFTDetails.metadata,
+      tokenId: listingTokenId,
+      owner: listingTokenOwner,
+      address: listing.tokenAddress,
+    });
 
-      setOfferObj({
-        name: offerCollName,
-        metadata: offerMeta,
-        tokenId: offerTokenId,
-        owner: offerTokenOwner,
-        address: offerTokenAddress,
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    const offerNFTDetails = await  getCommonNFTDetail({
+      contractAddress: offerTokenAddress,
+      tokenId: offerTokenId,
+    })
+    console.log("log", offer, offerNFTDetails)
+    setOfferObj({
+      name: offerNFTDetails.metadata.name,
+      metadata: offerNFTDetails.metadata,
+      tokenId: offerTokenId,
+      owner: offerTokenOwner,
+      address: offerTokenAddress,
+    });
   };
+
   useEffect(() => {
-    getdetails();
-  }, []);
+    if(offerId &&
+      network){
+        
+        getdetails(offerId,
+          network);
+      }
+  }, [
+    offerId,
+    network,
+  ]);
   const dispatch = useDispatch();
 
   const handleDecline = async () => {
@@ -203,7 +181,12 @@ export const SingleSwapOffer = () => {
       );
       const txResult = await contract.declineOffer(obj.offerId, obj.listingId);
       dispatch(setTxDialogHash(txResult.hash));
-      dispatch(startTxProcess({txHash:txResult.hash, initiator: txInitiators.DECLINE_SWAP_OFFER}));
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.DECLINE_SWAP_OFFER,
+        })
+      );
       txResult.wait();
     } catch (err) {
       toast.error(err);
@@ -233,7 +216,12 @@ export const SingleSwapOffer = () => {
 
       const txResult = await contract.removeOfferById(obj.offerId);
       dispatch(setTxDialogHash(txResult.hash));
-      dispatch(startTxProcess({txHash:txResult.hash, initiator: txInitiators.WITHDRAW_SWAP_OFFER}));
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.WITHDRAW_SWAP_OFFER,
+        })
+      );
       txResult.wait();
     } catch (err) {
       toast.error(err);
@@ -262,9 +250,13 @@ export const SingleSwapOffer = () => {
       );
       const txResult = await contract.acceptOffer(obj.offerId, obj.listingId);
       dispatch(setTxDialogHash(txResult.hash));
-      dispatch(startTxProcess({txHash:txResult.hash, initiator: txInitiators.ACCEPT_SWAP_OFFER}));
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.ACCEPT_SWAP_OFFER,
+        })
+      );
       txResult.wait();
-      
     } catch (err) {
       toast.error("Request Failed!");
       dispatch(setTxDialogSuccess(false));

@@ -12,10 +12,11 @@ export const getSelectedListing = createAsyncThunk(
       `${apiUrl}/api/swap-data/get-listing-detail/${network}/${address}/${tokenId}`
     );
     const listing = result.data;
-    const offersResult = await axios.get(`${apiUrl}/api/swap-data/get-offers-from-listing/${listing.network}/${listing.listingId}/${listing.tokenAddress}`)
+    const offersResult = await axios.get(`${apiUrl}/api/swap-data/get-offers-from-listing/${listing.network}/${listing.tokenId}/${listing.tokenAddress}`)
     const finalOffers = [];
     for(let offer of offersResult.data){
-        const nftResult = await axios.get(
+        if(offer.listingId===listing.listingId){
+          const nftResult = await axios.get(
             `${nftApiUrl}/items/${offer.offerTokenAddress}/${offer.offerTokenId}`
           );
           const obj = {
@@ -28,6 +29,7 @@ export const getSelectedListing = createAsyncThunk(
             },
           };
           finalOffers.push(obj)
+        }
     }
     return {...listing, offers: finalOffers};
   }
