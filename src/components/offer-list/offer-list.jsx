@@ -8,7 +8,6 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { ExpandMore, FormatListBulleted } from "@mui/icons-material";
-import { useEffect } from "react";
 import { OfferItem } from "./offer-item";
 
 export const OfferList = (props) => {
