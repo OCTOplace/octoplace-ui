@@ -563,7 +563,7 @@ useEffect(() => {
       {selectedListing && (
         <OfferNFTDialog
           tokenAddress={address}
-          listingId={selectedListing.listingid}
+          listingId={selectedListing.listingId}
           open={offerDlgOpen}
           network={network}
           onClose={(isSuccess) => {
