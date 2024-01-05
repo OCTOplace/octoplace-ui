@@ -41,6 +41,8 @@ import { txInitiators, txStatus } from "../../constants/tx-initiators";
 import { getSelectedListing } from "../../redux/thunk/getSelectedListing";
 import { setSelectedListing } from "../../redux/slices/listing-slice";
 import { getActiveListingsFromLoggingAPI } from "../../redux/thunk/get-active-listings";
+import { getAllMarketItems } from "../../redux/thunk/get-all-market-items";
+import { getSelectedMarketItem } from "../../redux/thunk/getSelectedMarketItem";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -54,7 +56,7 @@ function useForceUpdate() {
 export const NFTView = () => {
   const { network, address, tokenId } = useParams();
   const sendDataToGTM = useGTMDispatch();
-  const [market, setMarket] = useState();
+  const market = useSelector(state => state.market.selectedMarketItem)
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
@@ -79,13 +81,13 @@ export const NFTView = () => {
 
   const { txInitiator, status } = useSelector((state) => state.txProcess);
 
-
-  useEffect(()=> {
+  useEffect(() => {
     return () => {
       dispatch(setSelectedListing());
       setListedForSwap(false);
-    }
-  },[])
+    };
+  }, []);
+
   useEffect(() => {
     if (!isMarketLoading && !isListingsLoading) {
       setLoading(false);
@@ -103,6 +105,15 @@ export const NFTView = () => {
     }
   }, [network, address, tokenId]);
 
+  const updateAfterListing = () => {
+    dispatch(
+      getSelectedListing({
+        network,
+        address,
+        tokenId,
+      })
+    );
+  };
   useEffect(() => {
     if (
       txInitiator === txInitiators.REMOVE_SWAP_LISTING &&
@@ -120,11 +131,13 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
+      dispatch(getSelectedMarketItem({network, address, tokenId}))
       getDetailsFromSite();
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogPending(false));
       toast.success("NFT Listing Removed!");
+
       setSellOpen(false);
       dispatch(completeTxProcess());
     }
@@ -132,6 +145,7 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
       status === txStatus.FAILED
     ) {
+      dispatch(getSelectedMarketItem({network, address, tokenId}))
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
@@ -142,6 +156,7 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_SWAP_LISTING &&
       status === txStatus.FAILED
     ) {
+      dispatch(getActiveListingsFromLoggingAPI());
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
@@ -196,18 +211,10 @@ export const NFTView = () => {
     getDetailsFromSite();
   }, []);
 
+  
   useEffect(() => {
-    if (marketItems.length > 0) {
-      const index = marketItems.findIndex(
-        (obj) =>
-          !obj.isSold &&
-          obj.tokenId === Number(tokenId) &&
-          obj.nftContract === address &&
-          obj.network === network
-      );
-      setMarket(marketItems[index]);
-    }
-  }, [network, marketItems]);
+    dispatch(getSelectedMarketItem({network, address, tokenId}))
+  }, [network]);
 
   const handleOfferSwap = () => {
     if (account) {
@@ -380,9 +387,9 @@ export const NFTView = () => {
     }
     forceUpdate();
   };
-useEffect(() => {
-    console.log("debug market",market);
-},[market])
+  useEffect(() => {
+    console.log("debug market", market);
+  }, [market]);
   return (
     <Fragment>
       <Container>
@@ -554,7 +561,8 @@ useEffect(() => {
         onClose={(isSuccess) => {
           setListDlgOpen(false);
           if (isSuccess) {
-            dispatch({ type: "LOAD_ALL_LISTING" });
+            updateAfterListing();
+            dispatch(getActiveListingsFromLoggingAPI());
           }
         }}
         network={network}
@@ -595,6 +603,7 @@ useEffect(() => {
         marketId={market ? market.marketId : 0}
         listingId={market ? market.id : 0}
         onCloseDlg={() => {
+          dispatch(getSelectedMarketItem({network, address, tokenId}))
           setSellOpen(false);
           getDetailsFromSite();
           setIsUpdatePrice(false);

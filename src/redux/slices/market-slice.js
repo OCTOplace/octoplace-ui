@@ -3,11 +3,13 @@ import { toast } from "react-toastify";
 import { getAllMarketItems } from "../thunk/get-all-market-items";
 import { getMyMarketItems } from "../thunk/get-all-market-items";
 import { getMarketNFTDetail } from "../thunk/getNftDetail";
+import { getSelectedMarketItem } from "../thunk/getSelectedMarketItem";
 
 const initialState = {
   isLoading: false,
   markets: [],
   myMarketItems: [],
+  selectedMarketItem: undefined
 };
 
 export const marketSlice = createSlice({
@@ -34,6 +36,19 @@ export const marketSlice = createSlice({
     });
     builder.addCase(getAllMarketItems.rejected, (state) => {
       state.isLoading = false;
+      toast.error("Error occured while loading markets.");
+    });
+
+    builder.addCase(getSelectedMarketItem.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getSelectedMarketItem.fulfilled, (state, { payload }) => {
+      state.selectedMarketItem = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getSelectedMarketItem.rejected, (state) => {
+      state.isLoading = false;
+      state.selectedMarketItem = undefined;
       toast.error("Error occured while loading markets.");
     });
 

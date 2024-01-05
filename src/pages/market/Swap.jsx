@@ -21,6 +21,7 @@ import InputBase from "@mui/material/InputBase";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";
+import { getActiveListingsFromLoggingAPI } from "../../redux/thunk/get-active-listings";
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
     padding: ".3rem 1rem",
@@ -79,7 +80,9 @@ function Swap({ isHome }) {
       setIsLoading(false)
     }
   }, [activeListings])
-  
+  useEffect(() => {
+    dispatch(getActiveListingsFromLoggingAPI())
+  }, [])
   const handleSearch = (event) => {
     setKeyword(event.target.value);
   };

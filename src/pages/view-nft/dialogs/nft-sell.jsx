@@ -40,6 +40,7 @@ import {
   abortTxProcess,
 } from "../../../redux/slices/tx-slice";
 import { txInitiators, txStatus } from "../../../constants/tx-initiators";
+import { getAllMarketItems } from "../../../redux/thunk/get-all-market-items";
 export const SellNFT = ({
   network,
   isOpen,
@@ -101,6 +102,7 @@ export const SellNFT = ({
       txInitiator === txInitiators.UPDATE_MARKET_LISTING_PRICE &&
       status === txStatus.COMPLETED
     ) {
+      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -113,6 +115,7 @@ export const SellNFT = ({
       txInitiator === txInitiators.ADD_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
+      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -127,6 +130,7 @@ export const SellNFT = ({
         txInitiator === txInitiators.ADD_MARKET_LISTING) &&
       status === txStatus.FAILED
     ) {
+      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));

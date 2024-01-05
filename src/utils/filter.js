@@ -5,11 +5,10 @@ export function filterListedNFTs(nfts, activeListings, activeOffers) {
       (x) =>
         Number(x.listingDetails.tokenId) === Number(nft.tokenId) &&
         x.listingDetails.tokenAddress.toLowerCase() ===
-          nft.contractAddress.toLowerCase() &&
-        x.network === nft.network &&
-        !x.listingDetails.isCompleted &&
-        !x.listingDetails.isCancelled
+          nft.contractAddress.toLowerCase()
     );
+
+    console.log("///log found", found);
     const found2 = activeOffers.find(
       (x) =>
         x.isCompleted === false &&
