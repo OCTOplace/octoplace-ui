@@ -141,8 +141,22 @@ export const NFTView = () => {
       setSellOpen(false);
       dispatch(completeTxProcess());
     }
+    if(txInitiator === txInitiators.BUY_MARKET_LISTING &&
+      status === txStatus.COMPLETED){
+      getDetailsFromSite();
+      dispatch(getSelectedMarketItem({ network, address, tokenId }));
+      dispatch(setTxDialogFailed(false));
+      dispatch(setTxDialogSuccess(true));
+      dispatch(setTxDialogPending(false));
+      toast.success("NFT buy Successful!");
+
+      sendDataToGTM({
+        event: "View NFT Buy Transaction Successful Popup",
+        customData: { "Collection Address": address, "token Id": tokenId },
+      });
+    }
     if (
-      txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
+      (txInitiator === txInitiators.REMOVE_MARKET_LISTING || txInitiator === txInitiators.BUY_MARKET_LISTING) &&
       status === txStatus.FAILED
     ) {
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
@@ -165,6 +179,11 @@ export const NFTView = () => {
     }
   }, [status]);
 
+
+  useEffect(() => {
+    console.log("This is market:", market)
+    console.log("This is Listing:", selectedListing)
+  }, [market, selectedListing, isListedForSwap])
   useEffect(() => {
     if (selectedListing) {
       setListedForSwap(true);
@@ -360,19 +379,15 @@ export const NFTView = () => {
         overRides
       );
       dispatch(setTxDialogHash(txResult.hash));
-      await txResult.wait();
+      dispatch(
+        startTxProcess({
+          txHash: txResult.hash,
+          initiator: txInitiators.BUY_MARKET_LISTING,
+        })
+      );
+      txResult.wait();
 
-      await getDetailsFromSite();
-
-      dispatch(setTxDialogFailed(false));
-      dispatch(setTxDialogSuccess(true));
-      dispatch(setTxDialogPending(false));
-      toast.success("NFT Listing Successful!");
-
-      sendDataToGTM({
-        event: "View NFT Buy Transaction Successful Popup",
-        customData: { "Collection Address": address, "token Id": tokenId },
-      });
+      
     } catch (err) {
       console.log("Error on buyNFT", err);
       dispatch(setTxDialogFailed(true));
@@ -607,7 +622,9 @@ export const NFTView = () => {
         marketId={market ? market.marketId : 0}
         listingId={market ? market.id : 0}
         onCloseDlg={() => {
-          dispatch(getSelectedMarketItem({ network, address, tokenId }));
+          setTimeout(() => {
+            dispatch(getSelectedMarketItem({ network, address, tokenId }));
+          }, 3000);
           setSellOpen(false);
           getDetailsFromSite();
           setIsUpdatePrice(false);
