@@ -141,10 +141,18 @@ export const NFTView = () => {
       setSellOpen(false);
       dispatch(completeTxProcess());
     }
+    if (
+      txInitiator === txInitiators.ADD_MARKET_LISTING &&
+      status === txStatus.COMPLETED
+    ) {
+      dispatch(getAllMarketItems());
+      dispatch(getSelectedMarketItem({ network, address, tokenId }));
+      console.log("this is called!")
+    }
     if(txInitiator === txInitiators.BUY_MARKET_LISTING &&
       status === txStatus.COMPLETED){
       getDetailsFromSite();
-      dispatch(getSelectedMarketItem({ network, address, tokenId }));
+      
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));

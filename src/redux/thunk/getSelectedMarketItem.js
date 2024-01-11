@@ -13,17 +13,21 @@ export const getSelectedMarketItem = createAsyncThunk(
         `${apiUrl}/api/market-place/get-all-market-items`
       );
       items = result.data;
+      console.log("This is unfiltered:", items, address)
       if (items.length > 0) {
         const index = items.findIndex(
           (obj) =>
             !obj.isSold &&
             obj.tokenId === Number(tokenId) &&
-            obj.nftContract === address &&
+            obj.nftContract.toLowerCase() === address.toLowerCase() &&
             obj.network === network
         );
+
         if (index > 0) {
+            console.log("This is from Action",items[index] )
           return items[index];
         } else {
+            console.log("This is from Action","No data" )
           return undefined;
         }
       }
