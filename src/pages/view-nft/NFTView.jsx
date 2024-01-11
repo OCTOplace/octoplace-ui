@@ -56,7 +56,7 @@ function useForceUpdate() {
 export const NFTView = () => {
   const { network, address, tokenId } = useParams();
   const sendDataToGTM = useGTMDispatch();
-  const market = useSelector(state => state.market.selectedMarketItem)
+  const market = useSelector((state) => state.market.selectedMarketItem);
   const [listDlgOpen, setListDlgOpen] = useState(false);
   const [offerDlgOpen, setOfferDlgOpen] = useState(false);
   const [metadata, setMetadata] = useState();
@@ -131,7 +131,7 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getSelectedMarketItem({network, address, tokenId}))
+      dispatch(getSelectedMarketItem({ network, address, tokenId }));
       getDetailsFromSite();
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogFailed(false));
@@ -145,7 +145,7 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
       status === txStatus.FAILED
     ) {
-      dispatch(getSelectedMarketItem({network, address, tokenId}))
+      dispatch(getSelectedMarketItem({ network, address, tokenId }));
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
@@ -211,9 +211,8 @@ export const NFTView = () => {
     getDetailsFromSite();
   }, []);
 
-  
   useEffect(() => {
-    dispatch(getSelectedMarketItem({network, address, tokenId}))
+    dispatch(getSelectedMarketItem({ network, address, tokenId }));
   }, [network]);
 
   const handleOfferSwap = () => {
@@ -530,6 +529,11 @@ export const NFTView = () => {
             ) : (
               ""
             )}
+            {market && market.price && (
+              <Typography variant="h6" sx={{ mt: 0, mb: 1, color: "#FFFFFF" }}>
+                Price: {`${market.price}`} TFUEL
+              </Typography>
+            )}
             <NFTDetails
               metadata={metadata}
               address={address}
@@ -603,7 +607,7 @@ export const NFTView = () => {
         marketId={market ? market.marketId : 0}
         listingId={market ? market.id : 0}
         onCloseDlg={() => {
-          dispatch(getSelectedMarketItem({network, address, tokenId}))
+          dispatch(getSelectedMarketItem({ network, address, tokenId }));
           setSellOpen(false);
           getDetailsFromSite();
           setIsUpdatePrice(false);
