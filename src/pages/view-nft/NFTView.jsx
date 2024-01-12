@@ -147,7 +147,7 @@ export const NFTView = () => {
     ) {
       dispatch(getAllMarketItems());
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
-      console.log("this is called!")
+      console.log("this is called!");
     }
     if (
       txInitiator === txInitiators.BUY_MARKET_LISTING &&
@@ -155,12 +155,15 @@ export const NFTView = () => {
     ) {
       dispatch(getAllMarketItems());
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
-      console.log("this is called!")
-    }
-    if(txInitiator === txInitiators.BUY_MARKET_LISTING &&
-      status === txStatus.COMPLETED){
       getDetailsFromSite();
-      
+      console.log("this is called!");
+    }
+    if (
+      txInitiator === txInitiators.BUY_MARKET_LISTING &&
+      status === txStatus.COMPLETED
+    ) {
+      getDetailsFromSite();
+
       dispatch(setTxDialogFailed(false));
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
@@ -172,7 +175,8 @@ export const NFTView = () => {
       });
     }
     if (
-      (txInitiator === txInitiators.REMOVE_MARKET_LISTING || txInitiator === txInitiators.BUY_MARKET_LISTING) &&
+      (txInitiator === txInitiators.REMOVE_MARKET_LISTING ||
+        txInitiator === txInitiators.BUY_MARKET_LISTING) &&
       status === txStatus.FAILED
     ) {
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
@@ -195,11 +199,10 @@ export const NFTView = () => {
     }
   }, [status]);
 
-
   useEffect(() => {
-    console.log("This is market:", market)
-    console.log("This is Listing:", selectedListing)
-  }, [market, selectedListing, isListedForSwap])
+    console.log("This is market:", market);
+    console.log("This is Listing:", selectedListing);
+  }, [market, selectedListing, isListedForSwap]);
   useEffect(() => {
     if (selectedListing) {
       setListedForSwap(true);
@@ -402,8 +405,6 @@ export const NFTView = () => {
         })
       );
       txResult.wait();
-
-      
     } catch (err) {
       console.log("Error on buyNFT", err);
       dispatch(setTxDialogFailed(true));
