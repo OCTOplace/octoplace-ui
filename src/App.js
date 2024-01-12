@@ -4,13 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home";
-import { Listings } from "./pages/listings/Listings";
 import { MyNFT } from "./pages/dashboard/MyNFT";
-import { ListingOffers } from "./pages/ListingOffers";
-import { SwapComplete } from "./pages/SwapComplete";
 import { MyListingSwapOffer } from "./pages/swap-offer/MyListingSwapOffer";
 import { SingleSwapOffer } from "./pages/SingleSwapOffer";
-import { MyListingSwapOffer2 } from "./pages/MyListingSwapOffer2";
 import { useWeb3React } from "@web3-react/core";
 import { GTMProvider } from "@elgorditosalsero/react-gtm-hook";
 import "./app.scss";
@@ -26,7 +22,6 @@ import { resetCollections } from "./redux/slices/my-nft-slice";
 import { NFTView } from "./pages/view-nft/NFTView";
 import { setTxCharge, hideTxDialog } from "./redux/slices/app-slice";
 import { createAction } from "@reduxjs/toolkit";
-import { getAllTrades } from "./redux/thunk/get-trades";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { rpc, swapAbi, swapContract } from "./connectors/address";
 import { Contract } from "@ethersproject/contracts";
@@ -50,7 +45,7 @@ import DashboardHome from "./pages/dashboard/dashboardHome";
 import DashboardGuest from "./pages/dashboard/dashboardGuest";
 import DashboardSettings from "./pages/dashboard/dashboardSettings";
 import contractInteraction from "./contracts";
-
+import {getActiveListingsFromLoggingAPI} from "./redux/thunk/get-active-listings";
 import { ThemeProvider } from "@mui/system";
 import { theme } from "./theme";
 import { TxProcess } from "./components/tx-process/tx-process";
@@ -120,9 +115,7 @@ function App() {
     dispatch(setTxCharge(txCharge));
   };
   useEffect(() => {
-    dispatch({ type: "LOAD_ALL_LISTING" });
-    dispatch({ type: "LOAD_ALL_OFFERS" });
-    dispatch(getAllTrades());
+    dispatch(getActiveListingsFromLoggingAPI());
     dispatch(getAllMarketItems());
     dispatch(getAllCollections());
     getTxCharge();
@@ -152,8 +145,6 @@ function App() {
                 path="nft/:network/:address/:tokenId"
                 element={<NFTView />}
               />
-              <Route path="listing" element={<Listings />} />
-              <Route path="listing/offers" element={<ListingOffers />} />
               <Route
                 path="swap/:network/:offerId"
                 element={<SingleSwapOffer />}
@@ -162,8 +153,6 @@ function App() {
                 path="swap/initiate-offer/:network/:listingId/:offerNft/:offerTokenId"
                 element={<MyListingSwapOffer />}
               />
-              <Route path="swap/mylist2" element={<MyListingSwapOffer2 />} />
-              <Route path="swap/done" element={<SwapComplete />} />
               <Route path="faucet" element={<FaucetPage />} />
               <Route path="popular/collection/:address" element={<NFTPage />} />
               <Route path="collections" element={<CollectionsPage />} />

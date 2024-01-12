@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { call, put, takeLatest } from "redux-saga/effects";
 import {
   addNFT,
@@ -20,9 +21,9 @@ function* LoadMyNFTFromAPIWorker(action) {
     yield put(resetCollections());
     yield put(setOwner(action.payload.account));
     const data = yield call(loadNFT, action.payload.account);
-    const data2 = yield call(loadKavaNFT, action.payload.account);
+    // const data2 = yield call(loadKavaNFT, action.payload.account);
 
-    yield put(addNFT(mergeData(data, data2)));
+    yield put(addNFT(mergeData(data, [])));
     yield put(setMyNftLoading(false));
   } catch (e) {
     yield put(createAction("LOAD_FAILED")(e));

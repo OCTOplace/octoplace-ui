@@ -34,7 +34,7 @@ import {
 export const MyListingSwapOffer = () => {
   const sendDataToGTM = useGTMDispatch();
   const { listingId, offerNft, offerTokenId, network } = useParams();
-  const listings = useSelector((state) => state.listings.allListings);
+  const listings = useSelector((state) => state.listings.newActiveListings);
   const [myNft, setMyNft] = useState();
   const [listingNFT, setListingNFT] = useState();
   const [isApproved, setIsApproved] = useState(false);
@@ -66,7 +66,6 @@ export const MyListingSwapOffer = () => {
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
       toast.success("Swap offer sent successfully!");
-      dispatch({ type: "LOAD_ALL_OFFERS" });
       dispatch(completeTxProcess())
       navigate(
         `/nft/${listingNFT.listingDetails.network}/${listingNFT.listingDetails.tokenAddress}/${listingNFT.listingDetails.tokenId}`
@@ -102,10 +101,11 @@ export const MyListingSwapOffer = () => {
   const getListingNft = async () => {
     const found = listings.find(
       (x) =>
-        x.listingDetails.listingid === Number(listingId) &&
+        x.listingDetails.listingId === Number(listingId) &&
         x.listingDetails.network === network
     );
     if (found) {
+      console.log("///log found", found)
       setListingNFT(found);
     }
   };
@@ -164,7 +164,9 @@ export const MyListingSwapOffer = () => {
   }, [account, offerOwner]);
 
   useEffect(() => {
+
     if (listings.length > 0) {
+      console.log("///log listings", listings)
       getListingNft();
     }
   }, [listings]);

@@ -8,12 +8,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { ExpandMore, FormatListBulleted } from "@mui/icons-material";
-import { useEffect } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
-import { formatOffers } from "../../utils/format-listings";
 import { OfferItem } from "./offer-item";
-import { getNetworkInfo } from "../../connectors/networks";
 
 export const OfferList = (props) => {
   const [expanded, setExpanded] = useState(false);
@@ -58,25 +53,7 @@ export const OfferList = (props) => {
     },
   };
 
-  const { listingId, network } = props;
-  const [offers, setPOffers] = useState([]);
-  const getAllOffers = async () => {
-    const net = getNetworkInfo(network);
-    const provider = new JsonRpcProvider(net.dataNetwork.RPC);
-    const contract = new Contract(
-      net.dataNetwork.SWAP_CONTRACT,
-      net.dataNetwork.SWAP_ABI,
-      provider
-    );
-    const offer = await contract.readAllOffers();
-    setPOffers(formatOffers(offer).filter((x) => x.listingId === listingId));
-  };
-
-  useEffect(() => {
-    if (listingId) {
-      getAllOffers();
-    }
-  }, [listingId]);
+  const {  network, offers } = props;
 
   return (
     <Accordion
@@ -103,44 +80,27 @@ export const OfferList = (props) => {
           <Grid item sx={styles.tableItem} xs={2}>
             <Typography>title</Typography>
           </Grid>
-          <Grid item sx={styles.tableItem} xs={1}>
+          <Grid item sx={styles.tableItem} xs={2}>
             <Typography>#</Typography>
           </Grid>
-          <Grid item sx={styles.tableItem} xs={2}>
-            <Typography>owner</Typography>
-          </Grid>
-          <Grid item sx={styles.tableItem} xs={1}>
-            <Typography>floor</Typography>
-          </Grid>
-          <Grid item sx={styles.tableItem} xs={2}>
-            <Typography>price</Typography>
+          <Grid item sx={styles.tableItem} xs={4}>
+            <Typography>Collection Name</Typography>
           </Grid>
           <Grid item sx={styles.tableItem} xs={2}></Grid>
 
-          {offers.filter(
-            (x) =>
-              x.isDeclined === false &&
-              x.isCancelled === false &&
-              x.isCompleted === false
-          ).length === 0 && (
+          {offers.length === 0 && (
             <Grid item xs={12}>
               <Typography>No available offers.</Typography>
             </Grid>
           )}
 
           {offers
-            .filter(
-              (x) =>
-                x.isDeclined === false &&
-                x.isCancelled === false &&
-                x.isCompleted === false
-            )
             .map((item, index) => {
               return (
                 <OfferItem
                   network={network}
                   serial={index + 1}
-                  key={item.offerId}
+                  key={item.offerDetails.offerId}
                   offer={item}
                 />
               );
