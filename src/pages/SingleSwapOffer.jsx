@@ -121,12 +121,13 @@ export const SingleSwapOffer = () => {
       listingTokenOwner,
       listingTokenId,
       offerTokenId,
+      listingId,
     } = offer;
     setObj(offer);
 
     //Listing validity
     const listingResult = await axios.get(
-      `${apiUrl}/api/swap-data/get-listing-detail/${network}/${listingTokenAddress}/${listingTokenId}`
+      `${apiUrl}/api/swap-data/get-listing-detail/${network}/${listingId}`
     );
     const listing = listingResult.data;
     print("/// Updated Listing,", listing);
@@ -291,23 +292,27 @@ export const SingleSwapOffer = () => {
       </Typography>
       {obj && !showButtons(obj) && (
         <Box>
-          {obj.isDeclined && (
-            <Alert severity="error">
-              This offer has been <b>declined</b>
-            </Alert>
-          )}
-          {obj.isCancelled && (
-            <Alert severity="error">
-              This offer has been <b>withdrawn.</b>
-            </Alert>
-          )}
-          {obj.isCompleted && (
-            <Alert severity="success"> Swap Successful!</Alert>
+          {!underProcess && (
+            <>
+              {obj.isDeclined && (
+                <Alert severity="error">
+                  This offer has been <b>declined</b>
+                </Alert>
+              )}
+              {obj.isCancelled && (
+                <Alert severity="error">
+                  This offer has been <b>withdrawn.</b>
+                </Alert>
+              )}
+              {obj.isCompleted && (
+                <Alert severity="success"> Swap Successful!</Alert>
+              )}
+            </>
           )}
         </Box>
       )}
       <Box>
-        {isListingCancelled && (
+        {isListingCancelled && !underProcess && (
           <Alert severity="error">
             {" "}
             This listing is cancelled so offer is disabled!
