@@ -35,7 +35,9 @@ import { formatOffers } from "../../../utils/format-listings";
 import { getNetworkInfo } from "../../../connectors/networks";
 import axios from "axios";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+import { useWeb3React } from "@web3-react/core";
 
+const API_URL = process.env.REACT_APP_LOGGING_API_URL
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
     padding: ".3rem 1rem",
@@ -63,6 +65,7 @@ export const OfferNFTDialog = (props) => {
   const loading = useSelector((state) => state.myNFT.isLoading);
   const originalMyNFTs = useSelector((state) => state.myNFT.nfts);
   const listings = useSelector((state) => state.listings.newActiveListings);
+  const {account} = useWeb3React();
   const handleClose = () => {
     onClose();
   };
@@ -112,18 +115,19 @@ export const OfferNFTDialog = (props) => {
     includeBurned: false,
   });
 
+  const getUserOffersData = async () => {
+    if(account && account !== ""){
+     try{
+      const userOffers = await axios.get(`${API_URL}/api/swap-data/get-user-active-offers/${account}`);
+      return userOffers.data
+     }catch{
+      return []
+     }
+    }
+  }
   const createData = async () => {
-    const netInfo = getNetworkInfo(network);
-    const provider = new JsonRpcProvider(netInfo.dataNetwork.RPC);
-    const contract = new Contract(
-      netInfo.dataNetwork.SWAP_CONTRACT,
-      netInfo.dataNetwork.SWAP_ABI,
-      provider
-    );
-
-    let offers = await contract.readAllOffers();
-    offers = formatOffers(offers, network);
-
+      
+    let offers = await getUserOffersData();
     offers = offers.filter((x) => //this filters declined offers
       x.isDeclined === false &&
       x.isCancelled === false &&

@@ -32,7 +32,8 @@ export const TxProcess = () => {
                     break;
                 }
             }
-        }catch{
+        }catch(error){
+            console.log("This is the error", error)
             continue;
         }
     }while(true);
