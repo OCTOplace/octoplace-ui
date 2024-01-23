@@ -275,10 +275,7 @@ export const MyListingSwapOffer = () => {
         </Link>
       </Typography>
       <Typography sx={{ fontSize: "20px", mt: 4, fontWeight: "bold", mb: 2 }}>
-        SWAP OFFER{" "}
-        {listingNFT
-          ? `${listingNFT.listingNFT.name} #${listingNFT.listingDetails.tokenId}`
-          : ""}
+        SWAP OFFER
       </Typography>
       <Grid container sx={{ mt: { xs: 3, md: 6, p: 0 } }}>
         <Grid item xs={12} md={5}>

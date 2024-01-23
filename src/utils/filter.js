@@ -8,7 +8,6 @@ export function filterListedNFTs(nfts, activeListings, activeOffers) {
           nft.contractAddress.toLowerCase()
     );
 
-    console.log("///log found", found);
     const found2 = activeOffers.find(
       (x) =>
         x.isCompleted === false &&

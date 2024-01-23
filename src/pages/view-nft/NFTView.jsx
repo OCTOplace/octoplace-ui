@@ -147,7 +147,6 @@ export const NFTView = () => {
     ) {
       dispatch(getAllMarketItems());
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
-      console.log("this is called!");
     }
     if (
       txInitiator === txInitiators.BUY_MARKET_LISTING &&
@@ -156,7 +155,6 @@ export const NFTView = () => {
       dispatch(getAllMarketItems());
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
       getDetailsFromSite();
-      console.log("this is called!");
     }
     if (
       txInitiator === txInitiators.BUY_MARKET_LISTING &&
@@ -199,10 +197,6 @@ export const NFTView = () => {
     }
   }, [status]);
 
-  useEffect(() => {
-    console.log("This is market:", market);
-    console.log("This is Listing:", selectedListing);
-  }, [market, selectedListing, isListedForSwap]);
   useEffect(() => {
     if (selectedListing) {
       setListedForSwap(true);
