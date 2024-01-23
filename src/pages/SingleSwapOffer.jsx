@@ -103,17 +103,12 @@ export const SingleSwapOffer = () => {
     }
   }, [txInitiator, status]);
 
-  const print = (message, obj) => {
-    console.log(message, obj);
-  };
   const getdetails = async (offerNum) => {
-    print("/// Get Details is called", {});
     const offerResult = await axios.get(
       `${apiUrl}/api/swap-data/get-swap-offer-details/${network}/${offerNum}`
     );
     let offer = offerResult.data;
 
-    print("/// Updated Offer", offer);
     const {
       listingTokenAddress,
       offerTokenAddress,
@@ -130,7 +125,6 @@ export const SingleSwapOffer = () => {
       `${apiUrl}/api/swap-data/get-listing-detail/${network}/${listingId}`
     );
     const listing = listingResult.data;
-    print("/// Updated Listing,", listing);
     listing.isCancelled
       ? setIsListingCancelled(true)
       : setIsListingCancelled(false);
@@ -141,7 +135,6 @@ export const SingleSwapOffer = () => {
       tokenId: listingTokenId,
     });
 
-    print("/// Updated Listing NFT", listingNFTDetails);
 
     setListingObj({
       name: listingNFTDetails.metadata.name,
@@ -155,7 +148,6 @@ export const SingleSwapOffer = () => {
       contractAddress: offerTokenAddress,
       tokenId: offerTokenId,
     });
-    print("/// Updated Offer NFT", offerNFTDetails);
     setOfferObj({
       name: offerNFTDetails.metadata.name,
       metadata: offerNFTDetails.metadata,
