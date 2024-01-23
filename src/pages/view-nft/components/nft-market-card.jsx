@@ -7,14 +7,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import verifiedLogo from "../../../assets/verified.svg";
-import flameLogo from "../../../assets/flame.svg";
-import { useDispatch } from "react-redux";
-import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 // import { formatEther, parseEther } from "@ethersproject/units";
 
 export const NFTMarketCard = ({ view, marketItem, selected }) => {
   const [imgUrl, setImgUrl] = useState();
-  const dispatch = useDispatch();
 
   const styles = {
     root: {
@@ -76,16 +72,6 @@ export const NFTMarketCard = ({ view, marketItem, selected }) => {
   };
 
   useEffect(() => {
-    dispatch(
-      getMarketNFTDetail({
-        contractAddress: marketItem.contractAddress,
-        tokenId: marketItem.tokenId,
-        listingId: marketItem.id,
-      })
-    );
-  }, []);
-
-  useEffect(() => {
     if (marketItem && marketItem.metadata) {
       try {
         if (marketItem.metadata.image.includes("ipfs://")) {
@@ -145,10 +131,6 @@ export const NFTMarketCard = ({ view, marketItem, selected }) => {
                 >{`#${marketItem.network}`}</Typography>
                 <Box style={styles.meta}>
                   <Typography>#{marketItem.tokenId}</Typography>
-                  <Box style={styles.meta}>
-                    <img src={flameLogo} alt="flame" />
-                    <Typography>{marketItem.price}</Typography>
-                  </Box>
                 </Box>
               </Box>
             )}

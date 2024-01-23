@@ -5,8 +5,8 @@ export const generateToken = async (library) => {
     statement:
       "Welcome to Octoplace! I want to sign in and I accept Octoplace Terms of Service. This request will not trigger a blockchain transaction or cost any gas fees.",
     domain: "octoplace.io",
-    exprire_in: "1h", // 1 hour
-    expiration_time: new Date(Date.now() + 1000 * 60 * 60), // 1 hour
+    expires_in: "24h", // 24 hours
+    expiration_time: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
   };
 
   try {

@@ -15,6 +15,7 @@
     WITHDRAW_SWAP_OFFER: "withdraw_swap_offer", //done
     DECLINE_SWAP_OFFER: "decline_swap_offer", //done
     ACCEPT_SWAP_OFFER: "accept_swap_offer", //done
+    BUY_MARKET_LISTING: "buy_market_listing"
 }
 
 export const txStatus = {

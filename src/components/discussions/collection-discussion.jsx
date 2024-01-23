@@ -36,6 +36,7 @@ import {
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
 import { txInitiators, txStatus } from "../../constants/tx-initiators";
 import { abortTxProcess, completeTxProcess, startTxProcess } from "../../redux/slices/tx-slice";
+import avatarImage from "../../assets/default-user.jpg";
 
 export const CollectionDiscussions = ({
   address,
@@ -101,7 +102,7 @@ export const CollectionDiscussions = ({
     const fee = await contract.commentFee();
     setCommentFee(Number(formatEther(fee)));
 
-    
+
     const bal = await provider.getBalance(account);
     setFeeBalance(format(Number(formatEther(bal))));
   };
@@ -117,7 +118,7 @@ export const CollectionDiscussions = ({
   }, [address]);
 
   useEffect(() => {
-   
+
     if (account) {
       getCommentFee();
     }
@@ -149,7 +150,7 @@ export const CollectionDiscussions = ({
         netInfo.dataNetwork.COLLECTION_DISCUSSION_ABI,
         signer
       );
-      const txResult = await contract.addComment_native(address, message, {value: commentFee});
+      const txResult = await contract.addComment_native(address, message, { value: commentFee });
       dispatch(setTxDialogHash(txResult.hash));
       dispatch(
         startTxProcess({
@@ -157,12 +158,12 @@ export const CollectionDiscussions = ({
           initiator: txInitiators.POST_COLLECTION_COMMENT,
         })
       );
-        setDiscussion({
-          address,
-          network,
-          sender: account,
-          message,
-        })
+      setDiscussion({
+        address,
+        network,
+        sender: account,
+        message,
+      })
       txResult.wait();
     } catch (err) {
       console.log("Error", err);
@@ -250,6 +251,50 @@ export const CollectionDiscussions = ({
         color: "#262626",
       },
     },
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+      gap: "1rem",
+      width: "100%",
+      height: "100%",
+      maxHeight: "400px",
+      overflowY: "auto",
+      padding: "1rem",
+      backgroundColor: "transparent",
+      border: "1px solid #6C6C6C",
+      borderRadius: "1rem",
+    },
+    messageRow: {
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      gap: "1rem",
+      width: "100%",
+    },
+    avatar: {
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      backgroundColor: "#6C6C6C",
+    },
+    textCol: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+      gap: "0.5rem",
+    },
+    name: {
+      fontSize: "0.938rem",
+      fontWeight: "600",
+      color: "#F78C09",
+    },
+    clipBordIcon: {
+      fontSize: "0.938rem",
+      color: "#6C6C6C",
+    },
   };
 
   return (
@@ -275,6 +320,66 @@ export const CollectionDiscussions = ({
           <div></div>
         )}
         <AccordionDetails sx={styles.accordionBody}>
+          <Box sx={styles.container}>
+            {discussions.map((message) => (
+              <Box key={message._id} sx={styles.messageRow}>
+                <Box sx={styles.avatar}>
+                  {message.user && (
+                    <img
+                      src={
+                        message.user.avatarImage
+                          ? process.env.REACT_APP_API_URL + message.user.avatarImage
+                          : avatarImage
+                      }
+                      alt="collection-avatar"
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
+                  {!message.user && (
+                    <img
+                      src={avatarImage}
+                      alt="collection-avatar"
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
+                </Box>
+                {
+                  //<Box sx={styles.textCol}>  remove this line for text next to the address
+                }
+                <Box sx={styles.name}>
+                  {(message.user && message.user.title) || shortenAddress(message.senderAddress)}
+                  <IconButton
+                    onClick={() => {
+                      copy(message.senderAddress);
+                      toast.success("Address copied!");
+                    }}
+                    sx={styles.copyButton}
+                  >
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
+                </Box>
+                <Box sx={styles.message}>
+                  {message.message}
+                </Box>
+                { //</Box>
+                }
+              </Box>
+            ))}
+          </Box>
+
+
+          {
+            /*
           <Box sx={styles.detailsBox}>
             {discussions.map((item) => {
               return (
@@ -298,6 +403,10 @@ export const CollectionDiscussions = ({
               );
             })}
           </Box>
+          */
+          }
+
+
           <Box sx={styles.row}>
             <Box sx={styles.textContainer}>
               <TextField

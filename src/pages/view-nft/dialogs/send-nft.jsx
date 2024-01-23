@@ -93,6 +93,10 @@ export const SendNFT = ({
 
   const handleSend = async () => {
     if (isAddress(address)) {
+      if (address.toLowerCase() === account.toLowerCase()) {
+        toast.warning("You can't send the NFT to the owner");
+        return
+      }
       dispatch(showTxDialog());
       const netDetails = getNetworkInfo(network);
       if (chainId !== parseInt(netDetails.dataNetwork.CHAIN_ID)) {
