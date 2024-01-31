@@ -52,6 +52,7 @@ export const SellNFT = ({
   itemPrice,
   marketId,
   listingId,
+  marketplaceSetting,
 }) => {
   const theme = useTheme();
   const zeroAddress = "0x0000000000000000000000000000000000000000";
@@ -83,9 +84,11 @@ export const SellNFT = ({
   const { account, chainId } = useWeb3React();
   const [setAnimation] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-
   const { txInitiator, status } = useSelector((state) => state.txProcess);
-
+  const [defaultMarketSetting, setDefaultSetting] = useState(undefined);
+  const marketSettings = useSelector(
+    (state) => state.marketSettings.marketplaces
+  );
   useEffect(() => {
     if (
       txInitiator === txInitiators.ADD_MARKET_LISTING_APPROVE &&
@@ -102,7 +105,6 @@ export const SellNFT = ({
       txInitiator === txInitiators.UPDATE_MARKET_LISTING_PRICE &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -115,7 +117,6 @@ export const SellNFT = ({
       txInitiator === txInitiators.ADD_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -130,13 +131,22 @@ export const SellNFT = ({
         txInitiator === txInitiators.ADD_MARKET_LISTING) &&
       status === txStatus.FAILED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
       dispatch(abortTxProcess());
     }
   }, [status]);
+
+  useEffect(() => {
+    if (marketSettings && marketSettings.length > 0) {
+      const result = marketSettings.find((x) => x.isThirdParty === false);
+      setDefaultSetting(result);
+      console.log("/// default", defaultMarketSetting);
+    } else {
+      setDefaultSetting(undefined);
+    }
+  }, [marketSettings]);
 
   const handleClose = () => {
     onCloseDlg();
@@ -234,19 +244,26 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(contractAddress, ercAbi, signer);
-      const txResult = await contract.approve(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        tokenId
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.ADD_MARKET_LISTING_APPROVE,
-        })
-      );
-      txResult.wait();
+      if (defaultMarketSetting) {
+        const contract = new Contract(contractAddress, ercAbi, signer);
+        const txResult = await contract.approve(
+          defaultMarketSetting.marketplaceContractAddress,
+          tokenId
+        );
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.ADD_MARKET_LISTING_APPROVE,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Action Not Allowed!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -270,26 +287,41 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      console.log("marketId ", marketId);
-      const txResult = await contract.updateMarketItem(
-        contractAddress,
-        tokenId,
-        parseUnits(price.toString()),
-        marketId
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.UPDATE_MARKET_LISTING_PRICE,
-        })
-      );
-      txResult.wait();
+      if (marketplaceSetting && marketplaceSetting.isThirdParty === false) {
+        const contract = new Contract(
+          marketplaceSetting.marketplaceContractAddress,
+          JSON.parse(marketplaceSetting.abi),
+          signer
+        );
+        let txResult;
+
+        switch (marketplaceSetting.symbol) {
+          case "OCTOPLACE":
+            txResult = await contract.updateMarketItem(
+              contractAddress,
+              tokenId,
+              parseUnits(price.toString()),
+              marketId
+            );
+            break;
+          default:
+            break;
+        }
+
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.UPDATE_MARKET_LISTING_PRICE,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Action Not Allowed!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -313,25 +345,41 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      const txResult = await contract.createMarketItem(
-        contractAddress,
-        tokenId,
-        parseUnits(price.toString()),
-        metadata.name
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.ADD_MARKET_LISTING,
-        })
-      );
-      txResult.wait();
+      if (defaultMarketSetting && !defaultMarketSetting.isThirdParty) {
+        const contract = new Contract(
+          defaultMarketSetting.marketplaceContractAddress,
+          JSON.parse(defaultMarketSetting.abi),
+          signer
+        );
+        let txResult;
+        switch (defaultMarketSetting.symbol) {
+          case "OCTOPLACE":
+            txResult = await contract.createMarketItem(
+              contractAddress,
+              tokenId,
+              parseUnits(price.toString()),
+              metadata.name
+            );
+            break;
+
+          default:
+            break;
+        }
+
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.ADD_MARKET_LISTING,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Action Not Allowed!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { getAllMarketItems } from "../thunk/get-all-market-items";
 import { getMyMarketItems } from "../thunk/get-all-market-items";
 import { getMarketNFTDetail } from "../thunk/getNftDetail";
-import { getSelectedMarketItem } from "../thunk/getSelectedMarketItem";
+import { getSelectedMarketItem, updateSelectedMarketItem } from "../thunk/getSelectedMarketItem";
 
 const initialState = {
   isLoading: false,
@@ -11,6 +11,19 @@ const initialState = {
   myMarketItems: [],
   selectedMarketItem: undefined
 };
+
+function updateMarket(marketItems, item) {
+  // Iterate over the array
+  marketItems.forEach((obj, index) => {
+      // Check if the object matches the criteria for update
+      if (obj.marketId === item.marketId && obj.network === item.network && obj.marketplace_Symbol === item.marketplace_Symbol) {
+          // Update the object in the array
+          marketItems[index] = item;
+      }
+  });
+
+  return marketItems;
+}
 
 export const marketSlice = createSlice({
   name: "markets",
@@ -25,6 +38,9 @@ export const marketSlice = createSlice({
     setMyMarketItems: (state, action) => {
       state.myMarketItems = action.payload;
     },
+    resetSelectedMarket: (state) => {
+      state.selectedMarketItem = undefined;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getAllMarketItems.pending, (state) => {
@@ -50,6 +66,12 @@ export const marketSlice = createSlice({
       state.isLoading = false;
       state.selectedMarketItem = undefined;
       toast.error("Error occured while loading markets.");
+    });
+
+    builder.addCase(updateSelectedMarketItem.fulfilled, (state, action) => {
+      let marketItems = state.markets;
+      marketItems = updateMarket(marketItems, action.payload);
+      state.markets = marketItems;
     });
 
     builder.addCase(getMyMarketItems.pending, (state) => {
@@ -84,6 +106,6 @@ export const marketSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, setMarkets } = marketSlice.actions;
+export const { setLoading, setMarkets, resetSelectedMarket } = marketSlice.actions;
 
 export default marketSlice.reducer;
