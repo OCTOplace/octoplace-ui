@@ -45,6 +45,10 @@ function Market({ isHome }) {
   const [orderMethod, setOrderMethod] = useState("Price: Low to High");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const marketSettings = useSelector(
+    (state) => state.marketSettings.marketplaces
+  );
+  const marketSymbols = useSelector((state) => state.marketSettings.symbols);
   const [filterObj, setFilterObj] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -57,8 +61,12 @@ function Market({ isHome }) {
   });
 
   useEffect(() => {
-    dispatch(getAllMarketItems());
-  }, []);
+    if (marketSettings && marketSettings.length > 0) {
+      if (marketSymbols && marketSymbols.length > 0) {
+        dispatch(getAllMarketItems(marketSymbols));
+      }
+    }
+  }, [marketSettings]);
 
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
@@ -80,9 +88,13 @@ function Market({ isHome }) {
       case "Price: High to Low":
         return sortedItems.sort((a, b) => b.price - a.price);
       case "Newest":
-        return sortedItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedItems.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
       case "Oldest":
-        return sortedItems.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        return sortedItems.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
       default:
         return sortedItems.sort((a, b) => a.price - b.price);
     }
@@ -97,24 +109,38 @@ function Market({ isHome }) {
       item.nftDetails &&
       item.nftDetails.metadata &&
       item.nftDetails.metadata.name &&
-      !item.nftDetails.metadata.name.toLowerCase().includes(keyword.toLowerCase())
+      !item.nftDetails.metadata.name
+        .toLowerCase()
+        .includes(keyword.toLowerCase())
     ) {
       return false;
     }
 
-    if (filterObj.minPrice !== 0 && parseInt(item.price, 10) < filterObj.minPrice) {
+    if (
+      filterObj.minPrice !== 0 &&
+      parseInt(item.price, 10) < filterObj.minPrice
+    ) {
       return false;
     }
 
-    if (filterObj.maxPrice !== 0 && parseInt(item.price, 10) > filterObj.maxPrice) {
+    if (
+      filterObj.maxPrice !== 0 &&
+      parseInt(item.price, 10) > filterObj.maxPrice
+    ) {
       return false;
     }
 
-    if (filterObj.blockchain !== "empty" && item.network?.toLowerCase() !== filterObj.blockchain?.toLowerCase()) {
+    if (
+      filterObj.blockchain !== "empty" &&
+      item.network?.toLowerCase() !== filterObj.blockchain?.toLowerCase()
+    ) {
       return false;
     }
 
-    if (filterObj.collection !== "empty" && item.nftContract?.toLowerCase() !== filterObj.collection?.toLowerCase()) {
+    if (
+      filterObj.collection !== "empty" &&
+      item.nftContract?.toLowerCase() !== filterObj.collection?.toLowerCase()
+    ) {
       return false;
     }
 
@@ -197,16 +223,18 @@ function Market({ isHome }) {
             {!isLoading &&
               view !== 1 &&
               filteredMarketItems.length > 0 &&
-              sortByOrderMethod(filteredMarketItems, orderMethod).map((item, index) => {
-                return (
-                  <NFTMarketCard
-                    marketItem={item}
-                    view={view}
-                    key={`index_${index}`}
-                  />
-                );
-              })}
-            {!isLoading && view !== 1 && filteredMarketItems.length === 0 && (
+              sortByOrderMethod(filteredMarketItems, orderMethod).map(
+                (item, index) => {
+                  return (
+                    <NFTMarketCard
+                      marketItem={item}
+                      view={view}
+                      key={`index_${index}`}
+                    />
+                  );
+                }
+              )}
+              {!isLoading && view !== 1 && filteredMarketItems.length === 0 && (
               <Box
                 style={{
                   display: "flex",
@@ -227,6 +255,7 @@ function Market({ isHome }) {
                 </Typography>
               </Box>
             )}
+
             {isLoading && (
               <SkeletonContainer>
                 {[...Array(12)].map((e, i) => (
