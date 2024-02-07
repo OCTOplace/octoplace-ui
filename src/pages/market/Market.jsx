@@ -234,6 +234,27 @@ function Market({ isHome }) {
                   );
                 }
               )}
+              {!isLoading && view !== 1 && filteredMarketItems.length === 0 && (
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: "100%",
+                  height: "200px",
+                }}
+              >
+                <Typography
+                  style={{
+                    width: "100%",
+                    color: "#f4f4f4",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  There are currently no items available in the market.
+                </Typography>
+              </Box>
+            )}
 
             {isLoading && (
               <SkeletonContainer>
