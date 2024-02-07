@@ -351,6 +351,15 @@ export const NFTView = () => {
               market.marketId
             );
             break;
+          case "THETARARITY":
+            txResult = await contract.cancel(market.marketId);
+            break;
+          case "OPENTHETA":
+            txResult = await contract.createMarketCancel(
+              address,
+              market.marketId
+            );
+            break;
           default:
             break;
         }
@@ -428,6 +437,16 @@ export const NFTView = () => {
               market.marketId,
               overRides
             );
+            break;
+          case "OPENTHETA":
+            txResult = await contract.createMarketSale(
+              address,
+              market.marketId,
+              overRides
+            );
+            break;
+          case "THETARARITY":
+            txResult = await contract.buy(market.marketId, overRides); 
             break;
           default:
             break;
