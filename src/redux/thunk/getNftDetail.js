@@ -24,7 +24,6 @@ export const getMarketNFTDetail = createAsyncThunk(
     );
     items = result.data;
     items = { ...items, listingId: nftDetails.listingId };
-    console.log('items',items);
     return items;
   }
 );
