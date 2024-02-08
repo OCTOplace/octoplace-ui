@@ -280,7 +280,7 @@ export const NFTView = () => {
   };
 
   const handleUpdatePrice = async () => {
-    if (marketItemSetting && !marketItemSetting.isThirdParty) {
+    if (marketItemSetting) {
       setIsUpdatePrice(true);
       setSellOpen(true);
     } else {

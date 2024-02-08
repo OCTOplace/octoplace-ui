@@ -99,9 +99,9 @@ export const marketSlice = createSlice({
       items[objIndex] = item;
       state.markets = items;
     });
-    builder.addCase(getMarketNFTDetail.rejected, (state) => {
-      toast.error("Error occured while loading NFT Details.");
-    });
+    builder.addCase(getMarketNFTDetail.rejected, (state,{payload}) => {
+      state.markets = state.markets.filter(obj => obj.nftContract !== payload.nftDetails.contractAddress || obj.tokenId !== payload.nftDetails.tokenId);
+      });
   },
 });
 
