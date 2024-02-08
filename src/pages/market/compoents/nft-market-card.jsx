@@ -12,6 +12,9 @@ import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
+import OCTOPLACE from "../../../assets/marketplaces/OCTOPLACE.png";
+import OPENTHETA from "../../../assets/marketplaces/OPENTHETA.png";
+import THETARARITY from "../../../assets/marketplaces/THETARARITY.png";
 
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
@@ -104,6 +107,23 @@ export const NFTMarketCard = ({ view, marketItem }) => {
     }
   }, [marketItem]);
 
+  let marketplaceImageSrc;
+
+  switch (marketItem.marketplace_Symbol) {
+    case 'OCTOPLACE':
+      marketplaceImageSrc = OCTOPLACE;
+      break;
+    case 'OPENTHETA':
+      marketplaceImageSrc = OPENTHETA;
+      break;
+    case 'THETARARITY':
+      marketplaceImageSrc = THETARARITY;
+      break;
+    default:
+      marketplaceImageSrc = OCTOPLACE; //
+      break;
+  }
+
   return (
     <>
       {marketItem && (
@@ -113,18 +133,35 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         >
           <Box sx={styles.root}>
             {marketItem.nftDetails && (
-              <img
-                src={imgUrl}
-                style={{
-                  borderTopLeftRadius: ".75rem",
-                  borderTopRightRadius: ".75rem",
-                  objectFit: "cover",
-                  width: view === 3 ? "200px" : "100%",
-                  aspectRatio: "1/1",
-                }}
-                loading="lazy"
-                alt="nft-artwork"
-              />
+              <div>
+                <img
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    position: 'absolute',
+                    margin: '.5rem',
+                    border: '2px solid #000000',  // Add the desired color for the outline
+                    borderRadius: '50%',  // Optional: Add border-radius for a circular shape
+                  }}
+                  //src={marketItem.marketplace_Symbol === "OPENTHETA" ? OpenTheta : ThetaRarity}
+                  //src={`../../../assets/marketplaces/${marketItem.marketplace_Symbol}.png`} <-- this didn't work but I'm thinking of doing something like this instead
+                  src={marketplaceImageSrc}
+                  alt="marketplace"
+                />
+                <img
+                  src={imgUrl}
+                  style={{
+                    borderTopLeftRadius: '.75rem',
+                    borderTopRightRadius: '.75rem',
+                    objectFit: 'cover',
+                    width: view === 3 ? '200px' : '100%',
+                    aspectRatio: '1/1',
+
+                  }}
+                  loading="lazy"
+                  alt="nft-artwork"
+                />
+              </div>
             )}
             {marketItem.nftDetails && marketItem.nftDetails.metadata && (
               <Box sx={styles.content}>
