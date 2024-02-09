@@ -287,7 +287,7 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      if (marketplaceSetting && marketplaceSetting.isThirdParty === false) {
+      if (marketplaceSetting) {
         const contract = new Contract(
           marketplaceSetting.marketplaceContractAddress,
           JSON.parse(marketplaceSetting.abi),
@@ -303,6 +303,17 @@ export const SellNFT = ({
               parseUnits(price.toString()),
               marketId
             );
+            break;
+          case "OPENTHETA": 
+              txResult = await contract.updateMarketItem(
+                contractAddress,
+                tokenId,
+                parseUnits(price.toString()),
+                marketId
+              );
+            break;
+          case "THETARARITY": 
+            txResult = await contract.update(marketId, parseUnits(price.toString()));
             break;
           default:
             break;
