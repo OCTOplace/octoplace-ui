@@ -41,7 +41,6 @@ import { txInitiators, txStatus } from "../../constants/tx-initiators";
 import { getSelectedListing } from "../../redux/thunk/getSelectedListing";
 import { setSelectedListing } from "../../redux/slices/listing-slice";
 import { getActiveListingsFromLoggingAPI } from "../../redux/thunk/get-active-listings";
-import { getAllMarketItems } from "../../redux/thunk/get-all-market-items";
 import { getSelectedMarketItem } from "../../redux/thunk/getSelectedMarketItem";
 import { resetSelectedMarket } from "../../redux/slices/market-slice";
 

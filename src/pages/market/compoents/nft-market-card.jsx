@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
   const [imageSrc, setImageSrc] = useState("");
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const styles = {
     root: {
@@ -76,13 +77,15 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   // };
 
   useEffect(() => {
-    dispatch(
-      getMarketNFTDetail({
-        contractAddress: marketItem.nftContract,
-        tokenId: marketItem.tokenId,
-        listingId: marketItem.id,
-      })
-    );
+    if (!marketItem.nftDetails) {
+      dispatch(
+        getMarketNFTDetail({
+          contractAddress: marketItem.nftContract,
+          tokenId: marketItem.tokenId,
+          listingId: marketItem.id,
+        })
+      );
+    }
   }, []);
 
   useEffect(() => {
@@ -98,17 +101,24 @@ export const NFTMarketCard = ({ view, marketItem }) => {
           );
         }
       } catch {
-        setImgUrl(broken);
+        setImgUrl("Loading");
       }
     } else {
-      setImgUrl(broken);
+      setImgUrl("Loading");
     }
     if (marketItem) {
-      import(`../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`)
-        .then((image) => { setImageSrc(image.default); })
+      import(
+        `../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`
+      )
+        .then((image) => {
+          setImageSrc(image.default);
+        })
         .catch(() => {
-           import(`../../../assets/marketplaces/OCTOPLACE.svg`).then((defaultImage) => {
-            setImageSrc(defaultImage.default); });
+          import(`../../../assets/marketplaces/OCTOPLACE.svg`).then(
+            (defaultImage) => {
+              setImageSrc(defaultImage.default);
+            }
+          );
         });
     }
   }, [marketItem]);
@@ -121,36 +131,58 @@ export const NFTMarketCard = ({ view, marketItem }) => {
           to={`/nft/${marketItem.network}/${marketItem.nftContract}/${marketItem.tokenId}`}
         >
           <Box sx={styles.root}>
-            {marketItem.nftDetails && (
-              <div>
-                <img
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    position: 'absolute',
-                    margin: '.5rem',
-                    backgroundColor: "black", 
-                    borderRadius: '50%', 
-                  }}
-                  src={imageSrc}
-                  alt="marketplace"
-                />
+            <div>
+              <img
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  position: "absolute",
+                  margin: ".5rem",
+                  backgroundColor: "black",
+                  borderRadius: "50%",
+                }}
+                src={imageSrc}
+                alt="marketplace"
+              />
+              {imgUrl && imgUrl !== "Loading" ? (
+                <>
                 <img
                   src={imgUrl}
+                  onLoad={() => {setImgLoaded(true)}}
+                  onError={() => {setImgLoaded(false); setImageSrc(broken)}}
                   style={{
-                    borderTopLeftRadius: '.75rem',
-                    borderTopRightRadius: '.75rem',
-                    objectFit: 'cover',
-                    width: view === 3 ? '200px' : '100%',
-                    aspectRatio: '1/1',
-
+                    borderTopLeftRadius: ".75rem",
+                    borderTopRightRadius: ".75rem",
+                    objectFit: "cover",
+                    width: view === 3 ? "200px" : "100%",
+                    aspectRatio: "1/1",
+                    display: imgLoaded ? 'block' : "none"
                   }}
                   loading="lazy"
                   alt="nft-artwork"
                 />
-              </div>
-            )}
-            {marketItem.nftDetails && marketItem.nftDetails.metadata && (
+                {!imgLoaded && imageSrc!=="Loading" && (
+                  <img
+                  src={broken}
+                  style={{
+                    borderTopLeftRadius: ".75rem",
+                    borderTopRightRadius: ".75rem",
+                    objectFit: "cover",
+                    width: view === 3 ? "200px" : "100%",
+                    aspectRatio: "1/1",
+                  }}
+                  loading="lazy"
+                  alt="nft-artwork"
+                />
+                )}
+                </>
+              ) : (
+                <Skeleton variant="rectangular" width={view === 3 ? "200px" : "100%"} height={"200px"} animation="wave" />
+                
+              )}
+            </div>
+
+            {(marketItem.nftDetails && marketItem.nftDetails.metadata) && (
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
