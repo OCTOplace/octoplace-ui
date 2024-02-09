@@ -12,13 +12,11 @@ import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
-import OCTOPLACE from "../../../assets/marketplaces/OCTOPLACE.png";
-import OPENTHETA from "../../../assets/marketplaces/OPENTHETA.png";
-import THETARARITY from "../../../assets/marketplaces/THETARARITY.png";
 
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
+  const [imageSrc, setImageSrc] = useState("");
 
   const styles = {
     root: {
@@ -105,24 +103,15 @@ export const NFTMarketCard = ({ view, marketItem }) => {
     } else {
       setImgUrl(broken);
     }
+    if (marketItem) {
+      import(`../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`)
+        .then((image) => { setImageSrc(image.default); })
+        .catch(() => {
+           import(`../../../assets/marketplaces/OCTOPLACE.svg`).then((defaultImage) => {
+            setImageSrc(defaultImage.default); });
+        });
+    }
   }, [marketItem]);
-
-  let marketplaceImageSrc;
-
-  switch (marketItem.marketplace_Symbol) {
-    case 'OCTOPLACE':
-      marketplaceImageSrc = OCTOPLACE;
-      break;
-    case 'OPENTHETA':
-      marketplaceImageSrc = OPENTHETA;
-      break;
-    case 'THETARARITY':
-      marketplaceImageSrc = THETARARITY;
-      break;
-    default:
-      marketplaceImageSrc = OCTOPLACE; //
-      break;
-  }
 
   return (
     <>
@@ -140,12 +129,10 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                     height: "30px",
                     position: 'absolute',
                     margin: '.5rem',
-                    border: '2px solid #000000',  // Add the desired color for the outline
-                    borderRadius: '50%',  // Optional: Add border-radius for a circular shape
+                    backgroundColor: "black", 
+                    borderRadius: '50%', 
                   }}
-                  //src={marketItem.marketplace_Symbol === "OPENTHETA" ? OpenTheta : ThetaRarity}
-                  //src={`../../../assets/marketplaces/${marketItem.marketplace_Symbol}.png`} <-- this didn't work but I'm thinking of doing something like this instead
-                  src={marketplaceImageSrc}
+                  src={imageSrc}
                   alt="marketplace"
                 />
                 <img
