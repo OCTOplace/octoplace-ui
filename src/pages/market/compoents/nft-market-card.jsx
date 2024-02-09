@@ -16,6 +16,7 @@ import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
   const dispatch = useDispatch();
+  const [imageSrc, setImageSrc] = useState("");
 
   const styles = {
     root: {
@@ -102,6 +103,14 @@ export const NFTMarketCard = ({ view, marketItem }) => {
     } else {
       setImgUrl(broken);
     }
+    if (marketItem) {
+      import(`../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`)
+        .then((image) => { setImageSrc(image.default); })
+        .catch(() => {
+           import(`../../../assets/marketplaces/OCTOPLACE.svg`).then((defaultImage) => {
+            setImageSrc(defaultImage.default); });
+        });
+    }
   }, [marketItem]);
 
   return (
@@ -113,18 +122,33 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         >
           <Box sx={styles.root}>
             {marketItem.nftDetails && (
-              <img
-                src={imgUrl}
-                style={{
-                  borderTopLeftRadius: ".75rem",
-                  borderTopRightRadius: ".75rem",
-                  objectFit: "cover",
-                  width: view === 3 ? "200px" : "100%",
-                  aspectRatio: "1/1",
-                }}
-                loading="lazy"
-                alt="nft-artwork"
-              />
+              <div>
+                <img
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    position: 'absolute',
+                    margin: '.5rem',
+                    backgroundColor: "black", 
+                    borderRadius: '50%', 
+                  }}
+                  src={imageSrc}
+                  alt="marketplace"
+                />
+                <img
+                  src={imgUrl}
+                  style={{
+                    borderTopLeftRadius: '.75rem',
+                    borderTopRightRadius: '.75rem',
+                    objectFit: 'cover',
+                    width: view === 3 ? '200px' : '100%',
+                    aspectRatio: '1/1',
+
+                  }}
+                  loading="lazy"
+                  alt="nft-artwork"
+                />
+              </div>
             )}
             {marketItem.nftDetails && marketItem.nftDetails.metadata && (
               <Box sx={styles.content}>
