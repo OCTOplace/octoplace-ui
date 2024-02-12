@@ -12,6 +12,7 @@ import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
 import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
+import { Container } from "react-bootstrap";
 
 export const NFTMarketCard = ({ view, marketItem }) => {
   const [imgUrl, setImgUrl] = useState();
@@ -146,43 +147,52 @@ export const NFTMarketCard = ({ view, marketItem }) => {
               />
               {imgUrl && imgUrl !== "Loading" ? (
                 <>
-                <img
-                  src={imgUrl}
-                  onLoad={() => {setImgLoaded(true)}}
-                  onError={() => {setImgLoaded(false); setImageSrc(broken)}}
-                  style={{
-                    borderTopLeftRadius: ".75rem",
-                    borderTopRightRadius: ".75rem",
-                    objectFit: "cover",
-                    width: view === 3 ? "200px" : "100%",
-                    aspectRatio: "1/1",
-                    display: imgLoaded ? 'block' : "none"
-                  }}
-                  loading="lazy"
-                  alt="nft-artwork"
-                />
-                {!imgLoaded && imageSrc!=="Loading" && (
                   <img
-                  src={broken}
-                  style={{
-                    borderTopLeftRadius: ".75rem",
-                    borderTopRightRadius: ".75rem",
-                    objectFit: "cover",
-                    width: view === 3 ? "200px" : "100%",
-                    aspectRatio: "1/1",
-                  }}
-                  loading="lazy"
-                  alt="nft-artwork"
-                />
-                )}
+                    src={imgUrl}
+                    onLoad={() => {
+                      setImgLoaded(true);
+                    }}
+                    style={{
+                      borderTopLeftRadius: ".75rem",
+                      borderTopRightRadius: ".75rem",
+                      objectFit: "cover",
+                      width: view === 3 ? "200px" : "100%",
+                      aspectRatio: "1/1",
+                      display: imgLoaded ? "block" : "none",
+                    }}
+                    loading="lazy"
+                    alt="nft-artwork"
+                  />
+                  {!imgLoaded && (
+                    <Skeleton
+                      variant="rectangular"
+                      sx={{
+                        borderTopLeftRadius: ".75rem",
+                        borderTopRightRadius: ".75rem",
+                      }}
+                      width={view === 3 ? "200px" : "100%"}
+                      height={"195px"}
+                    />
+                  )}
                 </>
               ) : (
-                <Skeleton variant="rectangular" width={view === 3 ? "200px" : "100%"} height={"200px"} animation="wave" />
-                
+                <Box>
+                  <Skeleton
+                    variant="rectangular"
+                    width={view === 3 ? "200px" : "100%"}
+                    height={"200px"}
+                    animation="wave"
+                  />
+                  <Container>
+                    <Box height={"78px"}>
+                      <Skeleton variant="text" />
+                    </Box>
+                  </Container>
+                </Box>
               )}
             </div>
 
-            {(marketItem.nftDetails && marketItem.nftDetails.metadata) && (
+            {marketItem.nftDetails && marketItem.nftDetails.metadata && (
               <Box sx={styles.content}>
                 <Box style={styles.meta}>
                   <Typography className="strokeme" sx={styles.title}>
@@ -192,14 +202,6 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                   </Typography>
                   <img src={verifiedLogo} alt="verified" />
                 </Box>
-                {/* <img
-                  style={styles.network}
-                  src={marketItem.network === "kava" ? KavaLogo : ThetaLogo}
-                  alt="network"
-                /> */}
-                {/* <Typography
-                  sx={styles.network}
-                >{`#${marketItem.Network}`}</Typography> */}
                 <Box style={styles.price}>
                   <img
                     style={styles.network}
