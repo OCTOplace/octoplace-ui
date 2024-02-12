@@ -9,7 +9,6 @@ import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
 import { getMarketNFTDetail } from "../../../redux/thunk/getNftDetail";
-import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 import { Container } from "react-bootstrap";
