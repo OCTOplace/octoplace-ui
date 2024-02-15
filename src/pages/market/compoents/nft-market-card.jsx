@@ -4,7 +4,7 @@ import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import broken from "./../../../assets/broken.png";
 import verifiedLogo from "../../../assets/verified.svg";
 import flameLogo from "../../../assets/flame.svg";
 import { useDispatch } from "react-redux";
@@ -18,6 +18,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   const dispatch = useDispatch();
   const [imageSrc, setImageSrc] = useState("");
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [isImgLoadFailed, setImgLoadFailed] = useState(false)
 
   const styles = {
     root: {
@@ -94,7 +95,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         if (marketItem.nftDetails.metadata.image.includes("ipfs://")) {
           let url = marketItem.nftDetails.metadata.image;
           const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(`https://wsrv.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
+          setImgUrl(`https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
         } else {
           setImgUrl(
             `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
@@ -123,6 +124,11 @@ export const NFTMarketCard = ({ view, marketItem }) => {
     }
   }, [marketItem]);
 
+  useEffect(() => {
+    if(isImgLoadFailed){
+      setImgUrl(broken);
+    }
+  }, [isImgLoadFailed])
   return (
     <>
       {marketItem && (
@@ -151,6 +157,9 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                     onLoad={() => {
                       setImgLoaded(true);
                     }}
+                    onError={() => {
+                      setImgLoadFailed(true);
+                    }}
                     style={{
                       borderTopLeftRadius: ".75rem",
                       borderTopRightRadius: ".75rem",
@@ -162,15 +171,16 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                     loading="lazy"
                     alt="nft-artwork"
                   />
-                  {!imgLoaded && (
+                  {!imgLoaded && !isImgLoadFailed && (
                     <Skeleton
                       variant="rectangular"
                       sx={{
                         borderTopLeftRadius: ".75rem",
                         borderTopRightRadius: ".75rem",
+                        aspectRatio: "1/1",
                       }}
                       width={view === 3 ? "200px" : "100%"}
-                      height={"195px"}
+                      height={view===3 ?"195px": "160px"}
                     />
                   )}
                 </>

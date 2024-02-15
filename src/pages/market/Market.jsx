@@ -24,6 +24,7 @@ import {
   setNextPage,
   setTotalCount,
 } from "../../redux/slices/market-slice";
+import { useWeb3React } from "@web3-react/core";
 
 const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
 
@@ -50,6 +51,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 function Market({ isHome }) {
   const dispatch = useDispatch();
+  const {account} = useWeb3React();
   const [view, setView] = useState(2);
   const isLoading = useSelector((state) => state.market.isLoading);
   const marketItems = useSelector((state) => state.market.markets);
@@ -72,6 +74,7 @@ function Market({ isHome }) {
     auctionOnly: false,
     offersReceived: false,
     includeBurned: false,
+    onlyMyListings:false
   });
 
   useEffect(() => {
@@ -166,6 +169,9 @@ function Market({ isHome }) {
       return false;
     }
 
+    if(filterObj.onlyMyListings === true && item.seller.toLowerCase() !== account.toLowerCase()){
+      return false;
+    }
     if (
       filterObj.maxPrice !== 0 &&
       parseInt(item.price, 10) > filterObj.maxPrice
