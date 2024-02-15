@@ -40,7 +40,6 @@ import {
   abortTxProcess,
 } from "../../../redux/slices/tx-slice";
 import { txInitiators, txStatus } from "../../../constants/tx-initiators";
-import { getAllMarketItems } from "../../../redux/thunk/get-all-market-items";
 export const SellNFT = ({
   network,
   isOpen,

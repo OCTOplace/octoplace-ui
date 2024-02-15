@@ -15,6 +15,17 @@ import { NFTMarketCard } from "./compoents/nft-market-card";
 import TuneIcon from "@mui/icons-material/Tune";
 import FilterComponent from "../../components/FilterComponent";
 import Searchbox from "../../components/searchbox";
+import InfiniteScroll from "react-infinite-scroll-component";
+import axios from "axios";
+import {
+  setAddToMarkets,
+  setCurrentPage,
+  setHasMore,
+  setNextPage,
+  setTotalCount,
+} from "../../redux/slices/market-slice";
+
+const apiUrl = process.env.REACT_APP_LOGGING_API_URL;
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -42,9 +53,12 @@ function Market({ isHome }) {
   const [view, setView] = useState(2);
   const isLoading = useSelector((state) => state.market.isLoading);
   const marketItems = useSelector((state) => state.market.markets);
-  const [orderMethod, setOrderMethod] = useState("Price: Low to High");
+  const [orderMethod, setOrderMethod] = useState("Newest");
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const pageNumber = useSelector((state) => state.market.currentPage);
+  const nextPage = useSelector((state) => state.market.nextPage);
+  const hasMore = useSelector((state) => state.market.hasMore);
   const marketSettings = useSelector(
     (state) => state.marketSettings.marketplaces
   );
@@ -61,13 +75,42 @@ function Market({ isHome }) {
   });
 
   useEffect(() => {
-    if (marketSettings && marketSettings.length > 0) {
-      if (marketSymbols && marketSymbols.length > 0) {
-        dispatch(getAllMarketItems(marketSymbols));
+      if (marketSettings && marketSettings.length > 0) {
+        if (marketSymbols && marketSymbols.length > 0) {
+          dispatch(getAllMarketItems({ symbols: marketSymbols, pageNumber:1 }));
+        }
+      }
+    
+  }, [marketSettings]);
+  const fetchNext = async () => {
+    if (nextPage && marketSymbols) {
+      let items = [];
+      const result = await axios.post(
+        `${apiUrl}/api/market-place/get-active-listings-by-page`,
+        {
+          symbols: marketSymbols,
+          pageSize: 18,
+          pageNumber: nextPage,
+          sortBy: "desc",
+        }
+      );
+      items = result.data.marketItems;
+      if (result.data.marketItems.length > 0) {
+        dispatch(setAddToMarkets(items));
+        dispatch(setCurrentPage(nextPage));
+        dispatch(setNextPage(nextPage + 1));
+        dispatch(setTotalCount(result.data.total));
+        if(result.data.marketItems.length === 18){
+          dispatch(setHasMore(true));
+        }else{
+          dispatch(setHasMore(false));
+        }
+      }else{
+        dispatch(setHasMore(false));
+        dispatch(setTotalCount(result.data.total));
       }
     }
-  }, [marketSettings]);
-
+  };
   const handleOrder = (event) => {
     setOrderMethod(event.target.value);
   };
@@ -219,65 +262,72 @@ function Market({ isHome }) {
               handleFilter={(obj) => handleFilter(obj)}
             />
           )}
-          <CollectionCardContainer>
-            {!isLoading &&
-              view !== 1 &&
-              filteredMarketItems.length > 0 &&
-              sortByOrderMethod(filteredMarketItems, orderMethod).map(
-                (item, index) => {
-                  return (
-                    <NFTMarketCard
-                      marketItem={item}
-                      view={view}
-                      key={`index_${index}`}
-                    />
-                  );
-                }
-              )}
+          <InfiniteScroll
+            dataLength={filteredMarketItems.length}
+            next={fetchNext}
+            hasMore={hasMore}
+            style={{ width: "100%" }}
+          >
+            <CollectionCardContainer>
+              {!isLoading &&
+                view !== 1 &&
+                filteredMarketItems.length > 0 &&
+                sortByOrderMethod(filteredMarketItems, orderMethod).map(
+                  (item, index) => {
+                    return (
+                      <NFTMarketCard
+                        marketItem={item}
+                        view={view}
+                        key={`index_${index}`}
+                      />
+                    );
+                  }
+                )}
               {!isLoading && view !== 1 && filteredMarketItems.length === 0 && (
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                  width: "100%",
-                  height: "200px",
-                }}
-              >
-                <Typography
+                <Box
                   style={{
+                    display: "flex",
+                    alignItems: "center",
+                    textAlign: "center",
                     width: "100%",
-                    color: "#f4f4f4",
-                    fontSize: "1.5rem",
+                    height: "200px",
                   }}
                 >
-                  There are currently no items available in the market.
-                </Typography>
-              </Box>
-            )}
+                  <Typography
+                    style={{
+                      width: "100%",
+                      color: "#f4f4f4",
+                      fontSize: "1.5rem",
+                    }}
+                  >
+                    There are currently no items available in the market.
+                  </Typography>
+                </Box>
+              )}
 
-            {isLoading && (
-              <SkeletonContainer>
-                {[...Array(12)].map((e, i) => (
-                  <Box className="nft-card-link">
-                    <Skeleton
-                      className="mySkeleton"
-                      variant="rounded"
-                      key={i}
-                      animation="wave"
-                      style={{
-                        borderRadius: "0.75rem",
-                        marginBottom: "16px",
-                        width: "100%",
-                        height: "0",
-                        paddingTop: "145%",
-                      }}
-                    />
-                  </Box>
-                ))}
-              </SkeletonContainer>
-            )}
-          </CollectionCardContainer>
+              {isLoading && (
+                <SkeletonContainer>
+                  {[...Array(12)].map((e, i) => (
+                    <Box className="nft-card-link">
+                      <Skeleton
+                        className="mySkeleton"
+                        variant="rounded"
+                        key={i}
+                        animation="wave"
+                        style={{
+                          borderRadius: "0.75rem",
+                          marginBottom: "16px",
+                          width: "100%",
+                          height: "0",
+                          paddingTop: "145%",
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </SkeletonContainer>
+              )}
+            </CollectionCardContainer>
+          </InfiniteScroll>
         </NFTContentContainer>
       </NFTListContainer>
     </Container>
