@@ -95,27 +95,17 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         let url = marketItem.nftDetails.metadata.image;
         const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
         setImgUrl(`https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
-        
       } else {
-        setImgUrl(
-          `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
-        );
-        
+        setImgUrl(`https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`);
       }
     }
 
     if (marketItem) {
-      import(
-        `../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`
-      )
-        .then((image) => {
-          setImageSrc(image.default);
-        })
+      import(`../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`)
+        .then((image) => { setImageSrc(image.default); })
         .catch(() => {
           import(`../../../assets/marketplaces/OCTOPLACE.svg`).then(
-            (defaultImage) => {
-              setImageSrc(defaultImage.default);
-            }
+            (defaultImage) => { setImageSrc(defaultImage.default); }
           );
         });
     }
@@ -135,28 +125,26 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         >
           <Box sx={styles.root}>
             <div>
-              <img
-                style={{
-                  width: "30px",
-                  height: "30px",
-                  position: "absolute",
-                  margin: ".5rem",
-                  backgroundColor: "black",
-                  borderRadius: "50%",
-                }}
-                src={imageSrc}
-                alt="marketplace"
-              />
+              {imageSrc && (
+                <img
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    position: "absolute",
+                    margin: ".5rem",
+                    backgroundColor: "black",
+                    borderRadius: "50%",
+                  }}
+                  src={imageSrc}
+                  alt="marketplace"
+                />
+              )}
               {imgUrl && imgUrl !== "Loading" ? (
                 <>
                   <img
                     src={imgUrl}
-                    onLoad={() => {
-                      setImgLoaded(true);
-                    }}
-                    onError={() => {
-                      setImgLoadFailed(true);
-                    }}
+                    onLoad={() => { setImgLoaded(true); }}
+                    onError={() => { setImgLoadFailed(true); }}
                     style={{
                       borderTopLeftRadius: ".75rem",
                       borderTopRightRadius: ".75rem",
