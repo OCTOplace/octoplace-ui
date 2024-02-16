@@ -21,6 +21,7 @@ export const getSelectedMarketItem = createAsyncThunk(
   async ({ network, tokenId, address }, thunkAPI) => {
     try {
       let items = [];
+      console.log(address, network, tokenId)
       // const result = await axios.get(`${apiUrl}/marketplace/get-all`);
       const result = await axios.get(
         `${apiUrl}/api/market-place/get-selected-market-item/${address}/${network}/${tokenId}`
@@ -33,7 +34,7 @@ export const getSelectedMarketItem = createAsyncThunk(
       }
     } catch (error) {
       console.log("Error get All market items", error);
+      return thunkAPI.rejectWithValue(false);
     }
-    return [];
   }
 );

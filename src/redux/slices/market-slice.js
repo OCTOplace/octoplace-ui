@@ -113,10 +113,10 @@ export const marketSlice = createSlice({
       state.selectedMarketItem = payload;
       state.isLoading = false;
     });
-    builder.addCase(getSelectedMarketItem.rejected, (state) => {
+    builder.addCase(getSelectedMarketItem.rejected, (state, action) => {
+      console.log("I am Hit")
       state.isLoading = false;
       state.selectedMarketItem = undefined;
-      toast.error("Error occured while loading markets.");
     });
 
     builder.addCase(updateSelectedMarketItem.fulfilled, (state, action) => {
