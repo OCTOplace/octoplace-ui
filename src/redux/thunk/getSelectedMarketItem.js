@@ -21,29 +21,20 @@ export const getSelectedMarketItem = createAsyncThunk(
   async ({ network, tokenId, address }, thunkAPI) => {
     try {
       let items = [];
+      console.log(address, network, tokenId)
       // const result = await axios.get(`${apiUrl}/marketplace/get-all`);
       const result = await axios.get(
-        `${apiUrl}/api/market-place/get-all-market-items`
+        `${apiUrl}/api/market-place/get-selected-market-item/${address}/${network}/${tokenId}`
       );
       items = result.data;
-      if (items.length > 0) {
-        const index = items.findIndex(
-          (obj) =>
-            !obj.isSold &&
-            obj.tokenId === Number(tokenId) &&
-            obj.nftContract.toLowerCase() === address.toLowerCase() &&
-            obj.network === network
-        );
-
-        if (index > 0) {
-          return items[index];
-        } else {
-          return undefined;
-        }
+      if (items) {
+        return items;
+      }else {
+        return thunkAPI.rejectWithValue(false);
       }
     } catch (error) {
       console.log("Error get All market items", error);
+      return thunkAPI.rejectWithValue(false);
     }
-    return [];
   }
 );

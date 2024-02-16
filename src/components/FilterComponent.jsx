@@ -8,6 +8,8 @@ import {
   FormControl,
   MenuItem,
   Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -27,14 +29,25 @@ function FilterComponent({
 
   const [minPrice, setMinPrice] = useState(filterParam?.minPrice ?? 0);
   const [maxPrice, setMaxPrice] = useState(filterParam?.maxPrice ?? 0);
-  const [blockchain, setBlockchain] = useState(filterParam?.blockchain ?? "empty");
-  const [collection, setCollection] = useState(filterParam?.collection ?? "empty");
+  const [onlyMyListings, setOnlyMyListngs] = useState(filterParam?.onlyMyListings);
+  const [blockchain, setBlockchain] = useState(
+    filterParam?.blockchain ?? "empty"
+  );
+  const [collection, setCollection] = useState(
+    filterParam?.collection ?? "empty"
+  );
   const [selectedTraits, setSelectedTraits] = useState(filterParam?.traits);
   // const selectedTraits = filterParam?.traits;
   const [saleOnly, setSaleOnly] = useState(filterParam?.saleOnly ?? false);
-  const [auctionOnly, setAuctionOnly] = useState(filterParam?.auctionOnly ?? false);
-  const [offersReceived, setOffersReceived] = useState(filterParam?.offersReceived ?? 0);
-  const [includeBurned, setIncludeBurned] = useState(filterParam?.includeBurned ?? 0);
+  const [auctionOnly, setAuctionOnly] = useState(
+    filterParam?.auctionOnly ?? false
+  );
+  const [offersReceived, setOffersReceived] = useState(
+    filterParam?.offersReceived ?? 0
+  );
+  const [includeBurned, setIncludeBurned] = useState(
+    filterParam?.includeBurned ?? 0
+  );
   const marketItems = useSelector((state) => state.market.markets);
   const activeListings = useSelector((state) => state.listings.activeListings);
 
@@ -42,15 +55,21 @@ function FilterComponent({
     myNFTs.some((nft) => nft.contractAddress?.toLowerCase() === collection)
   );
 
-  console.log('marketItems',marketItems)
-
   if (filterPage === "Market") {
     filterCollections = categories.filter((collection) =>
-      marketItems.some((nft) => nft.nftContract?.toLowerCase() === collection.contractAddress?.toLowerCase() && nft.isSold === false)
+      marketItems.some(
+        (nft) =>
+          nft.nftContract?.toLowerCase() ===
+            collection.contractAddress?.toLowerCase() && nft.isSold === false
+      )
     );
   } else if (filterPage === "Swap") {
     filterCollections = categories.filter((collection) =>
-      activeListings.some((nft) => nft.listingNFT.contractAddress.toLowerCase() === collection.contractAddress.toLowerCase())
+      activeListings.some(
+        (nft) =>
+          nft.listingNFT.contractAddress.toLowerCase() ===
+          collection.contractAddress.toLowerCase()
+      )
     );
   }
 
@@ -105,6 +124,7 @@ function FilterComponent({
       offersReceived: offersReceived,
       includeBurned: includeBurned,
       traits: updatedTraits,
+      onlyMyListings: onlyMyListings
     };
 
     handleFilter(filterObj);
@@ -122,6 +142,7 @@ function FilterComponent({
       offersReceived: offersReceived,
       includeBurned: includeBurned,
       traits: selectedTraits,
+      onlyMyListings: onlyMyListings
     };
 
     handleFilter(filterObj);
@@ -139,6 +160,7 @@ function FilterComponent({
       offersReceived: offersReceived,
       includeBurned: includeBurned,
       traits: selectedTraits,
+      onlyMyListings: onlyMyListings
     };
 
     handleFilter(filterObj);
@@ -156,13 +178,13 @@ function FilterComponent({
       offersReceived: offersReceived,
       includeBurned: includeBurned,
       traits: selectedTraits,
+      onlyMyListings: onlyMyListings
     };
 
     handleFilter(filterObj);
   };
 
   const handleCategoryChange = (selCollection) => {
-    console.log('selCollection',selCollection)
     setCollection(selCollection);
     const filterObj = {
       minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
@@ -174,6 +196,25 @@ function FilterComponent({
       offersReceived: offersReceived,
       includeBurned: includeBurned,
       traits: selectedTraits,
+      onlyMyListings: onlyMyListings
+    };
+
+    handleFilter(filterObj);
+  };
+
+  const handleOnlyMyListingsChange = (isSelected) => {
+   setOnlyMyListngs(isSelected);
+    const filterObj = {
+      minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
+      maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
+      blockchain: blockchain,
+      collection: collection,
+      saleOnly: saleOnly,
+      auctionOnly: auctionOnly,
+      offersReceived: offersReceived,
+      includeBurned: includeBurned,
+      traits: selectedTraits,
+      onlyMyListings: isSelected
     };
 
     handleFilter(filterObj);
@@ -315,6 +356,15 @@ function FilterComponent({
               })}
             </Select>
           </FormControl>
+        </Box>
+
+        <Box sx={styles.column}>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox checked={onlyMyListings} onChange={(event) => handleOnlyMyListingsChange(event.target.checked)} sx={{color:"#fff"}} />}
+              label="My Listings"
+            />
+          </FormGroup>
         </Box>
       </Box>
     );
@@ -587,11 +637,11 @@ function FilterComponent({
                         <Box key={`index_${index}`} sx={styles.checkboxRow}>
                           <Typography sx={styles.p}>
                             {typeof value.value === "object" &&
-                              value.value !== null
+                            value.value !== null
                               ? value.value[0]
                               : value.value === "" || value.value === null
-                                ? "None"
-                                : value.value}
+                              ? "None"
+                              : value.value}
                           </Typography>
                           <Box sx={styles.boxRow}>
                             <Typography sx={styles.p}>

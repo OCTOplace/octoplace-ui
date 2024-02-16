@@ -47,7 +47,6 @@ export const marketSlice = createSlice({
       state.markets = action.payload;
     },
     setAddToMarkets: (state, action) => {
-      console.log("Initial Merket Items", state.markets.length)
       for (let item of action.payload) {
         const found = state.markets.find(
           (x) =>
@@ -60,7 +59,6 @@ export const marketSlice = createSlice({
 
         if(!found){
           state.markets.push(item);
-          console.log("Adding Item", item)
         }else{
           console.log("skipping as its found", found)
         }
@@ -113,10 +111,9 @@ export const marketSlice = createSlice({
       state.selectedMarketItem = payload;
       state.isLoading = false;
     });
-    builder.addCase(getSelectedMarketItem.rejected, (state) => {
+    builder.addCase(getSelectedMarketItem.rejected, (state, action) => {
       state.isLoading = false;
       state.selectedMarketItem = undefined;
-      toast.error("Error occured while loading markets.");
     });
 
     builder.addCase(updateSelectedMarketItem.fulfilled, (state, action) => {
