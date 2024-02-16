@@ -483,6 +483,7 @@ export const NFTView = () => {
             tokenId={tokenId}
             owner={market ? market.seller : owner}
             name={collectionName}
+            marketData={market}
           />
           <NFTCardActionContaniner>
             {!loading && (market || selectedListing) ? (

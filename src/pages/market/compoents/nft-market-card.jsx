@@ -95,18 +95,12 @@ export const NFTMarketCard = ({ view, marketItem }) => {
         let url = marketItem.nftDetails.metadata.image;
         const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
         setImgUrl(`https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
-        console.log(
-          "Ipfs URL:",
-          `https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`
-        );
+        
       } else {
         setImgUrl(
           `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
         );
-        console.log(
-          "URL:",
-          `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
-        );
+        
       }
     }
 

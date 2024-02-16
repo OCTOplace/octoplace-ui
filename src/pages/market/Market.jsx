@@ -314,7 +314,7 @@ function Market({ isHome }) {
               {isLoading && (
                 <SkeletonContainer>
                   {[...Array(12)].map((e, i) => (
-                    <Box className="nft-card-link">
+                    <Box key={`index__${i}`} className="nft-card-link">
                       <Skeleton
                         className="mySkeleton"
                         variant="rounded"
