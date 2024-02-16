@@ -18,7 +18,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   const dispatch = useDispatch();
   const [imageSrc, setImageSrc] = useState("");
   const [imgLoaded, setImgLoaded] = useState(false);
-  const [isImgLoadFailed, setImgLoadFailed] = useState(false)
+  const [isImgLoadFailed, setImgLoadFailed] = useState(false);
 
   const styles = {
     root: {
@@ -91,22 +91,25 @@ export const NFTMarketCard = ({ view, marketItem }) => {
 
   useEffect(() => {
     if (marketItem && marketItem.nftDetails && marketItem.nftDetails.metadata) {
-      try {
-        if (marketItem.nftDetails.metadata.image.includes("ipfs://")) {
-          let url = marketItem.nftDetails.metadata.image;
-          const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-          setImgUrl(`https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
-        } else {
-          setImgUrl(
-            `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
-          );
-        }
-      } catch {
-        setImgUrl("Loading");
+      if (marketItem.nftDetails.metadata.image.includes("ipfs://")) {
+        let url = marketItem.nftDetails.metadata.image;
+        const newUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+        setImgUrl(`https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`);
+        console.log(
+          "Ipfs URL:",
+          `https://wsr.nl/?url=${newUrl}&w=200&h=200&fit=outside`
+        );
+      } else {
+        setImgUrl(
+          `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
+        );
+        console.log(
+          "URL:",
+          `https://wsrv.nl/?url=${marketItem.nftDetails.metadata.image}&w=200&h=200&fit=outside`
+        );
       }
-    } else {
-      setImgUrl("Loading");
     }
+
     if (marketItem) {
       import(
         `../../../assets/marketplaces/${marketItem.marketplace_Symbol}.svg`
@@ -125,10 +128,10 @@ export const NFTMarketCard = ({ view, marketItem }) => {
   }, [marketItem]);
 
   useEffect(() => {
-    if(isImgLoadFailed){
+    if (isImgLoadFailed) {
       setImgUrl(broken);
     }
-  }, [isImgLoadFailed])
+  }, [isImgLoadFailed]);
   return (
     <>
       {marketItem && (
@@ -168,7 +171,6 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                       aspectRatio: "1/1",
                       display: imgLoaded ? "block" : "none",
                     }}
-                    loading="lazy"
                     alt="nft-artwork"
                   />
                   {!imgLoaded && !isImgLoadFailed && (
@@ -180,7 +182,7 @@ export const NFTMarketCard = ({ view, marketItem }) => {
                         aspectRatio: "1/1",
                       }}
                       width={view === 3 ? "200px" : "100%"}
-                      height={view===3 ?"195px": "160px"}
+                      height={"195px"}
                     />
                   )}
                 </>
