@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { Fragment } from "react";
 import { Box, Typography } from "@mui/material";
 // import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { useEffect } from "react";
@@ -13,10 +13,18 @@ import broken from "./../../../assets/broken.png";
 import ThetaLogo from "../../../assets/chains/thetaLogo.svg";
 import KavaLogo from "../../../assets/chains/kavaLogo.svg";
 import { useGTMDispatch } from "@elgorditosalsero/react-gtm-hook";
+import tfuelLogo from "../../../assets/flame.svg";
 
 export const NFTListingCard = (props) => {
   const sendDataToGTM = useGTMDispatch();
   const [imgUrl, setImgUrl] = useState();
+  const [imageSrc, setImageSrc] = useState("");
+  const [imgListType, setListType] = useState("");
+  const {
+    listingItem: {
+      listingNFT: { listing, swapListing },
+    },
+  } = props;
   // const { view } = props;
 
   const styles = {
@@ -29,6 +37,7 @@ export const NFTListingCard = (props) => {
       width: "100%",
       border: "1px solid transparent", // Add transparent border
       marginBottom: "1rem",
+      position: "relative",
       "&:hover": {
         border: "1px solid #F78C09",
         boxSizing: "border-box",
@@ -65,13 +74,6 @@ export const NFTListingCard = (props) => {
     },
   };
 
-  // const truncate = (text, maxLength) => {
-  //   if (text.length > maxLength) {
-  //     return text.substring(0, maxLength) + "...";
-  //   }
-  //   return text;
-  // };
-
   const handleCardClick = (name, network, address, tokenId) => {
     if (props.where === "swap") {
       sendDataToGTM({
@@ -106,6 +108,36 @@ export const NFTListingCard = (props) => {
     }
   }, [props.listingItem]);
 
+  useEffect(() => {
+    if (listing) {
+      import(`../../../assets/marketplaces/${listing.marketplace_Symbol}.svg`)
+        .then((image) => {
+          setImageSrc(image.default);
+        })
+        .catch(() => {
+          import(`../../../assets/marketplaces/OCTOPLACE.svg`).then(
+            (defaultImage) => {
+              setImageSrc(defaultImage.default);
+            }
+          );
+        });
+
+      import(`../../../assets/marketplaces/sale.svg`).then((defaultImage) => {
+        setListType(defaultImage.default);
+      });
+    }
+    if (swapListing) {
+      import(`../../../assets/marketplaces/OCTOPLACE.svg`).then(
+        (defaultImage) => {
+          setImageSrc(defaultImage.default);
+        }
+      );
+      import(`../../../assets/marketplaces/swap.svg`).then((defaultImage) => {
+        setListType(defaultImage.default);
+      });
+    }
+  }, [listing, swapListing]);
+
   return (
     <>
       {props.listingItem && (
@@ -124,6 +156,72 @@ export const NFTListingCard = (props) => {
           }
         >
           <Box sx={styles.root}>
+            {listing && (
+              <Fragment>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    left: 10,
+                    top: 10,
+                    borderRadius: "50%",
+                    backgroundColor: "#000",
+                  }}
+                >
+                  <img
+                    style={{ width: "30px", borderRadius: "50%" }}
+                    src={imageSrc}
+                    alt="marketplace-logo"
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    right: -2,
+                    top:-2,
+                    borderRadius: "50%",
+                  }}
+                >
+                  <img
+                    style={{ width:"40px" }}
+                    src={imgListType}
+                    alt="marketplace-logo"
+                  />
+                </Box>
+              </Fragment>
+            )}
+            {swapListing && (
+              <Fragment>
+                <Box
+                sx={{
+                  position: "absolute",
+                  left: 10,
+                  top: 10,
+                  borderRadius: "50%",
+                  backgroundColor: "#000",
+                }}
+              >
+                <img
+                  style={{ width: "30px", borderRadius: "50%" }}
+                  src={imageSrc}
+                  alt="marketplace-logo"
+                />
+              </Box>
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: -2,
+                  top:-2,
+                  borderRadius: "50%",
+                }}
+              >
+                <img
+                  style={{ width: "40px",}}
+                  src={imgListType}
+                  alt="marketplace-logo"
+                />
+              </Box>
+              </Fragment>
+            )}
             <img
               src={imgUrl}
               style={{
@@ -145,18 +243,33 @@ export const NFTListingCard = (props) => {
                 </Typography>
                 <img src={verifiedLogo} alt="verified" />
               </Box>
-              {/* <Typography
-                sx={styles.network}
-              >{`#${props.listingItem.listingNFT.network}`}</Typography> */}
-              <img
-                style={styles.network}
-                src={
-                  props.listingItem.listingNFT.network === "kava"
-                    ? KavaLogo
-                    : ThetaLogo
-                }
-                alt="network"
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  style={styles.network}
+                  src={
+                    props.listingItem.listingNFT.network === "kava"
+                      ? KavaLogo
+                      : ThetaLogo
+                  }
+                  alt="network"
+                />
+                <span style={{ flex: "1 auto" }}></span>
+
+                {listing && (
+                  <Fragment>
+                    <img src={tfuelLogo} alt="currency" />
+                    <Typography sx={{ ml: 1 }}>
+                      {props.listingItem.listingNFT.listing.price}
+                    </Typography>
+                  </Fragment>
+                )}
+              </Box>
             </Box>
           </Box>
         </Link>

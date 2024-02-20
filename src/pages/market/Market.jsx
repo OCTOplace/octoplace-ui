@@ -73,8 +73,7 @@ function Market({ isHome }) {
     saleOnly: false,
     auctionOnly: false,
     offersReceived: false,
-    includeBurned: false,
-    onlyMyListings:false
+    includeBurned: false
   });
 
   useEffect(() => {
@@ -166,10 +165,6 @@ function Market({ isHome }) {
       filterObj.minPrice !== 0 &&
       parseInt(item.price, 10) < filterObj.minPrice
     ) {
-      return false;
-    }
-
-    if(filterObj.onlyMyListings === true && item.seller.toLowerCase() !== account.toLowerCase()){
       return false;
     }
     if (
