@@ -29,7 +29,6 @@ function FilterComponent({
 
   const [minPrice, setMinPrice] = useState(filterParam?.minPrice ?? 0);
   const [maxPrice, setMaxPrice] = useState(filterParam?.maxPrice ?? 0);
-  const [onlyMyListings, setOnlyMyListngs] = useState(filterParam?.onlyMyListings);
   const [blockchain, setBlockchain] = useState(
     filterParam?.blockchain ?? "empty"
   );
@@ -123,8 +122,7 @@ function FilterComponent({
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
       includeBurned: includeBurned,
-      traits: updatedTraits,
-      onlyMyListings: onlyMyListings
+      traits: updatedTraits
     };
 
     handleFilter(filterObj);
@@ -141,8 +139,7 @@ function FilterComponent({
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
       includeBurned: includeBurned,
-      traits: selectedTraits,
-      onlyMyListings: onlyMyListings
+      traits: selectedTraits
     };
 
     handleFilter(filterObj);
@@ -159,8 +156,7 @@ function FilterComponent({
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
       includeBurned: includeBurned,
-      traits: selectedTraits,
-      onlyMyListings: onlyMyListings
+      traits: selectedTraits
     };
 
     handleFilter(filterObj);
@@ -177,8 +173,7 @@ function FilterComponent({
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
       includeBurned: includeBurned,
-      traits: selectedTraits,
-      onlyMyListings: onlyMyListings
+      traits: selectedTraits
     };
 
     handleFilter(filterObj);
@@ -195,26 +190,7 @@ function FilterComponent({
       auctionOnly: auctionOnly,
       offersReceived: offersReceived,
       includeBurned: includeBurned,
-      traits: selectedTraits,
-      onlyMyListings: onlyMyListings
-    };
-
-    handleFilter(filterObj);
-  };
-
-  const handleOnlyMyListingsChange = (isSelected) => {
-   setOnlyMyListngs(isSelected);
-    const filterObj = {
-      minPrice: isNaN(minPrice) ? 0 : parseInt(minPrice, 10),
-      maxPrice: isNaN(maxPrice) ? 0 : parseInt(maxPrice, 10),
-      blockchain: blockchain,
-      collection: collection,
-      saleOnly: saleOnly,
-      auctionOnly: auctionOnly,
-      offersReceived: offersReceived,
-      includeBurned: includeBurned,
-      traits: selectedTraits,
-      onlyMyListings: isSelected
+      traits: selectedTraits
     };
 
     handleFilter(filterObj);
@@ -356,15 +332,6 @@ function FilterComponent({
               })}
             </Select>
           </FormControl>
-        </Box>
-
-        <Box sx={styles.column}>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox checked={onlyMyListings} onChange={(event) => handleOnlyMyListingsChange(event.target.checked)} sx={{color:"#fff"}} />}
-              label="My Listings"
-            />
-          </FormGroup>
         </Box>
       </Box>
     );
