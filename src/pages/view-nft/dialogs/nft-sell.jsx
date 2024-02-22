@@ -141,7 +141,6 @@ export const SellNFT = ({
     if (marketSettings && marketSettings.length > 0) {
       const result = marketSettings.find((x) => x.isThirdParty === false);
       setDefaultSetting(result);
-      console.log("/// default", defaultMarketSetting);
     } else {
       setDefaultSetting(undefined);
     }
@@ -171,7 +170,7 @@ export const SellNFT = ({
       getApprovalStatus();
       getDetails();
     }
-  }, [network]);
+  }, [network, marketplaceSetting]);
   const getApprovalStatus = async () => {
     const netDetails = getNetworkInfo(network);
     const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
@@ -195,40 +194,73 @@ export const SellNFT = ({
   const getDetails = async () => {
     const netDetails = getNetworkInfo(network);
     const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-
-    try {
-      const marketContract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        provider
-      );
-      const fee = await marketContract.getSalesFee();
-      setSalesFee(Number(formatUnits(fee, 0)));
-      console.log(Number(formatUnits(fee, 0)));
-
-      let payout = await marketContract.getCreatorFeeBasisPoints(
-        contractAddress
-      );
-      if (payout.creator === zeroAddress) {
-        //royalty from EIP2981
-        const contract = new Contract(contractAddress, ercAbi, provider);
-        const isRoyaltyAvlbl = await contract.supportsInterface("0x2a55205a");
-        if (isRoyaltyAvlbl) {
-          payout = await contract.royaltyInfo(
-            tokenId,
-            parseUnits(price.toString())
+    if (marketplaceSetting) {
+      if (
+        marketplaceSetting.symbol === "OPENTHETA" ||
+        marketplaceSetting.symbol === "OCTOPLACE"
+      ) {
+        try {
+          const marketContract = new Contract(
+            marketplaceSetting.marketplaceContractAddress,
+            marketplaceSetting.abi,
+            provider
           );
-          const val =
-            (Number(formatUnits(payout.royaltyAmount, "ether")) / price) *
-            10000;
-          console.log(val);
-          setCreatorFee(val);
+          const fee = await marketContract.getSalesFee();
+          setSalesFee(Number(formatUnits(fee, 0)));
+
+          let payout = await marketContract.getCreatorFeeBasisPoints(
+            contractAddress
+          );
+
+          if (payout.creator === zeroAddress) {
+            //royalty from EIP2981
+            const contract = new Contract(contractAddress, ercAbi, provider);
+            const isRoyaltyAvlbl = await contract.supportsInterface(
+              "0x2a55205a"
+            );
+            if (isRoyaltyAvlbl) {
+              payout = await contract.royaltyInfo(
+                tokenId,
+                parseUnits(price.toString())
+              );
+              const val =
+                (Number(formatUnits(payout.royaltyAmount, "ether")) / price) *
+                10000;
+              setCreatorFee(val);
+            }
+          } else {
+            setCreatorFee(formatUnits(payout.feeBasisPoints, 0));
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } else {
-        setCreatorFee(formatUnits(payout.feeBasisPoints, 0));
       }
-    } catch (err) {
-      console.log(err);
+      if (marketplaceSetting.symbol === "THETARARITY") {
+        const marketContract = new Contract(
+          marketplaceSetting.marketplaceContractAddress,
+          marketplaceSetting.abi,
+          provider
+        );
+        let contractFee;
+        let feeAmount;
+        try {
+          feeAmount = await marketContract.getFeeAmount();
+          setSalesFee(Number(formatUnits(feeAmount, 0)));
+          contractFee = await marketContract.getContractFees(contractAddress);
+          if(contractFee){
+            setSalesFee(Number(formatUnits(contractFee.feeAmount, 0)));
+            setCreatorFee(formatUnits(contractFee.creatorAmount, 0));
+          }else{
+            setSalesFee(Number(formatUnits(feeAmount, 0)));
+            setCreatorFee(formatUnits(0, 0));
+          }
+        } catch {
+          
+            setSalesFee(Number(formatUnits(feeAmount, 0)));
+            setCreatorFee(formatUnits(0, 0));
+        }
+        
+      }
     }
   };
   const handleApprove = async () => {
@@ -303,16 +335,19 @@ export const SellNFT = ({
               marketId
             );
             break;
-          case "OPENTHETA": 
-              txResult = await contract.updateMarketItem(
-                contractAddress,
-                tokenId,
-                parseUnits(price.toString()),
-                marketId
-              );
+          case "OPENTHETA":
+            txResult = await contract.updateMarketItem(
+              contractAddress,
+              tokenId,
+              parseUnits(price.toString()),
+              marketId
+            );
             break;
-          case "THETARARITY": 
-            txResult = await contract.update(marketId, parseUnits(price.toString()));
+          case "THETARARITY":
+            txResult = await contract.update(
+              marketId,
+              parseUnits(price.toString())
+            );
             break;
           default:
             break;
