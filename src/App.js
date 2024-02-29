@@ -27,8 +27,7 @@ import { rpc, swapAbi, swapContract } from "./connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from "@ethersproject/units";
 import {
-  activateInjectedProvider,
-  injectedConnector,
+  activateInjectedProvider, injectedConnector,
 } from "./connectors/injected-connector";
 import { TxDialog } from "./components/dialogs/txdialog";
 import { FaucetPage } from "./pages/faucet/faucet";
