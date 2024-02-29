@@ -72,8 +72,6 @@ function transformData(nfts) {
       metadata: nft.metadata ? nft.metadata : null,
       url: nft.uri ? nft.uri : "",
       network: nft.network,
-      listing: nft.listing,
-      swapListing: nft.swapListing
     };
     return item;
   });
