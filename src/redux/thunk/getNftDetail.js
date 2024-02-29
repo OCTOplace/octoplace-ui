@@ -24,11 +24,6 @@ export const getMarketNFTDetail = createAsyncThunk(
     );
     items = result.data;
     items = { ...items, listingId: nftDetails.listingId };
-    if (!items.success) {
-      return thunkAPI.rejectWithValue({nftDetails, isRejected:true});
-    }
-      return items;
-    
-    
+    return items;
   }
 );

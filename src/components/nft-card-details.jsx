@@ -4,16 +4,16 @@ import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import { getImageUrl, shortenAddress } from "../utils/string-util";
 import copy from "clipboard-copy";
 import { toast } from "react-toastify";
+
 import verifiedLogo from "../assets/verified.svg";
 import { ContentCopy } from "@mui/icons-material";
 import { styled } from "@mui/system";
 
 export const NFTCardDetails = (props) => {
-  const { metadata, tokenId, owner, marketData } = props;
+  const { metadata, tokenId, owner } = props;
   const [imgLoaded, setImgLoaded] = useState(false);
   const [isAnimation, setAnimation] = useState(false);
   const [imgUrl, setUrl] = useState("");
-  const [badgeUrl, setBadgeURL] = useState(undefined);
 
   const styles = {
     card: (theme) => ({
@@ -23,7 +23,6 @@ export const NFTCardDetails = (props) => {
       borderRadius: ".75rem",
       border: "1px solid #6C6C6C",
       display: "flex",
-      position: "relative",
       flexDirection: "column",
       gap: "1rem",
       [theme.breakpoints.down(992)]: {
@@ -107,39 +106,7 @@ export const NFTCardDetails = (props) => {
       color: "#6C6C6C",
       fontSize: ".75rem",
     },
-    floatingBadge: {
-      position: "absolute",
-      width: "50px",
-      height: "50px",
-      top: 20,
-      left: 20,
-      borderRadius: "50%",
-    },
   };
-
-  useEffect(() => {
-    if(marketData){
-      import(
-        `../assets/marketplaces/${marketData.marketplace_Symbol}.svg`
-      )
-        .then((image) => {
-          setBadgeURL(image.default)
-        })
-        .catch(() => {
-          import(`../assets/marketplaces/OCTOPLACE.svg`).then(
-            (defaultImage) => {
-              setBadgeURL(defaultImage.default)
-            }
-          );
-        });
-    }
-  }, [marketData]);
-
-  useEffect(()=>{
-    return () => {
-      setBadgeURL(undefined)
-    }
-  },[])
 
   useEffect(() => {
     if (metadata) {
@@ -166,16 +133,6 @@ export const NFTCardDetails = (props) => {
   return (
     <>
       <Box sx={styles.card}>
-        {badgeUrl && (
-          <Box sx={styles.floatingBadge}>
-            <img
-              src={badgeUrl}
-              style={{ width: "50px", borderRadius: "50%" , 
-              backgroundColor: "#000"}}
-              alt="marketplace-badge"
-            />
-          </Box>
-        )}
         {metadata && (
           <Img
             alt="kjbhv"
@@ -214,7 +171,7 @@ export const NFTCardDetails = (props) => {
                 )
               }
             >
-              {owner !== undefined && owner !== "" ? shortenAddress(owner) : ""}
+              { owner !== undefined && owner !== "" ? shortenAddress(owner) : "" }
             </span>
             <IconButton
               onClick={() => {
