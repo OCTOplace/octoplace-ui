@@ -38,7 +38,6 @@ import NFTPage from "./pages/collections/nft";
 import Market from "./pages/market/Market";
 import Swap from "./pages/market/Swap";
 import Auction from "./pages/market/Auction";
-import { getAllMarketItems } from "./redux/thunk/get-all-market-items";
 import CollectionSettings from "./pages/collections/collectionSettings";
 import { getAllCollections } from "./redux/thunk/getAllCollections";
 import DashboardHome from "./pages/dashboard/dashboardHome";
@@ -49,6 +48,7 @@ import {getActiveListingsFromLoggingAPI} from "./redux/thunk/get-active-listings
 import { ThemeProvider } from "@mui/system";
 import { theme } from "./theme";
 import { TxProcess } from "./components/tx-process/tx-process";
+import { getAllMarketSettings } from "./redux/thunk/getMarketSettings";
 
 const gtmParams = {
   id:
@@ -115,8 +115,8 @@ function App() {
     dispatch(setTxCharge(txCharge));
   };
   useEffect(() => {
+    dispatch(getAllMarketSettings());
     dispatch(getActiveListingsFromLoggingAPI());
-    dispatch(getAllMarketItems());
     dispatch(getAllCollections());
     getTxCharge();
 
