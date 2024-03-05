@@ -40,7 +40,6 @@ import {
   abortTxProcess,
 } from "../../../redux/slices/tx-slice";
 import { txInitiators, txStatus } from "../../../constants/tx-initiators";
-import { getAllMarketItems } from "../../../redux/thunk/get-all-market-items";
 export const SellNFT = ({
   network,
   isOpen,
@@ -52,6 +51,7 @@ export const SellNFT = ({
   itemPrice,
   marketId,
   listingId,
+  marketplaceSetting,
 }) => {
   const theme = useTheme();
   const zeroAddress = "0x0000000000000000000000000000000000000000";
@@ -83,9 +83,11 @@ export const SellNFT = ({
   const { account, chainId } = useWeb3React();
   const [setAnimation] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-
   const { txInitiator, status } = useSelector((state) => state.txProcess);
-
+  const [defaultMarketSetting, setDefaultSetting] = useState(undefined);
+  const marketSettings = useSelector(
+    (state) => state.marketSettings.marketplaces
+  );
   useEffect(() => {
     if (
       txInitiator === txInitiators.ADD_MARKET_LISTING_APPROVE &&
@@ -102,7 +104,6 @@ export const SellNFT = ({
       txInitiator === txInitiators.UPDATE_MARKET_LISTING_PRICE &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -115,7 +116,6 @@ export const SellNFT = ({
       txInitiator === txInitiators.ADD_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(false));
@@ -130,13 +130,21 @@ export const SellNFT = ({
         txInitiator === txInitiators.ADD_MARKET_LISTING) &&
       status === txStatus.FAILED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(setTxDialogSuccess(false));
       dispatch(setTxDialogPending(false));
       dispatch(setTxDialogFailed(true));
       dispatch(abortTxProcess());
     }
   }, [status]);
+
+  useEffect(() => {
+    if (marketSettings && marketSettings.length > 0) {
+      const result = marketSettings.find((x) => x.isThirdParty === false);
+      setDefaultSetting(result);
+    } else {
+      setDefaultSetting(undefined);
+    }
+  }, [marketSettings]);
 
   const handleClose = () => {
     onCloseDlg();
@@ -162,7 +170,7 @@ export const SellNFT = ({
       getApprovalStatus();
       getDetails();
     }
-  }, [network]);
+  }, [network, marketplaceSetting]);
   const getApprovalStatus = async () => {
     const netDetails = getNetworkInfo(network);
     const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
@@ -186,40 +194,73 @@ export const SellNFT = ({
   const getDetails = async () => {
     const netDetails = getNetworkInfo(network);
     const provider = new JsonRpcProvider(netDetails.dataNetwork.RPC);
-
-    try {
-      const marketContract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        provider
-      );
-      const fee = await marketContract.getSalesFee();
-      setSalesFee(Number(formatUnits(fee, 0)));
-      console.log(Number(formatUnits(fee, 0)));
-
-      let payout = await marketContract.getCreatorFeeBasisPoints(
-        contractAddress
-      );
-      if (payout.creator === zeroAddress) {
-        //royalty from EIP2981
-        const contract = new Contract(contractAddress, ercAbi, provider);
-        const isRoyaltyAvlbl = await contract.supportsInterface("0x2a55205a");
-        if (isRoyaltyAvlbl) {
-          payout = await contract.royaltyInfo(
-            tokenId,
-            parseUnits(price.toString())
+    if (marketplaceSetting) {
+      if (
+        marketplaceSetting.symbol === "OPENTHETA" ||
+        marketplaceSetting.symbol === "OCTOPLACE"
+      ) {
+        try {
+          const marketContract = new Contract(
+            marketplaceSetting.marketplaceContractAddress,
+            marketplaceSetting.abi,
+            provider
           );
-          const val =
-            (Number(formatUnits(payout.royaltyAmount, "ether")) / price) *
-            10000;
-          console.log(val);
-          setCreatorFee(val);
+          const fee = await marketContract.getSalesFee();
+          setSalesFee(Number(formatUnits(fee, 0)));
+
+          let payout = await marketContract.getCreatorFeeBasisPoints(
+            contractAddress
+          );
+
+          if (payout.creator === zeroAddress) {
+            //royalty from EIP2981
+            const contract = new Contract(contractAddress, ercAbi, provider);
+            const isRoyaltyAvlbl = await contract.supportsInterface(
+              "0x2a55205a"
+            );
+            if (isRoyaltyAvlbl) {
+              payout = await contract.royaltyInfo(
+                tokenId,
+                parseUnits(price.toString())
+              );
+              const val =
+                (Number(formatUnits(payout.royaltyAmount, "ether")) / price) *
+                10000;
+              setCreatorFee(val);
+            }
+          } else {
+            setCreatorFee(formatUnits(payout.feeBasisPoints, 0));
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } else {
-        setCreatorFee(formatUnits(payout.feeBasisPoints, 0));
       }
-    } catch (err) {
-      console.log(err);
+      if (marketplaceSetting.symbol === "THETARARITY") {
+        const marketContract = new Contract(
+          marketplaceSetting.marketplaceContractAddress,
+          marketplaceSetting.abi,
+          provider
+        );
+        let contractFee;
+        let feeAmount;
+        try {
+          feeAmount = await marketContract.getFeeAmount();
+          setSalesFee(Number(formatUnits(feeAmount, 0)));
+          contractFee = await marketContract.getContractFees(contractAddress);
+          if(contractFee){
+            setSalesFee(Number(formatUnits(contractFee.feeAmount, 0)));
+            setCreatorFee(formatUnits(contractFee.creatorAmount, 0));
+          }else{
+            setSalesFee(Number(formatUnits(feeAmount, 0)));
+            setCreatorFee(formatUnits(0, 0));
+          }
+        } catch {
+          
+            setSalesFee(Number(formatUnits(feeAmount, 0)));
+            setCreatorFee(formatUnits(0, 0));
+        }
+        
+      }
     }
   };
   const handleApprove = async () => {
@@ -234,19 +275,26 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(contractAddress, ercAbi, signer);
-      const txResult = await contract.approve(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        tokenId
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.ADD_MARKET_LISTING_APPROVE,
-        })
-      );
-      txResult.wait();
+      if (defaultMarketSetting) {
+        const contract = new Contract(contractAddress, ercAbi, signer);
+        const txResult = await contract.approve(
+          defaultMarketSetting.marketplaceContractAddress,
+          tokenId
+        );
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.ADD_MARKET_LISTING_APPROVE,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Action Not Allowed!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -270,26 +318,55 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      console.log("marketId ", marketId);
-      const txResult = await contract.updateMarketItem(
-        contractAddress,
-        tokenId,
-        parseUnits(price.toString()),
-        marketId
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.UPDATE_MARKET_LISTING_PRICE,
-        })
-      );
-      txResult.wait();
+      if (marketplaceSetting) {
+        const contract = new Contract(
+          marketplaceSetting.marketplaceContractAddress,
+          JSON.parse(marketplaceSetting.abi),
+          signer
+        );
+        let txResult;
+
+        switch (marketplaceSetting.symbol) {
+          case "OCTOPLACE":
+            txResult = await contract.updateMarketItem(
+              contractAddress,
+              tokenId,
+              parseUnits(price.toString()),
+              marketId
+            );
+            break;
+          case "OPENTHETA":
+            txResult = await contract.updateMarketItem(
+              contractAddress,
+              tokenId,
+              parseUnits(price.toString()),
+              marketId
+            );
+            break;
+          case "THETARARITY":
+            txResult = await contract.update(
+              marketId,
+              parseUnits(price.toString())
+            );
+            break;
+          default:
+            break;
+        }
+
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.UPDATE_MARKET_LISTING_PRICE,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Action Not Allowed!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));
@@ -313,25 +390,41 @@ export const SellNFT = ({
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      const txResult = await contract.createMarketItem(
-        contractAddress,
-        tokenId,
-        parseUnits(price.toString()),
-        metadata.name
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.ADD_MARKET_LISTING,
-        })
-      );
-      txResult.wait();
+      if (defaultMarketSetting && !defaultMarketSetting.isThirdParty) {
+        const contract = new Contract(
+          defaultMarketSetting.marketplaceContractAddress,
+          JSON.parse(defaultMarketSetting.abi),
+          signer
+        );
+        let txResult;
+        switch (defaultMarketSetting.symbol) {
+          case "OCTOPLACE":
+            txResult = await contract.createMarketItem(
+              contractAddress,
+              tokenId,
+              parseUnits(price.toString()),
+              metadata.name
+            );
+            break;
+
+          default:
+            break;
+        }
+
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.ADD_MARKET_LISTING,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Action Not Allowed!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log(err);
       dispatch(setTxDialogFailed(true));

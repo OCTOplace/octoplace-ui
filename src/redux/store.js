@@ -11,6 +11,7 @@ import analyticsSlice from "./slices/analytics-slice";
 import txProcessSlice from "./slices/tx-slice";
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from "./saga";
+import marketSettingsSlice from "./slices/market-settings-slice";
 
 let sagaMiddleware = createSagaMiddleware();
 const middleware = [...getDefaultMiddleware(), sagaMiddleware];
@@ -26,7 +27,8 @@ export const store = configureStore({
     collection: collectionsSlice,
     discussion: discussionSlice,
     analytics: analyticsSlice,
-    txProcess: txProcessSlice
+    txProcess: txProcessSlice,
+    marketSettings: marketSettingsSlice
   },
   middleware,
 });
