@@ -41,8 +41,8 @@ import { txInitiators, txStatus } from "../../constants/tx-initiators";
 import { getSelectedListing } from "../../redux/thunk/getSelectedListing";
 import { setSelectedListing } from "../../redux/slices/listing-slice";
 import { getActiveListingsFromLoggingAPI } from "../../redux/thunk/get-active-listings";
-import { getAllMarketItems } from "../../redux/thunk/get-all-market-items";
 import { getSelectedMarketItem } from "../../redux/thunk/getSelectedMarketItem";
+import { resetSelectedMarket } from "../../redux/slices/market-slice";
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -69,12 +69,16 @@ export const NFTView = () => {
   const [sellOpen, setSellOpen] = useState(false);
   const [isUpdatePrice, setIsUpdatePrice] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [marketItemSetting, setMarketItemSetting] = useState(undefined);
+  const [defaultMarketSetting, setDefaultSetting] = useState(undefined);
   const forceUpdate = useForceUpdate();
   const dispatch = useDispatch();
   const balance = useSelector((state) => state.account.balance);
-
   const selectedListing = useSelector(
     (state) => state.listings.selectedListing
+  );
+  const marketSettings = useSelector(
+    (state) => state.marketSettings.marketplaces
   );
   const isMarketLoading = useSelector((state) => state.market.isLoading);
   const isListingsLoading = useSelector((state) => state.listings.isLoading);
@@ -131,7 +135,7 @@ export const NFTView = () => {
       txInitiator === txInitiators.REMOVE_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getSelectedMarketItem({ network, address, tokenId }));
+      dispatch(resetSelectedMarket());
       getDetailsFromSite();
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogFailed(false));
@@ -145,14 +149,12 @@ export const NFTView = () => {
       txInitiator === txInitiators.ADD_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
     }
     if (
       txInitiator === txInitiators.BUY_MARKET_LISTING &&
       status === txStatus.COMPLETED
     ) {
-      dispatch(getAllMarketItems());
       dispatch(getSelectedMarketItem({ network, address, tokenId }));
       getDetailsFromSite();
     }
@@ -166,6 +168,7 @@ export const NFTView = () => {
       dispatch(setTxDialogSuccess(true));
       dispatch(setTxDialogPending(false));
       toast.success("NFT buy Successful!");
+      dispatch(completeTxProcess());
 
       sendDataToGTM({
         event: "View NFT Buy Transaction Successful Popup",
@@ -197,6 +200,16 @@ export const NFTView = () => {
     }
   }, [status]);
 
+  useEffect(() => {
+    if (market && marketSettings && marketSettings.length > 0) {
+      const selectedMarkePlace = marketSettings.find(
+        (x) => x.symbol === market.marketplace_Symbol
+      );
+      setMarketItemSetting(selectedMarkePlace);
+    } else {
+      setMarketItemSetting(undefined);
+    }
+  }, [market, marketSettings]);
   useEffect(() => {
     if (selectedListing) {
       setListedForSwap(true);
@@ -266,8 +279,12 @@ export const NFTView = () => {
   };
 
   const handleUpdatePrice = async () => {
-    setIsUpdatePrice(true);
-    setSellOpen(true);
+    if (marketItemSetting) {
+      setIsUpdatePrice(true);
+      setSellOpen(true);
+    } else {
+      toast.error("Action Not Allowed!");
+    }
   };
 
   const handleRemoveNFT = async () => {
@@ -319,23 +336,47 @@ export const NFTView = () => {
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      const txResult = await contract.createMarketCancel(
-        address,
-        market.marketId
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.REMOVE_MARKET_LISTING,
-        })
-      );
-      txResult.wait();
+      if (marketItemSetting) {
+        const contract = new Contract(
+          marketItemSetting.marketplaceContractAddress,
+          JSON.parse(marketItemSetting.abi),
+          signer
+        );
+        let txResult;
+        switch (marketItemSetting.symbol) {
+          case "OCTOPLACE":
+            txResult = await contract.createMarketCancel(
+              address,
+              market.marketId
+            );
+            break;
+          case "THETARARITY":
+            txResult = await contract.cancel(market.marketId);
+            break;
+          case "OPENTHETA":
+            txResult = await contract.createMarketCancel(
+              address,
+              market.marketId
+            );
+            break;
+          default:
+            break;
+        }
+
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.REMOVE_MARKET_LISTING,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Marketplace settings not found!");
+        dispatch(setTxDialogFailed(true));
+        dispatch(setTxDialogSuccess(false));
+        dispatch(setTxDialogPending(false));
+      }
     } catch (err) {
       console.log("Error on cancelSale", err);
       dispatch(setTxDialogFailed(true));
@@ -378,27 +419,48 @@ export const NFTView = () => {
     const provider = new Web3Provider(window.ethereum, "any");
     const signer = await provider.getSigner();
     try {
-      const contract = new Contract(
-        netDetails.dataNetwork.MARKETPLACE_CONTRACT,
-        netDetails.dataNetwork.MARKET_ABI,
-        signer
-      );
-      const overRides = {
-        value: parseUnits(market.price.toString(), "ether"),
-      };
-      const txResult = await contract.createMarketSale(
-        address,
-        market.marketId,
-        overRides
-      );
-      dispatch(setTxDialogHash(txResult.hash));
-      dispatch(
-        startTxProcess({
-          txHash: txResult.hash,
-          initiator: txInitiators.BUY_MARKET_LISTING,
-        })
-      );
-      txResult.wait();
+      if (marketItemSetting) {
+        const contract = new Contract(
+          marketItemSetting.marketplaceContractAddress,
+          JSON.parse(marketItemSetting.abi),
+          signer
+        );
+        const overRides = {
+          value: parseUnits(market.price.toString(), "ether"),
+        };
+        let txResult;
+        switch (marketItemSetting.symbol) {
+          case "OCTOPLACE":
+            txResult = await contract.createMarketSale(
+              address,
+              market.marketId,
+              overRides
+            );
+            break;
+          case "OPENTHETA":
+            txResult = await contract.createMarketSale(
+              address,
+              market.marketId,
+              overRides
+            );
+            break;
+          case "THETARARITY":
+            txResult = await contract.buy(market.marketId, overRides); 
+            break;
+          default:
+            break;
+        }
+        dispatch(setTxDialogHash(txResult.hash));
+        dispatch(
+          startTxProcess({
+            txHash: txResult.hash,
+            initiator: txInitiators.BUY_MARKET_LISTING,
+          })
+        );
+        txResult.wait();
+      } else {
+        toast.error("Marketplace details not found!");
+      }
     } catch (err) {
       console.log("Error on buyNFT", err);
       dispatch(setTxDialogFailed(true));
@@ -412,9 +474,6 @@ export const NFTView = () => {
     }
     forceUpdate();
   };
-  useEffect(() => {
-    console.log("debug market", market);
-  }, [market]);
   return (
     <Fragment>
       <Container>
@@ -424,6 +483,7 @@ export const NFTView = () => {
             tokenId={tokenId}
             owner={market ? market.seller : owner}
             name={collectionName}
+            marketData={market}
           />
           <NFTCardActionContaniner>
             {!loading && (market || selectedListing) ? (
@@ -632,6 +692,7 @@ export const NFTView = () => {
         itemPrice={market ? market.price : 0}
         marketId={market ? market.marketId : 0}
         listingId={market ? market.id : 0}
+        marketplaceSetting={marketItemSetting}
         onCloseDlg={() => {
           setTimeout(() => {
             dispatch(getSelectedMarketItem({ network, address, tokenId }));
