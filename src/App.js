@@ -26,10 +26,10 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { rpc, swapAbi, swapContract } from "./connectors/address";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from "@ethersproject/units";
-import {
-  activateInjectedProvider,
-  injectedConnector,
-} from "./connectors/injected-connector";
+//import {
+//  activateInjectedProvider,
+//  injectedConnector,
+//} from "./connectors/injected-connector";
 import { TxDialog } from "./components/dialogs/txdialog";
 import { FaucetPage } from "./pages/faucet/faucet";
 import { CollectionsPage } from "./pages/collections/collection";
@@ -58,7 +58,9 @@ const gtmParams = {
 };
 
 function App() {
-  const { account, chainId, library, activate } = useWeb3React();
+  const { account, chainId, library, 
+    //activate 
+  } = useWeb3React();
   const dispatch = useDispatch();
   const loggedAddress = useSelector((state) => state.account.address);
   const myNftOwner = useSelector((state) => state.myNFT.nftOwner);
@@ -119,11 +121,11 @@ function App() {
     dispatch(getActiveListingsFromLoggingAPI());
     dispatch(getAllCollections());
     getTxCharge();
-
+    /*
     try {
       activateInjectedProvider("MetaMask");
       activate(injectedConnector);
-    } catch {}
+    } catch {}*/
   }, []);
 
   return (
