@@ -255,7 +255,7 @@ export const CollectionDiscussions = ({
               return (
                 <Box key={item._id} sx={styles.comments}>
                   <Typography sx={styles.address}>
-                    {shortenAddress(item.senderAddress)}
+                    {item.user? item.user.title : shortenAddress(item.senderAddress)}
                     <IconButton
                       onClick={() => {
                         copy(item.senderAddress);

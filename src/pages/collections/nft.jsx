@@ -15,7 +15,7 @@ import {
 import { BsMedium } from "react-icons/bs";
 import { FaDiscord, FaTiktok, FaYoutube } from "react-icons/fa";
 import { useWeb3React } from "@web3-react/core";
-import { getCollection } from "../../redux/thunk/getAllCollections";
+import { getCollection , getCollectionNftCount, getCollectionDiscussions, getCollectionAsset } from "../../redux/thunk/getAllCollections";
 import { setCollectionDiscussions } from "../../redux/slices/discussions-slice";
 import NFTlist from "./components/NFTlist";
 import Content from "./components/Content";
@@ -43,10 +43,13 @@ const NFTPage = () => {
 
   const fetchCollectionSetting = async () => {
     const result = await getCollection(address);
+    const countResult = await getCollectionNftCount(address);
+    const discussionResult = await getCollectionDiscussions(address);
+    const assetResult = await getCollectionAsset(address);
     setCollection(result.collection);
-    setDiscussions(result.discussions);
-    setAsset(result.asset);
-    setNftCounts(result.nftCounts);
+    setDiscussions(discussionResult);
+    setAsset(assetResult.asset);
+    setNftCounts(countResult.nftCount);
   };
 
   useEffect(() => {

@@ -41,6 +41,21 @@ export const getCollection = async (address) => {
   return result.data;
 };
 
+export const getCollectionNftCount = async (address) => {
+  const result = await axios.get(`${apiUrl}/collections/count-nft/${address}`);
+  return result.data;
+}
+
+export const getCollectionDiscussions = async (address) => {
+  const result = await axios.get(`${apiUrl}/discussions/collection?address=${address}`);
+  return result.data;
+}
+
+export const getCollectionAsset = async (address) =>{
+  const result = await axios.get(`${apiUrl}/collections/assets/${address}`);
+  return result.data;
+}
+
 const slugify = (str) =>
   str
     .toLowerCase()

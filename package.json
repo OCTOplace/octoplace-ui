@@ -15,6 +15,7 @@
     "@mui/lab": "^5.0.0-alpha.147",
     "@mui/material": "^5.10.10",
     "@mui/styles": "^5.13.2",
+    "@mui/system": "^5.16.6",
     "@reduxjs/toolkit": "^1.9.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -51,7 +52,7 @@
     "web3-token": "^1.0.6"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --openssl-legacy-provider",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -10,10 +10,10 @@ function RecentMessages({ messages }) {
   );
 
   useEffect(() => {
-    if (discussions.length > 0) {
-      setRecentMessages(discussions.slice(-3));
+    if (recentMessages.length > 0) {
+      setRecentMessages(recentMessages.slice(-3));
     }
-  }, [discussions]);
+  }, []);
 
   return (
     <Box sx={styles.container}>
