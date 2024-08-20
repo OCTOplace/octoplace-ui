@@ -10,7 +10,7 @@ import Select from "@mui/material/Select";
 import TuneIcon from "@mui/icons-material/Tune";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NFTCard from "./nft-card";
-import { getNFTsForCollection } from "../../../redux/thunk/get-collection-nfts";
+import { getNFTsForCollection , getAttributesForCollection} from "../../../redux/thunk/get-collection-nfts";
 import FilterComponent from "../../../components/FilterComponent";
 import Searchbox from "../../../components/searchbox";
 
@@ -70,12 +70,6 @@ function NFTlist({ address, network, view }) {
     const newItemCount = response.totalCounts;
     setNfts([...nfts, ...newItems]);
 
-    // save only when first loading
-    const currentPage = parseInt(response.currentPage);
-    if (currentPage === 0) {
-      setAttributes(response.attributes);
-    }
-
     setFilteredCount(newItemCount);
     setTotalCount(response.totalCounts);
     if (nfts.length >= newItemCount) {
@@ -84,6 +78,11 @@ function NFTlist({ address, network, view }) {
       setPage(page + 1);
     }
     setLoading(false);
+  };
+
+  const fetchAttributes = async () => {
+    const response = await getAttributesForCollection(address);
+    setAttributes(response);
   };
 
   const handleOrder = (event) => {
@@ -112,8 +111,13 @@ function NFTlist({ address, network, view }) {
     setFilteredCount(0);
     setHasMore(true);
     fetchNFTs();
+    
   }, [search, filterParam]);
 
+  useEffect(() => {
+    fetchAttributes();
+  },[])
+  
   return (
     <Box>
       <NFTActionContainer>

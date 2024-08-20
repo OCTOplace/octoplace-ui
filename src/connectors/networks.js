@@ -5,7 +5,7 @@ import nftDiscussionAbi from "../abi/discussionAbi.json";
 import faucetAbi from "../abi/faucet.json";
 import marketAbi from "../abi/marketplace.json";
 import collectionDiscussionsAbi from "../abi/collection-discussions.json";
-const thetaRpc = "https://thetanode.octoplace.io/rpc";
+const thetaRpc = "https://361.rpc.thirdweb.com/2cbb36d42d40fccfbdccf7908a075991";
 //const thetaRpc = "https://eth-rpc-api.thetatoken.org/rpc";
 //const thetaRpc = "https://172.190.238.225:80/rpc";
 const thetaChainId = "0x169";

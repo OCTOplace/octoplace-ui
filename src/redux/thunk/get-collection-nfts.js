@@ -19,3 +19,7 @@ export const getNFTsForCollection = async (address, params) => {
   });
   return result.data;
 };
+export const getAttributesForCollection = async (address) => {
+  const result = await axios.get(`${apiUrl}/items/attributes/${address}`);
+  return result.data;
+};
